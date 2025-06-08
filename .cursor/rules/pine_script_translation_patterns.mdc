@@ -1,0 +1,19 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+globs: ["*.py"]
+alwaysApply: false
+description: "Guidelines for translating Pine Script™ concepts to Python."
+
+Pine Script™ to Python Translation Patterns
+
+Π When translating Pine Script's ta.ema(source, length), prefer using
+pandas_ta.ema(close=source_series, length=length) in Python.
+Pine Script's ta.cross(series1, series2) can be implemented in Python by
+checking (series1_prev < series2_prev) and (series1_curr > series2_curr).
+Backtesting.py offers crossover (series1, series2).
+
+Remember that Pine Script™ executes on each bar, so Python logic in
+Backtesting.py's next() method should reflect this bar-by-bar processing.

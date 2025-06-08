@@ -1,0 +1,21 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+alwaysApply: true
+
+Capital.com API Usage Rules
+
+■ Always use python-dotenv to load API keys (CAPITAL_API_KEY,
+CAPITAL_IDENTIFIER, CAPITAL_PASSWORD) from an env file. Never
+hardcode credentials. Example: api_key = os.getenv("CAPITAL_API_KEY").
+Ensure all API requests to Capital.com include proper error handling for
+HTTP status codes 4xx (client errors) and 5xx (server errors), logging
+relevant error messages.
+■ Log all API request URLs, methods, and important parameters, as well as
+key parts of the response (or full response for errors) for debugging
+purposes. Use Python's logging module.
+
+For session management, always retrieve CST and X-SECURITY-TOKEN
+after a successful login and include them in subsequent request headers.
