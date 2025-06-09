@@ -1,53 +1,65 @@
-from flask import Flask, request, jsonify
-import json
-import os 
-from dotenv import load_dotenv 
+# main.py (at project root)
+import asyncio
+import logging
+import signal
+import os
+from core.event_loop import AsyncEventLoop
+from data_feeds.feed_handler import AsyncMarketDataFeedHandler, MarketDataEvent
 
-load_dotenv() # 載入.env檔案中的環境變數
+# --- 基本配置 ---
+SYMBOLS = ["T.AAPL", "T.MSFT", "T.GOOG"] 
+PROVIDER_URL = "wss://socket.polygon.io/stocks"
+API_KEY = os.getenv("POLYGON_API_KEY") 
 
-app = Flask(__name__) 
+async def test_event_handler(event: MarketDataEvent):
+    logger = logging.getLogger("EventHandler")
+    logger.info(f"Received event: {event.symbol} at {event.timestamp}")
 
-# 從環境變數讀取預期的密語 
-EXPECTED_PASSPHRASE = os.getenv("WEBHOOK_PASSPHRASE", "default_passphrase_if_not_set") 
+async def main():
+    logging.basicConfig(
+        level=logging.INFO, 
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    logger = logging.getLogger(__name__)
 
-@app.route('/tradingview-webhook', methods=['POST']) 
-def tradingview_webhook():
-    if request.method == 'POST': 
-        try:
-            data = request.get_json() 
-            
-            # 驗證 passphrase 
-            if "passphrase" not in data or data.get("passphrase") != EXPECTED_PASSPHRASE: 
-                app.logger.warning(f"Unauthorized webhook attempt: Invalid or missing passphrase. Received: {data.get('passphrase')}") 
-                return jsonify({"status": "error", "message": "Unauthorized - Invalid passphrase"}), 403 
+    loop = asyncio.get_running_loop()
+    event_loop_instance = AsyncEventLoop()
 
-            app.logger.info("Webhook received successfully:") 
-            app.logger.info(json.dumps(data, indent=4)) 
+    event_loop_instance.register_handler("MarketDataEvent", test_event_handler)
 
-            # 在此處添加處理 Webhook 數據的邏輯 
-            # 例如: 解析 action, symbol, price 等 
-            # 並觸發 Capital.com 的交易邏輯 
-            # process_trade_signal(data) # 假設有此函數處理交易 
+    feed_handler = AsyncMarketDataFeedHandler(
+        symbols=SYMBOLS,
+        api_key=API_KEY,
+        event_queue=event_loop_instance.event_queue,
+        provider_url=PROVIDER_URL
+    )
 
-            return jsonify({"status": "success", "message": "Webhook received and processed" }), 200 
-        
-        except Exception as e:
-            app.logger.error(f"Error processing webhook: {e}", exc_info=True) 
-            return jsonify({"status": "error", "message": str(e)}), 400 
+    # --- 設定優雅停機機制 ---
+    shutdown_signals = (signal.SIGINT, signal.SIGTERM)
+    async def shutdown(sig: signal.Signals):
+        logger.info(f"Received exit signal {sig.name}...")
+        await feed_handler.stop()
+        await event_loop_instance.stop()
+        tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+        [task.cancel() for task in tasks]
+        await asyncio.gather(*tasks, return_exceptions=True)
+        logger.info("Graceful shutdown complete.")
+
+    for s in shutdown_signals:
+        loop.add_signal_handler(s, lambda s=s: asyncio.create_task(shutdown(s)))
+
+    # --- 啟動組件 ---
+    try:
+        logger.info("Starting application components...")
+        feed_handler.start()
+        await event_loop_instance.run() 
+    except asyncio.CancelledError:
+        logger.info("Main task cancelled.")
+    finally:
+        logger.info("Application has been shut down.")
+
+if __name__ == "__main__":
+    if not API_KEY:
+        print("錯誤：尚未設定 POLYGON_API_KEY 環境變數。")
     else:
-        # 處理非 POST請求(例如直接瀏覽此URL) 
-        return "This endpoint is for TradingView Webhooks (POST requests only).", 405 
-
-if __name__ == '__main__':
-    # 設定日誌記錄 
-    import logging 
-    logging.basicConfig(level=logging.INFO, 
-                        format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s', 
-                        handlers=[logging.StreamHandler()]) # Modified from document to ensure handler for basicConfig
-    
-    app.logger.info("Flask application starting...") 
-    
-    # 在開發環境中,可以使用ngrok 將本地服務暴露到公網 
-    # 例如: ngrok http 5000(假設 Flask 運行在5000 port) 
-    # 然後將 ngrok 提供的https URL 填入 TradingView Webhook 設定 
-    app.run(host='0.0.0.0', port=5000, debug=True) # debug=False for production 
+        asyncio.run(main())
