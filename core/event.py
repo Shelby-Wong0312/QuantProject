@@ -48,7 +48,7 @@ class OrderType(Enum):
 class OrderEvent(Event):
     symbol: str
     order_type: OrderType
-    action: SignalAction # BUY or SELL
+    action: SignalAction
     quantity: float
     
     def __init__(self, symbol: str, order_type: OrderType, action: SignalAction, quantity: float):
@@ -57,3 +57,21 @@ class OrderEvent(Event):
         self.order_type = order_type
         self.action = action
         self.quantity = quantity
+
+@dataclass
+class FillEvent(Event):
+    symbol: str
+    timestamp: datetime
+    action: SignalAction
+    quantity: float
+    fill_price: float
+    commission: float
+
+    def __init__(self, symbol: str, timestamp: datetime, action: SignalAction, quantity: float, fill_price: float, commission: float = 0.0):
+        super().__init__(EventType.FILL)
+        self.symbol = symbol
+        self.timestamp = timestamp
+        self.action = action
+        self.quantity = quantity
+        self.fill_price = fill_price
+        self.commission = commission
