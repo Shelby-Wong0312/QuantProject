@@ -1,7 +1,6 @@
 # main.py (at project root)
 import asyncio
 import logging
-import signal
 import os
 from core.event_loop import AsyncEventLoop
 from data_feeds.feed_handler import AsyncMarketDataFeedHandler, MarketDataEvent
@@ -22,9 +21,7 @@ async def main():
     )
     logger = logging.getLogger(__name__)
 
-    loop = asyncio.get_running_loop()
     event_loop_instance = AsyncEventLoop()
-
     event_loop_instance.register_handler("MarketDataEvent", test_event_handler)
 
     feed_handler = AsyncMarketDataFeedHandler(
@@ -34,32 +31,40 @@ async def main():
         provider_url=PROVIDER_URL
     )
 
-    # --- 設定優雅停機機制 ---
-    shutdown_signals = (signal.SIGINT, signal.SIGTERM)
-    async def shutdown(sig: signal.Signals):
-        logger.info(f"Received exit signal {sig.name}...")
+    # --- 優雅停機函數 ---
+    async def shutdown():
+        logger.info("Shutdown process started...")
         await feed_handler.stop()
         await event_loop_instance.stop()
+        
+        # 清理其他可能的異步任務
         tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
-        [task.cancel() for task in tasks]
-        await asyncio.gather(*tasks, return_exceptions=True)
+        if tasks:
+            [task.cancel() for task in tasks]
+            await asyncio.gather(*tasks, return_exceptions=True)
+        
         logger.info("Graceful shutdown complete.")
 
-    for s in shutdown_signals:
-        loop.add_signal_handler(s, lambda s=s: asyncio.create_task(shutdown(s)))
-
-    # --- 啟動組件 ---
+    # --- 主執行邏輯 ---
     try:
         logger.info("Starting application components...")
         feed_handler.start()
         await event_loop_instance.run() 
     except asyncio.CancelledError:
-        logger.info("Main task cancelled.")
+        # 當 asyncio.run 被中斷時，這裡會被觸發
+        pass
     finally:
-        logger.info("Application has been shut down.")
+        # 無論是正常結束還是被中斷，都執行停機程序
+        await shutdown()
 
 if __name__ == "__main__":
     if not API_KEY:
         print("錯誤：尚未設定 POLYGON_API_KEY 環境變數。")
     else:
-        asyncio.run(main())
+        try:
+            asyncio.run(main())
+        except KeyboardInterrupt:
+            # 當使用者按下 Ctrl+C，asyncio.run() 會被中斷，
+            # 進而觸發 main() 協程中的 finally 區塊。
+            # 我們可以在此處印出一個更直接的訊息。
+            print("\nApplication interrupted by user. Shutting down...")
