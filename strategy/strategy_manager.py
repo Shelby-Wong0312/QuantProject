@@ -1,15 +1,16 @@
 # strategy/strategy_manager.py
 import asyncio
 import logging
-from core.event_loop import MarketDataEvent, SignalEvent # 假設的 Event 定義位置
+from core.event import MarketDataEvent, SignalEvent
+from strategy.logging_strategy import LoggingStrategy # 導入我們的具體策略
 
 logger = logging.getLogger(__name__)
 
 class StrategyManager:
     def __init__(self, event_queue_in: asyncio.Queue, event_queue_out: asyncio.Queue, strategy_configs: dict):
-        self.event_queue_in = event_queue_in   # For MarketDataEvent
-        self.event_queue_out = event_queue_out # For SignalEvent
-        self.strategy_configs = strategy_configs # e.g., {'AAPL': {'strategy_type': 'SomeStrategy', ...}}
+        self.event_queue_in = event_queue_in
+        self.event_queue_out = event_queue_out
+        self.strategy_configs = strategy_configs
         self.symbol_to_strategy_map = {}
         self._running = False
         self._processing_task = None
@@ -17,12 +18,17 @@ class StrategyManager:
         self._init_strategies()
 
     def _init_strategies(self):
-        # 這是簡化後的版本。真實的實現會在這裡根據 configs
-        # 動態加載策略類別，並為使用相同策略和參數的股票共享實例。
-        logger.info("Strategies initialized and mapped. (Conceptual)")
-        # For now, we will leave self.symbol_to_strategy_map empty.
-        # We will implement the dynamic loading and state management later.
-        pass
+        # 根據設定檔，為每個 symbol 映射到一個策略實例
+        for symbol, config in self.strategy_configs.items():
+            strategy_type = config.get("strategy_type")
+            if strategy_type == "LoggingStrategy":
+                # 在真實應用中，可以為多個 symbol 共享同一個策略實例以節省記憶體
+                self.symbol_to_strategy_map[symbol] = LoggingStrategy()
+                logger.info(f"Mapped symbol {symbol} to LoggingStrategy.")
+            else:
+                logger.warning(f"Strategy type '{strategy_type}' for symbol {symbol} is not recognized.")
+        
+        logger.info("Strategies initialized and mapped.")
 
     async def _process_events(self):
         logger.info("Strategy Manager event processing started.")
@@ -31,15 +37,15 @@ class StrategyManager:
             try:
                 market_event: MarketDataEvent = await asyncio.wait_for(self.event_queue_in.get(), timeout=1.0)
                 
-                # TODO: 根據 market_event.symbol 查找對應的策略處理器
+                # 根據股票代碼查找對應的策略處理器
                 strategy_handler = self.symbol_to_strategy_map.get(market_event.symbol)
 
                 if strategy_handler:
-                    # TODO: 異步調用策略處理器的 on_data 方法
-                    # signals = await strategy_handler.on_data(market_event)
-                    # for signal in signals:
-                    #     await self.event_queue_out.put(signal)
-                    pass # Placeholder for strategy execution
+                    # 異步調用策略的 on_data 方法
+                    signals = await strategy_handler.on_data(market_event)
+                    for signal in signals:
+                        # 將策略產生的信號放入下一個隊列
+                        await self.event_queue_out.put(signal)
 
                 self.event_queue_in.task_done()
             except asyncio.TimeoutError:

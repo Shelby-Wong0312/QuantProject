@@ -2,17 +2,19 @@
 import asyncio
 import logging
 import os
-from core.event_loop import AsyncEventLoop
-from data_feeds.feed_handler import AsyncMarketDataFeedHandler, MarketDataEvent
+from core.event_loop import AsyncEventLoop # 現在未使用，但保留
+from core.event import MarketDataEvent, SignalEvent
+from data_feeds.feed_handler import AsyncMarketDataFeedHandler
+from strategy.strategy_manager import StrategyManager
 
 # --- 基本配置 ---
-SYMBOLS = ["T.AAPL", "T.MSFT", "T.GOOG"] 
+SYMBOLS_TO_TRADE = ["T.AAPL", "T.MSFT"] 
+STRATEGY_CONFIGS = {
+    "T.AAPL": {"strategy_type": "LoggingStrategy"},
+    "T.MSFT": {"strategy_type": "LoggingStrategy"},
+}
 PROVIDER_URL = "wss://socket.polygon.io/stocks"
 API_KEY = os.getenv("POLYGON_API_KEY") 
-
-async def test_event_handler(event: MarketDataEvent):
-    logger = logging.getLogger("EventHandler")
-    logger.info(f"Received event: {event.symbol} at {event.timestamp}")
 
 async def main():
     logging.basicConfig(
@@ -21,40 +23,68 @@ async def main():
     )
     logger = logging.getLogger(__name__)
 
-    event_loop_instance = AsyncEventLoop()
-    event_loop_instance.register_handler("MarketDataEvent", test_event_handler)
+    # 建立兩個事件隊列
+    market_event_queue = asyncio.Queue()
+    signal_event_queue = asyncio.Queue()
 
+    # 實例化所有組件
     feed_handler = AsyncMarketDataFeedHandler(
-        symbols=SYMBOLS,
+        symbols=SYMBOLS_TO_TRADE,
         api_key=API_KEY,
-        event_queue=event_loop_instance.event_queue,
+        event_queue=market_event_queue,
         provider_url=PROVIDER_URL
     )
 
-    # --- 優雅停機函數 ---
+    strategy_manager = StrategyManager(
+        event_queue_in=market_event_queue,
+        event_queue_out=signal_event_queue,
+        strategy_configs=STRATEGY_CONFIGS
+    )
+
+    # --- 主事件循環 ---
+    # 我們不再需要 AsyncEventLoop 類別，可以直接在 main 中處理
+    running = True
+    async def main_loop():
+        while running:
+            try:
+                # 這裡可以監聽 signal_event_queue 來處理交易信號
+                signal = await asyncio.wait_for(signal_event_queue.get(), timeout=1.0)
+                logger.info(f"MAIN LOOP GOT SIGNAL: {signal}")
+                signal_event_queue.task_done()
+            except asyncio.TimeoutError:
+                continue
+    
+    main_loop_task = asyncio.create_task(main_loop())
+
+    # --- 優雅停機機制 ---
     async def shutdown():
+        nonlocal running
+        if not running: return
+        
         logger.info("Shutdown process started...")
+        running = False
+        
         await feed_handler.stop()
-        await event_loop_instance.stop()
+        await strategy_manager.stop()
+        main_loop_task.cancel()
         
-        # 清理其他可能的異步任務
-        tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
-        if tasks:
-            [task.cancel() for task in tasks]
-            await asyncio.gather(*tasks, return_exceptions=True)
-        
+        try:
+            await main_loop_task
+        except asyncio.CancelledError:
+            pass
+
         logger.info("Graceful shutdown complete.")
 
-    # --- 主執行邏輯 ---
+    # ... (此處省略 KeyboardInterrupt 處理，與上一版相同)
+    # ... 您可以將上一版 main.py 的 if __name__ == "__main__": 區塊複製過來
     try:
         logger.info("Starting application components...")
         feed_handler.start()
-        await event_loop_instance.run() 
+        strategy_manager.start()
+        await main_loop_task
     except asyncio.CancelledError:
-        # 當 asyncio.run 被中斷時，這裡會被觸發
         pass
     finally:
-        # 無論是正常結束還是被中斷，都執行停機程序
         await shutdown()
 
 if __name__ == "__main__":
@@ -64,7 +94,4 @@ if __name__ == "__main__":
         try:
             asyncio.run(main())
         except KeyboardInterrupt:
-            # 當使用者按下 Ctrl+C，asyncio.run() 會被中斷，
-            # 進而觸發 main() 協程中的 finally 區塊。
-            # 我們可以在此處印出一個更直接的訊息。
             print("\nApplication interrupted by user. Shutting down...")
