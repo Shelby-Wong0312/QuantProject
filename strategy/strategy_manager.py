@@ -1,8 +1,9 @@
 # strategy/strategy_manager.py
 import asyncio
 import logging
+from collections import defaultdict
 from core.event import MarketDataEvent, SignalEvent
-from strategy.logging_strategy import LoggingStrategy # 導入我們的具體策略
+from strategy.stateful_strategy import StatefulStrategy # 導入新策略
 
 logger = logging.getLogger(__name__)
 
@@ -18,15 +19,19 @@ class StrategyManager:
         self._init_strategies()
 
     def _init_strategies(self):
-        # 根據設定檔，為每個 symbol 映射到一個策略實例
+        # 按策略類型對股票進行分組
+        strategies_to_load = defaultdict(list)
         for symbol, config in self.strategy_configs.items():
-            strategy_type = config.get("strategy_type")
-            if strategy_type == "LoggingStrategy":
-                # 在真實應用中，可以為多個 symbol 共享同一個策略實例以節省記憶體
-                self.symbol_to_strategy_map[symbol] = LoggingStrategy()
-                logger.info(f"Mapped symbol {symbol} to LoggingStrategy.")
+            strategies_to_load[config.get("strategy_type")].append(symbol)
+
+        # 為每種類型的策略創建一個實例，並管理其對應的所有股票
+        for strategy_type, symbols in strategies_to_load.items():
+            if strategy_type == "StatefulStrategy":
+                strategy_instance = StatefulStrategy(symbols_to_manage=symbols)
+                for symbol in symbols:
+                    self.symbol_to_strategy_map[symbol] = strategy_instance
             else:
-                logger.warning(f"Strategy type '{strategy_type}' for symbol {symbol} is not recognized.")
+                logger.warning(f"Strategy type '{strategy_type}' is not recognized.")
         
         logger.info("Strategies initialized and mapped.")
 
@@ -36,17 +41,12 @@ class StrategyManager:
         while self._running:
             try:
                 market_event: MarketDataEvent = await asyncio.wait_for(self.event_queue_in.get(), timeout=1.0)
-                
-                # 根據股票代碼查找對應的策略處理器
                 strategy_handler = self.symbol_to_strategy_map.get(market_event.symbol)
 
                 if strategy_handler:
-                    # 異步調用策略的 on_data 方法
                     signals = await strategy_handler.on_data(market_event)
                     for signal in signals:
-                        # 將策略產生的信號放入下一個隊列
                         await self.event_queue_out.put(signal)
-
                 self.event_queue_in.task_done()
             except asyncio.TimeoutError:
                 continue
