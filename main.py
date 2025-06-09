@@ -7,6 +7,23 @@ from data_feeds.feed_handler import AsyncMarketDataFeedHandler
 from strategy.strategy_manager import StrategyManager
 
 # --- 基本配置 ---
+# main.py
+
+# ... (其他 import 保持不變) ...
+
+# --- 基本配置 ---
+# 我們加入了 T.SPY，這是一個交易非常活躍的 ETF
+SYMBOLS_TO_TRADE = ["T.AAPL", "T.MSFT", "T.GOOG", "T.SPY"] 
+STRATEGY_CONFIGS = {
+    "T.AAPL": {"strategy_type": "StatefulStrategy"},
+    "T.MSFT": {"strategy_type": "StatefulStrategy"},
+    "T.GOOG": {"strategy_type": "StatefulStrategy"},
+    "T.SPY":  {"strategy_type": "StatefulStrategy"}, # 為 SPY 也設定策略
+}
+PROVIDER_URL = "wss://socket.polygon.io/stocks"
+API_KEY = os.getenv("POLYGON_API_KEY") 
+
+# ... (main.py 的其餘部分保持不變) ...
 SYMBOLS_TO_TRADE = ["T.AAPL", "T.MSFT", "T.GOOG"] 
 STRATEGY_CONFIGS = {
     # 將所有股票都指向新的 StatefulStrategy
