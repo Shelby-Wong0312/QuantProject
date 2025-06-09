@@ -43,7 +43,10 @@ async def test_risk_manager_vetoes_blacklisted_signal():
     blacklisted_signal = SignalEvent(symbol="GOOG", action=SignalAction.BUY, quantity=100)
     
     risk_manager.start()
-    await blacklisted_signal.put(signal_queue) # Corrected line
+    
+    # --- 修正後的程式碼 ---
+    # 將 signal 物件，放入 queue 物件中
+    await signal_queue.put(blacklisted_signal)
     
     with pytest.raises(asyncio.TimeoutError):
         await asyncio.wait_for(order_queue.get(), timeout=0.1)
