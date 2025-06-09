@@ -2,10 +2,11 @@
 import asyncio
 import logging
 import os
-from core.event import FillEvent # 僅用於類型提示
+from core.event import MarketDataEvent, SignalEvent, OrderEvent, FillEvent, SignalAction, OrderType
 from data_feeds.feed_handler import AsyncMarketDataFeedHandler
 from strategy.strategy_manager import StrategyManager
 from risk_management.async_risk_manager import AsyncRiskManager
+from execution.async_execution_handler import AsyncExecutionHandler
 from portfolio.async_portfolio_manager import AsyncPortfolioManager
 
 # --- 配置 ---
@@ -30,13 +31,12 @@ async def main():
     strategy_manager = StrategyManager(event_queue_in=market_queue, event_queue_out=signal_queue, strategy_configs=STRATEGY_CONFIGS)
     risk_manager = AsyncRiskManager(event_queue_in=signal_queue, event_queue_out=order_queue)
     execution_handler = AsyncExecutionHandler(event_queue_in=order_queue, event_queue_out=fill_queue)
-    portfolio_manager = AsyncPortfolioManager(event_queue_in=fill_queue) # 新增
+    portfolio_manager = AsyncPortfolioManager(event_queue_in=fill_queue, initial_cash=100000.0)
 
-    # --- 主循環，現在只為了讓程式保持運行 ---
+    # --- 主循環 ---
     running = True
     async def main_loop():
         while running:
-            # 讓出控制權，使其他背景任務能運行
             await asyncio.sleep(1)
     
     main_loop_task = asyncio.create_task(main_loop())
@@ -48,12 +48,9 @@ async def main():
         logger.info("Shutdown process started...")
         running = False
         
-        # 依相反順序關閉所有組件
-        await feed_handler.stop()
-        await strategy_manager.stop()
-        await risk_manager.stop()
-        await execution_handler.stop()
-        await portfolio_manager.stop() # 新增
+        all_components = [feed_handler, strategy_manager, risk_manager, execution_handler, portfolio_manager]
+        for component in reversed(all_components):
+            await component.stop()
         
         main_loop_task.cancel()
         try: await main_loop_task
@@ -70,10 +67,11 @@ async def main():
     except asyncio.CancelledError: pass
     finally: await shutdown()
 
-# (if __name__ == "__main__": 區塊與上一版相同，請直接複製過來)
 if __name__ == "__main__":
     if not API_KEY_ID or not API_SECRET_KEY:
         print("錯誤：尚未設定 APCA_API_KEY_ID 和/或 APCA_API_SECRET_KEY 環境變數。")
     else:
-        try: asyncio.run(main())
-        except KeyboardInterrupt: print("\nApplication interrupted by user. Shutting down...")
+        try:
+            asyncio.run(main())
+        except KeyboardInterrupt:
+            print("\nApplication interrupted by user. Shutting down...")
