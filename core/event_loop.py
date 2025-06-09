@@ -1,57 +1,67 @@
-# 檔案位置: core/event_loop.py
-
-import queue
+# core/event_loop.py
+import asyncio
 import logging
-import time
 
 logger = logging.getLogger(__name__)
 
-class EventLoop:
-    """
-    事件驅動系統的核心引擎。
-    負責管理事件隊列，並將事件分派給已註冊的處理器。
-    """
+class AsyncEventLoop:
     def __init__(self):
-        self.event_queue = queue.Queue()
-        self.handlers = {}  # 字典，key為事件類型名稱，value為處理該事件的函式列表
-        self.running = True
+        self.event_queue = asyncio.Queue()
+        self.handlers = {}
+        self.running = False
+        self._main_loop_task = None
 
     def register_handler(self, event_type_name: str, handler_callable):
-        """註冊一個事件處理器。"""
+        if not asyncio.iscoroutinefunction(handler_callable):
+            raise TypeError(f"Handler {handler_callable.__name__} must be an async function.")
+        
         if event_type_name not in self.handlers:
             self.handlers[event_type_name] = []
+        
         if handler_callable not in self.handlers[event_type_name]:
             self.handlers[event_type_name].append(handler_callable)
-            logger.info(f"處理器 {handler_callable.__name__} 已註冊處理 {event_type_name} 事件。")
+            logger.info(f"Async handler {handler_callable.__name__} registered for {event_type_name}")
 
-    def post_event(self, event):
-        """將一個新的事件放入隊列中。"""
-        self.event_queue.put(event)
+    async def post_event(self, event):
+        await self.event_queue.put(event)
 
-    def start(self):
-        """啟動事件處理循環。"""
-        logger.info("事件循環啟動...")
+    async def _dispatch_event(self, handler, event):
+        try:
+            await handler(event)
+        except Exception as e:
+            logger.error(f"Error in async handler {handler.__name__} for event {type(event).__name__}: {e}", exc_info=True)
+
+    async def run(self):
+        logger.info("Async event loop starting...")
+        self.running = True
         while self.running:
             try:
-                # 等待事件，設置1秒超時以允許檢查 self.running 狀態
-                event = self.event_queue.get(block=True, timeout=1.0)
-            except queue.Empty:
-                # 隊列為空，繼續下一次循環
+                event = await asyncio.wait_for(self.event_queue.get(), timeout=1.0)
+                event_type_name = type(event).__name__
+                if event_type_name in self.handlers:
+                    for handler in self.handlers[event_type_name]:
+                        asyncio.create_task(self._dispatch_event(handler, event))
+                self.event_queue.task_done()
+            except asyncio.TimeoutError:
                 continue
+            except Exception as e:
+                logger.error(f"Critical error in async event loop: {e}", exc_info=True)
 
-            event_type_name = type(event).__name__
-            if event_type_name in self.handlers:
-                # 將事件分派給所有已註冊的處理器
-                for handler in self.handlers[event_type_name]:
-                    try:
-                        handler(event)
-                    except Exception as e:
-                        logger.error(f"處理器 {handler.__name__} 在處理 {event_type_name} 事件時發生錯誤: {e}", exc_info=True)
-            
-            self.event_queue.task_done()
+        logger.info("Async event loop stopped.")
 
-    def stop(self):
-        """停止事件循環。"""
-        logger.info("收到停止訊號，事件循環即將關閉...")
+    def start(self):
+        if not self.running:
+            self._main_loop_task = asyncio.create_task(self.run())
+            logger.info("Async event loop initiated.")
+
+    async def stop(self):
+        logger.info("Stop signal received for async event loop.")
         self.running = False
-        
+        if self._main_loop_task:
+            try:
+                await asyncio.wait_for(self._main_loop_task, timeout=5.0)
+            except asyncio.TimeoutError:
+                logger.warning("Event loop did not stop gracefully within timeout.")
+                self._main_loop_task.cancel()
+            except asyncio.CancelledError:
+                logger.info("Event loop task was cancelled.")
