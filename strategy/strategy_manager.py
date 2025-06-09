@@ -1,0 +1,63 @@
+# strategy/strategy_manager.py
+import asyncio
+import logging
+from core.event_loop import MarketDataEvent, SignalEvent # 假設的 Event 定義位置
+
+logger = logging.getLogger(__name__)
+
+class StrategyManager:
+    def __init__(self, event_queue_in: asyncio.Queue, event_queue_out: asyncio.Queue, strategy_configs: dict):
+        self.event_queue_in = event_queue_in   # For MarketDataEvent
+        self.event_queue_out = event_queue_out # For SignalEvent
+        self.strategy_configs = strategy_configs # e.g., {'AAPL': {'strategy_type': 'SomeStrategy', ...}}
+        self.symbol_to_strategy_map = {}
+        self._running = False
+        self._processing_task = None
+        
+        self._init_strategies()
+
+    def _init_strategies(self):
+        # 這是簡化後的版本。真實的實現會在這裡根據 configs
+        # 動態加載策略類別，並為使用相同策略和參數的股票共享實例。
+        logger.info("Strategies initialized and mapped. (Conceptual)")
+        # For now, we will leave self.symbol_to_strategy_map empty.
+        # We will implement the dynamic loading and state management later.
+        pass
+
+    async def _process_events(self):
+        logger.info("Strategy Manager event processing started.")
+        self._running = True
+        while self._running:
+            try:
+                market_event: MarketDataEvent = await asyncio.wait_for(self.event_queue_in.get(), timeout=1.0)
+                
+                # TODO: 根據 market_event.symbol 查找對應的策略處理器
+                strategy_handler = self.symbol_to_strategy_map.get(market_event.symbol)
+
+                if strategy_handler:
+                    # TODO: 異步調用策略處理器的 on_data 方法
+                    # signals = await strategy_handler.on_data(market_event)
+                    # for signal in signals:
+                    #     await self.event_queue_out.put(signal)
+                    pass # Placeholder for strategy execution
+
+                self.event_queue_in.task_done()
+            except asyncio.TimeoutError:
+                continue
+            except Exception as e:
+                logger.error(f"Error in Strategy Manager event processing: {e}", exc_info=True)
+
+    def start(self):
+        if not self._running:
+            self._processing_task = asyncio.create_task(self._process_events())
+
+    async def stop(self):
+        if self._running:
+            self._running = False
+            if self._processing_task:
+                self._processing_task.cancel()
+                try:
+                    await self._processing_task
+                except asyncio.CancelledError:
+                    logger.info("Strategy Manager processing task cancelled.")
+            logger.info("Strategy Manager stopped.")
