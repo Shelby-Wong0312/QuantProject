@@ -1,71 +1,79 @@
-# 檔案位置: data_feeds/feed_handler.py
-
-import pandas as pd
-import time
+# data_feeds/feed_handler.py
+import asyncio
+import websockets # Using the 'websockets' library
+import json
 import logging
-from core.event import MarketDataEvent
+import pandas as pd # 修正：導入 pandas 函式庫
+from core.event import MarketDataEvent # Assuming your event definitions
 
 logger = logging.getLogger(__name__)
 
-class HistoricalDataFeedHandler:
-    """
-    一個從 CSV 檔案讀取歷史數據，並模擬即時數據流的事件產生器。
-    """
-    def __init__(self, event_queue, csv_filepath: str, symbol: str, interval_seconds: float = 0.1):
-        """
-        初始化 Feed Handler。
-        :param event_queue: 事件隊列的實例。
-        :param csv_filepath: 歷史數據 CSV 檔案的路徑。
-        :param symbol: 交易標的代碼。
-        :param interval_seconds: 模擬每根K棒之間的間隔時間（秒）。
-        """
+class AsyncMarketDataFeedHandler:
+    def __init__(self, symbols: list, api_key: str, event_queue: asyncio.Queue, provider_url: str):
+        self.symbols = symbols # List of symbols like "T.AAPL", "Q.MSFT" for Polygon.io
+        self.api_key = api_key
         self.event_queue = event_queue
-        self.csv_filepath = csv_filepath
-        self.symbol = symbol
-        self.interval_seconds = interval_seconds
-        try:
-            self.historical_data = pd.read_csv(self.csv_filepath, index_col=0, parse_dates=True)
-            logger.info(f"成功從 {csv_filepath} 載入 {len(self.historical_data)} 筆原始數據。")
+        self.provider_url = provider_url # e.g., "wss://socket.polygon.io/stocks"
+        self._connection_tasks = []
+        self._running = False
+        # Max symbols per connection (example, adjust based on provider limits)
+        self.MAX_SYMBOLS_PER_CONNECTION = 500
 
-            # --- 以下是新增的數據清洗步驟 ---
-            # 確保 OHLCV 欄位是數值類型，以防檔案中有文字字元
-            ohlcv_cols = ['Open', 'High', 'Low', 'Close', 'Volume']
-            for col in ohlcv_cols:
-                if col in self.historical_data.columns:
-                    # errors='coerce' 會將無法轉換的文字變成無效值 (NaN)
-                    self.historical_data[col] = pd.to_numeric(self.historical_data[col], errors='coerce')
-            
-            # 移除任何因轉換錯誤產生的、含有 NaN 的數據行
-            self.historical_data.dropna(inplace=True)
-            logger.info(f"數據類型轉換與清洗完畢，剩餘有效數據 {len(self.historical_data)} 筆。")
-            # --- 新增結束 ---
+    async def _handle_connection(self, symbols_for_this_connection):
+        async for websocket in websockets.connect(self.provider_url, ping_interval=20, ping_timeout=20):
+            try:
+                # 1. Authenticate
+                auth_payload = {"action": "auth", "params": self.api_key}
+                await websocket.send(json.dumps(auth_payload))
+                auth_response = await websocket.recv() # Wait for auth confirmation
+                logger.info(f"Auth response for {symbols_for_this_connection[:5]}...: {auth_response}")
+                # TODO: Check if auth_response is successful
 
-        except FileNotFoundError:
-            logger.error(f"找不到歷史數據檔案: {self.csv_filepath}，請先運行回測腳本生成該檔案。")
-            self.historical_data = None
+                # 2. Subscribe to symbols
+                subscribe_payload = {"action": "subscribe", "params": ",".join(symbols_for_this_connection)}
+                await websocket.send(json.dumps(subscribe_payload))
+                logger.info(f"Subscribed to {len(symbols_for_this_connection)} symbols on one connection.")
 
-    def start_feed(self):
-        """開始回放數據，產生市場事件。"""
-        if self.historical_data is None or self.historical_data.empty:
-            logger.error("沒有數據可供回放，數據供給終止。")
-            return
+                # 3. Receive messages
+                while self._running:
+                    message_str = await websocket.recv()
+                    messages = json.loads(message_str) # Polygon sends array of messages
+                    for msg_data in messages:
+                        # TODO: Parse msg_data (trade, quote, bar) based on msg_data.get('ev')
+                        # and transform into your MarketDataEvent structure
+                        # Example for a trade event:
+                        if msg_data.get('ev') == 'T': # Trade event for Polygon
+                            market_event = MarketDataEvent(
+                                symbol=msg_data.get('sym'),
+                                timestamp=pd.to_datetime(msg_data.get('t'), unit='ms'), # 此行現在可以正確執行
+                                # ... populate other fields like price, volume from msg_data
+                                # ohlcv_data = pd.DataFrame(...) or pd.Series(...)
+                            )
+                            await self.event_queue.put(market_event)
 
-        logger.info(f"開始以每 {self.interval_seconds} 秒一筆的速度，回放歷史數據...")
-        
-        all_data_slice = pd.DataFrame()
+            except websockets.exceptions.ConnectionClosed as e:
+                logger.error(f"Connection closed for symbols {symbols_for_this_connection[:5]}...: {e}. Reconnecting...")
+                await asyncio.sleep(5) # Wait before retrying
+                continue # Reconnects due to the outer async for loop
+            except Exception as e:
+                logger.error(f"Error handling connection for {symbols_for_this_connection[:5]}...: {e}", exc_info=True)
+                await asyncio.sleep(15) # Longer wait for unexpected errors
+                # Potentially break or implement more sophisticated error handling/reconnect limits
 
-        for index, row in self.historical_data.iterrows():
-            current_bar_df = pd.DataFrame(row).T
-            all_data_slice = pd.concat([all_data_slice, current_bar_df])
-            
-            event = MarketDataEvent(
-                symbol=self.symbol,
-                ohlcv_data=all_data_slice
-            )
-            
-            self.event_queue.put(event)
-            
-            time.sleep(self.interval_seconds)
-        
-        logger.info("歷史數據回放完畢。")
-        
+    def start(self):
+        if not self._running:
+            self._running = True
+            # Split symbols among multiple connections
+            for i in range(0, len(self.symbols), self.MAX_SYMBOLS_PER_CONNECTION):
+                symbols_chunk = self.symbols[i:i + self.MAX_SYMBOLS_PER_CONNECTION]
+                task = asyncio.create_task(self._handle_connection(symbols_chunk))
+                self._connection_tasks.append(task)
+            logger.info(f"Market Data Feed Handler started with {len(self._connection_tasks)} connection tasks.")
+
+    async def stop(self):
+        self._running = False
+        logger.info("Stopping Market Data Feed Handler...")
+        for task in self._connection_tasks:
+            task.cancel()
+        await asyncio.gather(*self._connection_tasks, return_exceptions=True)
+        logger.info("Market Data Feed Handler stopped.")
