@@ -17,7 +17,6 @@ class Event:
 class MarketDataEvent(Event):
     symbol: str
     timestamp: datetime
-    # ...其他市場數據欄位，例如 price, volume 等
     
     def __init__(self, symbol: str, timestamp: datetime):
         super().__init__(EventType.MARKET)
@@ -38,5 +37,23 @@ class SignalEvent(Event):
     def __init__(self, symbol: str, action: SignalAction, quantity: float):
         super().__init__(EventType.SIGNAL)
         self.symbol = symbol
+        self.action = action
+        self.quantity = quantity
+
+class OrderType(Enum):
+    MARKET = "MKT"
+    LIMIT = "LMT"
+
+@dataclass
+class OrderEvent(Event):
+    symbol: str
+    order_type: OrderType
+    action: SignalAction # BUY or SELL
+    quantity: float
+    
+    def __init__(self, symbol: str, order_type: OrderType, action: SignalAction, quantity: float):
+        super().__init__(EventType.ORDER)
+        self.symbol = symbol
+        self.order_type = order_type
         self.action = action
         self.quantity = quantity
