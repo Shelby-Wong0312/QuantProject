@@ -15,100 +15,78 @@ class MarketDataEvent:
 logger = logging.getLogger(__name__)
 
 class AsyncMarketDataFeedHandler:
-    def __init__(self, symbols: list, api_key: str, event_queue: asyncio.Queue, provider_url: str):
+    # __init__ 方法現在接收 Alpaca 的金鑰
+    def __init__(self, symbols: list, api_key_id: str, secret_key: str, event_queue: asyncio.Queue, provider_url: str):
         self.symbols = symbols
-        self.api_key = api_key
+        self.api_key_id = api_key_id
+        self.secret_key = secret_key
         self.event_queue = event_queue
         self.provider_url = provider_url
-        self._connection_tasks = []
+        self._connection_task = None # Alpaca 建議單一連接
         self._running = False
-        self.MAX_SYMBOLS_PER_CONNECTION = 500
 
-    async def _handle_connection(self, symbols_for_this_connection):
-        # 啟用 websockets 函式庫的詳細偵錯日誌
-        logging.getLogger("websockets").setLevel(logging.DEBUG)
-
-        async for websocket in websockets.connect(self.provider_url, ping_interval=20, ping_timeout=20):
+    async def _handle_connection(self):
+        async for websocket in websockets.connect(self.provider_url):
             try:
-                logger.info(f"Attempting to connect for symbols: {symbols_for_this_connection[:5]}...")
-                
-                # 1. Authenticate
-                auth_payload = {"action": "auth", "params": self.api_key}
-                logger.debug(f"--> SENDING AUTH: {json.dumps(auth_payload)}")
+                # 1. 等待連接成功的 "success" 消息
+                conn_msg = await asyncio.wait_for(websocket.recv(), timeout=10)
+                logger.info(f"Connection status: {conn_msg}")
+
+                # 2. 發送認證請求
+                auth_payload = {
+                    "action": "auth",
+                    "key": self.api_key_id,
+                    "secret": self.secret_key
+                }
                 await websocket.send(json.dumps(auth_payload))
                 
-                auth_response_str = await asyncio.wait_for(websocket.recv(), timeout=10.0)
-                logger.debug(f"<-- RECEIVED AUTH RESP: {auth_response_str}")
+                # 3. 等待認證結果
+                auth_resp = await asyncio.wait_for(websocket.recv(), timeout=10)
+                logger.info(f"Auth response: {auth_resp}")
+                # TODO: 檢查認證是否成功
 
-                try:
-                    auth_data = json.loads(auth_response_str)
-                    if isinstance(auth_data, list) and auth_data[0].get("status") == "auth_success":
-                        logger.info("Authentication successful.")
-                    else:
-                        logger.critical(f"Authentication FAILED. Response: {auth_response_str}. Stopping this connection.")
-                        break 
-                except (json.JSONDecodeError, IndexError, AttributeError) as e:
-                    logger.error(f"Failed to parse auth response: {auth_response_str}. Error: {e}")
-                    continue
-
-                # 2. Subscribe to symbols
-                subscribe_payload = {"action": "subscribe", "params": ",".join(symbols_for_this_connection)}
-                logger.debug(f"--> SENDING SUBSCRIBE: {json.dumps(subscribe_payload)}")
+                # 4. 發送訂閱請求
+                subscribe_payload = {
+                    "action": "subscribe",
+                    "trades": self.symbols,
+                    # "quotes": self.symbols # 也可以訂閱報價
+                }
                 await websocket.send(json.dumps(subscribe_payload))
-                logger.info(f"Subscription sent for {len(symbols_for_this_connection)} symbols.")
+                logger.info(f"Subscription sent for trades: {self.symbols}")
 
-                # 3. Receive messages
+                # 5. 接收數據
                 while self._running:
-                    try:
-                        message_str = await asyncio.wait_for(websocket.recv(), timeout=60.0)
-                        logger.debug(f"<-- RECEIVED DATA: {message_str}")
-                    except asyncio.TimeoutError:
-                        logger.warning("No message received in 60 seconds. Connection might be stale. Pinging...")
-                        # 主動發送 ping 來確認連線狀態
-                        try:
-                            await websocket.ping()
-                        except websockets.exceptions.ConnectionClosed:
-                            logger.error("Connection is closed, will attempt to reconnect.")
-                            break # 跳出內層循環，外層的 async for 會處理重連
-                        continue
-
-                    # (後續的 JSON 解析與事件處理邏輯不變)
+                    message_str = await websocket.recv()
                     messages = json.loads(message_str)
+                    
                     for msg_data in messages:
-                         if msg_data.get('ev') == 'T':
+                        # Alpaca 的交易數據類型為 't'
+                        if msg_data.get('T') == 't':
                             market_event = MarketDataEvent(
-                                symbol=msg_data.get('sym'),
-                                timestamp=pd.to_datetime(msg_data.get('t'), unit='ms')
+                                symbol=msg_data.get('S'),
+                                timestamp=pd.to_datetime(msg_data.get('t')) # Alpaca 的時間戳是 RFC-3339 格式
                             )
                             await self.event_queue.put(market_event)
 
-            except websockets.exceptions.ConnectionClosed as e:
-                if self._running:
-                    logger.error(f"Connection closed: {e}. Reconnecting...")
-                    await asyncio.sleep(5)
-                continue
-            except asyncio.TimeoutError:
-                logger.error("Connection timed out during auth. Retrying...")
-                await asyncio.sleep(5)
             except Exception as e:
+                logger.error(f"Error in Alpaca connection handler: {e}", exc_info=True)
                 if self._running:
-                    logger.error(f"Unexpected error in connection handler: {e}", exc_info=True)
-                    await asyncio.sleep(15)
+                    await asyncio.sleep(5) # 等待後重連
+                continue
 
     def start(self):
         if not self._running:
             self._running = True
-            for i in range(0, len(self.symbols), self.MAX_SYMBOLS_PER_CONNECTION):
-                symbols_chunk = self.symbols[i:i + self.MAX_SYMBOLS_PER_CONNECTION]
-                task = asyncio.create_task(self._handle_connection(symbols_chunk))
-                self._connection_tasks.append(task)
-            logger.info(f"Market Data Feed Handler started with {len(self._connection_tasks)} connection tasks.")
+            # Alpaca 的 IEX 源通常使用單一連接即可
+            self._connection_task = asyncio.create_task(self._handle_connection())
+            logger.info("Alpaca Market Data Feed Handler started.")
 
     async def stop(self):
         self._running = False
-        # (stop 方法的其餘部分不變)
-        logger.info("Stopping Market Data Feed Handler...")
-        for task in self._connection_tasks:
-            task.cancel()
-        await asyncio.gather(*self._connection_tasks, return_exceptions=True)
-        logger.info("Market Data Feed Handler stopped.")
+        if self._connection_task:
+            self._connection_task.cancel()
+            try:
+                await self._connection_task
+            except asyncio.CancelledError:
+                pass
+        logger.info("Alpaca Market Data Feed Handler stopped.")
