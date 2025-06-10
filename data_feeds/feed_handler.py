@@ -26,15 +26,11 @@ class FeedHandler:
         self._secret_key = secret_key
         self._paper = paper
         self._feed = DataFeed.IEX 
-
         self.stream = StockDataStream(
-            api_key=self._api_key,
-            secret_key=self._secret_key,
-            feed=self._feed,
-            url_override=config.ALPACA_DATA_URL,
+            api_key=self._api_key, secret_key=self._secret_key,
+            feed=self._feed, url_override=config.ALPACA_DATA_URL,
             raw_data=False
         )
-        
         self._running = False
         self._connection_attempts = 0
         self._max_connection_attempts = 5
@@ -43,12 +39,9 @@ class FeedHandler:
         try:
             event_timestamp = trade_data.timestamp.astimezone(utils.get_current_timestamp().tzinfo) \
                 if trade_data.timestamp else utils.get_current_timestamp()
-
             event = MarketDataEvent(
-                timestamp=event_timestamp,
-                symbol=trade_data.symbol,
-                data_type="TRADE",
-                price=float(trade_data.price),
+                timestamp=event_timestamp, symbol=trade_data.symbol,
+                data_type="TRADE", price=float(trade_data.price),
                 volume=int(trade_data.size)
             )
             await self.market_data_queue.put(event)
@@ -60,14 +53,10 @@ class FeedHandler:
         try:
             event_timestamp = quote_data.timestamp.astimezone(utils.get_current_timestamp().tzinfo) \
                 if quote_data.timestamp else utils.get_current_timestamp()
-            
             event = MarketDataEvent(
-                timestamp=event_timestamp,
-                symbol=quote_data.symbol,
-                data_type="QUOTE",
-                bid_price=float(quote_data.bid_price),
-                ask_price=float(quote_data.ask_price),
-                bid_size=int(quote_data.bid_size),
+                timestamp=event_timestamp, symbol=quote_data.symbol,
+                data_type="QUOTE", bid_price=float(quote_data.bid_price),
+                ask_price=float(quote_data.ask_price), bid_size=int(quote_data.bid_size),
                 ask_size=int(quote_data.ask_size)
             )
             await self.market_data_queue.put(event)
@@ -89,12 +78,16 @@ class FeedHandler:
     async def run(self, shutdown_event: asyncio.Event):
         self._running = True
         logger.info("FeedHandler starting...")
+        loop = asyncio.get_running_loop()
         while self._running and not shutdown_event.is_set():
             try:
                 await self._connect_and_subscribe()
-                await self.stream.run()
+                # 使用 run_in_executor 在背景執行緒中運行阻塞的 run() 函式
+                await loop.run_in_executor(None, self.stream.run)
+                
                 if shutdown_event.is_set():
                     break
+                
                 logger.warning("FeedHandler: Stream run method exited unexpectedly. Reconnecting...")
             except Exception as e:
                 logger.error(f"FeedHandler: An error occurred: {e}", exc_info=True)
@@ -119,10 +112,9 @@ class FeedHandler:
         self._running = False
         logger.info("FeedHandler: Stopping stream...")
         try:
-            if self.stream:
-                self.stream.unsubscribe_trades(*self.symbols)
-                self.stream.unsubscribe_quotes(*self.symbols)
-                await self.stream.close()
-                logger.info("FeedHandler: Alpaca market data stream closed.")
+            # stop() 方法本身不是異步的，但關閉 stream 是異步的
+            self.stream.stop()
+            await self.stream.close()
+            logger.info("FeedHandler: Alpaca market data stream closed.")
         except Exception as e:
             logger.error(f"FeedHandler: Error during stream stop: {e}", exc_info=True)
