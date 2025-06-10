@@ -7,104 +7,63 @@ from typing import Optional, Dict, Any
 @dataclass
 class MarketDataEvent:
     """
-    代表市場數據更新事件(成交、報價、K線)。
-    """
-    # --- Fields without default values FIRST ---
-    timestamp: datetime
-    symbol: str
-    data_type: str  # "TRADE", "QUOTE", "BAR"
+    市場數據事件，封裝從數據供給器傳來的市場行情更新。
     
-    # --- Fields with default values AFTER ---
-    event_type: str = "MARKET_DATA"
-    price: Optional[float] = None
-    volume: Optional[int] = None
-    bid_price: Optional[float] = None
-    ask_price: Optional[float] = None
-    bid_size: Optional[int] = None
-    ask_size: Optional[int] = None
-    open_price: Optional[float] = None
-    high_price: Optional[float] = None
-    low_price: Optional[float] = None
-    close_price: Optional[float] = None
-    bar_volume: Optional[int] = None
-    metadata: Optional[Dict[str, Any]] = field(default_factory=dict)
+    """
+    symbol: str
+    timestamp: datetime
+    event_type: str  # e.g., "AGG_MINUTE" for minute aggregate data 
+    data: Dict[str, Any]  # The actual market data dictionary, e.g., OHLCV 
 
 @dataclass
 class SignalEvent:
     """
-    代表策略產生的交易信號。
+    信號事件，封裝由策略產生的交易信號。 
     """
     # --- Fields without default values FIRST ---
-    timestamp: datetime
     symbol: str
+    timestamp: datetime
     strategy_id: str
-    direction: str  # "BUY", "SELL", "EXIT_LONG", "EXIT_SHORT"
+    signal_type: str  # e.g., "LONG", "SHORT", "EXIT_LONG" 
     
     # --- Fields with default values AFTER ---
-    event_type: str = "SIGNAL"
-    strength: float = 1.0
-    order_type: str = "MARKET"
-    limit_price: Optional[float] = None
-    target_quantity: Optional[int] = None
-    duration_sec: Optional[int] = None
-    metadata: Optional[Dict[str, Any]] = field(default_factory=dict)
+    strength: float = 1.0  # Optional signal strength (e.g., for position sizing) 
+    details: Optional[Dict[str, Any]] = field(default_factory=dict) # Optional details like target price 
 
 @dataclass
 class OrderEvent:
     """
-    代表經過風險管理器批准後，準備提交給券商的訂單。
+    訂單事件，封裝了經過風險審核後，準備提交給券商的訂單指令。 
     """
     # --- Fields without default values FIRST ---
-    timestamp: datetime
     symbol: str
-    order_type: str
-    direction: str
-    quantity: int
-    client_order_id: str
-    strategy_id: str
-    
+    timestamp: datetime
+    order_type: str  # e.g., "MARKET", "LIMIT" 
+    side: str  # "BUY" or "SELL" 
+    quantity: float
+
     # --- Fields with default values AFTER ---
-    event_type: str = "ORDER"
-    limit_price: Optional[float] = None
-    notes: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = field(default_factory=dict)
+    limit_price: Optional[float] = None # Required for LIMIT orders 
+    stop_price: Optional[float] = None # Required for STOP orders 
+    time_in_force: str = 'day' # e.g., "day", "gtc", "ioc" 
+    client_order_id: Optional[str] = None # Optional client-side ID for tracking 
+    strategy_id: Optional[str] = None # The strategy ID that generated this order 
 
 @dataclass
 class FillEvent:
     """
-    代表訂單的成交回報或狀態更新(如拒絕、取消)。
+    成交事件，封裝了從券商處收到的關於訂單執行的成交回報。 
     """
     # --- Fields without default values FIRST ---
-    timestamp: datetime
     symbol: str
-    client_order_id: str
-    broker_order_id: str
-    fill_id: str
-    status: str
-    direction: str
-    
-    # --- Fields with default values AFTER ---
-    event_type: str = "FILL"
-    fill_price: Optional[float] = None
-    fill_quantity: Optional[int] = None
-    cumulative_filled_quantity: int = 0
-    average_fill_price: Optional[float] = None
-    commission: float = 0.0
-    exchange: Optional[str] = None
-    remaining_quantity: int = 0
-    message: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = field(default_factory=dict)
-
-@dataclass
-class SystemControlEvent:
-    """
-    用於系統內部組件間的控制指令，如關閉指令。
-    """
-    # --- Fields without default values FIRST ---
     timestamp: datetime
-    command: str
-    
+    exchange: str
+    quantity: float
+    fill_price: float
+    commission: float
+    order_id: str # The broker's ID for the order 
+    direction: str # "BUY" or "SELL" 
+
     # --- Fields with default values AFTER ---
-    event_type: str = "SYSTEM_CONTROL"
-    target_component: Optional[str] = None
-    payload: Optional[Dict[str, Any]] = field(default_factory=dict)
+    client_order_id: Optional[str] = None # Our internal client-side ID, if available 
+    strategy_id: Optional[str] = None # The strategy ID related to this fill
