@@ -1,92 +1,144 @@
 # data_feeds/feed_handler.py
-import asyncio
-import websockets
-import json
-import logging
-import pandas as pd
-from dataclasses import dataclass
-from datetime import datetime
 
-@dataclass
-class MarketDataEvent:
-    symbol: str
-    timestamp: datetime
+import asyncio
+import logging
+from typing import List
+
+from alpaca.data.live.stock import StockDataStream, DataFeed
+from alpaca.data.models import Trade, Quote
+
+from core.event_types import MarketDataEvent
+from core import config
+from core.utils import get_current_timestamp
 
 logger = logging.getLogger(__name__)
 
-class AsyncMarketDataFeedHandler:
-    # __init__ 方法現在接收 Alpaca 的金鑰
-    def __init__(self, symbols: list, api_key_id: str, secret_key: str, event_queue: asyncio.Queue, provider_url: str):
+class FeedHandler:
+    """
+    負責處理來自 Alpaca 的即時市場數據流，並將其轉換為 MarketDataEvent。
+    """
+    def __init__(self,
+                 market_data_queue: asyncio.Queue,
+                 symbols: List[str],
+                 api_key: str = config.ALPACA_API_KEY_ID,
+                 secret_key: str = config.ALPACA_SECRET_KEY,
+                 paper: bool = config.ALPACA_PAPER_TRADING):
+        self.market_data_queue = market_data_queue
         self.symbols = symbols
-        self.api_key_id = api_key_id
-        self.secret_key = secret_key
-        self.event_queue = event_queue
-        self.provider_url = provider_url
-        self._connection_task = None # Alpaca 建議單一連接
+        self._api_key = api_key
+        self._secret_key = secret_key
+        self._paper = paper
+        self._feed = DataFeed.IEX # 使用免費的 IEX 數據源
+
+        self.stream = StockDataStream(
+            api_key=self._api_key,
+            secret_key=self._secret_key,
+            feed=self._feed,
+            url_override=config.ALPACA_DATA_URL,
+            raw_data=False # 讓 SDK 將數據處理成 Pydantic 模型
+        )
+        
         self._running = False
+        self._connection_attempts = 0
+        self._max_connection_attempts = 5 # Example
 
-    async def _handle_connection(self):
-        async for websocket in websockets.connect(self.provider_url):
+    async def _on_trade(self, trade_data: Trade):
+        try:
+            event_timestamp = trade_data.timestamp.astimezone(get_current_timestamp().tzinfo) \
+                if trade_data.timestamp else get_current_timestamp()
+
+            event = MarketDataEvent(
+                timestamp=event_timestamp,
+                symbol=trade_data.symbol,
+                data_type="TRADE",
+                price=float(trade_data.price),
+                volume=int(trade_data.size)
+            )
+            await self.market_data_queue.put(event)
+            logger.debug(f"TRADE Event: {event}")
+        except Exception as e:
+            logger.error(f"Error processing trade data: {trade_data}. Error: {e}", exc_info=True)
+
+    async def _on_quote(self, quote_data: Quote):
+        try:
+            event_timestamp = quote_data.timestamp.astimezone(get_current_timestamp().tzinfo) \
+                if quote_data.timestamp else get_current_timestamp()
+            
+            event = MarketDataEvent(
+                timestamp=event_timestamp,
+                symbol=quote_data.symbol,
+                data_type="QUOTE",
+                bid_price=float(quote_data.bid_price),
+                ask_price=float(quote_data.ask_price),
+                bid_size=int(quote_data.bid_size),
+                ask_size=int(quote_data.ask_size)
+            )
+            await self.market_data_queue.put(event)
+            logger.debug(f"QUOTE Event: {event}")
+        except Exception as e:
+            logger.error(f"Error processing quote data: {quote_data}. Error: {e}", exc_info=True)
+
+    async def _connect_and_subscribe(self):
+        logger.info("FeedHandler: Attempting to connect to Alpaca market data stream...")
+        try:
+            # 訂閱交易和報價數據
+            self.stream.subscribe_trades(self._on_trade, *self.symbols)
+            self.stream.subscribe_quotes(self._on_quote, *self.symbols)
+            logger.info(f"FeedHandler: Subscribed to trades and quotes for symbols: {self.symbols}")
+            self._connection_attempts = 0 # 連接成功後重置嘗試次數
+        except Exception as e:
+            logger.error(f"FeedHandler: Error during subscription: {e}", exc_info=True)
+            raise # 重新拋出異常，由 run 迴圈處理
+
+    async def run(self, shutdown_event: asyncio.Event):
+        self._running = True
+        logger.info("FeedHandler starting...")
+
+        while self._running and not shutdown_event.is_set():
             try:
-                # 1. 等待連接成功的 "success" 消息
-                conn_msg = await asyncio.wait_for(websocket.recv(), timeout=10)
-                logger.info(f"Connection status: {conn_msg}")
-
-                # 2. 發送認證請求
-                auth_payload = {
-                    "action": "auth",
-                    "key": self.api_key_id,
-                    "secret": self.secret_key
-                }
-                await websocket.send(json.dumps(auth_payload))
+                # 建立連接並運行 stream 的主事件迴圈
+                # stream.run() 是一個阻塞調用，它會處理 WebSocket 連接和消息
+                await self._connect_and_subscribe()
+                await self.stream.run() # 此處會持續運行直到連接中斷
                 
-                # 3. 等待認證結果
-                auth_resp = await asyncio.wait_for(websocket.recv(), timeout=10)
-                logger.info(f"Auth response: {auth_resp}")
-                # TODO: 檢查認證是否成功
-
-                # 4. 發送訂閱請求
-                subscribe_payload = {
-                    "action": "subscribe",
-                    "trades": self.symbols,
-                    # "quotes": self.symbols # 也可以訂閱報價
-                }
-                await websocket.send(json.dumps(subscribe_payload))
-                logger.info(f"Subscription sent for trades: {self.symbols}")
-
-                # 5. 接收數據
-                while self._running:
-                    message_str = await websocket.recv()
-                    messages = json.loads(message_str)
-                    
-                    for msg_data in messages:
-                        # Alpaca 的交易數據類型為 't'
-                        if msg_data.get('T') == 't':
-                            market_event = MarketDataEvent(
-                                symbol=msg_data.get('S'),
-                                timestamp=pd.to_datetime(msg_data.get('t')) # Alpaca 的時間戳是 RFC-3339 格式
-                            )
-                            await self.event_queue.put(market_event)
+                # 如果 run() 正常退出 (例如手動停止)，檢查是否需要關閉
+                if shutdown_event.is_set():
+                    break
+                
+                logger.warning("FeedHandler: Stream run method exited unexpectedly. Reconnecting...")
 
             except Exception as e:
-                logger.error(f"Error in Alpaca connection handler: {e}", exc_info=True)
-                if self._running:
-                    await asyncio.sleep(5) # 等待後重連
-                continue
+                logger.error(f"FeedHandler: An error occurred: {e}", exc_info=True)
 
-    def start(self):
-        if not self._running:
-            self._running = True
-            # Alpaca 的 IEX 源通常使用單一連接即可
-            self._connection_task = asyncio.create_task(self._handle_connection())
-            logger.info("Alpaca Market Data Feed Handler started.")
+            if shutdown_event.is_set():
+                break
+
+            self._connection_attempts += 1
+            if self._connection_attempts >= self._max_connection_attempts:
+                logger.critical("FeedHandler: Max connection attempts reached. Stopping.")
+                break
+
+            # 指數退避重試
+            wait_time = min(2 ** self._connection_attempts, 60)
+            logger.info(f"FeedHandler: Retrying connection in {wait_time} seconds...")
+            try:
+                await asyncio.wait_for(shutdown_event.wait(), timeout=wait_time)
+                if shutdown_event.is_set():
+                    break
+            except asyncio.TimeoutError:
+                pass # 正常等待，繼續重試
+
+        await self.stop()
+        logger.info("FeedHandler stopped.")
 
     async def stop(self):
         self._running = False
-        if self._connection_task:
-            self._connection_task.cancel()
-            try:
-                await self._connection_task
-            except asyncio.CancelledError:
-                pass
-        logger.info("Alpaca Market Data Feed Handler stopped.")
+        logger.info("FeedHandler: Stopping stream...")
+        try:
+            if self.stream:
+                self.stream.unsubscribe_trades(*self.symbols)
+                self.stream.unsubscribe_quotes(*self.symbols)
+                await self.stream.close()
+                logger.info("FeedHandler: Alpaca market data stream closed.")
+        except Exception as e:
+            logger.error(f"FeedHandler: Error during stream stop: {e}", exc_info=True)
