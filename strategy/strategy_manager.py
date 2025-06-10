@@ -7,12 +7,11 @@ from typing import List, Dict, Any, Type
 
 from core.event_types import MarketDataEvent, SignalEvent
 from core import config
-from core import utils # <--- 修正引用方式
+from core import utils
 
 logger = logging.getLogger(__name__)
 
 class BaseStrategy:
-    # ... (類別內部程式碼不變，僅修正引用後的函式調用) ...
     def __init__(self, strategy_id: str, symbols: List[str], params: Dict[str, Any], signal_queue: asyncio.Queue):
         self.strategy_id = strategy_id
         self.symbols = symbols
@@ -28,7 +27,6 @@ class BaseStrategy:
                               order_type: str = "MARKET", limit_price: float = None,
                               target_quantity: int = None):
         signal = SignalEvent(
-            # 使用 utils.get_current_timestamp()
             timestamp=utils.get_current_timestamp(),
             symbol=symbol,
             strategy_id=self.strategy_id,
@@ -40,7 +38,7 @@ class BaseStrategy:
         )
         await self.signal_queue.put(signal)
         logger.info(f"Strategy {self.strategy_id} generated signal: {signal}")
-# ... (MovingAverageCrossoverStrategy 和 StrategyManager 的其餘部分不變) ...
+
 class MovingAverageCrossoverStrategy(BaseStrategy):
     def __init__(self, strategy_id: str, symbols: List[str], params: Dict[str, Any], signal_queue: asyncio.Queue):
         super().__init__(strategy_id, symbols, params, signal_queue)

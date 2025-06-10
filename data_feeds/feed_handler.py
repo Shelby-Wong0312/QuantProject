@@ -9,12 +9,11 @@ from alpaca.data.models import Trade, Quote
 
 from core.event_types import MarketDataEvent
 from core import config
-from core import utils # <--- 修正引用方式
+from core import utils
 
 logger = logging.getLogger(__name__)
 
 class FeedHandler:
-    # ... (類別內部程式碼不變，僅修正引用後的函式調用) ...
     def __init__(self,
                  market_data_queue: asyncio.Queue,
                  symbols: List[str],
@@ -42,7 +41,6 @@ class FeedHandler:
 
     async def _on_trade(self, trade_data: Trade):
         try:
-            # 使用 utils.get_current_timestamp()
             event_timestamp = trade_data.timestamp.astimezone(utils.get_current_timestamp().tzinfo) \
                 if trade_data.timestamp else utils.get_current_timestamp()
 
@@ -60,7 +58,6 @@ class FeedHandler:
 
     async def _on_quote(self, quote_data: Quote):
         try:
-            # 使用 utils.get_current_timestamp()
             event_timestamp = quote_data.timestamp.astimezone(utils.get_current_timestamp().tzinfo) \
                 if quote_data.timestamp else utils.get_current_timestamp()
             
@@ -77,7 +74,7 @@ class FeedHandler:
             logger.debug(f"QUOTE Event: {event}")
         except Exception as e:
             logger.error(f"Error processing quote data: {quote_data}. Error: {e}", exc_info=True)
-    # ... (run, stop, _connect_and_subscribe 方法不變) ...
+
     async def _connect_and_subscribe(self):
         logger.info("FeedHandler: Attempting to connect to Alpaca market data stream...")
         try:

@@ -10,12 +10,11 @@ from alpaca.trading.models import TradeUpdate
 
 from core.event_types import OrderEvent, FillEvent
 from core import config
-from core import utils # <--- 修正引用方式
+from core import utils
 
 logger = logging.getLogger(__name__)
 
 class ExecutionHandler:
-    # ... (類別內部程式碼不變，僅修正引用後的函式調用) ...
     def __init__(self,
                  order_queue: asyncio.Queue,
                  fill_queue: asyncio.Queue,
@@ -46,7 +45,6 @@ class ExecutionHandler:
             if not client_order_id:
                 logger.error(f"TradeUpdate missing client_order_id: {trade_update_data}")
                 return
-            # 使用 utils.get_current_timestamp()
             fill_event = FillEvent(
                 timestamp=order_data.updated_at or utils.get_current_timestamp(),
                 symbol=order_data.symbol,
@@ -95,7 +93,6 @@ class ExecutionHandler:
                 raise ValueError(f"Unsupported order type: {order_event.order_type}")
         except Exception as e:
             logger.error(f"Error submitting order {order_event.client_order_id} for {order_event.symbol}: {e}", exc_info=True)
-            # 使用 utils.get_current_timestamp()
             rejected_fill = FillEvent(
                 timestamp=utils.get_current_timestamp(),
                 symbol=order_event.symbol,

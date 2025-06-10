@@ -6,12 +6,11 @@ from typing import Optional, Dict
 
 from core.event_types import SignalEvent, OrderEvent, FillEvent
 from core import config
-from core import utils # <--- 修正引用方式
+from core import utils
 
 logger = logging.getLogger(__name__)
 
 class RiskManager:
-    # ... (類別內部程式碼不變，僅修正引用後的函式調用) ...
     def __init__(self,
                  signal_queue: asyncio.Queue,
                  order_queue: asyncio.Queue,
@@ -43,7 +42,7 @@ class RiskManager:
                 logger.warning(f"Risk Check FAILED for signal {signal.strategy_id} on {signal.symbol}: "
                                f"Order value {order_value:.2f} > max_pos_value_per_order {self.max_pos_value}. Rejecting.")
                 return None
-        # 使用 utils.generate_client_order_id() 和 utils.get_current_timestamp()
+        
         client_order_id = utils.generate_client_order_id()
         order_event = OrderEvent(
             timestamp=utils.get_current_timestamp(),
