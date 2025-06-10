@@ -17,10 +17,10 @@ ALPACA_API_BASE_URL: str = (
     else "https://api.alpaca.markets"
 )
 
-# vvvvvv 修正此處的 URL vvvvvv
+# vvvvvv 修正此處的 URL，加上 /v2/iex 路徑 vvvvvv
 ALPACA_DATA_URL: str = (
-    "wss://stream.data.sandbox.alpaca.markets" if ALPACA_PAPER_TRADING
-    else "wss://stream.data.alpaca.markets"
+    "wss://stream.data.sandbox.alpaca.markets/v2/iex" if ALPACA_PAPER_TRADING
+    else "wss://stream.data.alpaca.markets/v2/iex"
 )
 # ^^^^^^ 修正此處的 URL ^^^^^^
 
@@ -28,14 +28,12 @@ ALPACA_DATA_URL: str = (
 LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO").upper()
 
 # System Configuration
-# 範例股票池，可從外部檔案載入或擴展。
-# 若要涵蓋全市場，可使用 ["*"] (需 API 支援)
 SYMBOLS_TO_TRADE: List[str] = ["AAPL", "MSFT", "GOOG"]
 
 # Risk Management Configuration (Example)
 MAX_ORDER_QUANTITY_PER_TRADE: int = 100
 MAX_POSITION_VALUE_PER_SYMBOL: float = 10000.00
-INITIAL_CAPITAL_EXAMPLE: float = 100000.00 # 用於 PortfolioManager 的初始資金範例
+INITIAL_CAPITAL_EXAMPLE: float = 100000.00
 
 # Strategy Configuration (Example - can be a more complex structure or separate file)
 STRATEGIES_CONFIG: List[Dict[str, Any]] = [
