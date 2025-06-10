@@ -9,14 +9,12 @@ from alpaca.data.models import Trade, Quote
 
 from core.event_types import MarketDataEvent
 from core import config
-from core.utils import get_current_timestamp
+from core import utils # <--- 修正引用方式
 
 logger = logging.getLogger(__name__)
 
 class FeedHandler:
-    """
-    負責處理來自 Alpaca 的即時市場數據流，並將其轉換為 MarketDataEvent。
-    """
+    # ... (類別內部程式碼不變，僅修正引用後的函式調用) ...
     def __init__(self,
                  market_data_queue: asyncio.Queue,
                  symbols: List[str],
@@ -28,24 +26,25 @@ class FeedHandler:
         self._api_key = api_key
         self._secret_key = secret_key
         self._paper = paper
-        self._feed = DataFeed.IEX # 使用免費的 IEX 數據源
+        self._feed = DataFeed.IEX 
 
         self.stream = StockDataStream(
             api_key=self._api_key,
             secret_key=self._secret_key,
             feed=self._feed,
             url_override=config.ALPACA_DATA_URL,
-            raw_data=False # 讓 SDK 將數據處理成 Pydantic 模型
+            raw_data=False
         )
         
         self._running = False
         self._connection_attempts = 0
-        self._max_connection_attempts = 5 # Example
+        self._max_connection_attempts = 5
 
     async def _on_trade(self, trade_data: Trade):
         try:
-            event_timestamp = trade_data.timestamp.astimezone(get_current_timestamp().tzinfo) \
-                if trade_data.timestamp else get_current_timestamp()
+            # 使用 utils.get_current_timestamp()
+            event_timestamp = trade_data.timestamp.astimezone(utils.get_current_timestamp().tzinfo) \
+                if trade_data.timestamp else utils.get_current_timestamp()
 
             event = MarketDataEvent(
                 timestamp=event_timestamp,
@@ -61,8 +60,9 @@ class FeedHandler:
 
     async def _on_quote(self, quote_data: Quote):
         try:
-            event_timestamp = quote_data.timestamp.astimezone(get_current_timestamp().tzinfo) \
-                if quote_data.timestamp else get_current_timestamp()
+            # 使用 utils.get_current_timestamp()
+            event_timestamp = quote_data.timestamp.astimezone(utils.get_current_timestamp().tzinfo) \
+                if quote_data.timestamp else utils.get_current_timestamp()
             
             event = MarketDataEvent(
                 timestamp=event_timestamp,
@@ -77,48 +77,36 @@ class FeedHandler:
             logger.debug(f"QUOTE Event: {event}")
         except Exception as e:
             logger.error(f"Error processing quote data: {quote_data}. Error: {e}", exc_info=True)
-
+    # ... (run, stop, _connect_and_subscribe 方法不變) ...
     async def _connect_and_subscribe(self):
         logger.info("FeedHandler: Attempting to connect to Alpaca market data stream...")
         try:
-            # 訂閱交易和報價數據
             self.stream.subscribe_trades(self._on_trade, *self.symbols)
             self.stream.subscribe_quotes(self._on_quote, *self.symbols)
             logger.info(f"FeedHandler: Subscribed to trades and quotes for symbols: {self.symbols}")
-            self._connection_attempts = 0 # 連接成功後重置嘗試次數
+            self._connection_attempts = 0
         except Exception as e:
             logger.error(f"FeedHandler: Error during subscription: {e}", exc_info=True)
-            raise # 重新拋出異常，由 run 迴圈處理
+            raise
 
     async def run(self, shutdown_event: asyncio.Event):
         self._running = True
         logger.info("FeedHandler starting...")
-
         while self._running and not shutdown_event.is_set():
             try:
-                # 建立連接並運行 stream 的主事件迴圈
-                # stream.run() 是一個阻塞調用，它會處理 WebSocket 連接和消息
                 await self._connect_and_subscribe()
-                await self.stream.run() # 此處會持續運行直到連接中斷
-                
-                # 如果 run() 正常退出 (例如手動停止)，檢查是否需要關閉
+                await self.stream.run()
                 if shutdown_event.is_set():
                     break
-                
                 logger.warning("FeedHandler: Stream run method exited unexpectedly. Reconnecting...")
-
             except Exception as e:
                 logger.error(f"FeedHandler: An error occurred: {e}", exc_info=True)
-
             if shutdown_event.is_set():
                 break
-
             self._connection_attempts += 1
             if self._connection_attempts >= self._max_connection_attempts:
                 logger.critical("FeedHandler: Max connection attempts reached. Stopping.")
                 break
-
-            # 指數退避重試
             wait_time = min(2 ** self._connection_attempts, 60)
             logger.info(f"FeedHandler: Retrying connection in {wait_time} seconds...")
             try:
@@ -126,8 +114,7 @@ class FeedHandler:
                 if shutdown_event.is_set():
                     break
             except asyncio.TimeoutError:
-                pass # 正常等待，繼續重試
-
+                pass
         await self.stop()
         logger.info("FeedHandler stopped.")
 
