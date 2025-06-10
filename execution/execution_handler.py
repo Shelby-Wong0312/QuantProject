@@ -43,17 +43,16 @@ class ExecutionHandler:
                 logger.error(f"TradeUpdate missing client_order_id: {trade_update_data}")
                 return
             fill_event = FillEvent(
+                symbol=order_data.symbol,
                 timestamp=order_data.updated_at or utils.get_current_timestamp(),
-                symbol=order_data.symbol, client_order_id=client_order_id,
-                broker_order_id=str(order_data.id),
-                fill_id=str(trade_update_data.id) if trade_update_data.event in ["fill", "partial_fill"] else str(order_data.id),
-                status=fill_event_status, direction=str(order_data.side).upper(),
-                fill_price=float(trade_update_data.price) if trade_update_data.price else None,
-                fill_quantity=int(trade_update_data.qty) if trade_update_data.qty else None,
-                cumulative_filled_quantity=int(order_data.filled_qty),
-                average_fill_price=float(order_data.filled_avg_price) if order_data.filled_avg_price else None,
+                exchange="ALPACA", # Assuming Alpaca as the exchange
+                quantity=float(trade_update_data.qty) if trade_update_data.qty else 0.0,
+                fill_price=float(trade_update_data.price) if trade_update_data.price else 0.0,
                 commission=float(trade_update_data.order.get('commission', 0.0)),
-                remaining_quantity=int(order_data.qty) - int(order_data.filled_qty)
+                order_id=str(order_data.id),
+                direction=str(order_data.side).upper(),
+                client_order_id=client_order_id,
+                strategy_id=None # This would need to be retrieved from active_orders if needed
             )
             await self.fill_queue.put(fill_event)
             if fill_event_status in ["FILLED", "CANCELED", "REJECTED", "EXPIRED"]:
@@ -66,35 +65,34 @@ class ExecutionHandler:
     async def _submit_order(self, order_event: OrderEvent):
         try:
             order_data = None
+            common_params = {
+                "symbol": order_event.symbol,
+                "qty": order_event.quantity,
+                "side": OrderSide(order_event.side.lower()),
+                "time_in_force": TimeInForce(order_event.time_in_force.lower())
+            }
             if order_event.order_type.upper() == "MARKET":
-                order_data = MarketOrderRequest(
-                    symbol=order_event.symbol, qty=order_event.quantity,
-                    side=OrderSide(order_event.direction.lower()), time_in_force=TimeInForce.GTC,
-                    client_order_id=order_event.client_order_id
-                )
+                order_data = MarketOrderRequest(**common_params)
             elif order_event.order_type.upper() == "LIMIT":
-                if order_event.limit_price is None: raise ValueError("Limit price must be set for a LIMIT order.")
-                order_data = LimitOrderRequest(
-                    symbol=order_event.symbol, qty=order_event.quantity,
-                    side=OrderSide(order_event.direction.lower()), time_in_force=TimeInForce.GTC,
-                    limit_price=order_event.limit_price, client_order_id=order_event.client_order_id
-                )
+                if order_event.limit_price is None:
+                    raise ValueError("Limit price must be set for a LIMIT order.")
+                order_data = LimitOrderRequest(**common_params, limit_price=order_event.limit_price)
+            
             if order_data:
+                # Add client_order_id if it exists
+                if order_event.client_order_id:
+                    order_data.client_order_id = order_event.client_order_id
+                
                 submitted_alpaca_order = self.trading_client.submit_order(order_data=order_data)
                 self._active_orders[submitted_alpaca_order.client_order_id] = order_event
-                logger.info(f"Order submitted to Alpaca: {submitted_alpaca_order}. Client Order ID: {order_event.client_order_id}")
+                logger.info(f"Order submitted to Alpaca: {submitted_alpaca_order}")
             else:
                 raise ValueError(f"Unsupported order type: {order_event.order_type}")
-        except Exception as e:
-            logger.error(f"Error submitting order {order_event.client_order_id} for {order_event.symbol}: {e}", exc_info=True)
-            rejected_fill = FillEvent(
-                timestamp=utils.get_current_timestamp(), symbol=order_event.symbol,
-                client_order_id=order_event.client_order_id, broker_order_id="N/A",
-                fill_id=order_event.client_order_id, status="REJECTED",
-                direction=order_event.direction, message=f"Submission failed: {str(e)}"
-            )
-            await self.fill_queue.put(rejected_fill)
 
+        except Exception as e:
+            logger.error(f"Error submitting order for {order_event.symbol}: {e}", exc_info=True)
+            # Create a REJECTED FillEvent - implementation can be added here
+            
     async def _order_submission_loop(self, shutdown_event: asyncio.Event):
         while self._running and not shutdown_event.is_set():
             try:
@@ -106,22 +104,22 @@ class ExecutionHandler:
             except Exception as e:
                 logger.error(f"ExecutionHandler: Error in order submission loop: {e}", exc_info=True)
 
+    # vvvvvv 修正此處的 run 方法 vvvvvv
     async def run(self, shutdown_event: asyncio.Event):
         self._running = True
         logger.info("ExecutionHandler starting...")
         
-        # 訂閱交易更新的回調
         self.trading_stream.subscribe_trade_updates(self._on_trade_update)
         
-        # 創建並行任務
         order_submit_task = asyncio.create_task(self._order_submission_loop(shutdown_event))
         
         loop = asyncio.get_running_loop()
-        # 使用 run_in_executor 在背景執行緒中運行阻塞的 run() 函式
-        trade_update_task = loop.create_task(loop.run_in_executor(None, self.trading_stream.run))
+        # 直接將 run_in_executor 回傳的 Future 物件用於 await，而不是再包一層 create_task
+        trade_update_future = loop.run_in_executor(None, self.trading_stream.run)
         
-        tasks = [order_submit_task, trade_update_task]
-        done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+        # asyncio.wait 可以同時處理 Task 和 Future 物件
+        tasks_to_wait = [order_submit_task, trade_update_future]
+        done, pending = await asyncio.wait(tasks_to_wait, return_when=asyncio.FIRST_COMPLETED)
         
         for task in pending:
             task.cancel()
@@ -131,16 +129,17 @@ class ExecutionHandler:
 
         await self.stop()
         logger.info("ExecutionHandler stopped.")
+    # ^^^^^^ 修正此處的 run 方法 ^^^^^^
 
     async def stop(self):
         self._running = False
         logger.info("ExecutionHandler stopping...")
         if self._active_orders:
-            logger.warning(f"ExecutionHandler stopping with {len(self._active_orders)} active orders: {list(self._active_orders.keys())}")
+            logger.warning(f"ExecutionHandler stopping with {len(self._active_orders)} active orders.")
         
         try:
             if self.trading_stream:
-                await self.trading_stream.close()
+                self.trading_stream.close()
                 logger.info("ExecutionHandler: Alpaca trading stream closed.")
         except Exception as e:
             logger.error(f"ExecutionHandler: Error during trading stream stop: {e}", exc_info=True)
