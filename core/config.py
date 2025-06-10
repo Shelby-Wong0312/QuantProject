@@ -16,10 +16,13 @@ ALPACA_API_BASE_URL: str = (
     "https://paper-api.alpaca.markets" if ALPACA_PAPER_TRADING 
     else "https://api.alpaca.markets"
 )
+
+# vvvvvv 修正此處的 URL vvvvvv
 ALPACA_DATA_URL: str = (
-    "https://stream.data.sandbox.alpaca.markets" if ALPACA_PAPER_TRADING
-    else "https://stream.data.alpaca.markets"
+    "wss://stream.data.sandbox.alpaca.markets" if ALPACA_PAPER_TRADING
+    else "wss://stream.data.alpaca.markets"
 )
+# ^^^^^^ 修正此處的 URL ^^^^^^
 
 # Logging Configuration
 LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO").upper()
