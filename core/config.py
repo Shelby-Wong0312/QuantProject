@@ -5,26 +5,19 @@ import logging
 from dotenv import load_dotenv
 from typing import Optional, List, Dict, Any
 
-# 為了讓輔助函式能使用 logger，我們將 logger 的初始化提前
 logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO").upper())
 logger = logging.getLogger(__name__)
 
-# --- 輔助函式：從檔案讀取股票列表 ---
 def _load_symbols_from_file(filepath: str) -> List[str]:
-    """從一個文字檔案讀取股票列表，每行一個。"""
     try:
         with open(filepath, 'r') as f:
-            # 讀取每一行，去除空白，並過濾掉空行
             symbols = [line.strip().upper() for line in f if line.strip()]
         logger.info(f"Loaded {len(symbols)} symbols from {filepath}")
         return symbols
     except FileNotFoundError:
         logger.warning(f"Ticker file not found at '{filepath}'. Using default example symbols.")
-        # 如果檔案不存在，則返回一個小的預設列表以供測試
         return ["AAPL", "MSFT", "GOOG"]
-# ------------------------------------
 
-# 從 .env 檔案載入環境變數
 load_dotenv()
 
 # Alpaca API Credentials and Configuration
@@ -39,10 +32,9 @@ ALPACA_DATA_URL: str = ("wss://stream.data.sandbox.alpaca.markets/v2/iex" if ALP
 LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO").upper()
 
 # --- 從檔案動態載入股票列表 ---
-TICKERS_FILE_PATH = "tickers.txt" # 假設檔案在專案根目錄
+TICKERS_FILE_PATH = "tickers.txt"
 SYMBOLS_TO_TRADE: List[str] = _load_symbols_from_file(TICKERS_FILE_PATH)
-# --- 從檔案動態載入股票列表 ---
-
+# --------------------------------
 
 # Risk Management Configuration (Example)
 MAX_ORDER_QUANTITY_PER_TRADE: int = 100
@@ -54,8 +46,10 @@ STRATEGIES_CONFIG: List[Dict[str, Any]] = [
     {
         "id": "SMA_Crossover_All_Stocks",
         "class_name": "MovingAverageCrossoverStrategy",
-        "symbols": SYMBOLS_TO_TRADE, # 將讀取到的所有股票應用於此策略
-        "params": {"short_window": 10, "long_window": 20}
+        "symbols": SYMBOLS_TO_TRADE,
+        # vvvvvv 修正此處的參數 vvvvvv
+        "params": {"short_window": 5, "long_window": 20}
+        # ^^^^^^ 修正此處的參數 ^^^^^^
     }
 ]
 
