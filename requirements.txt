@@ -1,0 +1,14 @@
+# requirements.txt
+# Python 3.9+
+
+# Core Alpaca client and dependencies
+alpaca-py>=0.18.0
+websockets>=10.0
+httpx>=0.23.0
+
+# For loading .env file configuration
+python-dotenv>=1.0.0
+
+# For testing (optional but recommended)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
