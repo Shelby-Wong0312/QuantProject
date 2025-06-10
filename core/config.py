@@ -10,6 +10,11 @@ load_dotenv()
 # Alpaca API Credentials and Configuration
 ALPACA_API_KEY_ID: Optional[str] = os.getenv("ALPACA_API_KEY_ID")
 ALPACA_SECRET_KEY: Optional[str] = os.getenv("ALPACA_SECRET_KEY")
+
+# vvvvvv 新增 Polygon API Key 讀取 vvvvvv
+POLYGON_API_KEY: Optional[str] = os.getenv("POLYGON_API_KEY")
+# ^^^^^^ 新增 Polygon API Key 讀取 ^^^^^^
+
 ALPACA_PAPER_TRADING: bool = os.getenv("ALPACA_PAPER_TRADING", "True").lower() == "true"
 
 ALPACA_API_BASE_URL: str = (
@@ -17,12 +22,10 @@ ALPACA_API_BASE_URL: str = (
     else "https://api.alpaca.markets"
 )
 
-# vvvvvv 修正此處的 URL，加上 /v2/iex 路徑 vvvvvv
 ALPACA_DATA_URL: str = (
     "wss://stream.data.sandbox.alpaca.markets/v2/iex" if ALPACA_PAPER_TRADING
     else "wss://stream.data.alpaca.markets/v2/iex"
 )
-# ^^^^^^ 修正此處的 URL ^^^^^^
 
 # Logging Configuration
 LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO").upper()
@@ -61,3 +64,5 @@ SYSTEM_CONTROL_QUEUE_MAX_SIZE: int = 100
 # 確保 API 金鑰已設定
 if ALPACA_API_KEY_ID is None or ALPACA_SECRET_KEY is None:
     raise ValueError("ALPACA_API_KEY_ID and ALPACA_SECRET_KEY must be set in .env file or environment variables.")
+if POLYGON_API_KEY is None:
+    raise ValueError("POLYGON_API_KEY must be set in .env file or environment variables.")
