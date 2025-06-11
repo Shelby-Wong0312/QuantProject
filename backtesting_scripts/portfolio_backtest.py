@@ -236,43 +236,27 @@ class PortfolioBacktest:
                 daily_return = (total_equity - self.equity_curve[-2]['equity']) / self.equity_curve[-2]['equity']
                 self.daily_returns.append(daily_return)
             
-            # 檢查是否已有倉位
-            if self.positions:
-                # 檢查現有倉位的出場信號
-                for symbol in list(self.positions.keys()):
-                    if symbol in all_data and date in all_data[symbol].index:
-                        # 獲取截至當日的歷史數據
-                        hist_data = all_data[symbol].loc[:date]
-                        
-                        # 檢查信號
-                        signal = strategy.check_signals(hist_data)
-                        
-                        # 如果有反向信號，平倉
-                        if signal['action'] == 'sell':
-                            price = current_prices.get(symbol)
-                            if price:
-                                self.execute_sell(symbol, price, date, '|'.join(signal['reasons']))
-            else:
-                # 空倉時檢查進場信號
-                entry_found = False
-                
-                for symbol in valid_symbols:
-                    if entry_found:
-                        break
-                        
-                    if symbol in all_data and date in all_data[symbol].index:
-                        # 獲取截至當日的歷史數據
-                        hist_data = all_data[symbol].loc[:date]
-                        
-                        # 檢查信號
-                        signal = strategy.check_signals(hist_data)
-                        
-                        # 如果有買入信號，進場
-                        if signal['action'] == 'buy':
-                            price = current_prices.get(symbol)
-                            if price:
-                                if self.execute_buy(symbol, price, date, '|'.join(signal['reasons'])):
-                                    entry_found = True
+            # === 多標的同時持有邏輯 ===
+            # 1. 先檢查所有持倉的出場信號
+            for symbol in list(self.positions.keys()):
+                if symbol in all_data and date in all_data[symbol].index:
+                    hist_data = all_data[symbol].loc[:date]
+                    signal = strategy.check_signals(hist_data)
+                    if signal['action'] == 'sell':
+                        price = current_prices.get(symbol)
+                        if price:
+                            self.execute_sell(symbol, price, date, '|'.join(signal['reasons']))
+            # 2. 檢查所有未持倉標的的進場信號
+            for symbol in valid_symbols:
+                if symbol in self.positions:
+                    continue  # 已持有
+                if symbol in all_data and date in all_data[symbol].index:
+                    hist_data = all_data[symbol].loc[:date]
+                    signal = strategy.check_signals(hist_data)
+                    if signal['action'] == 'buy':
+                        price = current_prices.get(symbol)
+                        if price:
+                            self.execute_buy(symbol, price, date, '|'.join(signal['reasons']))
         
         # 回測結束，平掉所有倉位
         print("\n回測結束，清算所有倉位...")

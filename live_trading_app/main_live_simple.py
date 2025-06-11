@@ -6,6 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import logging
 import asyncio
 from dotenv import load_dotenv
+import threading
 
 # 導入必要的模組
 from core.event_loop import AsyncEventLoop
@@ -31,6 +32,22 @@ def load_stocks(filepath="valid_tickers.txt", limit=None):
 
 # 加载环境变量
 load_dotenv()
+
+pause_flag = threading.Event()
+pause_flag.set()  # 預設為「執行中」
+
+def keyboard_listener():
+    while True:
+        key = sys.stdin.read(1)
+        if key == 'p':
+            print(">>> 已暫停，按 r 恢復")
+            pause_flag.clear()
+        elif key == 'r':
+            print(">>> 已恢復")
+            pause_flag.set()
+
+# 在主程式啟動監聽執行緒
+threading.Thread(target=keyboard_listener, daemon=True).start()
 
 async def main():
     # 設定日誌
@@ -129,7 +146,9 @@ async def main():
         logger.info("事件循環已啟動")
         
         # 等待所有任務
-        await asyncio.gather(feed_task, event_task)
+        while True:
+            pause_flag.wait()  # 這行會在暫停時阻塞，直到恢復
+            await asyncio.gather(feed_task, event_task)
         
     except KeyboardInterrupt:
         logger.info("收到中斷信號，正在關閉...")

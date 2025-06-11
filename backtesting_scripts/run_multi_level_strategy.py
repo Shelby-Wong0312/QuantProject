@@ -80,7 +80,7 @@ STRATEGY_PARAMS = {
 
 # 回測參數
 BACKTEST_CONFIG = {
-    'start_date': '2021-01-01',
+    'start_date': '2023-01-01',
     'end_date': datetime.today().strftime('%Y-%m-%d'),
     'initial_cash': 1000,  # 1000美金初始資金
     'commission': 0.002,   # 0.2%手續費

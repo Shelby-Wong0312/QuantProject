@@ -69,7 +69,7 @@ if SINGLE_TEST:
     today_str = datetime.today().strftime('%Y-%m-%d')
     
     # 下載股票數據
-    data_df = yf.download(TICKER_TO_TEST, start="2021-01-01", end=today_str, interval="1d")
+    data_df = yf.download(TICKER_TO_TEST, start="2023-01-01", end=today_str, interval="1d")
     
     if data_df.empty:
         print(f"無法下載 {TICKER_TO_TEST} 的數據，可能是無效的股票代碼")
@@ -154,7 +154,7 @@ else:
     for i, ticker in enumerate(all_symbols[:10]):  # 先測試前 10 個
         print(f"\n[{i+1}/10] 測試 {ticker}...")
         try:
-            data_df = yf.download(ticker, start="2021-01-01", end=datetime.today().strftime('%Y-%m-%d'), 
+            data_df = yf.download(ticker, start="2023-01-01", end=datetime.today().strftime('%Y-%m-%d'), 
                                 interval="1d", progress=False)
             
             if data_df.empty or len(data_df) < 100:
