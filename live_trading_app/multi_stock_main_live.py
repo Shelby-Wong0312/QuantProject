@@ -131,8 +131,8 @@ async def main():
         # 每支股票使用獨立的策略實例
         strategy_params = {
             'symbol': symbol,
-            'short_ma_period': 10,
-            'long_ma_period': 30,
+            'short_ma_period': 5,
+            'long_ma_period': 20,
             'rsi_period': 14,
             'rsi_oversold': 30,
             'rsi_overbought': 70,
