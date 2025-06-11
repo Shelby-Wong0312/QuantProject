@@ -15,6 +15,23 @@ from adapters.live_trading_adapter import LiveTradingAdapter
 from strategy.concrete_strategies.enhanced_rsi_ma_kd_strategy import AbstractEnhancedRsiMaKdStrategy
 from live_trading_app.simple_portfolio_manager import SimplePortfolioManager
 
+# 讀取 popular_stocks.txt
+
+def load_stocks(filepath="popular_stocks.txt", limit=None):
+    stocks = []
+    try:
+        with open(filepath, 'r') as f:
+            for line in f:
+                symbol = line.strip()
+                if symbol and not symbol.startswith('#'):
+                    stocks.append(symbol)
+                if limit and len(stocks) >= limit:
+                    break
+    except FileNotFoundError:
+        print(f"找不到 {filepath}，請確認檔案存在")
+        stocks = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA"]
+    return stocks
+
 # 加载环境变量
 load_dotenv()
 
@@ -35,6 +52,10 @@ async def main():
         logger.error("請在 .env 文件中設置這些變量")
         return
 
+    # 讀取股票清單
+    symbols = load_stocks()
+    logger.info(f"將監控以下股票: {symbols}")
+
     # 使用新的 API Key
     os.environ["CAPITAL_API_KEY"] = "oVGhAub8ezuC9Zo1"
     
@@ -45,57 +66,60 @@ async def main():
     # 創建事件循環
     event_loop = AsyncEventLoop()
 
-    # 設置策略參數
-    strategy_params = {
-        'symbol': 'BTCUSD', 
-        'short_ma_period': 10, 
-        'long_ma_period': 30,
-        'rsi_period': 14, 
-        'rsi_oversold': 30, 
-        'rsi_overbought': 70,
-        'live_trade_quantity': 0.1
-    }
-    
-    # 創建策略實例
-    strategy = AbstractEnhancedRsiMaKdStrategy(parameters=strategy_params)
-    logger.info("策略已創建")
-
-    # 創建實時數據源
+    # 建立實時數據源
     feed_handler = CapitalLiveFeedHandler(
         event_queue=event_loop.event_queue,
-        symbols=['BTCUSD']
+        symbols=symbols
     )
     logger.info("數據源已創建")
     
-    # 創建策略適配器
-    live_adapter = LiveTradingAdapter(
-        event_queue=event_loop.event_queue, 
-        abstract_strategy=strategy
-    )
-    logger.info("策略適配器已創建")
-    
-    # 創建執行處理器
+    # 建立執行處理器
     exec_handler = CapitalExecutionHandler(
         event_queue=event_loop.event_queue
     )
     logger.info("執行處理器已創建")
     
-    # 創建投資組合管理器
+    # 建立投資組合管理器
     portfolio_manager = SimplePortfolioManager(
         event_queue=event_loop.event_queue, 
         initial_cash=100000.0
     )
     logger.info("投資組合管理器已創建")
 
+    # 為每支股票建立策略與適配器
+    strategies = {}
+    adapters = {}
+    for symbol in symbols:
+        strategy_params = {
+            'symbol': symbol,
+            'short_ma_period': 10,
+            'long_ma_period': 30,
+            'rsi_period': 14,
+            'rsi_oversold': 30,
+            'rsi_overbought': 70,
+            'live_trade_quantity': 1  # 每次交易1股
+        }
+        strategy = AbstractEnhancedRsiMaKdStrategy(parameters=strategy_params)
+        strategies[symbol] = strategy
+        adapter = LiveTradingAdapter(
+            event_queue=event_loop.event_queue,
+            abstract_strategy=strategy
+        )
+        adapters[symbol] = adapter
+
     # 註冊事件處理器
-    event_loop.register_handler("MarketDataEvent", live_adapter.handle_market_data_event)
+    async def route_market_data(event):
+        symbol = event.symbol
+        if symbol in adapters:
+            await adapters[symbol].handle_market_data_event(event)
+
+    event_loop.register_handler("MarketDataEvent", route_market_data)
     event_loop.register_handler("SignalEvent", exec_handler.handle_signal_event)
     event_loop.register_handler("FillEvent", portfolio_manager.handle_fill_event)
     logger.info("事件處理器已註冊")
     
     # 啟動系統
-    logger.info("開始實時交易系統...")
-    logger.info("監控 BTCUSD，使用 RSI + MA 策略")
+    logger.info("開始多股票實時交易系統...")
     logger.info("數據更新間隔: 0秒（最快速度）")
     
     try:
@@ -117,7 +141,7 @@ async def main():
     except Exception as e:
         logger.error(f"系統錯誤: {e}", exc_info=True)
     finally:
-        logger.info("實時交易系統已關閉")
+        logger.info("多股票實時交易系統已關閉")
 
 if __name__ == "__main__":
     asyncio.run(main()) 
