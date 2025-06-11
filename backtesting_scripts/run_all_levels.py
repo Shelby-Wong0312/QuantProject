@@ -1,5 +1,6 @@
 import sys
 import os
+import argparse
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pandas as pd
@@ -161,11 +162,9 @@ def run_single_backtest(ticker, level, show_plot=False, verbose=True):
             print(f"❌ 回測 {ticker} Level {level} 時發生錯誤: {str(e)}")
         return None
 
-def run_all_levels_backtest(symbols, limit=None):
-    """對每個股票執行所有級別的回測"""
+def run_all_levels_backtest(symbols, level_choice, limit=None):
     if limit:
         symbols = symbols[:limit]
-        
     print(f"\n{'='*80}")
     print(f"三級交易策略批量回測系統")
     print(f"{'='*80}")
@@ -179,28 +178,25 @@ def run_all_levels_backtest(symbols, limit=None):
     print(f"  - 手續費: {BACKTEST_CONFIG['commission']*100}%")
     print(f"  - 期間: {BACKTEST_CONFIG['start_date']} ~ {BACKTEST_CONFIG['end_date']}")
     print(f"\n已載入 {len(symbols)} 個股票代碼")
-    
-    # 確認是否要繼續
-    user_input = input(f"\n即將開始回測所有 {len(symbols)} 個股票的三個級別，這可能需要較長時間。是否繼續? (Y/n): ")
+    user_input = input(f"\n即將開始回測所有 {len(symbols)} 個股票的指定級別，這可能需要較長時間。是否繼續? (Y/n): ")
     if user_input.strip().lower() == 'n':
         print("已取消回測")
         return
-    
     print(f"\n開始批量回測...")
     print("="*80)
-    
     results = []
     successful = 0
     failed = 0
     start_time = time.time()
-    
-    # 回測所有股票的所有級別
+    # 決定要跑哪些level
+    if level_choice == 'all':
+        levels = [1, 2, 3]
+    else:
+        levels = [int(level_choice)]
     for i, ticker in enumerate(symbols, 1):
         print(f"\n[{i}/{len(symbols)}] 正在處理 {ticker}...")
-        
-        for level in [1, 2, 3]:
+        for level in levels:
             result = run_single_backtest(ticker, level, show_plot=False, verbose=True)
-            
             if result:
                 results.append(result)
                 successful += 1
@@ -208,38 +204,24 @@ def run_all_levels_backtest(symbols, limit=None):
             else:
                 failed += 1
                 print(f" ✗ Level {level} 失敗")
-        
-        # 每處理10個股票顯示進度
         if i % 10 == 0:
             elapsed = time.time() - start_time
             avg_time = elapsed / i
             remaining = avg_time * (len(symbols) - i)
             print(f"\n進度: {i}/{len(symbols)} ({i/len(symbols)*100:.1f}%) - 預計剩餘時間: {remaining/60:.1f} 分鐘")
-        
-        # 避免請求過快
         if i < len(symbols):
             time.sleep(0.2)
-    
-    # 計算總耗時
     total_time = time.time() - start_time
-    
-    # 顯示匯總結果
     print(f"\n{'='*80}")
     print(f"批量回測完成！")
     print(f"總耗時: {total_time/60:.1f} 分鐘")
     print(f"成功: {successful} 個回測, 失敗: {failed} 個回測")
     print(f"{'='*80}")
-    
-    # 將結果轉換為DataFrame並保存
     if results:
         results_df = pd.DataFrame(results)
         results_df = results_df.sort_values(['Symbol', 'Level'])
-        
-        # 保存詳細結果
         results_df.to_csv('all_levels_backtest_results.csv', index=False)
         print(f"\n詳細結果已保存至 all_levels_backtest_results.csv")
-        
-        # 顯示每個級別的平均表現
         print("\n各級別平均表現:")
         level_stats = results_df.groupby('Level').agg({
             'Return %': 'mean',
@@ -250,15 +232,13 @@ def run_all_levels_backtest(symbols, limit=None):
         print(level_stats)
 
 def main():
-    """主程式"""
+    parser = argparse.ArgumentParser(description="三級交易策略回測系統")
+    parser.add_argument('--level', type=str, default='all', help='指定要回測的級別: 1、2、3 或 all (預設: all)')
+    args = parser.parse_args()
     print("三級交易策略回測系統 v1.0")
     print("="*80)
-    
-    # 載入股票列表
     symbols = load_symbols_from_file()
-    
-    # 執行所有級別的回測
-    run_all_levels_backtest(symbols)
+    run_all_levels_backtest(symbols, args.level)
 
 if __name__ == "__main__":
     main() 

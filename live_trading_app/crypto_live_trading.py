@@ -12,6 +12,8 @@ from adapters.live_trading_adapter import LiveTradingAdapter
 from strategy.concrete_strategies.crypto_level1_strategy import CryptoLevel1Strategy
 from live_trading_app.simple_portfolio_manager import SimplePortfolioManager
 
+logger = logging.getLogger(__name__)
+
 def load_crypto_symbols(filepath: str = "popular_crypto.txt", limit: int = 10) -> List[str]:
     """從文件加載虛擬貨幣代碼"""
     symbols = []
@@ -36,8 +38,6 @@ async def main():
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
-    
-    logger = logging.getLogger(__name__)
     
     # 檢查環境變量
     required_env_vars = ["CAPITAL_API_KEY", "CAPITAL_IDENTIFIER", "CAPITAL_API_PASSWORD"]

@@ -10,6 +10,8 @@ from adapters.live_trading_adapter import LiveTradingAdapter
 from strategy.concrete_strategies.enhanced_rsi_ma_kd_strategy import AbstractEnhancedRsiMaKdStrategy
 from live_trading_app.simple_portfolio_manager import SimplePortfolioManager
 
+logger = logging.getLogger(__name__)
+
 def load_symbols(filepath: str = "tickers.txt", limit: int = 10) -> List[str]:
     """从文件加载股票代码"""
     symbols = []
@@ -34,8 +36,6 @@ async def main():
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
-    
-    logger = logging.getLogger(__name__)
     
     # 检查环境变量
     required_env_vars = ["CAPITAL_API_KEY", "CAPITAL_IDENTIFIER", "CAPITAL_API_PASSWORD"]
