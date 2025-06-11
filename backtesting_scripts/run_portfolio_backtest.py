@@ -6,9 +6,27 @@
 
 import sys
 import os
+import threading
+import msvcrt
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from backtesting_scripts.portfolio_backtest import PortfolioBacktest
+
+pause_flag = threading.Event()
+pause_flag.set()  # 預設為執行中
+
+def keyboard_listener():
+    while True:
+        if msvcrt.kbhit():
+            key = msvcrt.getch().decode('utf-8').lower()
+            if key == 'p':
+                print(">>> 已暫停，按 r 恢復")
+                pause_flag.clear()
+            elif key == 'r':
+                print(">>> 已恢復")
+                pause_flag.set()
+
+threading.Thread(target=keyboard_listener, daemon=True).start()
 
 def main():
     """主程式"""

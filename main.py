@@ -31,22 +31,17 @@ async def graceful_shutdown(s_event: asyncio.Event, sig: Optional[signal.Signals
 async def main():
     logger.info("Starting Industrial Grade Trading Framework...")
 
-    # 初始化所有異步隊列
     market_data_queue = asyncio.Queue(maxsize=config.MARKET_DATA_QUEUE_MAX_SIZE)
     signal_queue = asyncio.Queue(maxsize=config.SIGNAL_QUEUE_MAX_SIZE)
     order_queue = asyncio.Queue(maxsize=config.ORDER_QUEUE_MAX_SIZE)
     fill_queue = asyncio.Queue(maxsize=config.FILL_QUEUE_MAX_SIZE)
 
-    # 實例化所有組件
-    symbols_to_trade = ["*"] # 使用 "*" 訂閱分鐘聚合數據
-
-    # vvvvvv 修正此處，傳入 Polygon 的 API Key vvvvvv
+    # 實例化所有組件，並傳入從檔案讀取的完整股票列表
     feed_handler = FeedHandler(
         market_data_queue, 
-        symbols=symbols_to_trade, 
+        symbols=config.SYMBOLS_TO_TRADE, 
         api_key=config.POLYGON_API_KEY
     )
-    # ^^^^^^ 修正此處，傳入 Polygon 的 API Key ^^^^^^
 
     strategy_manager = StrategyManager(market_data_queue, signal_queue)
     risk_manager = RiskManager(signal_queue, order_queue)
@@ -61,14 +56,12 @@ async def main():
         portfolio_manager
     ]
 
-    # 為每個組件的 run 方法創建一個異步任務
     tasks: List[asyncio.Task] = []
     for component in components:
         tasks.append(asyncio.create_task(component.run(shutdown_event), name=component.__class__.__name__))
 
     logger.info("All components initialized. Starting main event loop...")
     
-    # 監聽 OS 關閉信號
     loop = asyncio.get_running_loop()
     for sig in (signal.SIGINT, signal.SIGTERM):
         try:
@@ -76,7 +69,6 @@ async def main():
         except NotImplementedError:
             logger.warning("Signal handlers not supported on this platform (e.g., Windows). Use Ctrl+C.")
 
-    # 主迴圈
     while not shutdown_event.is_set():
         done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED, timeout=1.0)
         for task in done:
