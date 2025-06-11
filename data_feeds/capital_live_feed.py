@@ -81,10 +81,8 @@ class CapitalLiveFeedHandler:
     
     def _map_symbol_to_epic(self, symbol: str) -> str:
         """将股票代码映射到 Capital.com 的 EPIC"""
-        # 这里需要根据实际的映射规则来实现
-        # 例如: AAPL -> AAPL.US
-        if not symbol.endswith('.US'):
-            return f"{symbol}.US"
+        # 加密貨幣直接使用原始符號，不需要添加後綴
+        # BTCUSD -> BTCUSD (不是 BTCUSD.US)
         return symbol
     
     async def start_feed(self):
@@ -164,7 +162,7 @@ class CapitalLiveFeedHandler:
                             logger.error(f"连续 {error_count} 次获取数据失败，可能是 API 限制或配置问题")
                 
                 # 等待一段时间再进行下一轮轮询
-                await asyncio.sleep(5)  # 改为5秒，避免频率过高
+                await asyncio.sleep(0)  # 無間隔，盡可能快
                 
         except Exception as e:
             logger.error(f"实时数据流出错: {e}", exc_info=True)
