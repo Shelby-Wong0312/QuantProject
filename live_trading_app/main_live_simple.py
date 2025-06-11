@@ -17,7 +17,7 @@ from live_trading_app.simple_portfolio_manager import SimplePortfolioManager
 
 # 讀取 popular_stocks.txt
 
-def load_stocks(filepath="popular_stocks.txt", limit=None):
+def load_stocks(filepath="tickers.txt", limit=None):
     stocks = []
     try:
         with open(filepath, 'r') as f:
@@ -25,11 +25,8 @@ def load_stocks(filepath="popular_stocks.txt", limit=None):
                 symbol = line.strip()
                 if symbol and not symbol.startswith('#'):
                     stocks.append(symbol)
-                if limit and len(stocks) >= limit:
-                    break
     except FileNotFoundError:
         print(f"找不到 {filepath}，請確認檔案存在")
-        stocks = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA"]
     return stocks
 
 # 加载环境变量
@@ -92,12 +89,12 @@ async def main():
     for symbol in symbols:
         strategy_params = {
             'symbol': symbol,
-            'short_ma_period': 10,
-            'long_ma_period': 30,
+            'short_ma_period': 5,
+            'long_ma_period': 20,
             'rsi_period': 14,
             'rsi_oversold': 30,
             'rsi_overbought': 70,
-            'live_trade_quantity': 1  # 每次交易1股
+            'live_trade_quantity': 1
         }
         strategy = AbstractEnhancedRsiMaKdStrategy(parameters=strategy_params)
         strategies[symbol] = strategy

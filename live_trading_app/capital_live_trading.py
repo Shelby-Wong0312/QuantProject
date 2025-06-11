@@ -12,8 +12,8 @@ from live_trading_app.simple_portfolio_manager import SimplePortfolioManager
 
 logger = logging.getLogger(__name__)
 
-def load_symbols(filepath: str = "tickers.txt", limit: int = 10) -> List[str]:
-    """从文件加载股票代码"""
+def load_symbols(filepath: str = "tickers.txt", limit: int = None) -> List[str]:
+    """從文件加載股票代碼，監控全部股票"""
     symbols = []
     try:
         with open(filepath, 'r') as f:
@@ -21,13 +21,11 @@ def load_symbols(filepath: str = "tickers.txt", limit: int = 10) -> List[str]:
                 symbol = line.strip()
                 if symbol:
                     symbols.append(symbol)
-                if len(symbols) >= limit:
-                    break
+                # 不再限制數量，監控全部股票
     except FileNotFoundError:
         logger.error(f"找不到文件: {filepath}")
-        # 使用默认的股票列表
+        # 使用默認的股票列表
         symbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA"]
-    
     return symbols
 
 async def main():
@@ -46,9 +44,9 @@ async def main():
         logger.error("请在 .env 文件中设置这些变量")
         return
     
-    # 加载股票列表
-    symbols = load_symbols("tickers.txt", limit=10)  # 先从前10个股票开始
-    logger.info(f"将监控以下股票: {symbols}")
+    # 加載股票列表
+    symbols = load_symbols("tickers.txt")  # 監控全部股票
+    logger.info(f"將監控以下股票: {symbols}")
     
     # 创建事件循环
     event_loop = AsyncEventLoop()
@@ -70,26 +68,25 @@ async def main():
         initial_cash=10000.0  # 初始资金
     )
     
-    # 为每个股票创建策略和适配器
+    # 為每個股票創建策略和適配器
     strategies = {}
     adapters = {}
     
     for symbol in symbols:
-        # 每个股票使用独立的策略实例
+        # 每個股票使用獨立的策略實例
         strategy_params = {
             'symbol': symbol,
-            'short_ma_period': 10,
-            'long_ma_period': 30,
+            'short_ma_period': 5,  # 統一短線MA為5
+            'long_ma_period': 20, # 統一長線MA為20
             'rsi_period': 14,
             'rsi_oversold': 30,
             'rsi_overbought': 70,
             'live_trade_quantity': 0.1  # 每次交易0.1股
         }
-        
         strategy = AbstractEnhancedRsiMaKdStrategy(parameters=strategy_params)
         strategies[symbol] = strategy
         
-        # 创建适配器
+        # 創建適配器
         adapter = LiveTradingAdapter(
             event_queue=event_loop.event_queue,
             abstract_strategy=strategy
@@ -97,9 +94,9 @@ async def main():
         adapters[symbol] = adapter
     
     # 注册事件处理器
-    # 由于有多个适配器，我们需要一个路由器来分发市场数据事件
+    # 由於有多个適配器，我们需要一个路由器來分發市場數據事件
     async def route_market_data(event):
-        """路由市场数据到对应的适配器"""
+        """路由市場數據到对应的適配器"""
         symbol = event.symbol
         if symbol in adapters:
             await adapters[symbol].handle_market_data_event(event)
@@ -108,11 +105,11 @@ async def main():
     event_loop.register_handler("SignalEvent", exec_handler.handle_signal_event)
     event_loop.register_handler("FillEvent", portfolio_manager.handle_fill_event)
     
-    # 启动数据源
+    # 啟動數據源
     feed_task = asyncio.create_task(feed_handler.start_feed())
     
-    # 启动事件循环
-    logger.info("开始实时交易系统...")
+    # 啟動事件循環
+    logger.info("開始實時交易系統...")
     
     try:
         await asyncio.gather(
@@ -124,9 +121,9 @@ async def main():
         feed_handler.stop()
         await event_loop.stop()
     except Exception as e:
-        logger.error(f"系统错误: {e}", exc_info=True)
+        logger.error(f"系統错误: {e}", exc_info=True)
     finally:
-        logger.info("实时交易系统已关闭")
+        logger.info("實時交易系統已关闭")
 
 if __name__ == "__main__":
     asyncio.run(main()) 
