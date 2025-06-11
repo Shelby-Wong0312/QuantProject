@@ -17,3 +17,10 @@ python-dotenv>=1.0.0
 # For testing (optional but recommended)
 pytest>=7.4.0
 pytest-asyncio>=0.21.0
+
+backtesting==0.3.3
+pandas==2.1.4
+numpy==1.26.3
+yfinance==0.2.36
+plotly==6.1.2
+pandas-ta==0.3.14b0
