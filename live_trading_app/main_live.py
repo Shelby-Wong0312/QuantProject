@@ -2,26 +2,27 @@
 
 import logging
 import threading
+import asyncio
 from queue import Queue
 
 # 導入我們建立的所有模組
-from core.event_loop import EventLoop
-from data_feeds.feed_handler import HistoricalDataFeedHandler
-from execution.capital_client import CapitalComClient
-from execution.execution_handler import ExecutionHandler
+from core.event_loop import AsyncEventLoop
+from data_feeds.historical_feed_handler import HistoricalDataFeedHandler
+from execution.capital_client import AsyncCapitalComClient
+from live_trading_app.simple_execution_handler import SimpleExecutionHandler
 from adapters.live_trading_adapter import LiveTradingAdapter
 from strategy.concrete_strategies.enhanced_rsi_ma_kd_strategy import AbstractEnhancedRsiMaKdStrategy
-from portfolio.portfolio_manager import PortfolioManager # --- 新增導入 PortfolioManager ---
+from live_trading_app.simple_portfolio_manager import SimplePortfolioManager
 
-def main():
+async def main():
     # --- 1. 設定基礎設施 ---
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-    event_loop = EventLoop()
+    event_loop = AsyncEventLoop()
 
     # --- 2. 初始化所有系統組件 ---
     try:
-        capital_client = CapitalComClient()
+        capital_client = AsyncCapitalComClient()
     except ValueError as e:
         print(f"初始化 CapitalComClient 失敗: {e}")
         return
@@ -39,12 +40,12 @@ def main():
     live_adapter = LiveTradingAdapter(
         event_queue=event_loop.event_queue, abstract_strategy=strategy
     )
-    exec_handler = ExecutionHandler(
+    exec_handler = SimpleExecutionHandler(
         event_queue=event_loop.event_queue, capital_client=capital_client
     )
     
     # --- 新增 PortfolioManager 的實例化 ---
-    portfolio_manager = PortfolioManager(
+    portfolio_manager = SimplePortfolioManager(
         event_queue=event_loop.event_queue, 
         initial_cash=100000.0
     )
@@ -59,9 +60,10 @@ def main():
     feed_thread = threading.Thread(target=feed_handler.start_feed, daemon=True)
     feed_thread.start()
 
-    event_loop.start()
+    # 启动异步事件循环
+    await event_loop.run()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
     

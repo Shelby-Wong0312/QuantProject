@@ -33,6 +33,18 @@ ENV/
 *.swp
 *.swo
 
+# Logs
+*.log
+
+# Local configuration
+.env
+config.ini
+
+# Data files
+*.csv
+*.xlsx
+*.db
+
 # Project specific
 *.csv
 *.log

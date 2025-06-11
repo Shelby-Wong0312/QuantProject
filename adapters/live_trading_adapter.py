@@ -22,7 +22,7 @@ class LiveTradingAdapter:
         self.event_queue = event_queue
         self.abstract_strategy = abstract_strategy
 
-    def handle_market_data_event(self, event: MarketDataEvent):
+    async def handle_market_data_event(self, event: MarketDataEvent):
         """
         這是一個事件處理器，將在 EventLoop 中註冊。
         它處理市場數據並產生交易訊號。
