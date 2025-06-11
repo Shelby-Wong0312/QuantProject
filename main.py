@@ -1,96 +1,95 @@
 # main.py
 
-import asyncio
-import signal
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import logging
-from typing import List, Optional
+import asyncio
+from typing import List
 
-# --- 1. 先導入所有模組 ---
-from core import config
-from core import utils
-from data_feeds.feed_handler import FeedHandler
-from strategy.strategy_manager import StrategyManager
-from risk_management.risk_manager import RiskManager
-from execution.execution_handler import ExecutionHandler
-from portfolio.portfolio_manager import PortfolioManager
+# 根據我們之前建立的架構導入模組
+from core.event_loop import AsyncEventLoop
+from data_feeds.capital_live_feed import CapitalLiveFeedHandler
+from live_trading_app.capital_execution_handler import CapitalExecutionHandler
+from adapters.live_trading_adapter import LiveTradingAdapter
+# vvvvvv 導入我們新的 LevelOneStrategy vvvvvv
+from strategy.concrete_strategies.level_one_strategy import LevelOneStrategy
+# ^^^^^^ 導入我們新的 LevelOneStrategy ^^^^^^
+from live_trading_app.simple_portfolio_manager import SimplePortfolioManager
 
-# --- 2. 模組導入完畢後，再執行函式 ---
-utils.setup_logging(config.LOG_LEVEL)
 logger = logging.getLogger(__name__)
 
-# 全局關閉事件
-shutdown_event = asyncio.Event()
-
-async def graceful_shutdown(s_event: asyncio.Event, sig: Optional[signal.Signals] = None):
-    if sig:
-        logger.info(f"Received shutdown signal: {sig.name}. Initiating graceful shutdown...")
-    else:
-        logger.info("Initiating graceful shutdown due to internal request or error...")
-    s_event.set()
+def load_symbols(filepath: str = "valid_tickers.txt", limit: int = None) -> List[str]:
+    symbols = []
+    try:
+        with open(filepath, 'r') as f:
+            symbols = [line.strip() for line in f if line.strip()]
+        if limit:
+            symbols = symbols[:limit]
+    except FileNotFoundError:
+        logger.error(f"找不到文件: {filepath}")
+        symbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA"]
+    return symbols
 
 async def main():
-    logger.info("Starting Industrial Grade Trading Framework...")
-
-    market_data_queue = asyncio.Queue(maxsize=config.MARKET_DATA_QUEUE_MAX_SIZE)
-    signal_queue = asyncio.Queue(maxsize=config.SIGNAL_QUEUE_MAX_SIZE)
-    order_queue = asyncio.Queue(maxsize=config.ORDER_QUEUE_MAX_SIZE)
-    fill_queue = asyncio.Queue(maxsize=config.FILL_QUEUE_MAX_SIZE)
-
-    # 實例化所有組件，並傳入從檔案讀取的完整股票列表
-    feed_handler = FeedHandler(
-        market_data_queue, 
-        symbols=config.SYMBOLS_TO_TRADE, 
-        api_key=config.POLYGON_API_KEY
-    )
-
-    strategy_manager = StrategyManager(market_data_queue, signal_queue)
-    risk_manager = RiskManager(signal_queue, order_queue)
-    execution_handler = ExecutionHandler(order_queue, fill_queue)
-    portfolio_manager = PortfolioManager(fill_queue, market_data_queue=None)
-
-    components = [
-        feed_handler, 
-        strategy_manager, 
-        risk_manager, 
-        execution_handler, 
-        portfolio_manager
-    ]
-
-    tasks: List[asyncio.Task] = []
-    for component in components:
-        tasks.append(asyncio.create_task(component.run(shutdown_event), name=component.__class__.__name__))
-
-    logger.info("All components initialized. Starting main event loop...")
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     
-    loop = asyncio.get_running_loop()
-    for sig in (signal.SIGINT, signal.SIGTERM):
-        try:
-            loop.add_signal_handler(sig, lambda s=sig: asyncio.create_task(graceful_shutdown(shutdown_event, s)))
-        except NotImplementedError:
-            logger.warning("Signal handlers not supported on this platform (e.g., Windows). Use Ctrl+C.")
-
-    while not shutdown_event.is_set():
-        done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED, timeout=1.0)
-        for task in done:
-            if not task.cancelled() and task.exception():
-                logger.critical(f"Critical error in task '{task.get_name()}'. Initiating shutdown.", exc_info=task.exception())
-                await graceful_shutdown(shutdown_event)
-                break
-        if not pending:
-             logger.info("All component tasks have completed.")
-             break
-
-    logger.info("Shutdown initiated, waiting for tasks to finalize...")
-    remaining_tasks = [t for t in tasks if not t.done()]
-    if remaining_tasks:
-        await asyncio.wait(remaining_tasks, timeout=10.0)
+    required_env_vars = ["CAPITAL_API_KEY", "CAPITAL_IDENTIFIER", "CAPITAL_API_PASSWORD"]
+    missing_vars = [var for var in required_env_vars if not os.getenv(var)]
+    if missing_vars:
+        logger.error(f"缺少必要的环境变量: {missing_vars}")
+        return
     
-    logger.info("Framework shutdown complete.")
+    symbols = load_symbols("valid_tickers.txt")
+    logger.info(f"將監控以下股票: {symbols}")
+    
+    event_loop = AsyncEventLoop()
+    feed_handler = CapitalLiveFeedHandler(event_queue=event_loop.event_queue, symbols=symbols)
+    exec_handler = CapitalExecutionHandler(event_queue=event_loop.event_queue)
+    portfolio_manager = SimplePortfolioManager(event_queue=event_loop.event_queue, initial_cash=10000.0)
+    
+    strategies = {}
+    adapters = {}
+    
+    for symbol in symbols:
+        strategy_params = {
+            'symbol': symbol,
+            # 這裡的參數會傳給 LevelOneStrategy，如果省略則使用其內部預設值
+            'short_ma_period': 5,
+            'long_ma_period': 20,
+            'live_trade_quantity': 0.1
+        }
+        # vvvvvv 實例化新的 LevelOneStrategy vvvvvv
+        strategy = LevelOneStrategy(parameters=strategy_params)
+        # ^^^^^^ 實例化新的 LevelOneStrategy ^^^^^^
+        strategies[symbol] = strategy
+        
+        adapter = LiveTradingAdapter(event_queue=event_loop.event_queue, abstract_strategy=strategy)
+        adapters[symbol] = adapter
+    
+    async def route_market_data(event):
+        symbol = event.symbol
+        if symbol in adapters:
+            await adapters[symbol].handle_market_data_event(event)
+    
+    event_loop.register_handler("MarketDataEvent", route_market_data)
+    event_loop.register_handler("SignalEvent", exec_handler.handle_signal_event)
+    event_loop.register_handler("FillEvent", portfolio_manager.handle_fill_event)
+    
+    feed_task = asyncio.create_task(feed_handler.start_feed())
+    logger.info("開始實時交易系統...")
+    
+    try:
+        await asyncio.gather(event_loop.run(), feed_task)
+    except KeyboardInterrupt:
+        logger.info("收到中断信号，正在关闭...")
+        feed_handler.stop()
+        await event_loop.stop()
+    except Exception as e:
+        logger.error(f"系統错误: {e}", exc_info=True)
+    finally:
+        logger.info("實時交易系統已关闭")
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        logger.info("Application terminated by user.")
-    except Exception as e:
-        logger.critical(f"Application terminated due to an unhandled exception in main: {e}", exc_info=True)
+    asyncio.run(main())
