@@ -15,7 +15,7 @@ from adapters.backtesting_adapter import BacktestingPyAdapter
 from strategy.concrete_strategies.confluence_strategy import ConfluenceStrategy
 
 # --- 1. 載入數據 ---
-def load_symbols_from_file(filepath="tickers.txt"):
+def load_symbols_from_file(filepath="valid_tickers.txt"):
     if not os.path.exists(filepath):
         print(f"Ticker file not found at {filepath}. Using default: ['BTC-USD']")
         return ["BTC-USD"]
@@ -27,7 +27,7 @@ def load_symbols_from_file(filepath="tickers.txt"):
     return symbols
 
 # 我們一次只回測一個標的，以利於觀察和分析
-# 您可以修改這個變數來回測 tickers.txt 中的不同股票
+# 您可以修改這個變數來回測 valid_tickers.txt 中的不同股票
 all_symbols = load_symbols_from_file()
 
 # 選擇要測試的股票
@@ -49,9 +49,9 @@ POPULAR_STOCKS = {
 }
 
 # 選擇測試模式
-USE_POPULAR_STOCK = True  # 設為 True 使用知名股票，False 使用 tickers.txt
+USE_POPULAR_STOCK = True  # 設為 True 使用知名股票，False 使用 valid_tickers.txt
 POPULAR_STOCK_SYMBOL = 'AAPL'  # 從 POPULAR_STOCKS 中選擇一個
-TICKER_INDEX = 100    # 如果 USE_POPULAR_STOCK=False，選擇 tickers.txt 中的股票索引
+TICKER_INDEX = 100    # 如果 USE_POPULAR_STOCK=False，選擇 valid_tickers.txt 中的股票索引
 
 if SINGLE_TEST:
     # 單一股票測試
@@ -63,7 +63,7 @@ if SINGLE_TEST:
             print(f"索引 {TICKER_INDEX} 超出範圍，使用第一個股票")
             TICKER_INDEX = 0
         TICKER_TO_TEST = all_symbols[TICKER_INDEX]
-        print(f"使用 tickers.txt 中的第 {TICKER_INDEX} 個股票: {TICKER_TO_TEST}")
+        print(f"使用 valid_tickers.txt 中的第 {TICKER_INDEX} 個股票: {TICKER_TO_TEST}")
     
     print(f"開始下載 {TICKER_TO_TEST} 的歷史數據...")
     today_str = datetime.today().strftime('%Y-%m-%d')

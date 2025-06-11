@@ -32,7 +32,7 @@ ALPACA_DATA_URL: str = ("wss://stream.data.sandbox.alpaca.markets/v2/iex" if ALP
 LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO").upper()
 
 # --- 從檔案動態載入股票列表 ---
-TICKERS_FILE_PATH = "tickers.txt"
+TICKERS_FILE_PATH = "valid_tickers.txt"
 SYMBOLS_TO_TRADE: List[str] = _load_symbols_from_file(TICKERS_FILE_PATH)
 # --------------------------------
 

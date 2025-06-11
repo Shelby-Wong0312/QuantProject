@@ -14,7 +14,7 @@ warnings.filterwarnings('ignore')
 from adapters.backtesting_adapter import BacktestingPyAdapter
 from strategy.concrete_strategies.three_level_strategy import ThreeLevelStrategy
 
-def load_symbols_from_file(filepath="tickers.txt"):
+def load_symbols_from_file(filepath="valid_tickers.txt"):
     if not os.path.exists(filepath):
         print(f"找不到 {filepath}，使用預設股票列表")
         return ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA"]

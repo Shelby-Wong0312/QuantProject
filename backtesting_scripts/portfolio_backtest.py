@@ -37,7 +37,7 @@ class PortfolioBacktest:
         self.equity_curve = []  # 資金曲線
         self.daily_returns = []  # 日收益率
         
-    def load_symbols(self, filepath="tickers.txt"):
+    def load_symbols(self, filepath="valid_tickers.txt"):
         """載入股票列表"""
         if not os.path.exists(filepath):
             print(f"找不到 {filepath}，使用預設股票列表")

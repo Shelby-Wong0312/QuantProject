@@ -12,7 +12,7 @@ from live_trading_app.simple_portfolio_manager import SimplePortfolioManager
 
 logger = logging.getLogger(__name__)
 
-def load_symbols(filepath: str = "tickers.txt", limit: int = None) -> List[str]:
+def load_symbols(filepath: str = "valid_tickers.txt", limit: int = None) -> List[str]:
     """從文件加載股票代碼，監控全部股票"""
     symbols = []
     try:
@@ -45,7 +45,7 @@ async def main():
         return
     
     # 加載股票列表
-    symbols = load_symbols("tickers.txt")  # 監控全部股票
+    symbols = load_symbols("valid_tickers.txt")  # 監控全部股票
     logger.info(f"將監控以下股票: {symbols}")
     
     # 创建事件循环

@@ -17,7 +17,7 @@ from live_trading_app.simple_portfolio_manager import SimplePortfolioManager
 
 # 讀取 popular_stocks.txt
 
-def load_stocks(filepath="tickers.txt", limit=None):
+def load_stocks(filepath="valid_tickers.txt", limit=None):
     stocks = []
     try:
         with open(filepath, 'r') as f:
