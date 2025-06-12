@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>量化交易回測報告 - 1-1 (KD指標策略)</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6; 
+            color: #333; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s;
+        }
+        .metric-card:hover { transform: translateY(-2px); }
+        .metric-title { font-size: 0.9em; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+        .metric-value { font-size: 2em; font-weight: bold; margin: 10px 0; }
+        .positive { color: #27ae60; }
+        .negative { color: #e74c3c; }
+        .neutral { color: #3498db; }
+        
+        .strategy-selector {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #dee2e6;
+        }
+        .strategy-selector h3 { margin-bottom: 15px; color: #495057; }
+        .strategy-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .strategy-btn {
+            padding: 10px 20px;
+            border: 2px solid #dee2e6;
+            background: white;
+            color: #495057;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        .strategy-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .strategy-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .chart-container h3 { margin-bottom: 20px; color: #495057; }
+        
+        .trades-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .search-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .search-controls input, .search-controls select {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .search-controls button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .search-controls button:hover { background: #5a67d8; }
+        
+        .trades-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .trades-table th {
+            background: #f8f9fa;
+            padding: 15px 10px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            color: #495057;
+        }
+        .trades-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .trades-table tr:hover {
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover { color: #333; }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 10px; margin: 10px; }
+            .header h1 { font-size: 2em; }
+            .dashboard { grid-template-columns: 1fr; }
+            .search-controls { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>量化交易回測報告 - 1-1 (KD指標策略)</h1>
+            <p>2023-01-01 ~ 2025-06-12 | 隨機抽樣 2 檔股票</p>
+        </div>
+        
+        <div class="dashboard">
+            <div class="metric-card">
+                <div class="metric-title">總報酬率</div>
+                <div class="metric-value negative">{total_return:.2f}%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">年化報酬率</div>
+                <div class="metric-value negative">{annual_return:.2f}%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">夏普比率</div>
+                <div class="metric-value neutral">{sharpe_ratio:.2f}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">最大回撤</div>
+                <div class="metric-value negative">{max_drawdown:.2f}%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">勝率</div>
+                <div class="metric-value neutral">{win_rate:.2f}%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">交易次數</div>
+                <div class="metric-value neutral">112</div>
+            </div>
+        </div>
+        
+        <div class="strategy-selector">
+            <h3>📊 策略分析選擇</h3>
+            <div class="strategy-buttons">
+                <button class="strategy-btn active" onclick="showStrategy('all')">全部策略</button>
+                
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <h3>📈 資金曲線圖</h3>
+            <div id="equityChart" style="height: 500px;"></div>
+        </div>
+        
+        <div class="chart-container">
+            <h3>📊 策略績效比較</h3>
+            <div id="strategyComparisonChart" style="height: 400px;"></div>
+        </div>
+        
+        <div class="trades-section">
+            <h3>📋 交易明細</h3>
+            <div class="search-controls">
+                <input type="text" id="symbolSearch" placeholder="搜尋股票代碼...">
+                <select id="strategyFilter">
+                    <option value="">所有策略</option>
+                    
+                </select>
+                <button onclick="filterTrades()">搜尋</button>
+                <button onclick="clearFilters()">清除</button>
+            </div>
+            <table class="trades-table" id="tradesTable">
+                <thead>
+                    <tr>
+                        <th>股票代碼</th>
+                        <th>策略類型</th>
+                        <th>進場時間</th>
+                        <th>出場時間</th>
+                        <th>進場價格</th>
+                        <th>出場價格</th>
+                        <th>數量</th>
+                        <th>報酬率</th>
+                        <th>損益金額</th>
+                    </tr>
+                </thead>
+                <tbody id="tradesTableBody">
+                    
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-03-24</td>
+                <td>2023-04-03</td>
+                <td>$94.83</td>
+                <td>$98.42</td>
+                <td>105.00</td>
+                <td class="positive">3.78%</td>
+                <td class="positive">$376.65</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-04-10</td>
+                <td>2023-04-14</td>
+                <td>$97.79</td>
+                <td>$95.38</td>
+                <td>105.00</td>
+                <td class="negative">-2.47%</td>
+                <td class="negative">$-253.11</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-04-18</td>
+                <td>2023-04-25</td>
+                <td>$95.15</td>
+                <td>$86.00</td>
+                <td>-105.00</td>
+                <td class="positive">9.61%</td>
+                <td class="positive">$960.27</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-04-26</td>
+                <td>2023-05-08</td>
+                <td>$85.36</td>
+                <td>$87.15</td>
+                <td>128.00</td>
+                <td class="positive">2.10%</td>
+                <td class="positive">$228.96</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-05-15</td>
+                <td>2023-05-23</td>
+                <td>$86.99</td>
+                <td>$96.08</td>
+                <td>127.00</td>
+                <td class="positive">10.45%</td>
+                <td class="positive">$1154.58</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-06-05</td>
+                <td>2023-06-06</td>
+                <td>$91.84</td>
+                <td>$93.78</td>
+                <td>-133.00</td>
+                <td class="negative">-2.11%</td>
+                <td class="negative">$-258.00</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-06-07</td>
+                <td>2023-06-27</td>
+                <td>$96.40</td>
+                <td>$88.48</td>
+                <td>-123.00</td>
+                <td class="positive">8.21%</td>
+                <td class="positive">$973.29</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-07-03</td>
+                <td>2023-07-05</td>
+                <td>$91.68</td>
+                <td>$88.71</td>
+                <td>140.00</td>
+                <td class="negative">-3.24%</td>
+                <td class="negative">$-415.43</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-07-14</td>
+                <td>2023-07-24</td>
+                <td>$89.14</td>
+                <td>$91.69</td>
+                <td>138.00</td>
+                <td class="positive">2.87%</td>
+                <td class="positive">$352.51</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-07-27</td>
+                <td>2023-07-28</td>
+                <td>$89.01</td>
+                <td>$90.31</td>
+                <td>142.00</td>
+                <td class="positive">1.46%</td>
+                <td class="positive">$184.09</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-07-31</td>
+                <td>2023-08-03</td>
+                <td>$92.02</td>
+                <td>$89.94</td>
+                <td>139.00</td>
+                <td class="negative">-2.25%</td>
+                <td class="negative">$-288.32</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-08-18</td>
+                <td>2023-09-05</td>
+                <td>$84.17</td>
+                <td>$80.47</td>
+                <td>148.00</td>
+                <td class="negative">-4.39%</td>
+                <td class="negative">$-547.16</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-09-06</td>
+                <td>2023-09-18</td>
+                <td>$77.28</td>
+                <td>$76.57</td>
+                <td>153.00</td>
+                <td class="negative">-0.92%</td>
+                <td class="negative">$-109.18</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-09-19</td>
+                <td>2023-09-20</td>
+                <td>$76.12</td>
+                <td>$75.13</td>
+                <td>154.00</td>
+                <td class="negative">-1.30%</td>
+                <td class="negative">$-152.96</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-09-22</td>
+                <td>2023-10-03</td>
+                <td>$71.77</td>
+                <td>$67.80</td>
+                <td>160.00</td>
+                <td class="negative">-5.52%</td>
+                <td class="negative">$-634.33</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-10-25</td>
+                <td>2023-10-27</td>
+                <td>$70.93</td>
+                <td>$71.90</td>
+                <td>-153.00</td>
+                <td class="negative">-1.37%</td>
+                <td class="negative">$-149.01</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-10-30</td>
+                <td>2023-11-15</td>
+                <td>$73.72</td>
+                <td>$78.30</td>
+                <td>-144.00</td>
+                <td class="negative">-6.20%</td>
+                <td class="negative">$-658.37</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-11-24</td>
+                <td>2023-11-30</td>
+                <td>$78.99</td>
+                <td>$79.99</td>
+                <td>126.00</td>
+                <td class="positive">1.27%</td>
+                <td class="positive">$126.13</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-12-01</td>
+                <td>2023-12-04</td>
+                <td>$80.58</td>
+                <td>$83.39</td>
+                <td>124.00</td>
+                <td class="positive">3.49%</td>
+                <td class="positive">$348.36</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-12-05</td>
+                <td>2023-12-08</td>
+                <td>$83.55</td>
+                <td>$87.66</td>
+                <td>-123.00</td>
+                <td class="negative">-4.92%</td>
+                <td class="negative">$-505.77</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2023-12-14</td>
+                <td>2024-01-11</td>
+                <td>$90.41</td>
+                <td>$85.97</td>
+                <td>-108.00</td>
+                <td class="positive">4.92%</td>
+                <td class="positive">$480.23</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-01-12</td>
+                <td>2024-04-02</td>
+                <td>$86.87</td>
+                <td>$82.73</td>
+                <td>118.00</td>
+                <td class="negative">-4.77%</td>
+                <td class="negative">$-488.56</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-04-09</td>
+                <td>2024-04-10</td>
+                <td>$86.41</td>
+                <td>$82.61</td>
+                <td>112.00</td>
+                <td class="negative">-4.40%</td>
+                <td class="negative">$-425.35</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-04-11</td>
+                <td>2024-04-17</td>
+                <td>$83.19</td>
+                <td>$79.40</td>
+                <td>111.00</td>
+                <td class="negative">-4.56%</td>
+                <td class="negative">$-421.15</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-04-18</td>
+                <td>2024-04-30</td>
+                <td>$79.83</td>
+                <td>$80.74</td>
+                <td>110.00</td>
+                <td class="positive">1.13%</td>
+                <td class="positive">$99.52</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-05-06</td>
+                <td>2024-05-10</td>
+                <td>$84.38</td>
+                <td>$86.63</td>
+                <td>105.00</td>
+                <td class="positive">2.67%</td>
+                <td class="positive">$236.99</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-05-13</td>
+                <td>2024-05-21</td>
+                <td>$85.62</td>
+                <td>$86.14</td>
+                <td>-105.00</td>
+                <td class="negative">-0.60%</td>
+                <td class="negative">$-54.14</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-05-23</td>
+                <td>2024-05-30</td>
+                <td>$83.81</td>
+                <td>$82.36</td>
+                <td>-107.00</td>
+                <td class="positive">1.73%</td>
+                <td class="positive">$155.10</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-06-13</td>
+                <td>2024-06-18</td>
+                <td>$83.33</td>
+                <td>$81.92</td>
+                <td>109.00</td>
+                <td class="negative">-1.70%</td>
+                <td class="negative">$-154.44</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-06-20</td>
+                <td>2024-06-26</td>
+                <td>$81.70</td>
+                <td>$79.97</td>
+                <td>-109.00</td>
+                <td class="positive">2.12%</td>
+                <td class="positive">$188.53</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-07-01</td>
+                <td>2024-07-08</td>
+                <td>$80.88</td>
+                <td>$81.40</td>
+                <td>-112.00</td>
+                <td class="negative">-0.64%</td>
+                <td class="negative">$-58.01</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-07-11</td>
+                <td>2024-07-16</td>
+                <td>$84.80</td>
+                <td>$90.95</td>
+                <td>105.00</td>
+                <td class="positive">7.25%</td>
+                <td class="positive">$645.38</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-07-17</td>
+                <td>2024-07-31</td>
+                <td>$89.84</td>
+                <td>$81.42</td>
+                <td>-106.00</td>
+                <td class="positive">9.38%</td>
+                <td class="positive">$892.92</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-08-02</td>
+                <td>2024-08-06</td>
+                <td>$76.28</td>
+                <td>$70.53</td>
+                <td>136.00</td>
+                <td class="negative">-7.54%</td>
+                <td class="negative">$-781.96</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-08-08</td>
+                <td>2024-08-28</td>
+                <td>$72.43</td>
+                <td>$75.57</td>
+                <td>132.00</td>
+                <td class="positive">4.33%</td>
+                <td class="positive">$414.05</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-08-29</td>
+                <td>2024-09-03</td>
+                <td>$76.70</td>
+                <td>$73.90</td>
+                <td>130.00</td>
+                <td class="negative">-3.65%</td>
+                <td class="negative">$-364.42</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-09-09</td>
+                <td>2024-09-11</td>
+                <td>$70.29</td>
+                <td>$70.47</td>
+                <td>-136.00</td>
+                <td class="negative">-0.25%</td>
+                <td class="negative">$-24.04</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-09-13</td>
+                <td>2024-09-25</td>
+                <td>$72.47</td>
+                <td>$74.53</td>
+                <td>131.00</td>
+                <td class="positive">2.85%</td>
+                <td class="positive">$270.11</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-10-01</td>
+                <td>2024-10-02</td>
+                <td>$75.88</td>
+                <td>$76.11</td>
+                <td>-128.00</td>
+                <td class="negative">-0.30%</td>
+                <td class="negative">$-28.91</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-10-08</td>
+                <td>2024-10-11</td>
+                <td>$72.83</td>
+                <td>$73.60</td>
+                <td>-132.00</td>
+                <td class="negative">-1.07%</td>
+                <td class="negative">$-102.39</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-10-18</td>
+                <td>2024-10-23</td>
+                <td>$74.15</td>
+                <td>$71.41</td>
+                <td>-128.00</td>
+                <td class="positive">3.69%</td>
+                <td class="positive">$350.65</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-10-24</td>
+                <td>2024-10-25</td>
+                <td>$71.60</td>
+                <td>$71.28</td>
+                <td>137.00</td>
+                <td class="negative">-0.44%</td>
+                <td class="negative">$-43.05</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-11-05</td>
+                <td>2024-11-06</td>
+                <td>$72.99</td>
+                <td>$80.43</td>
+                <td>133.00</td>
+                <td class="positive">10.18%</td>
+                <td class="positive">$988.65</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-11-08</td>
+                <td>2024-11-22</td>
+                <td>$77.62</td>
+                <td>$75.46</td>
+                <td>-138.00</td>
+                <td class="positive">2.78%</td>
+                <td class="positive">$298.10</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-11-25</td>
+                <td>2024-11-27</td>
+                <td>$76.39</td>
+                <td>$74.71</td>
+                <td>143.00</td>
+                <td class="negative">-2.20%</td>
+                <td class="negative">$-240.10</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-11-29</td>
+                <td>2024-12-03</td>
+                <td>$75.89</td>
+                <td>$74.19</td>
+                <td>140.00</td>
+                <td class="negative">-2.24%</td>
+                <td class="negative">$-237.64</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-12-05</td>
+                <td>2024-12-18</td>
+                <td>$73.30</td>
+                <td>$67.43</td>
+                <td>-142.00</td>
+                <td class="positive">8.01%</td>
+                <td class="positive">$833.81</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2024-12-19</td>
+                <td>2024-12-30</td>
+                <td>$67.00</td>
+                <td>$62.97</td>
+                <td>167.00</td>
+                <td class="negative">-6.02%</td>
+                <td class="negative">$-673.11</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2025-02-25</td>
+                <td>2025-02-26</td>
+                <td>$62.54</td>
+                <td>$61.35</td>
+                <td>167.00</td>
+                <td class="negative">-1.89%</td>
+                <td class="negative">$-197.77</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2025-03-03</td>
+                <td>2025-03-05</td>
+                <td>$57.60</td>
+                <td>$58.00</td>
+                <td>-177.00</td>
+                <td class="negative">-0.71%</td>
+                <td class="negative">$-72.07</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2025-03-17</td>
+                <td>2025-03-28</td>
+                <td>$58.07</td>
+                <td>$54.95</td>
+                <td>174.00</td>
+                <td class="negative">-5.39%</td>
+                <td class="negative">$-544.30</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2025-04-02</td>
+                <td>2025-04-03</td>
+                <td>$54.17</td>
+                <td>$50.91</td>
+                <td>176.00</td>
+                <td class="negative">-6.02%</td>
+                <td class="negative">$-574.15</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2025-04-09</td>
+                <td>2025-05-01</td>
+                <td>$49.35</td>
+                <td>$53.06</td>
+                <td>181.00</td>
+                <td class="positive">7.53%</td>
+                <td class="positive">$672.25</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2025-05-02</td>
+                <td>2025-05-15</td>
+                <td>$54.44</td>
+                <td>$54.90</td>
+                <td>-175.00</td>
+                <td class="negative">-0.84%</td>
+                <td class="negative">$-79.94</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('SCL')">
+                <td>SCL</td>
+                <td>未知策略</td>
+                <td>2025-05-16</td>
+                <td>2025-06-10</td>
+                <td>$55.68</td>
+                <td>$56.69</td>
+                <td>-169.00</td>
+                <td class="negative">-1.81%</td>
+                <td class="negative">$-170.50</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-03-27</td>
+                <td>2023-03-29</td>
+                <td>$80.14</td>
+                <td>$79.77</td>
+                <td>124.00</td>
+                <td class="negative">-0.46%</td>
+                <td class="negative">$-45.88</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-03-30</td>
+                <td>2023-04-13</td>
+                <td>$79.83</td>
+                <td>$83.03</td>
+                <td>-123.00</td>
+                <td class="negative">-4.01%</td>
+                <td class="negative">$-393.60</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-04-19</td>
+                <td>2023-05-01</td>
+                <td>$83.48</td>
+                <td>$85.72</td>
+                <td>-113.00</td>
+                <td class="negative">-2.68%</td>
+                <td class="negative">$-253.12</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-05-02</td>
+                <td>2023-05-03</td>
+                <td>$85.16</td>
+                <td>$77.64</td>
+                <td>-107.00</td>
+                <td class="positive">8.84%</td>
+                <td class="positive">$805.16</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-05-04</td>
+                <td>2023-05-22</td>
+                <td>$71.39</td>
+                <td>$82.46</td>
+                <td>139.00</td>
+                <td class="positive">15.50%</td>
+                <td class="positive">$1538.32</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-06-20</td>
+                <td>2023-06-22</td>
+                <td>$83.47</td>
+                <td>$85.93</td>
+                <td>-136.00</td>
+                <td class="negative">-2.95%</td>
+                <td class="negative">$-334.56</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-06-26</td>
+                <td>2023-06-29</td>
+                <td>$83.89</td>
+                <td>$83.20</td>
+                <td>-131.00</td>
+                <td class="positive">0.82%</td>
+                <td class="positive">$90.39</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-06-30</td>
+                <td>2023-07-07</td>
+                <td>$84.91</td>
+                <td>$82.23</td>
+                <td>130.00</td>
+                <td class="negative">-3.16%</td>
+                <td class="negative">$-348.40</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-07-13</td>
+                <td>2023-07-21</td>
+                <td>$81.42</td>
+                <td>$83.70</td>
+                <td>131.00</td>
+                <td class="positive">2.80%</td>
+                <td class="positive">$298.68</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-07-24</td>
+                <td>2023-07-28</td>
+                <td>$82.83</td>
+                <td>$87.22</td>
+                <td>-132.00</td>
+                <td class="negative">-5.30%</td>
+                <td class="negative">$-579.48</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-07-31</td>
+                <td>2023-08-02</td>
+                <td>$94.57</td>
+                <td>$100.55</td>
+                <td>-109.00</td>
+                <td class="negative">-6.32%</td>
+                <td class="negative">$-651.51</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-08-08</td>
+                <td>2023-09-11</td>
+                <td>$99.74</td>
+                <td>$100.15</td>
+                <td>-96.00</td>
+                <td class="negative">-0.41%</td>
+                <td class="negative">$-39.36</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-09-15</td>
+                <td>2023-09-19</td>
+                <td>$99.07</td>
+                <td>$103.34</td>
+                <td>-96.00</td>
+                <td class="negative">-4.31%</td>
+                <td class="negative">$-410.02</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-09-22</td>
+                <td>2023-10-06</td>
+                <td>$102.21</td>
+                <td>$102.78</td>
+                <td>-89.00</td>
+                <td class="negative">-0.56%</td>
+                <td class="negative">$-50.73</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-10-12</td>
+                <td>2023-10-17</td>
+                <td>$104.52</td>
+                <td>$104.11</td>
+                <td>-86.00</td>
+                <td class="positive">0.39%</td>
+                <td class="positive">$35.26</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-10-19</td>
+                <td>2023-10-24</td>
+                <td>$101.31</td>
+                <td>$98.37</td>
+                <td>-89.00</td>
+                <td class="positive">2.90%</td>
+                <td class="positive">$261.66</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-10-25</td>
+                <td>2023-11-03</td>
+                <td>$97.66</td>
+                <td>$107.05</td>
+                <td>94.00</td>
+                <td class="positive">9.61%</td>
+                <td class="positive">$882.66</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-11-15</td>
+                <td>2023-11-24</td>
+                <td>$105.84</td>
+                <td>$105.48</td>
+                <td>-95.00</td>
+                <td class="positive">0.34%</td>
+                <td class="positive">$34.20</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-11-28</td>
+                <td>2023-11-30</td>
+                <td>$103.62</td>
+                <td>$104.17</td>
+                <td>-97.00</td>
+                <td class="negative">-0.53%</td>
+                <td class="negative">$-53.35</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-12-04</td>
+                <td>2023-12-06</td>
+                <td>$107.85</td>
+                <td>$104.62</td>
+                <td>92.00</td>
+                <td class="negative">-2.99%</td>
+                <td class="negative">$-297.16</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-12-11</td>
+                <td>2023-12-12</td>
+                <td>$104.11</td>
+                <td>$105.79</td>
+                <td>-92.00</td>
+                <td class="negative">-1.61%</td>
+                <td class="negative">$-154.56</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2023-12-14</td>
+                <td>2023-12-29</td>
+                <td>$96.03</td>
+                <td>$102.00</td>
+                <td>-98.00</td>
+                <td class="negative">-6.21%</td>
+                <td class="negative">$-584.84</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-02-16</td>
+                <td>2024-02-22</td>
+                <td>$105.24</td>
+                <td>$105.18</td>
+                <td>-84.00</td>
+                <td class="positive">0.06%</td>
+                <td class="positive">$5.04</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-02-28</td>
+                <td>2024-03-04</td>
+                <td>$93.90</td>
+                <td>$99.91</td>
+                <td>-93.00</td>
+                <td class="negative">-6.40%</td>
+                <td class="negative">$-559.02</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-03-11</td>
+                <td>2024-03-18</td>
+                <td>$99.35</td>
+                <td>$94.13</td>
+                <td>82.00</td>
+                <td class="negative">-5.25%</td>
+                <td class="negative">$-427.68</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-03-27</td>
+                <td>2024-04-04</td>
+                <td>$96.32</td>
+                <td>$93.83</td>
+                <td>80.00</td>
+                <td class="negative">-2.59%</td>
+                <td class="negative">$-199.20</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-04-15</td>
+                <td>2024-04-17</td>
+                <td>$91.15</td>
+                <td>$91.24</td>
+                <td>-82.00</td>
+                <td class="negative">-0.10%</td>
+                <td class="negative">$-7.38</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-04-18</td>
+                <td>2024-04-19</td>
+                <td>$90.44</td>
+                <td>$92.32</td>
+                <td>-82.00</td>
+                <td class="negative">-2.08%</td>
+                <td class="negative">$-154.16</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-04-22</td>
+                <td>2024-05-01</td>
+                <td>$93.20</td>
+                <td>$89.38</td>
+                <td>78.00</td>
+                <td class="negative">-4.10%</td>
+                <td class="negative">$-298.13</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-05-06</td>
+                <td>2024-05-13</td>
+                <td>$86.93</td>
+                <td>$87.33</td>
+                <td>80.00</td>
+                <td class="positive">0.46%</td>
+                <td class="positive">$32.00</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-05-16</td>
+                <td>2024-06-05</td>
+                <td>$87.72</td>
+                <td>$94.49</td>
+                <td>79.00</td>
+                <td class="positive">7.72%</td>
+                <td class="positive">$534.83</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-06-06</td>
+                <td>2024-06-17</td>
+                <td>$96.12</td>
+                <td>$96.74</td>
+                <td>-78.00</td>
+                <td class="negative">-0.65%</td>
+                <td class="negative">$-48.36</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-06-26</td>
+                <td>2024-07-12</td>
+                <td>$97.90</td>
+                <td>$102.34</td>
+                <td>-75.00</td>
+                <td class="negative">-4.54%</td>
+                <td class="negative">$-333.31</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-07-16</td>
+                <td>2024-07-22</td>
+                <td>$108.75</td>
+                <td>$109.61</td>
+                <td>-64.00</td>
+                <td class="negative">-0.79%</td>
+                <td class="negative">$-55.04</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-07-23</td>
+                <td>2024-07-30</td>
+                <td>$110.45</td>
+                <td>$115.35</td>
+                <td>-63.00</td>
+                <td class="negative">-4.43%</td>
+                <td class="negative">$-308.41</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-08-14</td>
+                <td>2024-08-21</td>
+                <td>$103.55</td>
+                <td>$105.93</td>
+                <td>-64.00</td>
+                <td class="negative">-2.30%</td>
+                <td class="negative">$-152.32</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-08-26</td>
+                <td>2024-08-28</td>
+                <td>$107.57</td>
+                <td>$106.70</td>
+                <td>60.00</td>
+                <td class="negative">-0.81%</td>
+                <td class="negative">$-52.20</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-09-03</td>
+                <td>2024-09-16</td>
+                <td>$108.86</td>
+                <td>$107.15</td>
+                <td>-58.00</td>
+                <td class="positive">1.57%</td>
+                <td class="positive">$99.18</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-09-19</td>
+                <td>2024-09-23</td>
+                <td>$109.83</td>
+                <td>$109.38</td>
+                <td>58.00</td>
+                <td class="negative">-0.41%</td>
+                <td class="negative">$-26.10</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-09-27</td>
+                <td>2024-10-07</td>
+                <td>$108.01</td>
+                <td>$105.65</td>
+                <td>-59.00</td>
+                <td class="positive">2.18%</td>
+                <td class="positive">$139.24</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-10-15</td>
+                <td>2024-10-24</td>
+                <td>$108.02</td>
+                <td>$104.21</td>
+                <td>60.00</td>
+                <td class="negative">-3.53%</td>
+                <td class="negative">$-228.61</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-10-28</td>
+                <td>2024-10-30</td>
+                <td>$104.14</td>
+                <td>$111.77</td>
+                <td>60.00</td>
+                <td class="positive">7.33%</td>
+                <td class="positive">$458.00</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-10-31</td>
+                <td>2024-11-06</td>
+                <td>$115.73</td>
+                <td>$125.00</td>
+                <td>-57.00</td>
+                <td class="negative">-8.01%</td>
+                <td class="negative">$-528.39</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-12-13</td>
+                <td>2024-12-16</td>
+                <td>$120.66</td>
+                <td>$121.95</td>
+                <td>-50.00</td>
+                <td class="negative">-1.07%</td>
+                <td class="negative">$-64.50</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2024-12-19</td>
+                <td>2025-01-06</td>
+                <td>$120.17</td>
+                <td>$121.09</td>
+                <td>50.00</td>
+                <td class="positive">0.77%</td>
+                <td class="positive">$46.00</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2025-01-08</td>
+                <td>2025-01-15</td>
+                <td>$125.68</td>
+                <td>$127.39</td>
+                <td>48.00</td>
+                <td class="positive">1.36%</td>
+                <td class="positive">$82.08</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2025-01-17</td>
+                <td>2025-01-27</td>
+                <td>$127.03</td>
+                <td>$126.68</td>
+                <td>-48.00</td>
+                <td class="positive">0.28%</td>
+                <td class="positive">$16.80</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2025-01-28</td>
+                <td>2025-01-31</td>
+                <td>$129.14</td>
+                <td>$126.78</td>
+                <td>47.00</td>
+                <td class="negative">-1.83%</td>
+                <td class="negative">$-110.92</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2025-02-03</td>
+                <td>2025-02-11</td>
+                <td>$126.63</td>
+                <td>$128.71</td>
+                <td>-47.00</td>
+                <td class="negative">-1.64%</td>
+                <td class="negative">$-97.76</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2025-02-13</td>
+                <td>2025-02-21</td>
+                <td>$130.36</td>
+                <td>$123.90</td>
+                <td>45.00</td>
+                <td class="negative">-4.95%</td>
+                <td class="negative">$-290.66</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2025-02-24</td>
+                <td>2025-02-26</td>
+                <td>$125.30</td>
+                <td>$134.25</td>
+                <td>-44.00</td>
+                <td class="negative">-7.14%</td>
+                <td class="negative">$-393.80</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2025-02-27</td>
+                <td>2025-03-07</td>
+                <td>$149.58</td>
+                <td>$149.28</td>
+                <td>-34.00</td>
+                <td class="positive">0.20%</td>
+                <td class="positive">$10.20</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2025-03-12</td>
+                <td>2025-03-19</td>
+                <td>$143.75</td>
+                <td>$149.73</td>
+                <td>-35.00</td>
+                <td class="negative">-4.16%</td>
+                <td class="negative">$-209.30</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2025-03-26</td>
+                <td>2025-03-31</td>
+                <td>$142.51</td>
+                <td>$143.45</td>
+                <td>-34.00</td>
+                <td class="negative">-0.66%</td>
+                <td class="negative">$-31.96</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2025-04-01</td>
+                <td>2025-04-04</td>
+                <td>$146.38</td>
+                <td>$137.76</td>
+                <td>33.00</td>
+                <td class="negative">-5.89%</td>
+                <td class="negative">$-284.46</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2025-04-09</td>
+                <td>2025-04-30</td>
+                <td>$144.11</td>
+                <td>$130.30</td>
+                <td>31.00</td>
+                <td class="negative">-9.58%</td>
+                <td class="negative">$-428.11</td>
+            </tr>
+            
+
+            <tr onclick="showStockDetail('HURN')">
+                <td>HURN</td>
+                <td>未知策略</td>
+                <td>2025-05-08</td>
+                <td>2025-05-27</td>
+                <td>$152.26</td>
+                <td>$153.61</td>
+                <td>-26.00</td>
+                <td class="negative">-0.89%</td>
+                <td class="negative">$-35.10</td>
+            </tr>
+            
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- 個股詳細模態框 -->
+    <div id="stockModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">股票詳情</h2>
+            <div id="stockChart" style="height: 400px;"></div>
+            <div id="stockTradesDetail"></div>
+        </div>
+    </div>
+    
+    <script>
+        // 全局數據
+        const equityData = {"dates":["2023-01-01","2023-01-02","2023-01-03","2023-01-04","2023-01-05","2023-01-06","2023-01-07","2023-01-08","2023-01-09","2023-01-10","2023-01-11","2023-01-12","2023-01-13","2023-01-14","2023-01-15","2023-01-16","2023-01-17","2023-01-18","2023-01-19","2023-01-20","2023-01-21","2023-01-22","2023-01-23","2023-01-24","2023-01-25","2023-01-26","2023-01-27","2023-01-28","2023-01-29","2023-01-30","2023-01-31","2023-02-01","2023-02-02","2023-02-03","2023-02-04","2023-02-05","2023-02-06","2023-02-07","2023-02-08","2023-02-09","2023-02-10","2023-02-11","2023-02-12","2023-02-13","2023-02-14","2023-02-15","2023-02-16","2023-02-17","2023-02-18","2023-02-19","2023-02-20","2023-02-21","2023-02-22","2023-02-23","2023-02-24","2023-02-25","2023-02-26","2023-02-27","2023-02-28","2023-03-01","2023-03-02","2023-03-03","2023-03-04","2023-03-05","2023-03-06","2023-03-07","2023-03-08","2023-03-09","2023-03-10","2023-03-11","2023-03-12","2023-03-13","2023-03-14","2023-03-15","2023-03-16","2023-03-17","2023-03-18","2023-03-19","2023-03-20","2023-03-21","2023-03-22","2023-03-23","2023-03-24","2023-03-25","2023-03-26","2023-03-27","2023-03-28","2023-03-29","2023-03-30","2023-03-31","2023-04-01","2023-04-02","2023-04-03","2023-04-04","2023-04-05","2023-04-06","2023-04-07","2023-04-08","2023-04-09","2023-04-10","2023-04-11","2023-04-12","2023-04-13","2023-04-14","2023-04-15","2023-04-16","2023-04-17","2023-04-18","2023-04-19","2023-04-20","2023-04-21","2023-04-22","2023-04-23","2023-04-24","2023-04-25","2023-04-26","2023-04-27","2023-04-28","2023-04-29","2023-04-30","2023-05-01","2023-05-02","2023-05-03","2023-05-04","2023-05-05","2023-05-06","2023-05-07","2023-05-08","2023-05-09","2023-05-10","2023-05-11","2023-05-12","2023-05-13","2023-05-14","2023-05-15","2023-05-16","2023-05-17","2023-05-18","2023-05-19","2023-05-20","2023-05-21","2023-05-22","2023-05-23","2023-05-24","2023-05-25","2023-05-26","2023-05-27","2023-05-28","2023-05-29","2023-05-30","2023-05-31","2023-06-01","2023-06-02","2023-06-03","2023-06-04","2023-06-05","2023-06-06","2023-06-07","2023-06-08","2023-06-09","2023-06-10","2023-06-11","2023-06-12","2023-06-13","2023-06-14","2023-06-15","2023-06-16","2023-06-17","2023-06-18","2023-06-19","2023-06-20","2023-06-21","2023-06-22","2023-06-23","2023-06-24","2023-06-25","2023-06-26","2023-06-27","2023-06-28","2023-06-29","2023-06-30","2023-07-01","2023-07-02","2023-07-03","2023-07-04","2023-07-05","2023-07-06","2023-07-07","2023-07-08","2023-07-09","2023-07-10","2023-07-11","2023-07-12","2023-07-13","2023-07-14","2023-07-15","2023-07-16","2023-07-17","2023-07-18","2023-07-19","2023-07-20","2023-07-21","2023-07-22","2023-07-23","2023-07-24","2023-07-25","2023-07-26","2023-07-27","2023-07-28","2023-07-29","2023-07-30","2023-07-31","2023-08-01","2023-08-02","2023-08-03","2023-08-04","2023-08-05","2023-08-06","2023-08-07","2023-08-08","2023-08-09","2023-08-10","2023-08-11","2023-08-12","2023-08-13","2023-08-14","2023-08-15","2023-08-16","2023-08-17","2023-08-18","2023-08-19","2023-08-20","2023-08-21","2023-08-22","2023-08-23","2023-08-24","2023-08-25","2023-08-26","2023-08-27","2023-08-28","2023-08-29","2023-08-30","2023-08-31","2023-09-01","2023-09-02","2023-09-03","2023-09-04","2023-09-05","2023-09-06","2023-09-07","2023-09-08","2023-09-09","2023-09-10","2023-09-11","2023-09-12","2023-09-13","2023-09-14","2023-09-15","2023-09-16","2023-09-17","2023-09-18","2023-09-19","2023-09-20","2023-09-21","2023-09-22","2023-09-23","2023-09-24","2023-09-25","2023-09-26","2023-09-27","2023-09-28","2023-09-29","2023-09-30","2023-10-01","2023-10-02","2023-10-03","2023-10-04","2023-10-05","2023-10-06","2023-10-07","2023-10-08","2023-10-09","2023-10-10","2023-10-11","2023-10-12","2023-10-13","2023-10-14","2023-10-15","2023-10-16","2023-10-17","2023-10-18","2023-10-19","2023-10-20","2023-10-21","2023-10-22","2023-10-23","2023-10-24","2023-10-25","2023-10-26","2023-10-27","2023-10-28","2023-10-29","2023-10-30","2023-10-31","2023-11-01","2023-11-02","2023-11-03","2023-11-04","2023-11-05","2023-11-06","2023-11-07","2023-11-08","2023-11-09","2023-11-10","2023-11-11","2023-11-12","2023-11-13","2023-11-14","2023-11-15","2023-11-16","2023-11-17","2023-11-18","2023-11-19","2023-11-20","2023-11-21","2023-11-22","2023-11-23","2023-11-24","2023-11-25","2023-11-26","2023-11-27","2023-11-28","2023-11-29","2023-11-30","2023-12-01","2023-12-02","2023-12-03","2023-12-04","2023-12-05","2023-12-06","2023-12-07","2023-12-08","2023-12-09","2023-12-10","2023-12-11","2023-12-12","2023-12-13","2023-12-14","2023-12-15","2023-12-16","2023-12-17","2023-12-18","2023-12-19","2023-12-20","2023-12-21","2023-12-22","2023-12-23","2023-12-24","2023-12-25","2023-12-26","2023-12-27","2023-12-28","2023-12-29","2023-12-30","2023-12-31","2024-01-01","2024-01-02","2024-01-03","2024-01-04","2024-01-05","2024-01-06","2024-01-07","2024-01-08","2024-01-09","2024-01-10","2024-01-11","2024-01-12","2024-01-13","2024-01-14","2024-01-15","2024-01-16","2024-01-17","2024-01-18","2024-01-19","2024-01-20","2024-01-21","2024-01-22","2024-01-23","2024-01-24","2024-01-25","2024-01-26","2024-01-27","2024-01-28","2024-01-29","2024-01-30","2024-01-31","2024-02-01","2024-02-02","2024-02-03","2024-02-04","2024-02-05","2024-02-06","2024-02-07","2024-02-08","2024-02-09","2024-02-10","2024-02-11","2024-02-12","2024-02-13","2024-02-14","2024-02-15","2024-02-16","2024-02-17","2024-02-18","2024-02-19","2024-02-20","2024-02-21","2024-02-22","2024-02-23","2024-02-24","2024-02-25","2024-02-26","2024-02-27","2024-02-28","2024-02-29","2024-03-01","2024-03-02","2024-03-03","2024-03-04","2024-03-05","2024-03-06","2024-03-07","2024-03-08","2024-03-09","2024-03-10","2024-03-11","2024-03-12","2024-03-13","2024-03-14","2024-03-15","2024-03-16","2024-03-17","2024-03-18","2024-03-19","2024-03-20","2024-03-21","2024-03-22","2024-03-23","2024-03-24","2024-03-25","2024-03-26","2024-03-27","2024-03-28","2024-03-29","2024-03-30","2024-03-31","2024-04-01","2024-04-02","2024-04-03","2024-04-04","2024-04-05","2024-04-06","2024-04-07","2024-04-08","2024-04-09","2024-04-10","2024-04-11","2024-04-12","2024-04-13","2024-04-14","2024-04-15","2024-04-16","2024-04-17","2024-04-18","2024-04-19","2024-04-20","2024-04-21","2024-04-22","2024-04-23","2024-04-24","2024-04-25","2024-04-26","2024-04-27","2024-04-28","2024-04-29","2024-04-30","2024-05-01","2024-05-02","2024-05-03","2024-05-04","2024-05-05","2024-05-06","2024-05-07","2024-05-08","2024-05-09","2024-05-10","2024-05-11","2024-05-12","2024-05-13","2024-05-14","2024-05-15","2024-05-16","2024-05-17","2024-05-18","2024-05-19","2024-05-20","2024-05-21","2024-05-22","2024-05-23","2024-05-24","2024-05-25","2024-05-26","2024-05-27","2024-05-28","2024-05-29","2024-05-30","2024-05-31","2024-06-01","2024-06-02","2024-06-03","2024-06-04","2024-06-05","2024-06-06","2024-06-07","2024-06-08","2024-06-09","2024-06-10","2024-06-11","2024-06-12","2024-06-13","2024-06-14","2024-06-15","2024-06-16","2024-06-17","2024-06-18","2024-06-19","2024-06-20","2024-06-21","2024-06-22","2024-06-23","2024-06-24","2024-06-25","2024-06-26","2024-06-27","2024-06-28","2024-06-29","2024-06-30","2024-07-01","2024-07-02","2024-07-03","2024-07-04","2024-07-05","2024-07-06","2024-07-07","2024-07-08","2024-07-09","2024-07-10","2024-07-11","2024-07-12","2024-07-13","2024-07-14","2024-07-15","2024-07-16","2024-07-17","2024-07-18","2024-07-19","2024-07-20","2024-07-21","2024-07-22","2024-07-23","2024-07-24","2024-07-25","2024-07-26","2024-07-27","2024-07-28","2024-07-29","2024-07-30","2024-07-31","2024-08-01","2024-08-02","2024-08-03","2024-08-04","2024-08-05","2024-08-06","2024-08-07","2024-08-08","2024-08-09","2024-08-10","2024-08-11","2024-08-12","2024-08-13","2024-08-14","2024-08-15","2024-08-16","2024-08-17","2024-08-18","2024-08-19","2024-08-20","2024-08-21","2024-08-22","2024-08-23","2024-08-24","2024-08-25","2024-08-26","2024-08-27","2024-08-28","2024-08-29","2024-08-30","2024-08-31","2024-09-01","2024-09-02","2024-09-03","2024-09-04","2024-09-05","2024-09-06","2024-09-07","2024-09-08","2024-09-09","2024-09-10","2024-09-11","2024-09-12","2024-09-13","2024-09-14","2024-09-15","2024-09-16","2024-09-17","2024-09-18","2024-09-19","2024-09-20","2024-09-21","2024-09-22","2024-09-23","2024-09-24","2024-09-25","2024-09-26","2024-09-27","2024-09-28","2024-09-29","2024-09-30","2024-10-01","2024-10-02","2024-10-03","2024-10-04","2024-10-05","2024-10-06","2024-10-07","2024-10-08","2024-10-09","2024-10-10","2024-10-11","2024-10-12","2024-10-13","2024-10-14","2024-10-15","2024-10-16","2024-10-17","2024-10-18","2024-10-19","2024-10-20","2024-10-21","2024-10-22","2024-10-23","2024-10-24","2024-10-25","2024-10-26","2024-10-27","2024-10-28","2024-10-29","2024-10-30","2024-10-31","2024-11-01","2024-11-02","2024-11-03","2024-11-04","2024-11-05","2024-11-06","2024-11-07","2024-11-08","2024-11-09","2024-11-10","2024-11-11","2024-11-12","2024-11-13","2024-11-14","2024-11-15","2024-11-16","2024-11-17","2024-11-18","2024-11-19","2024-11-20","2024-11-21","2024-11-22","2024-11-23","2024-11-24","2024-11-25","2024-11-26","2024-11-27","2024-11-28","2024-11-29","2024-11-30","2024-12-01","2024-12-02","2024-12-03","2024-12-04","2024-12-05","2024-12-06","2024-12-07","2024-12-08","2024-12-09","2024-12-10","2024-12-11","2024-12-12","2024-12-13","2024-12-14","2024-12-15","2024-12-16","2024-12-17","2024-12-18","2024-12-19","2024-12-20","2024-12-21","2024-12-22","2024-12-23","2024-12-24","2024-12-25","2024-12-26","2024-12-27","2024-12-28","2024-12-29","2024-12-30","2024-12-31","2025-01-01","2025-01-02","2025-01-03","2025-01-04","2025-01-05","2025-01-06","2025-01-07","2025-01-08","2025-01-09","2025-01-10","2025-01-11","2025-01-12","2025-01-13","2025-01-14","2025-01-15","2025-01-16","2025-01-17","2025-01-18","2025-01-19","2025-01-20","2025-01-21","2025-01-22","2025-01-23","2025-01-24","2025-01-25","2025-01-26","2025-01-27","2025-01-28","2025-01-29","2025-01-30","2025-01-31","2025-02-01","2025-02-02","2025-02-03","2025-02-04","2025-02-05","2025-02-06","2025-02-07","2025-02-08","2025-02-09","2025-02-10","2025-02-11","2025-02-12","2025-02-13","2025-02-14","2025-02-15","2025-02-16","2025-02-17","2025-02-18","2025-02-19","2025-02-20","2025-02-21","2025-02-22","2025-02-23","2025-02-24","2025-02-25","2025-02-26","2025-02-27","2025-02-28","2025-03-01","2025-03-02","2025-03-03","2025-03-04","2025-03-05","2025-03-06","2025-03-07","2025-03-08","2025-03-09","2025-03-10","2025-03-11","2025-03-12","2025-03-13","2025-03-14","2025-03-15","2025-03-16","2025-03-17","2025-03-18","2025-03-19","2025-03-20","2025-03-21","2025-03-22","2025-03-23","2025-03-24","2025-03-25","2025-03-26","2025-03-27","2025-03-28","2025-03-29","2025-03-30","2025-03-31","2025-04-01","2025-04-02","2025-04-03","2025-04-04","2025-04-05","2025-04-06","2025-04-07","2025-04-08","2025-04-09","2025-04-10","2025-04-11","2025-04-12","2025-04-13","2025-04-14","2025-04-15","2025-04-16","2025-04-17","2025-04-18","2025-04-19","2025-04-20","2025-04-21","2025-04-22","2025-04-23","2025-04-24","2025-04-25","2025-04-26","2025-04-27","2025-04-28","2025-04-29","2025-04-30","2025-05-01","2025-05-02","2025-05-03","2025-05-04","2025-05-05","2025-05-06","2025-05-07","2025-05-08","2025-05-09","2025-05-10","2025-05-11","2025-05-12","2025-05-13","2025-05-14","2025-05-15","2025-05-16","2025-05-17","2025-05-18","2025-05-19","2025-05-20","2025-05-21","2025-05-22","2025-05-23","2025-05-24","2025-05-25","2025-05-26","2025-05-27","2025-05-28","2025-05-29","2025-05-30","2025-05-31","2025-06-01","2025-06-02","2025-06-03","2025-06-04","2025-06-05","2025-06-06","2025-06-07","2025-06-08","2025-06-09","2025-06-10","2025-06-11","2025-06-12"],"values":[10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10000.0,10048.383841705323,10220.237812957765,10159.402920684815,10081.364155548097,10199.199180664064,10123.636108459474,10179.227966293336,10153.3980789032,10262.868003829957,10187.837928756715,10025.16672567749,9757.34373526001,9646.003845733643,9543.217168426514,9523.187484359742,9523.187484359742,9481.109641189576,9562.182796661378,9591.812374298097,9623.831066314699,10553.10859973506,10531.638323856154,10643.27709015254,10619.089162906446,10254.426862796583,10220.358830020705,11015.173193405866,11064.149755905866,11480.548170975446,11862.244368485211,12063.723297074079,12240.25283046031,12376.473297074079,12358.402618363141,12436.243339493512,12180.29178421092,12285.085737152815,12273.032476349592,12442.777311249494,12937.370915527645,13712.812697687867,13712.812697687867,13712.812697687867,13712.812697687867,13712.812697687867,13712.812697687867,13712.812697687867,13712.812697687867,13712.812697687867,13430.382107905152,13405.43554857898,13496.296076121094,13640.400102915528,13942.78386146045,13866.006456675294,14007.74943000293,13795.136377634766,13816.397119822266,14122.32339698291,14119.526149973633,14003.658397898438,13970.837470286133,13908.232016794922,14041.479910624268,14149.402778574708,14021.02333826709,13999.224939066651,14013.548179423096,13495.746391398194,13361.70705942798,13162.807218119386,13141.427417246583,13141.427417246583,13141.427417246583,13141.427417246583,13348.03609733081,13496.674810770752,13949.552381876709,13913.14601743579,14055.06960904956,13803.670576456787,13724.7574278667,13578.583706675294,13920.464230356934,14144.863827524903,13233.890828898193,13208.243435282471,12639.875650126221,12256.356061141312,12200.292416732133,12175.288317656816,12175.288317656816,12175.288317656816,12319.337945098221,12357.738091582596,12311.657769316971,12125.418267363846,12045.738091582596,12168.617974395096,12450.858208770096,12405.738091582596,12351.480697295487,12226.993972441971,12063.382217070877,11999.560775420487,12095.656295440018,12110.531936309158,12142.083419463455,12155.78404202205,12109.019851348221,12021.242110869705,11526.64586612278,11558.325309482156,11430.191374042091,11215.293577411232,11298.053014972267,11168.166759234962,11385.054111224708,11587.189159137306,11717.026477557716,11031.08493263584,10896.517069087835,10720.10815395722,10696.967703578803,10696.967703578803,10482.869817211005,10346.29707093415,10325.315152599189,10514.955487682197,10567.118474437568,10086.184331371162,9997.99983116367,10101.240157091404,10131.49983116367,9949.050238573338,9930.755398790623,9930.755398790623,9930.755398790623,9930.755398790623,10001.357854387546,10069.297933122898,9948.037618181492,9930.130698076511,9930.130698076511,10097.217002458836,10208.467002458836,10173.757056780125,10156.247196291233,10226.368016603732,10010.408566835666,9947.046691744114,10312.86084274509,10512.930880586888,10282.567126314427,10612.889616976048,10503.187834749486,10718.42538357761,10839.237639436986,11179.454558382298,11044.757781038548,10939.21981717136,10329.608244905736,10105.549746916957,10102.539451811976,10038.88962576217,10143.389480803675,10176.64006063766,10167.139480803675,10119.639480803675,10095.488314589686,10124.649462660975,10311.29657940597,10132.36915020675,10092.0027680046,10420.381838133995,10163.656855162802,10124.105796569052,9673.511142089072,9515.562562277633,9515.562562277633,9341.846294089157,9322.3809339207,9322.3809339207,9295.979274069625,9349.937175070601,8989.91115883525,9005.473567282515,8911.99903420146,8596.894969260054,8585.773021017867,8679.471675192672,8639.832667624312,8551.555297080084,8667.687926474615,8994.12029952149,8926.111907187505,9037.013945761724,9017.135558310552,9142.68621749024,9145.825560751959,9159.426909628912,9140.85806337647,8954.6043127356,8983.1824377356,9114.641452628179,9228.954852896733,9497.5886877356,9479.29883177857,9299.828494864507,9318.119251090093,9294.11359007935,9485.01463683228,9450.72070677857,9074.631717520757,9185.515094595952,9278.109515982671,8984.325778800054,9105.496524649663,9079.204181510015,9159.223651724858,9185.515094595952,9433.575092154546,8953.460971671147,9095.208255606694,9541.026645499272,9513.59276183228,9295.430417044683,9331.437527640386,9378.63815019898,9243.226287222906,9127.770446158453,9132.34291014771,8984.879821158453,8668.732169898076,8405.976524146123,8265.250379335424,8190.632520448706,8197.521375429174,8336.426511537573,8299.690152894995,8432.85607696726,8037.236581636449,8160.068948579808,7824.36466391184,8013.94684774973,7627.902717352176,7750.737159490848,8030.843116522098,8135.309379339481,7937.85707831409,7887.347511053348,7849.462409734989,8079.057899236942,8130.121613836552,7831.803544378544,7406.470173023473,7486.470173023473,7312.870319507848,7297.857519214879,7297.857519214879,7297.857519214879,6834.651239513268,6834.651239513268,6663.921513851036,6568.893346126427,6496.1156595724715,6372.703267909874,6340.114181743492,6379.360617076744,6426.289000041832,6448.877714946617,6445.451384380211,6290.2452991751325,6362.888014629234,6425.646208598961,6226.5223987845075,5893.562430370441,5893.562430370441,5893.562430370441,5893.562430370441,5939.742813366047,5922.745018261066,6135.167961376301,6149.323807018391,6112.731163662067,6093.0352753716625,6142.068173320881,6116.530339153401,6057.0713586846505,6060.677269939533,5831.078026775471,5797.1894768181955,5825.629525035969,5872.927400905721,6056.70280678951,6185.003237087361,5989.656618435018,6160.841017421833,6285.661162075154,6390.731306728474,6649.06104153072,6634.131621868244,6522.4170680657535,6520.857329906574,6534.897353710285,6516.176925243488,6615.237258495441,6565.478971370807,6431.185323604694,6383.075046962848,6365.216971355548,6437.94332113277,6321.843086147418,6544.45682516109,6535.9362105370665,6524.816969921221,6458.817175914874,6449.067381908526,6335.543697094074,6480.655368541828,6507.565860485187,6397.693042492023,6407.209678905598,6480.709930675617,6325.459953563801,6132.252808302358,6264.612313002065,6688.371010511831,6753.912197798208,6920.571553999379,7012.4645135941055,6801.895238691762,6749.538498457387,6906.95421919103,6769.745562879994,6666.650714247182,6613.908328382924,6428.212733824714,7106.026529554971,7106.026529554971,7106.026529554971,6412.816682875284,6284.138042430415,6284.138042430415,6284.138042430415,5964.47380799438,5816.13494080688,5893.529044810786,5916.74626893188,6159.210221812739,6348.4575973010205,6354.484635875239,6285.529313609614,6289.055528209224,6223.902768687739,6456.081052379145,6557.982450084223,6522.1582176013135,6434.82981794311,6402.076381724848,6320.226990397943,6017.710587199701,6031.109714030755,6080.989749431145,6241.64999723388,6176.689837932122,6115.068210368646,6170.654208903802,6103.9265107836845,6007.066616984856,6101.49387424804,6222.835950816643,6341.171911204827,6467.226629222405,6284.012067698967,6171.133474254143,6285.785406169426,6209.8951168627855,6190.367067836297,6190.367067836297,6136.91219367553,6202.9919055895925,6246.109652049553,6286.806432506096,6177.656522532951,6249.046468516838,6236.579768336785,6204.393573634637,6276.973834865105,6114.96284853698,6095.5319856829765,6095.5319856829765,6025.569769191277,6063.3696043963555,6083.169714259637,6318.321183009637,6478.250839992059,6325.434494777215,6154.840524797088,6092.175845552092,6072.643890428191,6111.1469989487,6504.732405823385,6504.732405823385,6529.15939418093,6350.749550736105,6229.90939418093,6896.7429404286795,6896.7429404286795,6896.7429404286795,6810.281316283172,7143.610402586883,7234.394002440398,7302.144261839812,7459.323094847625,7388.863835814422,7382.089757445281,7376.669652464812,7288.595052245086,7173.420979979461,7152.594710905974,6880.818934172576,6890.646692961638,6869.279271010344,6864.608121108,6610.390286635344,6589.616199416105,6589.616199416105,6480.511269911711,6389.423348769133,6420.254006728117,6397.831414565031,6588.416406020109,6669.695458754484,6716.4491757955,6869.614970168059,7313.845988234465,7294.694992781584,7222.399069045012,7102.956304762785,7286.3409101705,7295.805860732024,6965.854841444914,6771.1573263245355,6770.657600982739,6723.157372100903,6790.657677276684,6612.157311065746,6600.048311431958,6600.048311431958,6536.142943512036,6512.142943512036,6641.743163238599,6670.062987457349,6657.833547515943,6657.833547515943,6563.07860903938,6629.318477203443,6698.438594390943,6739.718623687818,6662.438594390943,6650.277314361646,6579.858254821851,6808.7483839112065,6527.2181257324955,6515.3008058472415,6591.287356613233,6525.017543075635,6506.217471359327,6565.907313583448,6584.707385299756,6405.637141464307,6393.538400833204,6393.538400833204,6299.905671188429,6355.705918380811,6420.506028244093,6315.206193039015,6079.992975514357,6079.992975514357,6067.64662895674,5444.695224804824,5424.203009159988,5316.111403019851,5453.471693547195,5690.203782605118,5379.375596569962,5441.121805798477,5311.242075573868,5301.091035656876,5301.091035656876,5301.091035656876,5267.9284074830475,5150.678727917618,5112.528322033829,5148.16113628859,5087.437854428238,5120.155408902115,4952.546064419693,5014.751409573501,4822.950765652603,4859.237051052994,4815.099136319107,4504.188461270279,4445.967374798721,4436.21277500624,4472.751493267959,3852.70462950155,3530.95462950155,3521.862469864099,3521.862469864099,3521.862469864099,3076.1238513719727,3177.838340355127,3157.694053245752,3065.7684818041016,2924.939574791162,2998.944984031885,2854.931098533838,3105.803340507715,3088.8378177416016,3002.4102092516114,2925.365195823877,2951.0973239671875,3585.1066890489747,3215.2542927782224,3731.1212780992673,3711.913766121118,3910.093117737023,3911.8301401369254,3918.7822351686636,3762.374783539025,3891.625503418175,3479.764476654259,3721.0963896486437,3870.15784823629,3714.4610174867785,3568.3674803468866,3627.9061542818226,3626.3919903108754,3986.085303909508,3807.5016819307484,3928.004348404137,3466.4142414400258,3681.6373406526727,3538.7380301057974,3646.5019651949087,3834.0921522676626,3550.9724051057974,3512.692108780114,3691.6220213472525,3564.412296920983,3452.5223585664908,3320.3625113069693,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205,3449.9709908678205]};
+        const allTrades = [{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-03-24 00:00:00","exit_time":"2023-04-03 00:00:00","entry_price":94.83421325683594,"exit_price":98.42133331298828,"quantity":105,"pnl":376.6476058959961,"return_pct":0.03782516807976766},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-04-10 00:00:00","exit_time":"2023-04-14 00:00:00","entry_price":97.7900161743164,"exit_price":95.37944793701172,"quantity":105,"pnl":-253.1096649169922,"return_pct":-0.024650453406283357},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-04-18 00:00:00","exit_time":"2023-04-25 00:00:00","entry_price":95.14988708496094,"exit_price":86.00446138069424,"quantity":-105,"pnl":960.2696989480035,"return_pct":0.09611599114248659},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-04-26 00:00:00","exit_time":"2023-05-08 00:00:00","entry_price":85.36418151855469,"exit_price":87.1529541015625,"quantity":128,"pnl":228.962890625,"return_pct":0.02095460357244816},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-05-15 00:00:00","exit_time":"2023-05-23 00:00:00","entry_price":86.99036407470703,"exit_price":96.08154270818694,"quantity":127,"pnl":1154.5796864519489,"return_pct":0.10450788119098386},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-06-05 00:00:00","exit_time":"2023-06-06 00:00:00","entry_price":91.84420776367188,"exit_price":93.7840576171875,"quantity":-133,"pnl":-258.0000305175781,"return_pct":-0.02112109082052438},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-06-07 00:00:00","exit_time":"2023-06-27 00:00:00","entry_price":96.3960952758789,"exit_price":88.48313903808594,"quantity":-123,"pnl":973.2936172485352,"return_pct":0.08208793328346586},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-07-03 00:00:00","exit_time":"2023-07-05 00:00:00","entry_price":91.68096160888672,"exit_price":88.7136001586914,"quantity":140,"pnl":-415.43060302734375,"return_pct":-0.03236616848385765},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-07-14 00:00:00","exit_time":"2023-07-24 00:00:00","entry_price":89.13613891601562,"exit_price":91.69058227539062,"quantity":138,"pnl":352.51318359375,"return_pct":0.02865777439363626},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-07-27 00:00:00","exit_time":"2023-07-28 00:00:00","entry_price":89.01129913330078,"exit_price":90.30772399902344,"quantity":142,"pnl":184.0923309326172,"return_pct":0.014564722438003885},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-07-31 00:00:00","exit_time":"2023-08-03 00:00:00","entry_price":92.01708221435547,"exit_price":89.94280242919922,"quantity":139,"pnl":-288.32489013671875,"return_pct":-0.022542333828018735},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-08-18 00:00:00","exit_time":"2023-09-05 00:00:00","entry_price":84.17132568359375,"exit_price":80.47431616710213,"quantity":148,"pnl":-547.1574084407596,"return_pct":-0.04392243423121256},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-09-06 00:00:00","exit_time":"2023-09-18 00:00:00","entry_price":77.28180694580078,"exit_price":76.56819915771484,"quantity":153,"pnl":-109.18199157714844,"return_pct":-0.00923383932503552},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-09-19 00:00:00","exit_time":"2023-09-20 00:00:00","entry_price":76.12459564208984,"exit_price":75.13133239746094,"quantity":154,"pnl":-152.96253967285156,"return_pct":-0.013047862340036187},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-09-22 00:00:00","exit_time":"2023-10-03 00:00:00","entry_price":71.76581573486328,"exit_price":67.8012366375514,"quantity":160,"pnl":-634.3326555699014,"return_pct":-0.055243280616483315},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-10-25 00:00:00","exit_time":"2023-10-27 00:00:00","entry_price":70.92684936523438,"exit_price":71.90080261230469,"quantity":-153,"pnl":-149.0148468017578,"return_pct":-0.013731799111151632},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-10-30 00:00:00","exit_time":"2023-11-15 00:00:00","entry_price":73.7234115600586,"exit_price":78.29542806436626,"quantity":-144,"pnl":-658.3703766203043,"return_pct":-0.06201580213882374},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-11-24 00:00:00","exit_time":"2023-11-30 00:00:00","entry_price":78.98867797851562,"exit_price":79.98969268798828,"quantity":126,"pnl":126.12785339355469,"return_pct":0.012672888508716618},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-12-01 00:00:00","exit_time":"2023-12-04 00:00:00","entry_price":80.58063507080078,"exit_price":83.3900146484375,"quantity":124,"pnl":348.3630676269531,"return_pct":0.03486420248696609},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-12-05 00:00:00","exit_time":"2023-12-08 00:00:00","entry_price":83.54501342773438,"exit_price":87.65695473584093,"quantity":-123,"pnl":-505.76878089710584,"return_pct":-0.049218273352285014},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2023-12-14 00:00:00","exit_time":"2024-01-11 00:00:00","entry_price":90.41344451904297,"exit_price":85.96688079833984,"quantity":-108,"pnl":480.2288818359375,"return_pct":0.04918033755219431},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-01-12 00:00:00","exit_time":"2024-04-02 00:00:00","entry_price":86.8678207397461,"exit_price":82.72750476856129,"quantity":118,"pnl":-488.55728459980696,"return_pct":-0.04766225209665487},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-04-09 00:00:00","exit_time":"2024-04-10 00:00:00","entry_price":86.40948486328125,"exit_price":82.61175699251417,"quantity":112,"pnl":-425.34552152591255,"return_pct":-0.04395035888451271},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-04-11 00:00:00","exit_time":"2024-04-17 00:00:00","entry_price":83.18932342529297,"exit_price":79.3951644897461,"quantity":111,"pnl":-421.1516418457031,"return_pct":-0.0456087245252591},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-04-18 00:00:00","exit_time":"2024-04-30 00:00:00","entry_price":79.83295440673828,"exit_price":80.73770904541016,"quantity":110,"pnl":99.52301025390625,"return_pct":0.011333097282887339},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-05-06 00:00:00","exit_time":"2024-05-10 00:00:00","entry_price":84.376220703125,"exit_price":86.63326263427734,"quantity":105,"pnl":236.9894027709961,"return_pct":0.026749739587100807},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-05-13 00:00:00","exit_time":"2024-05-21 00:00:00","entry_price":85.6214828491211,"exit_price":86.13710021972656,"quantity":-105,"pnl":-54.13982391357422,"return_pct":-0.006022056071068871},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-05-23 00:00:00","exit_time":"2024-05-30 00:00:00","entry_price":83.81195831298828,"exit_price":82.36239624023438,"quantity":-107,"pnl":155.10314178466797,"return_pct":0.01729540869741575},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-06-13 00:00:00","exit_time":"2024-06-18 00:00:00","entry_price":83.3346939086914,"exit_price":81.91777801513672,"quantity":109,"pnl":-154.44383239746094,"return_pct":-0.017002713120986335},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-06-20 00:00:00","exit_time":"2024-06-26 00:00:00","entry_price":81.70279693603516,"exit_price":79.97315979003906,"quantity":-109,"pnl":188.53044891357422,"return_pct":0.02116986456840908},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-07-01 00:00:00","exit_time":"2024-07-08 00:00:00","entry_price":80.88195037841797,"exit_price":81.39986419677734,"quantity":-112,"pnl":-58.00634765625,"return_pct":-0.00640332998816473},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-07-11 00:00:00","exit_time":"2024-07-16 00:00:00","entry_price":84.80048370361328,"exit_price":90.94700622558594,"quantity":105,"pnl":645.3848648071289,"return_pct":0.07248216346802216},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-07-17 00:00:00","exit_time":"2024-07-31 00:00:00","entry_price":89.8427734375,"exit_price":81.41904102386523,"quantity":-106,"pnl":892.9156358452852,"return_pct":0.09376082339549341},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-08-02 00:00:00","exit_time":"2024-08-06 00:00:00","entry_price":76.27938842773438,"exit_price":70.52970892299057,"quantity":136,"pnl":-781.9564126451581,"return_pct":-0.07537658105624356},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-08-08 00:00:00","exit_time":"2024-08-28 00:00:00","entry_price":72.42926788330078,"exit_price":75.56604766845703,"quantity":132,"pnl":414.054931640625,"return_pct":0.04330818019878757},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-08-29 00:00:00","exit_time":"2024-09-03 00:00:00","entry_price":76.69957733154297,"exit_price":73.89631652832031,"quantity":130,"pnl":-364.4239044189453,"return_pct":-0.03654858215326573},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-09-09 00:00:00","exit_time":"2024-09-11 00:00:00","entry_price":70.29280853271484,"exit_price":70.46954345703125,"quantity":-136,"pnl":-24.03594970703125,"return_pct":-0.0025142675048208663},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-09-13 00:00:00","exit_time":"2024-09-25 00:00:00","entry_price":72.47259521484375,"exit_price":74.53453826904297,"quantity":131,"pnl":270.11454010009766,"return_pct":0.0284513483763984},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-10-01 00:00:00","exit_time":"2024-10-02 00:00:00","entry_price":75.87971496582031,"exit_price":76.10555267333984,"quantity":-128,"pnl":-28.9072265625,"return_pct":-0.002976259302255757},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-10-08 00:00:00","exit_time":"2024-10-11 00:00:00","entry_price":72.82606506347656,"exit_price":73.60175323486328,"quantity":-132,"pnl":-102.39083862304688,"return_pct":-0.010651243764311813},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-10-18 00:00:00","exit_time":"2024-10-23 00:00:00","entry_price":74.15159606933594,"exit_price":71.41216278076172,"quantity":-128,"pnl":350.6474609375,"return_pct":0.03694368609426413},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-10-24 00:00:00","exit_time":"2024-10-25 00:00:00","entry_price":71.59871673583984,"exit_price":71.28450775146484,"quantity":137,"pnl":-43.046630859375,"return_pct":-0.004388472289723611},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-11-05 00:00:00","exit_time":"2024-11-06 00:00:00","entry_price":72.99298095703125,"exit_price":80.42646318096716,"quantity":133,"pnl":988.6531357834762,"return_pct":0.10183831549929123},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-11-08 00:00:00","exit_time":"2024-11-22 00:00:00","entry_price":77.61764526367188,"exit_price":75.4574966430664,"quantity":-138,"pnl":298.1005096435547,"return_pct":0.02783063842335476},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-11-25 00:00:00","exit_time":"2024-11-27 00:00:00","entry_price":76.39028930664062,"exit_price":74.71126556396484,"quantity":143,"pnl":-240.10039520263672,"return_pct":-0.021979544231544357},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-11-29 00:00:00","exit_time":"2024-12-03 00:00:00","entry_price":75.89059448242188,"exit_price":74.19316864013672,"quantity":140,"pnl":-237.63961791992188,"return_pct":-0.02236674852610787},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-12-05 00:00:00","exit_time":"2024-12-18 00:00:00","entry_price":73.30497741699219,"exit_price":67.4330825805664,"quantity":-142,"pnl":833.8090667724609,"return_pct":0.08010226649445318},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2024-12-19 00:00:00","exit_time":"2024-12-30 00:00:00","entry_price":66.99885559082031,"exit_price":62.96824733951806,"quantity":167,"pnl":-673.1115779674765,"return_pct":-0.060159359675010626},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2025-02-25 00:00:00","exit_time":"2025-02-26 00:00:00","entry_price":62.53818893432617,"exit_price":61.353939056396484,"quantity":167,"pnl":-197.7697296142578,"return_pct":-0.018936427455123694},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2025-03-03 00:00:00","exit_time":"2025-03-05 00:00:00","entry_price":57.59772872924805,"exit_price":58.0048828125,"quantity":-177,"pnl":-72.0662727355957,"return_pct":-0.007068926019042854},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2025-03-17 00:00:00","exit_time":"2025-03-28 00:00:00","entry_price":58.074398040771484,"exit_price":54.94624710083008,"quantity":174,"pnl":-544.2982635498047,"return_pct":-0.05386454350754133},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2025-04-02 00:00:00","exit_time":"2025-04-03 00:00:00","entry_price":54.17165756225586,"exit_price":50.90945203841631,"quantity":176,"pnl":-574.1481721957604,"return_pct":-0.06021978412033102},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2025-04-09 00:00:00","exit_time":"2025-05-01 00:00:00","entry_price":49.34536361694336,"exit_price":53.059425354003906,"quantity":181,"pnl":672.245174407959,"return_pct":0.07526668089614152},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2025-05-02 00:00:00","exit_time":"2025-05-15 00:00:00","entry_price":54.43978500366211,"exit_price":54.89659118652344,"quantity":-175,"pnl":-79.94108200073242,"return_pct":-0.008391035762367549},{"symbol":"SCL","strategy_type":"未知策略","entry_time":"2025-05-16 00:00:00","exit_time":"2025-06-10 00:00:00","entry_price":55.681114196777344,"exit_price":56.689998626708984,"quantity":-169,"pnl":-170.50146865844727,"return_pct":-0.018118969860521084},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-03-27 00:00:00","exit_time":"2023-03-29 00:00:00","entry_price":80.13999938964844,"exit_price":79.7699966430664,"quantity":124,"pnl":-45.880340576171875,"return_pct":-0.004616954696780584},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-03-30 00:00:00","exit_time":"2023-04-13 00:00:00","entry_price":79.83000183105469,"exit_price":83.02999877929688,"quantity":-123,"pnl":-393.59962463378906,"return_pct":-0.04008514186200807},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-04-19 00:00:00","exit_time":"2023-05-01 00:00:00","entry_price":83.4800033569336,"exit_price":85.72000122070312,"quantity":-113,"pnl":-253.11975860595703,"return_pct":-0.026832747648463995},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-05-02 00:00:00","exit_time":"2023-05-03 00:00:00","entry_price":85.16000366210938,"exit_price":77.63511337595232,"quantity":-107,"pnl":805.1632606188055,"return_pct":0.08836178913300285},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-05-04 00:00:00","exit_time":"2023-05-22 00:00:00","entry_price":71.38999938964844,"exit_price":82.45707379205794,"quantity":139,"pnl":1538.3233419349208,"return_pct":0.15502275524622333},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-06-20 00:00:00","exit_time":"2023-06-22 00:00:00","entry_price":83.47000122070312,"exit_price":85.93000030517578,"quantity":-136,"pnl":-334.55987548828125,"return_pct":-0.029471655067647262},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-06-26 00:00:00","exit_time":"2023-06-29 00:00:00","entry_price":83.88999938964844,"exit_price":83.19999694824219,"quantity":-131,"pnl":90.39031982421875,"return_pct":0.008225085784079655},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-06-30 00:00:00","exit_time":"2023-07-07 00:00:00","entry_price":84.91000366210938,"exit_price":82.2300033569336,"quantity":130,"pnl":-348.40003967285156,"return_pct":-0.031562833465896056},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-07-13 00:00:00","exit_time":"2023-07-21 00:00:00","entry_price":81.41999816894531,"exit_price":83.69999694824219,"quantity":131,"pnl":298.6798400878906,"return_pct":0.028002933315791845},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-07-24 00:00:00","exit_time":"2023-07-28 00:00:00","entry_price":82.83000183105469,"exit_price":87.22000122070312,"quantity":-132,"pnl":-579.4799194335938,"return_pct":-0.05300011218884859},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-07-31 00:00:00","exit_time":"2023-08-02 00:00:00","entry_price":94.56999969482422,"exit_price":100.54715419033856,"quantity":-109,"pnl":-651.5098400110631,"return_pct":-0.06320349492230637},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-08-08 00:00:00","exit_time":"2023-09-11 00:00:00","entry_price":99.73999786376953,"exit_price":100.1500015258789,"quantity":-96,"pnl":-39.3603515625,"return_pct":-0.004110724592849779},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-09-15 00:00:00","exit_time":"2023-09-19 00:00:00","entry_price":99.06999969482422,"exit_price":103.34100482381065,"quantity":-96,"pnl":-410.0164923826974,"return_pct":-0.043110983568616756},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-09-22 00:00:00","exit_time":"2023-10-06 00:00:00","entry_price":102.20999908447266,"exit_price":102.77999877929688,"quantity":-89,"pnl":-50.72997283935547,"return_pct":-0.005576750806475683},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-10-12 00:00:00","exit_time":"2023-10-17 00:00:00","entry_price":104.5199966430664,"exit_price":104.11000061035156,"quantity":-86,"pnl":35.25965881347656,"return_pct":0.003922656390001333},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-10-19 00:00:00","exit_time":"2023-10-24 00:00:00","entry_price":101.30999755859375,"exit_price":98.37000274658203,"quantity":-89,"pnl":261.65953826904297,"return_pct":0.02901978958504403},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-10-25 00:00:00","exit_time":"2023-11-03 00:00:00","entry_price":97.66000366210938,"exit_price":107.05000305175781,"quantity":94,"pnl":882.6599426269531,"return_pct":0.09614989798829598},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-11-15 00:00:00","exit_time":"2023-11-24 00:00:00","entry_price":105.83999633789062,"exit_price":105.4800033569336,"quantity":-95,"pnl":34.19933319091797,"return_pct":0.0034012943444156063},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-11-28 00:00:00","exit_time":"2023-11-30 00:00:00","entry_price":103.62000274658203,"exit_price":104.16999816894531,"quantity":-97,"pnl":-53.34955596923828,"return_pct":-0.005307811308482346},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-12-04 00:00:00","exit_time":"2023-12-06 00:00:00","entry_price":107.8499984741211,"exit_price":104.62000274658203,"quantity":92,"pnl":-297.15960693359375,"return_pct":-0.029948964054126614},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-12-11 00:00:00","exit_time":"2023-12-12 00:00:00","entry_price":104.11000061035156,"exit_price":105.79000091552734,"quantity":-92,"pnl":-154.56002807617188,"return_pct":-0.01613678124413287},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2023-12-14 00:00:00","exit_time":"2023-12-29 00:00:00","entry_price":96.02999877929688,"exit_price":101.99775553710909,"quantity":-98,"pnl":-584.8401622655966,"return_pct":-0.062144713461131484},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-02-16 00:00:00","exit_time":"2024-02-22 00:00:00","entry_price":105.23999786376953,"exit_price":105.18000030517578,"quantity":-84,"pnl":5.039794921875,"return_pct":0.0005701022407033074},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-02-28 00:00:00","exit_time":"2024-03-04 00:00:00","entry_price":93.9000015258789,"exit_price":99.9110116064877,"quantity":-93,"pnl":-559.0239374966183,"return_pct":-0.06401501579264779},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-03-11 00:00:00","exit_time":"2024-03-18 00:00:00","entry_price":99.3499984741211,"exit_price":94.13438941225516,"quantity":82,"pnl":-427.67994307300654,"return_pct":-0.05249732402587315},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-03-27 00:00:00","exit_time":"2024-04-04 00:00:00","entry_price":96.31999969482422,"exit_price":93.83000183105469,"quantity":80,"pnl":-199.1998291015625,"return_pct":-0.025851306807088137},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-04-15 00:00:00","exit_time":"2024-04-17 00:00:00","entry_price":91.1500015258789,"exit_price":91.23999786376953,"quantity":-82,"pnl":-7.37969970703125,"return_pct":-0.0009873432406368732},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-04-18 00:00:00","exit_time":"2024-04-19 00:00:00","entry_price":90.44000244140625,"exit_price":92.31999969482422,"quantity":-82,"pnl":-154.15977478027344,"return_pct":-0.02078723134307703},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-04-22 00:00:00","exit_time":"2024-05-01 00:00:00","entry_price":93.19999694824219,"exit_price":89.3777575786181,"quantity":78,"pnl":-298.1346708306787,"return_pct":-0.041011153377469856},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-05-06 00:00:00","exit_time":"2024-05-13 00:00:00","entry_price":86.93000030517578,"exit_price":87.33000183105469,"quantity":80,"pnl":32.0001220703125,"return_pct":0.0046014209648528315},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-05-16 00:00:00","exit_time":"2024-06-05 00:00:00","entry_price":87.72000122070312,"exit_price":94.48999786376953,"quantity":79,"pnl":534.8297348022461,"return_pct":0.0771773432382099},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-06-06 00:00:00","exit_time":"2024-06-17 00:00:00","entry_price":96.12000274658203,"exit_price":96.73999786376953,"quantity":-78,"pnl":-48.359619140625,"return_pct":-0.006450219511771049},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-06-26 00:00:00","exit_time":"2024-07-12 00:00:00","entry_price":97.9000015258789,"exit_price":102.3441843581014,"quantity":-75,"pnl":-333.3137124166871,"return_pct":-0.04539512526001044},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-07-16 00:00:00","exit_time":"2024-07-22 00:00:00","entry_price":108.75,"exit_price":109.61000061035156,"quantity":-64,"pnl":-55.0400390625,"return_pct":-0.007908051589439635},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-07-23 00:00:00","exit_time":"2024-07-30 00:00:00","entry_price":110.44999694824219,"exit_price":115.3454476731001,"quantity":-63,"pnl":-308.41339566604825,"return_pct":-0.04432277827179987},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-08-14 00:00:00","exit_time":"2024-08-21 00:00:00","entry_price":103.55000305175781,"exit_price":105.93000030517578,"quantity":-64,"pnl":-152.31982421875,"return_pct":-0.02298403846717778},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-08-26 00:00:00","exit_time":"2024-08-28 00:00:00","entry_price":107.56999969482422,"exit_price":106.69999694824219,"quantity":60,"pnl":-52.200164794921875,"return_pct":-0.008087782365438612},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-09-03 00:00:00","exit_time":"2024-09-16 00:00:00","entry_price":108.86000061035156,"exit_price":107.1500015258789,"quantity":-58,"pnl":99.17994689941406,"return_pct":0.015708240629111803},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-09-19 00:00:00","exit_time":"2024-09-23 00:00:00","entry_price":109.83000183105469,"exit_price":109.37999725341797,"quantity":58,"pnl":-26.100265502929688,"return_pct":-0.004097282801915458},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-09-27 00:00:00","exit_time":"2024-10-07 00:00:00","entry_price":108.01000213623047,"exit_price":105.6500015258789,"quantity":-59,"pnl":139.2400360107422,"return_pct":0.021849833938295316},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-10-15 00:00:00","exit_time":"2024-10-24 00:00:00","entry_price":108.0199966430664,"exit_price":104.20987973652952,"quantity":60,"pnl":-228.60701439221344,"return_pct":-0.035272329429214544},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-10-28 00:00:00","exit_time":"2024-10-30 00:00:00","entry_price":104.13999938964844,"exit_price":111.77330124750931,"quantity":60,"pnl":457.9981114716523,"return_pct":0.0732984626713915},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-10-31 00:00:00","exit_time":"2024-11-06 00:00:00","entry_price":115.7300033569336,"exit_price":125.0,"quantity":-57,"pnl":-528.3898086547852,"return_pct":-0.08010020197161793},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-12-13 00:00:00","exit_time":"2024-12-16 00:00:00","entry_price":120.66000366210938,"exit_price":121.94999694824219,"quantity":-50,"pnl":-64.49966430664062,"return_pct":-0.010691142441411339},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2024-12-19 00:00:00","exit_time":"2025-01-06 00:00:00","entry_price":120.16999816894531,"exit_price":121.08999633789062,"quantity":50,"pnl":45.999908447265625,"return_pct":0.007655805799812843},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2025-01-08 00:00:00","exit_time":"2025-01-15 00:00:00","entry_price":125.68000030517578,"exit_price":127.38999938964844,"quantity":48,"pnl":82.0799560546875,"return_pct":0.013605976132403219},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2025-01-17 00:00:00","exit_time":"2025-01-27 00:00:00","entry_price":127.02999877929688,"exit_price":126.68000030517578,"quantity":-48,"pnl":16.7999267578125,"return_pct":0.0027552426787721407},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2025-01-28 00:00:00","exit_time":"2025-01-31 00:00:00","entry_price":129.13999938964844,"exit_price":126.77999877929688,"quantity":47,"pnl":-110.92002868652344,"return_pct":-0.018274745404255666},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2025-02-03 00:00:00","exit_time":"2025-02-11 00:00:00","entry_price":126.62999725341797,"exit_price":128.7100067138672,"quantity":-47,"pnl":-97.76044464111328,"return_pct":-0.016425882536241332},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2025-02-13 00:00:00","exit_time":"2025-02-21 00:00:00","entry_price":130.36000061035156,"exit_price":123.90084618574716,"quantity":45,"pnl":-290.6619491071983,"return_pct":-0.049548591549266274},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2025-02-24 00:00:00","exit_time":"2025-02-26 00:00:00","entry_price":125.30000305175781,"exit_price":134.25,"quantity":-44,"pnl":-393.79986572265625,"return_pct":-0.07142854533327658},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2025-02-27 00:00:00","exit_time":"2025-03-07 00:00:00","entry_price":149.5800018310547,"exit_price":149.27999877929688,"quantity":-34,"pnl":10.200103759765625,"return_pct":0.0020056361016538293},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2025-03-12 00:00:00","exit_time":"2025-03-19 00:00:00","entry_price":143.75,"exit_price":149.72999572753906,"quantity":-35,"pnl":-209.2998504638672,"return_pct":-0.04159997027853257},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2025-03-26 00:00:00","exit_time":"2025-03-31 00:00:00","entry_price":142.50999450683594,"exit_price":143.4499969482422,"quantity":-34,"pnl":-31.9600830078125,"return_pct":-0.0065960457346110335},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2025-04-01 00:00:00","exit_time":"2025-04-04 00:00:00","entry_price":146.3800048828125,"exit_price":137.75999450683594,"quantity":33,"pnl":-284.46034240722656,"return_pct":-0.05888789512527681},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2025-04-09 00:00:00","exit_time":"2025-04-30 00:00:00","entry_price":144.11000061035156,"exit_price":130.3000030517578,"quantity":31,"pnl":-428.10992431640625,"return_pct":-0.09582955728335318},{"symbol":"HURN","strategy_type":"未知策略","entry_time":"2025-05-08 00:00:00","exit_time":"2025-05-27 00:00:00","entry_price":152.25999450683594,"exit_price":153.61000061035156,"quantity":-26,"pnl":-35.10015869140625,"return_pct":-0.008866453121112006}];
+        const strategyStats = {"未知策略":{"return":-0.3759207300947337,"trades":112,"total_pnl":-2628.2423446426747}};
+        
+        // 初始化圖表
+        function initCharts() {{
+            drawEquityChart();
+            drawStrategyComparison();
+        }}
+        
+        // 繪製資金曲線
+        function drawEquityChart() {{
+            const trace = {{
+                x: equityData.dates,
+                y: equityData.values,
+                type: 'scatter',
+                mode: 'lines',
+                name: '投資組合價值',
+                line: {{
+                    color: '#667eea',
+                    width: 3
+                }},
+                fill: 'tonexty',
+                fillcolor: 'rgba(102, 126, 234, 0.1)'
+            }};
+            
+            const layout = {{
+                title: {{
+                    text: '資金曲線變化',
+                    font: {{ size: 18, color: '#495057' }}
+                }},
+                xaxis: {{
+                    title: '日期',
+                    rangeslider: {{ visible: true }},
+                    type: 'date'
+                }},
+                yaxis: {{
+                    title: '資金價值 ($)',
+                    tickformat: ',.0f'
+                }},
+                hovermode: 'x unified',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                paper_bgcolor: 'rgba(0,0,0,0)'
+            }};
+            
+            Plotly.newPlot('equityChart', [trace], layout, {{responsive: true}});
+        }}
+        
+        // 繪製策略比較圖
+        function drawStrategyComparison() {{
+            const strategies = Object.keys(strategyStats);
+            const returns = strategies.map(s => strategyStats[s].return);
+            const trades = strategies.map(s => strategyStats[s].trades);
+            
+            const trace1 = {{
+                x: strategies,
+                y: returns,
+                type: 'bar',
+                name: '報酬率 (%)',
+                marker: {{
+                    color: returns.map(r => r > 0 ? '#27ae60' : '#e74c3c'),
+                    opacity: 0.8
+                }}
+            }};
+            
+            const layout = {{
+                title: {{
+                    text: '各策略績效比較',
+                    font: {{ size: 18, color: '#495057' }}
+                }},
+                xaxis: {{ title: '策略類型' }},
+                yaxis: {{ title: '報酬率 (%)' }},
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                paper_bgcolor: 'rgba(0,0,0,0)'
+            }};
+            
+            Plotly.newPlot('strategyComparisonChart', [trace1], layout, {{responsive: true}});
+        }}
+        
+        // 策略選擇功能
+        function showStrategy(strategy) {{
+            // 更新按鈕狀態
+            document.querySelectorAll('.strategy-btn').forEach(btn => {{
+                btn.classList.remove('active');
+            }});
+            event.target.classList.add('active');
+            
+            // 篩選交易記錄
+            filterTradesByStrategy(strategy);
+        }}
+        
+        function filterTradesByStrategy(strategy) {{
+            const tbody = document.getElementById('tradesTableBody');
+            let filteredTrades = allTrades;
+            
+            if (strategy !== 'all') {{
+                filteredTrades = allTrades.filter(trade => 
+                    trade.strategy_type && trade.strategy_type.includes(strategy)
+                );
+            }}
+            
+            // 重新生成表格
+            tbody.innerHTML = generateTradesRows(filteredTrades);
+        }}
+        
+        function generateTradesRows(trades) {{
+            return trades.map(trade => {{
+                const pnl = trade.pnl || 0;
+                const returnPct = trade.return_pct || 0;
+                const pnlClass = pnl > 0 ? 'positive' : 'negative';
+                
+                return `
+                    <tr onclick="showStockDetail('${{trade.symbol}}')">
+                        <td>${{trade.symbol}}</td>
+                        <td>${{trade.strategy_type || '未知策略'}}</td>
+                        <td>${{new Date(trade.entry_time).toLocaleDateString()}}</td>
+                        <td>${{new Date(trade.exit_time).toLocaleDateString()}}</td>
+                        <td>$${{{trade.entry_price.toFixed(2)}}}</td>
+                        <td>$${{{trade.exit_price.toFixed(2)}}}</td>
+                        <td>${{trade.quantity.toFixed(2)}}</td>
+                        <td class="${{pnlClass}}">${{(returnPct * 100).toFixed(2)}}%</td>
+                        <td class="${{pnlClass}}">$${{{pnl.toFixed(2)}}}</td>
+                    </tr>
+                `;
+            }}).join('');
+        }}
+        
+        // 交易篩選功能
+        function filterTrades() {{
+            const symbolFilter = document.getElementById('symbolSearch').value.toUpperCase();
+            const strategyFilter = document.getElementById('strategyFilter').value;
+            const rows = document.querySelectorAll('#tradesTable tbody tr');
+            
+            rows.forEach(row => {{
+                const symbol = row.cells[0].textContent;
+                const strategy = row.cells[1].textContent;
+                
+                const showRow = (!symbolFilter || symbol.includes(symbolFilter)) &&
+                              (!strategyFilter || strategy.includes(strategyFilter));
+                
+                row.style.display = showRow ? '' : 'none';
+            }});
+        }}
+        
+        function clearFilters() {{
+            document.getElementById('symbolSearch').value = '';
+            document.getElementById('strategyFilter').value = '';
+            filterTrades();
+        }}
+        
+        // 個股詳情模態框
+        function showStockDetail(symbol) {{
+            const modal = document.getElementById('stockModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const stockTrades = allTrades.filter(trade => trade.symbol === symbol);
+            
+            modalTitle.textContent = `${{symbol}} - 交易詳情 (共${{stockTrades.length}}筆)`;
+            
+            // 繪製個股交易圖表
+            if (stockTrades.length > 0) {{
+                const buyDates = stockTrades.map(t => t.entry_time);
+                const buyPrices = stockTrades.map(t => t.entry_price);
+                const sellDates = stockTrades.map(t => t.exit_time);
+                const sellPrices = stockTrades.map(t => t.exit_price);
+                
+                const buyTrace = {{
+                    x: buyDates,
+                    y: buyPrices,
+                    mode: 'markers',
+                    name: '買入',
+                    marker: {{ color: '#27ae60', size: 12, symbol: 'triangle-up' }}
+                }};
+                
+                const sellTrace = {{
+                    x: sellDates,
+                    y: sellPrices,
+                    mode: 'markers',
+                    name: '賣出',
+                    marker: {{ color: '#e74c3c', size: 12, symbol: 'triangle-down' }}
+                }};
+                
+                const layout = {{
+                    title: `${{symbol}} 交易記錄`,
+                    xaxis: {{ title: '日期', type: 'date' }},
+                    yaxis: {{ title: '價格 ($)' }},
+                    hovermode: 'closest'
+                }};
+                
+                Plotly.newPlot('stockChart', [buyTrace, sellTrace], layout, {{responsive: true}});
+            }}
+            
+            modal.style.display = 'block';
+        }}
+        
+        function closeModal() {{
+            document.getElementById('stockModal').style.display = 'none';
+        }}
+        
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', function() {{
+            initCharts();
+        }});
+        
+        // 點擊模態框外部關閉
+        window.onclick = function(event) {{
+            const modal = document.getElementById('stockModal');
+            if (event.target === modal) {{
+                closeModal();
+            }}
+        }}
+    </script>
+</body>
+</html>

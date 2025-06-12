@@ -178,65 +178,62 @@ class ThreeLevelStrategy(AbstractStrategyBase):
         buy_signals = []
         sell_signals = []
         
-        # KD黃金交叉在超賣區
+        # 1. KD指標 (Stochastic Oscillator)
         if (indicators['k_line'] < self.kd_oversold and 
             indicators['k_line'] > indicators['d_line'] and
             indicators['k_line_prev'] <= indicators['d_line_prev']):
-            buy_signals.append('KD_golden_cross_oversold')
+            buy_signals.append(('KD_golden_cross_oversold', 'KD指標超賣區黃金交叉'))
             
-        # KD死亡交叉在超買區
         if (indicators['k_line'] > self.kd_overbought and 
             indicators['k_line'] < indicators['d_line'] and
             indicators['k_line_prev'] >= indicators['d_line_prev']):
-            sell_signals.append('KD_death_cross_overbought')
+            sell_signals.append(('KD_death_cross_overbought', 'KD指標超買區死亡交叉'))
             
-        # RSI從超賣區向上突破
+        # 2. RSI相對強弱指標
         if (indicators['rsi'] > self.rsi_oversold and 
             indicators['rsi_prev'] <= self.rsi_oversold):
-            buy_signals.append('RSI_oversold_breakup')
+            buy_signals.append(('RSI_oversold_breakup', 'RSI從超賣區向上突破'))
             
-        # RSI從超買區向下跌破
         if (indicators['rsi'] < self.rsi_overbought and 
             indicators['rsi_prev'] >= self.rsi_overbought):
-            sell_signals.append('RSI_overbought_breakdown')
+            sell_signals.append(('RSI_overbought_breakdown', 'RSI從超買區向下跌破'))
             
-        # MACD柱狀體由綠翻紅
+        # 3. MACD指標
         if indicators['macd_hist'] > 0 and indicators['macd_hist_prev'] <= 0:
-            buy_signals.append('MACD_hist_bullish')
+            buy_signals.append(('MACD_hist_bullish', 'MACD柱狀體由綠翻紅'))
             
-        # MACD柱狀體由紅翻綠
         if indicators['macd_hist'] < 0 and indicators['macd_hist_prev'] >= 0:
-            sell_signals.append('MACD_hist_bearish')
+            sell_signals.append(('MACD_hist_bearish', 'MACD柱狀體由紅翻綠'))
             
-        # BIAS極端值
+        # 4. BIAS乖離率
         if indicators['bias'] < self.bias_lower:
-            buy_signals.append('BIAS_extreme_low')
+            buy_signals.append(('BIAS_extreme_low', '20日BIAS達到-8%以下'))
         if indicators['bias'] > self.bias_upper:
-            sell_signals.append('BIAS_extreme_high')
+            sell_signals.append(('BIAS_extreme_high', '20日BIAS達到+7%以上'))
             
-        # 布林通道信號
+        # 5. 布林通道 (均值回歸)
         if (indicators['price_prev'] < indicators['bb_lower_prev'] and 
             indicators['price'] > indicators['bb_lower']):
-            buy_signals.append('BB_lower_bounce')
+            buy_signals.append(('BB_lower_bounce', '價格觸及布林通道下軌後收回'))
             
         if (indicators['price_prev'] > indicators['bb_upper_prev'] and 
             indicators['price'] < indicators['bb_upper']):
-            sell_signals.append('BB_upper_rejection')
+            sell_signals.append(('BB_upper_rejection', '價格觸及布林通道上軌後收回'))
             
-        # MA交叉
+        # 6. 移動平均線交叉
         if (indicators['short_ma'] > indicators['long_ma'] and 
             indicators['short_ma_prev'] <= indicators['long_ma_prev']):
-            buy_signals.append('MA_golden_cross')
+            buy_signals.append(('MA_golden_cross', 'MA黃金交叉'))
             
         if (indicators['short_ma'] < indicators['long_ma'] and 
             indicators['short_ma_prev'] >= indicators['long_ma_prev']):
-            sell_signals.append('MA_death_cross')
+            sell_signals.append(('MA_death_cross', 'MA死亡交叉'))
             
-        # K線形態
+        # 7. K線形態
         if patterns['bullish_engulfing']:
-            buy_signals.append('bullish_engulfing')
+            buy_signals.append(('bullish_engulfing', '看漲吞噬K線'))
         if patterns['bearish_engulfing']:
-            sell_signals.append('bearish_engulfing')
+            sell_signals.append(('bearish_engulfing', '看跌吞噬K線'))
             
         return buy_signals, sell_signals
     
@@ -245,36 +242,36 @@ class ThreeLevelStrategy(AbstractStrategyBase):
         buy_signals = []
         sell_signals = []
         
-        # 趨勢確認 + RSI回檔
+        # 1. 趨勢+動能組合
         if (indicators['short_ma'] > indicators['long_ma'] and 
             indicators['rsi'] > self.rsi_oversold and 
             indicators['rsi_prev'] <= self.rsi_oversold):
-            buy_signals.append('Trend_RSI_pullback_buy')
+            buy_signals.append(('Trend_RSI_pullback', '趨勢確認+RSI回檔'))
             
         if (indicators['short_ma'] < indicators['long_ma'] and 
             indicators['rsi'] < self.rsi_overbought and 
             indicators['rsi_prev'] >= self.rsi_overbought):
-            sell_signals.append('Trend_RSI_pullback_sell')
+            sell_signals.append(('Trend_RSI_pullback', '趨勢確認+RSI反彈'))
             
-        # 雲帶 + MACD
+        # 2. 趨勢+動能組合(變體)
         if (indicators['price'] > indicators['cloud_top'] and 
             indicators['macd_hist'] > 0 and 
             indicators['macd_hist_prev'] <= 0):
-            buy_signals.append('Cloud_MACD_bullish')
+            buy_signals.append(('Cloud_MACD', '雲帶之上+MACD翻紅'))
             
         if (indicators['price'] < indicators['cloud_bottom'] and 
             indicators['macd_hist'] < 0 and 
             indicators['macd_hist_prev'] >= 0):
-            sell_signals.append('Cloud_MACD_bearish')
+            sell_signals.append(('Cloud_MACD', '雲帶之下+MACD翻綠'))
             
-        # BIAS + K線形態
+        # 3. 情緒+價格行為組合
         if indicators['bias'] < self.bias_lower and patterns['bullish_engulfing']:
-            buy_signals.append('BIAS_candlestick_buy')
+            buy_signals.append(('BIAS_candlestick', 'BIAS極端+看漲K線'))
             
         if indicators['bias'] > self.bias_upper and patterns['bearish_engulfing']:
-            sell_signals.append('BIAS_candlestick_sell')
+            sell_signals.append(('BIAS_candlestick', 'BIAS極端+看跌K線'))
             
-        # 布林通道擠壓突破
+        # 4. 波動性+突破組合
         bb_width = indicators['bb_upper'] - indicators['bb_lower']
         bb_width_prev = indicators['bb_upper_prev'] - indicators['bb_lower_prev']
         bb_squeeze = bb_width < bb_width_prev * 0.8  # 帶寬收窄
@@ -282,23 +279,22 @@ class ThreeLevelStrategy(AbstractStrategyBase):
         if (bb_squeeze and 
             indicators['price'] > indicators['bb_upper'] and 
             indicators['volume'] > indicators['vol_ma'] * self.vol_multiplier):
-            buy_signals.append('BB_squeeze_breakout_up')
+            buy_signals.append(('BB_squeeze_breakout', '布林通道擠壓突破'))
             
         if (bb_squeeze and 
             indicators['price'] < indicators['bb_lower'] and 
             indicators['volume'] > indicators['vol_ma'] * self.vol_multiplier):
-            sell_signals.append('BB_squeeze_breakout_down')
+            sell_signals.append(('BB_squeeze_breakout', '布林通道擠壓跌破'))
             
-        # 斐波那契 + K線形態
+        # 5. 價位+價格行為組合(斐波那契)
         fib_levels = indicators['fib_levels']
         price_at_618 = abs(indicators['price'] - fib_levels['0.618']) < indicators['atr'] * 0.5
-        price_at_50 = abs(indicators['price'] - fib_levels['0.5']) < indicators['atr'] * 0.5
         
         if price_at_618 and patterns['hammer']:
-            buy_signals.append('Fib_618_hammer')
+            buy_signals.append(('Fib_618_hammer', '斐波那契0.618+錘子線'))
             
         if price_at_618 and patterns['shooting_star']:
-            sell_signals.append('Fib_618_shooting_star')
+            sell_signals.append(('Fib_618_shooting_star', '斐波那契0.618+射擊之星'))
             
         return buy_signals, sell_signals
     
@@ -307,7 +303,7 @@ class ThreeLevelStrategy(AbstractStrategyBase):
         buy_signals = []
         sell_signals = []
         
-        # 雲帶 + RSI + 布林通道
+        # 1. 趨勢+動能+波動性組合
         bb_width = indicators['bb_upper'] - indicators['bb_lower']
         bb_width_prev = indicators['bb_upper_prev'] - indicators['bb_lower_prev']
         bb_squeeze = bb_width < bb_width_prev * 0.8
@@ -316,28 +312,28 @@ class ThreeLevelStrategy(AbstractStrategyBase):
             indicators['rsi'] > self.rsi_oversold and 
             indicators['rsi_prev'] <= self.rsi_oversold and
             bb_squeeze and indicators['price'] > indicators['bb_upper']):
-            buy_signals.append('Cloud_RSI_BB_bullish')
+            buy_signals.append(('Cloud_RSI_BB', '雲帶+RSI+布林突破'))
             
         if (indicators['price'] < indicators['cloud_bottom'] and 
             indicators['rsi'] < self.rsi_overbought and 
             indicators['rsi_prev'] >= self.rsi_overbought and
             bb_squeeze and indicators['price'] < indicators['bb_lower']):
-            sell_signals.append('Cloud_RSI_BB_bearish')
+            sell_signals.append(('Cloud_RSI_BB', '雲帶+RSI+布林跌破'))
             
-        # MA交叉 + MACD + 成交量
+        # 2. 趨勢+動能+量能組合
         if (indicators['short_ma'] > indicators['long_ma'] and 
             indicators['short_ma_prev'] <= indicators['long_ma_prev'] and
             indicators['macd_hist'] > 0 and
             indicators['volume'] > indicators['vol_ma'] * self.vol_multiplier):
-            buy_signals.append('MA_MACD_Volume_bullish')
+            buy_signals.append(('MA_MACD_Volume', 'MA交叉+MACD+放量'))
             
         if (indicators['short_ma'] < indicators['long_ma'] and 
             indicators['short_ma_prev'] >= indicators['long_ma_prev'] and
             indicators['macd_hist'] < 0 and
             indicators['volume'] > indicators['vol_ma'] * self.vol_multiplier):
-            sell_signals.append('MA_MACD_Volume_bearish')
+            sell_signals.append(('MA_MACD_Volume', 'MA交叉+MACD+放量'))
             
-        # 道氏理論 + MA支撐/壓力 + KD
+        # 3. 宏觀趨勢+時機+動能組合
         dow_trend = indicators['dow_trend']
         price_near_ma = abs(indicators['price'] - indicators['long_ma']) < indicators['atr'] * 0.5
         
@@ -345,27 +341,27 @@ class ThreeLevelStrategy(AbstractStrategyBase):
             price_near_ma and 
             indicators['k_line'] < self.kd_oversold and 
             indicators['k_line'] > indicators['d_line']):
-            buy_signals.append('Dow_MA_KD_bullish')
+            buy_signals.append(('Dow_MA_KD', '道氏上升+MA支撐+KD交叉'))
             
         if (dow_trend == 'downtrend' and 
             price_near_ma and 
             indicators['k_line'] > self.kd_overbought and 
             indicators['k_line'] < indicators['d_line']):
-            sell_signals.append('Dow_MA_KD_bearish')
+            sell_signals.append(('Dow_MA_KD', '道氏下降+MA壓力+KD交叉'))
             
-        # 雲帶 + 斐波那契 + K線形態
+        # 4. 趨勢+價位+價格行為組合
         fib_levels = indicators['fib_levels']
         price_at_50 = abs(indicators['price'] - fib_levels['0.5']) < indicators['atr'] * 0.5
         
         if (indicators['price'] > indicators['cloud_top'] and 
             price_at_50 and 
             patterns['bullish_engulfing']):
-            buy_signals.append('Cloud_Fib_Candlestick_bullish')
+            buy_signals.append(('Cloud_Fib_Candlestick', '雲帶+斐波那契0.5+看漲K線'))
             
         if (indicators['price'] < indicators['cloud_bottom'] and 
             price_at_50 and 
             patterns['bearish_engulfing']):
-            sell_signals.append('Cloud_Fib_Candlestick_bearish')
+            sell_signals.append(('Cloud_Fib_Candlestick', '雲帶+斐波那契0.5+看跌K線'))
             
         return buy_signals, sell_signals
 
@@ -493,35 +489,42 @@ class ThreeLevelStrategy(AbstractStrategyBase):
         signal_level = 0
         signal_type = None
         signal_reasons = []
+        signal_descriptions = []
         
         # 優先檢查Level 3信號
         if level3_buy:
             signal_level = 3
             signal_type = 'BUY'
-            signal_reasons = level3_buy
+            signal_reasons = [sig[0] for sig in level3_buy]
+            signal_descriptions = [sig[1] for sig in level3_buy]
         elif level3_sell:
             signal_level = 3
             signal_type = 'SELL'
-            signal_reasons = level3_sell
+            signal_reasons = [sig[0] for sig in level3_sell]
+            signal_descriptions = [sig[1] for sig in level3_sell]
         # 其次檢查Level 2信號
         elif level2_buy:
             signal_level = 2
             signal_type = 'BUY'
-            signal_reasons = level2_buy
+            signal_reasons = [sig[0] for sig in level2_buy]
+            signal_descriptions = [sig[1] for sig in level2_buy]
         elif level2_sell:
             signal_level = 2
             signal_type = 'SELL'
-            signal_reasons = level2_sell
+            signal_reasons = [sig[0] for sig in level2_sell]
+            signal_descriptions = [sig[1] for sig in level2_sell]
         # 最後檢查Level 1信號（可選：只在沒有持倉時考慮）
         elif not self.in_position:
             if level1_buy:
                 signal_level = 1
                 signal_type = 'BUY'
-                signal_reasons = level1_buy
+                signal_reasons = [sig[0] for sig in level1_buy]
+                signal_descriptions = [sig[1] for sig in level1_buy]
             elif level1_sell:
                 signal_level = 1
                 signal_type = 'SELL'
-                signal_reasons = level1_sell
+                signal_reasons = [sig[0] for sig in level1_sell]
+                signal_descriptions = [sig[1] for sig in level1_sell]
         
         # 生成交易信號
         if not self.in_position and signal_level > 0:
@@ -540,7 +543,7 @@ class ThreeLevelStrategy(AbstractStrategyBase):
                     price=current_price,
                     sl=sl_price,
                     tp=tp_price,
-                    comment=f'L{signal_level}_Buy_{",".join(signal_reasons[:2])}'
+                    comment=f'L{signal_level}_{signal_descriptions[0] if signal_descriptions else "Buy"}'
                 ))
                 self.in_position = True
                 self.position_side = 'long'
@@ -558,7 +561,7 @@ class ThreeLevelStrategy(AbstractStrategyBase):
                     price=current_price,
                     sl=sl_price,
                     tp=tp_price,
-                    comment=f'L{signal_level}_Sell_{",".join(signal_reasons[:2])}'
+                    comment=f'L{signal_level}_{signal_descriptions[0] if signal_descriptions else "Sell"}'
                 ))
                 self.in_position = True
                 self.position_side = 'short'
