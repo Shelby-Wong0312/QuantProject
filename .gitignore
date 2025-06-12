@@ -6,6 +6,7 @@ __pycache__/
 *$py.class
 *.so
 .Python
+env/
 build/
 develop-eggs/
 dist/
@@ -24,8 +25,8 @@ wheels/
 
 # Virtual Environment
 venv/
-env/
 ENV/
+quant_portfolio/
 
 # IDE
 .idea/
@@ -46,8 +47,10 @@ config.ini
 *.db
 
 # Project specific
+*.html
 *.csv
 *.log
+*.xlsx
 *.db
 *.sqlite3
 backtest_result.txt
@@ -57,7 +60,14 @@ btc_usd_daily.csv
 
 # Jupyter Notebook
 .ipynb_checkpoints
+*.ipynb
 
 # Environment
 .env
 tickers.txt
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
