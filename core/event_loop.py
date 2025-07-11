@@ -1,67 +1,41 @@
-# core/event_loop.py
+# quant_project/core/event_loop.py
+
 import asyncio
 import logging
+from .event import EventType
 
 logger = logging.getLogger(__name__)
 
-class AsyncEventLoop:
+class EventLoop:
     def __init__(self):
-        self.event_queue = asyncio.Queue()
-        self.handlers = {}
-        self.running = False
-        self._main_loop_task = None
+        self._event_queue = asyncio.Queue()
+        self._running = False
+        self._handlers = {}
 
-    def register_handler(self, event_type_name: str, handler_callable):
-        if not asyncio.iscoroutinefunction(handler_callable):
-            raise TypeError(f"Handler {handler_callable.__name__} must be an async function.")
-        
-        if event_type_name not in self.handlers:
-            self.handlers[event_type_name] = []
-        
-        if handler_callable not in self.handlers[event_type_name]:
-            self.handlers[event_type_name].append(handler_callable)
-            logger.info(f"Async handler {handler_callable.__name__} registered for {event_type_name}")
+    def add_handler(self, event_type: EventType, handler_coro):
+        if event_type not in self._handlers:
+            self._handlers[event_type] = []
+        self._handlers[event_type].append(handler_coro)
+        logger.info(f"已為事件 '{event_type.name}' 註冊處理器: {handler_coro.__name__}")
 
-    async def post_event(self, event):
-        await self.event_queue.put(event)
-
-    async def _dispatch_event(self, handler, event):
-        try:
-            await handler(event)
-        except Exception as e:
-            logger.error(f"Error in async handler {handler.__name__} for event {type(event).__name__}: {e}", exc_info=True)
+    async def put_event(self, event):
+        await self._event_queue.put(event)
 
     async def run(self):
-        logger.info("Async event loop starting...")
-        self.running = True
-        while self.running:
+        logger.info("事件循環已啟動...")
+        self._running = True
+        while self._running:
             try:
-                event = await asyncio.wait_for(self.event_queue.get(), timeout=1.0)
-                event_type_name = type(event).__name__
-                if event_type_name in self.handlers:
-                    for handler in self.handlers[event_type_name]:
-                        asyncio.create_task(self._dispatch_event(handler, event))
-                self.event_queue.task_done()
-            except asyncio.TimeoutError:
-                continue
-            except Exception as e:
-                logger.error(f"Critical error in async event loop: {e}", exc_info=True)
-
-        logger.info("Async event loop stopped.")
-
-    def start(self):
-        if not self.running:
-            self._main_loop_task = asyncio.create_task(self.run())
-            logger.info("Async event loop initiated.")
-
-    async def stop(self):
-        logger.info("Stop signal received for async event loop.")
-        self.running = False
-        if self._main_loop_task:
-            try:
-                await asyncio.wait_for(self._main_loop_task, timeout=5.0)
-            except asyncio.TimeoutError:
-                logger.warning("Event loop did not stop gracefully within timeout.")
-                self._main_loop_task.cancel()
+                event = await self._event_queue.get()
+                if event.type in self._handlers:
+                    logger.debug(f"處理事件: {event}")
+                    tasks = [handler(event) for handler in self._handlers[event.type]]
+                    await asyncio.gather(*tasks)
             except asyncio.CancelledError:
-                logger.info("Event loop task was cancelled.")
+                self._running = False
+            except Exception as e:
+                logger.error(f"事件循環發生錯誤: {e}", exc_info=True)
+
+    def stop(self):
+        logger.info("正在停止事件循環...")
+        self._running = False

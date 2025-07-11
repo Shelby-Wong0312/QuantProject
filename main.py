@@ -1,95 +1,85 @@
-# main.py
+# quant_project/main.py
+# FINAL FIX - Corrected Strategy Name
 
-import sys
-import os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-import logging
 import asyncio
+import logging
+import signal
+import sys
 from typing import List
 
-# 根據我們之前建立的架構導入模組
-from core.event_loop import AsyncEventLoop
-from data_feeds.capital_live_feed import CapitalLiveFeedHandler
-from live_trading_app.capital_execution_handler import CapitalExecutionHandler
-from adapters.live_trading_adapter import LiveTradingAdapter
-# vvvvvv 導入我們新的 LevelOneStrategy vvvvvv
-from strategy.concrete_strategies.level_one_strategy import LevelOneStrategy
-# ^^^^^^ 導入我們新的 LevelOneStrategy ^^^^^^
-from live_trading_app.simple_portfolio_manager import SimplePortfolioManager
+import config
+logging.basicConfig(level=config.LOG_LEVEL, format='%(asctime)s - %(name)-15s - %(levelname)-8s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+logging.getLogger("requests").setLevel(logging.WARNING)
+
+from core.event_loop import EventLoop
+from core.event import EventType, MarketEvent
+from data.live_feed import LiveDataFeed
+from strategy.trading_strategies import ComprehensiveStrategy # <--- 修正名稱
+from execution.portfolio import Portfolio
+from execution.broker import Broker
 
 logger = logging.getLogger(__name__)
 
-def load_symbols(filepath: str = "valid_tickers.txt", limit: int = None) -> List[str]:
-    symbols = []
-    try:
-        with open(filepath, 'r') as f:
-            symbols = [line.strip() for line in f if line.strip()]
-        if limit:
-            symbols = symbols[:limit]
-    except FileNotFoundError:
-        logger.error(f"找不到文件: {filepath}")
-        symbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA"]
-    return symbols
+class TradingSystem:
+    def __init__(self):
+        if sys.platform == 'win32':
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        self.loop = asyncio.get_event_loop()
+        self.event_queue = EventLoop()
+        self.data_feed = None
+        self.tasks: List[asyncio.Task] = []
 
-async def main():
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    
-    required_env_vars = ["CAPITAL_API_KEY", "CAPITAL_IDENTIFIER", "CAPITAL_API_PASSWORD"]
-    missing_vars = [var for var in required_env_vars if not os.getenv(var)]
-    if missing_vars:
-        logger.error(f"缺少必要的环境变量: {missing_vars}")
-        return
-    
-    symbols = load_symbols("valid_tickers.txt")
-    logger.info(f"將監控以下股票: {symbols}")
-    
-    event_loop = AsyncEventLoop()
-    feed_handler = CapitalLiveFeedHandler(event_queue=event_loop.event_queue, symbols=symbols)
-    exec_handler = CapitalExecutionHandler(event_queue=event_loop.event_queue)
-    portfolio_manager = SimplePortfolioManager(event_queue=event_loop.event_queue, initial_cash=10000.0)
-    
-    strategies = {}
-    adapters = {}
-    
-    for symbol in symbols:
-        strategy_params = {
-            'symbol': symbol,
-            # 這裡的參數會傳給 LevelOneStrategy，如果省略則使用其內部預設值
-            'short_ma_period': 5,
-            'long_ma_period': 20,
-            'live_trade_quantity': 0.1
-        }
-        # vvvvvv 實例化新的 LevelOneStrategy vvvvvv
-        strategy = LevelOneStrategy(parameters=strategy_params)
-        # ^^^^^^ 實例化新的 LevelOneStrategy ^^^^^^
-        strategies[symbol] = strategy
+    def run(self):
+        logger.info("初始化 Capital.com 實時交易系統...")
+        portfolio = Portfolio(self.event_queue)
+        broker = Broker(self.event_queue)
         
-        adapter = LiveTradingAdapter(event_queue=event_loop.event_queue, abstract_strategy=strategy)
-        adapters[symbol] = adapter
-    
-    async def route_market_data(event):
-        symbol = event.symbol
-        if symbol in adapters:
-            await adapters[symbol].handle_market_data_event(event)
-    
-    event_loop.register_handler("MarketDataEvent", route_market_data)
-    event_loop.register_handler("SignalEvent", exec_handler.handle_signal_event)
-    event_loop.register_handler("FillEvent", portfolio_manager.handle_fill_event)
-    
-    feed_task = asyncio.create_task(feed_handler.start_feed())
-    logger.info("開始實時交易系統...")
-    
-    try:
-        await asyncio.gather(event_loop.run(), feed_task)
-    except KeyboardInterrupt:
-        logger.info("收到中断信号，正在关闭...")
-        feed_handler.stop()
-        await event_loop.stop()
-    except Exception as e:
-        logger.error(f"系統错误: {e}", exc_info=True)
-    finally:
-        logger.info("實時交易系統已关闭")
+        strategies = []
+        for symbol in config.SYMBOLS_TO_TRADE:
+            strategy_params = config.STRATEGY_PARAMS['Comprehensive_v1']
+            strategy = ComprehensiveStrategy(symbol=symbol, params=strategy_params) # <--- 修正名稱
+            strategies.append(strategy)
+            logger.info(f"已為 {symbol} 創建策略實例。")
+
+        self.event_queue.add_handler(EventType.FILL, portfolio.on_fill)
+        self.event_queue.add_handler(EventType.ORDER, broker.on_order)
+        self.event_queue.add_handler(EventType.SIGNAL, portfolio.on_signal)
+        
+        async def strategy_handler(event: MarketEvent):
+            for s in strategies:
+                if s.symbol == event.symbol:
+                    signal = s.calculate_signals(event)
+                    if signal:
+                        await self.event_queue.put_event(signal)
+                        break
+        
+        self.event_queue.add_handler(EventType.MARKET, strategy_handler)
+
+        self.data_feed = LiveDataFeed(symbols=config.SYMBOLS_TO_TRADE, event_queue=self.event_queue)
+        
+        for sig in (signal.SIGINT, signal.SIGTERM):
+            try:
+                self.loop.add_signal_handler(sig, lambda: asyncio.create_task(self.shutdown()))
+            except (NotImplementedError, RuntimeError):
+                pass
+
+        try:
+            logger.info("交易系統啟動完成。 按下 Ctrl+C 來關閉。")
+            self.tasks.append(self.loop.create_task(self.event_queue.run()))
+            self.tasks.append(self.loop.create_task(self.data_feed.run()))
+            self.loop.run_forever()
+        finally:
+            self.loop.close()
+
+    async def shutdown(self):
+        logger.info("收到關閉訊號，開始關閉系統...")
+        if self.data_feed: self.data_feed.stop()
+        for task in self.tasks:
+            if not task.done(): task.cancel()
+        await asyncio.gather(*self.tasks, return_exceptions=True)
+        if self.loop.is_running(): self.loop.stop()
+        logger.info("系統已成功關閉。")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    system = TradingSystem()
+    system.run()
