@@ -1,10 +1,25 @@
-# execution/__init__.py
-# 執行模組初始化文件
+"""
+Backtesting Engine Module
 
-from .broker import Broker
-from .portfolio import Portfolio
+This module provides a comprehensive backtesting framework for:
+- Strategy simulation and evaluation
+- Portfolio management and tracking
+- Performance metrics calculation
+- Transaction cost modeling
+"""
+
+from .engine import BacktestEngine
+from .portfolio import Portfolio, Position
+from .performance import PerformanceAnalyzer
+from .models import TransactionCostModel, SlippageModel
+from .strategy_base import Strategy
 
 __all__ = [
-    'Broker',
-    'Portfolio'
+    'BacktestEngine',
+    'Portfolio',
+    'Position',
+    'PerformanceAnalyzer',
+    'TransactionCostModel',
+    'SlippageModel',
+    'Strategy'
 ]

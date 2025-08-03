@@ -21,6 +21,11 @@
   - **提示詞:** `.cloud/prompt/rl_strategist.md`
 
 - **召喚回測分析師 (Backtest Analyst):**
-  - **職責:** 負責 `src/backtesting/` 和 `src/visualizations/` 模組，搭建和維護回測引擎，並將結果視覺化。
+  - **職責:** 負責 src/backtesting/ 模組，專注於搭建和維護高效能的回測引擎。
   - **指令:** `cloud ba`
+  - **提示詞:** `.cloud/prompt/backtest_analyst.md`
+
+- **召喚視覺化工程師 (Visualization Engineer):**
+  - **職責:** 負責 src/visualizations/ 模組，將數據與結果轉化為互動式儀表板。
+  - **指令:** `cloud viz`
   - **提示詞:** `.cloud/prompt/backtest_analyst.md`
