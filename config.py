@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # quant_project/config.py
 # FINAL VERSION - with .env debugging
 
@@ -5,80 +6,78 @@ import os
 import sys
 from dotenv import load_dotenv, find_dotenv
 
-# --- .env 檔案加載與偵錯 ---
-print("--- 開始加載 .env 檔案 ---")
-# 尋找 .env 檔案的路徑
+# Force UTF-8 encoding
+if sys.platform == 'win32':
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+
+# --- .env file loading and debugging ---
+print("--- Starting to load .env file ---")
+# Find .env file path
 env_file_path = find_dotenv()
 
 if env_file_path:
-    print(f"✅ 找到 .env 檔案，路徑為: {env_file_path}")
-    # verbose=True 會打印出詳細的加載過程
+    print(f"[OK] Found .env file at: {env_file_path}")
+    # verbose=True will print detailed loading process
     load_dotenv(dotenv_path=env_file_path, verbose=True)
 else:
-    print("❌ 警告：在專案目錄中找不到 .env 檔案！")
+    print("[WARNING] .env file not found in project directory!")
 
-print("--- .env 檔案加載完畢 ---")
-print("\n--- 開始讀取環境變數 ---")
+print("--- .env file loading completed ---")
 
-# --- Capital.com API 設定 ---
-CAPITAL_API_KEY = os.getenv("CAPITAL_API_KEY")
-CAPITAL_IDENTIFIER = os.getenv("CAPITAL_IDENTIFIER")
-CAPITAL_API_PASSWORD = os.getenv("CAPITAL_API_PASSWORD")
-CAPITAL_BASE_URL = "https://demo-api-capital.backend-capital.com/api/v1"
+# --- API Configuration ---
+CAPITAL_API_KEY = os.getenv('CAPITAL_API_KEY')
+CAPITAL_IDENTIFIER = os.getenv('CAPITAL_IDENTIFIER')
+CAPITAL_API_PASSWORD = os.getenv('CAPITAL_API_PASSWORD')
+CAPITAL_PASSWORD = CAPITAL_API_PASSWORD  # Backward compatibility
+CAPITAL_DEMO_MODE = os.getenv('CAPITAL_DEMO_MODE', 'True').lower() == 'true'
 
-# --- 偵錯輸出：打印讀取到的值 ---
-# 我們將每個值都打印出來，看看程式到底讀到了什麼
-print(f"CAPITAL_API_KEY 的值: '{CAPITAL_API_KEY}'")
-print(f"CAPITAL_IDENTIFIER 的值: '{CAPITAL_IDENTIFIER}'")
-print(f"CAPITAL_API_PASSWORD 的值: '{CAPITAL_API_PASSWORD}'")
-print("--- 環境變數讀取完畢 ---\n")
+# Use demo or live API URL based on mode
+if CAPITAL_DEMO_MODE:
+    CAPITAL_API_URL = os.getenv('CAPITAL_API_URL', 'https://demo-api-capital.backend-capital.com')
+else:
+    CAPITAL_API_URL = os.getenv('CAPITAL_API_URL', 'https://api-capital.backend-capital.com')
 
+# Check if API credentials are loaded
+if not CAPITAL_API_KEY or not CAPITAL_API_PASSWORD:
+    print("[ERROR] API credentials not found!")
+    print("Please create a .env file with:")
+    print("  CAPITAL_API_KEY=your_api_key")
+    print("  CAPITAL_API_PASSWORD=your_password")
+    sys.exit(1)
+else:
+    print(f"[OK] API Key loaded: {CAPITAL_API_KEY[:4]}...{CAPITAL_API_KEY[-4:]}")
+    print(f"[OK] Demo Mode: {CAPITAL_DEMO_MODE}")
+    print(f"[OK] API URL: {CAPITAL_API_URL}")
+    print(f"[OK] Identifier: {CAPITAL_IDENTIFIER}")
 
-# --- 啟動安全檢查 ---
-# 如果任何一個 Capital.com 憑證為空，則中止程式
-if not all([CAPITAL_API_KEY, CAPITAL_IDENTIFIER, CAPITAL_API_PASSWORD]):
-    print("="*60)
-    print("❌ 致命錯誤：Capital.com API 憑證未完整設定或讀取失敗。")
-    print("請檢查您的 .env 檔案，確保所有變數都已正確填寫。")
-    print("="*60)
-    sys.exit(1) # 中止程式
+# --- Trading Configuration ---
+SYMBOLS_TO_TRADE = ['EUR/USD', 'Apple', 'Gold']
 
+# --- Logging ---
+LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 
-# --- 交易標的設定 ---
-def _load_tickers_from_file(filepath: str, suffix: str = ".US") -> list[str]:
-    # ... (此函式維持不變)
-    try:
-        with open(filepath, 'r') as f:
-            tickers = [line.strip() + suffix for line in f if line.strip() and not line.strip().startswith('#')]
-        # print(f"成功從 {filepath} 加載 {len(tickers)} 個股票代碼。") # 移到主程式中打印
-        return tickers
-    except FileNotFoundError:
-        return []
-
-ALL_VALID_SYMBOLS = _load_tickers_from_file('valid_tickers.txt')
-
-SYMBOLS_TO_TRADE = [
-    "AAPL.US", "MSFT.US", "GOOGL.US", "TSLA.US", "AMZN.US", "NVDA.US", "META.US"
-]
-
-# --- 資金與風險管理 ---
-INITIAL_CAPITAL = 100_000.0
-DEFAULT_TRADE_QUANTITY = 10
-
-# --- 策略參數 ---
+# --- Strategy Parameters ---
 STRATEGY_PARAMS = {
     'Comprehensive_v1': {
-        'ma_short_period': 5, 'ma_long_period': 20,
-        'bias_period': 20, 'bias_upper': 7.0, 'bias_lower': -8.0,
-        'kd_k': 14, 'kd_d': 3, 'kd_smooth': 3, 'kd_overbought': 80, 'kd_oversold': 20,
-        'macd_fast': 12, 'macd_slow': 26, 'macd_signal': 9,
-        'rsi_period': 14, 'rsi_overbought': 70, 'rsi_oversold': 30,
-        'bb_period': 20, 'bb_std': 2.0,
-        'ichi_tenkan': 9, 'ichi_kijun': 26, 'ichi_senkou_b': 52,
-        'vol_ma_period': 20, 'vol_multiplier': 1.5,
-        'atr_period': 14, 'atr_multiplier_sl': 2.0, 'atr_multiplier_tp': 4.0,
+        'lookback_periods': {
+            'ema_short': 20,
+            'ema_long': 50,
+            'atr_period': 14,
+            'rsi_period': 14
+        },
+        'thresholds': {
+            'rsi_oversold': 30,
+            'rsi_overbought': 70,
+            'volume_spike': 1.5,
+            'risk_percent': 0.02
+        }
     }
 }
 
-# --- 系統設定 ---
-LOG_LEVEL = "INFO"
+# --- Portfolio Configuration ---
+INITIAL_CAPITAL = float(os.getenv('INITIAL_CAPITAL', '100000'))
+BASE_POSITION_SIZE = float(os.getenv('BASE_POSITION_SIZE', '0.05'))
+
+print("--- Configuration loaded successfully ---")

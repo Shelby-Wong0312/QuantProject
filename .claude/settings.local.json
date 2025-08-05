@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(python:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(mv:*)",
+      "Bash(rm:*)",
+      "Bash(cp:*)",
+      "Bash(copy \"C:\\Users\\niuji\\Documents\\QuantProject\\src\\backtesting\\event_loop.py\" \"C:\\Users\\niuji\\Documents\\QuantProject\\core\\event_loop.py\")",
+      "Bash(mklink:*)",
+      "WebFetch(domain:open-api.capital.com)",
+      "WebFetch(domain:help.capital.com)"
+    ],
+    "deny": []
+  }
+}

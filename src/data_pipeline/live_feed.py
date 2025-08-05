@@ -27,7 +27,7 @@ class LiveDataFeed:
         self.api_key = config.CAPITAL_API_KEY
         self.identifier = config.CAPITAL_IDENTIFIER
         self.password = config.CAPITAL_API_PASSWORD
-        self.base_url = config.CAPITAL_BASE_URL
+        self.base_url = config.CAPITAL_API_URL
         self.cst = None
         self.x_security_token = None
         
@@ -40,6 +40,9 @@ class LiveDataFeed:
         headers = {"X-CAP-API-KEY": self.api_key, "Content-Type": "application/json"}
         payload = {"identifier": self.identifier, "password": self.password}
         
+        logger.debug(f"[DataFeed] Attempting login to: {login_url}")
+        logger.debug(f"[DataFeed] API Key: {self.api_key[:4]}...{self.api_key[-4:]}")
+        
         try:
             response = self.session.post(login_url, headers=headers, json=payload, timeout=15)
             if response.status_code == 200:
@@ -48,7 +51,8 @@ class LiveDataFeed:
                 logger.info("✅ [DataFeed] 成功登錄 Capital.com")
                 return True
             else:
-                logger.error(f"❌ [DataFeed] 登錄失敗: {response.text}")
+                logger.error(f"❌ [DataFeed] 登錄失敗 (Status {response.status_code}): {response.text}")
+                logger.error(f"❌ [DataFeed] URL: {login_url}")
                 return False
         except requests.exceptions.RequestException as e:
             logger.error(f"❌ [DataFeed] 登錄時發生網路錯誤: {e}")

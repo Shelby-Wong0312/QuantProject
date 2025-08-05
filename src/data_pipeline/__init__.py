@@ -5,12 +5,12 @@ from .capital_history_loader import CapitalHistoryLoader
 from .data_manager import DataManager
 from .data_cache import DataCache
 from .history_loader import HistoryLoader
-from .live_feed import LiveFeed
+from .live_feed import LiveDataFeed
 
 __all__ = [
     'CapitalHistoryLoader',
     'DataManager',
     'DataCache',
     'HistoryLoader',
-    'LiveFeed'
+    'LiveDataFeed'
 ]

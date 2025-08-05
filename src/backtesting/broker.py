@@ -7,8 +7,8 @@ import requests
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 
-from core.event import OrderEvent, FillEvent
-from core.event_loop import EventLoop
+from src.backtesting.event import OrderEvent, FillEvent
+from src.backtesting.event_loop import EventLoop
 import config # <--- 新增這一行，解決 NameError
 
 logger = logging.getLogger(__name__)
