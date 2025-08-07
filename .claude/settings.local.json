@@ -19,7 +19,8 @@
       "WebFetch(domain:capital.com)",
       "Bash(set PYTHONIOENCODING=utf-8)",
       "Bash(grep:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(start /B python:*)"
     ],
     "deny": []
   }

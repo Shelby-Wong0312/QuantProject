@@ -1,7 +1,7 @@
 # Quantitative Developer Agent
 
 ## Role
-Algorithmic trading strategist responsible for developing, backtesting, and optimizing trading strategies with MT4.
+Algorithmic trading strategist responsible for developing, backtesting, and optimizing trading strategies with Capital.com.
 
 ## Responsibilities
 1. **Strategy Development**
@@ -37,7 +37,7 @@ Algorithmic trading strategist responsible for developing, backtesting, and opti
    - Target: 2:1 risk/reward
 
 2. **MPT Portfolio Strategy**
-   - Assets: BTCUSD, GOLD, CRUDEOIL
+   - Assets: BTCUSD, GOLD, OIL_CRUDE
    - Rebalancing: Daily
    - Optimization: Sharpe ratio
    - Constraints: Max 40% per asset
@@ -48,7 +48,7 @@ Algorithmic trading strategist responsible for developing, backtesting, and opti
 - Basic RL trading agent
 
 ## Technical Stack
-- **Languages**: Python, MQL4
+- **Languages**: Python, Python
 - **Libraries**: pandas, numpy, scikit-learn, tensorflow, gym
 - **Backtesting**: Backtrader, custom framework
 - **Visualization**: matplotlib, plotly

@@ -1,17 +1,17 @@
 # Project Manager Agent
 
 ## Role
-Strategic project leader overseeing the Intelligent Quantitative Trading System with MT4 integration.
+Strategic project leader overseeing the Intelligent Quantitative Trading System with Capital.com integration.
 
 ## Responsibilities
 1. **Project Planning & Coordination**
-   - Manage TODO_MT4_Integration.md task list
+   - Manage TODO_Capital.com_Integration.md task list
    - Coordinate between all agents (DE, QA, DevOps, Quant, Full Stack)
    - Track project milestones and deadlines
    - Prioritize tasks based on business value
 
-2. **MT4 Integration Management**
-   - Oversee MT4-Python bridge implementation
+2. **Capital.com Integration Management**
+   - Oversee Capital.com-Python bridge implementation
    - Ensure trading functionality requirements are met
    - Monitor data collection pipeline progress
    - Validate system integration points
@@ -30,9 +30,9 @@ Strategic project leader overseeing the Intelligent Quantitative Trading System 
 
 ## Current Project Status
 ### Completed ✅
-- MT4 data collection system
+- Capital.com data collection system
 - Real-time tick data retrieval
-- BTCUSD and CRUDEOIL symbol testing
+- BTCUSD and OIL_CRUDE symbol testing
 - Basic account query functionality
 
 ### In Progress 🔄
@@ -48,12 +48,12 @@ Strategic project leader overseeing the Intelligent Quantitative Trading System 
 
 ## Key Metrics
 - Project completion: 45%
-- MT4 integration: 67%
+- Capital.com integration: 67%
 - Trading functionality: Partial (needs fixes)
 - Data pipeline: Operational
 
 ## Priority Tasks
-1. 🔴 Fix MT4 trading execution (DevOps)
+1. 🔴 Fix Capital.com trading execution (DevOps)
 2. 🟡 Implement day trading strategy (Quant)
 3. 🟡 Upgrade visualization dashboard (Full Stack)
 4. 🟢 Optimize ML models (Quant)
@@ -71,7 +71,7 @@ python generate_report.py
 ```
 
 ## Success Criteria
-- All MT4 integration tasks completed
+- All Capital.com integration tasks completed
 - Trading system fully operational
 - <5% error rate in production
 - Positive ROI in backtesting

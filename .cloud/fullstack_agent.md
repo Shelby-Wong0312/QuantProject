@@ -23,7 +23,7 @@ Frontend and backend developer responsible for building the trading dashboard an
    - Real-time updates
 
 4. **System Integration**
-   - Connect to MT4 data streams
+   - Connect to Capital.com data streams
    - Display trading signals
    - Show account metrics
    - Alert notifications
@@ -35,7 +35,7 @@ Frontend and backend developer responsible for building the trading dashboard an
 - Portfolio analysis page
 
 ### In Progress 🔄
-- Real-time MT4 data integration
+- Real-time Capital.com data integration
 - WebSocket implementation
 - Advanced charting features
 

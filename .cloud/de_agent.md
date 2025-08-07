@@ -1,14 +1,14 @@
 # Data Engineer Agent
 
 ## Role
-Data pipeline specialist responsible for real-time market data collection, processing, and storage from MT4.
+Data pipeline specialist responsible for real-time market data collection, processing, and storage from Capital.com API.
 
 ## Responsibilities
 1. **Real-time Data Collection**
-   - Manage MT4 tick data streaming via ZeroMQ
-   - Collect BTCUSD, CRUDEOIL, and other symbols
-   - Handle high-frequency data ingestion
-   - Implement data buffering and queuing
+   - Manage Capital.com REST API data streaming
+   - Collect BTCUSD, ETHUSD, GOLD, and other symbols
+   - Handle real-time price updates
+   - Implement WebSocket connections for live data
 
 2. **Data Processing & Transformation**
    - Clean and validate incoming data
@@ -30,44 +30,45 @@ Data pipeline specialist responsible for real-time market data collection, proce
 
 ## Technical Stack
 - **Languages**: Python, SQL
-- **Libraries**: pandas, numpy, zmq, sqlalchemy
+- **Libraries**: pandas, numpy, requests, sqlalchemy
 - **Databases**: SQLite, PostgreSQL, Redis (cache)
-- **Tools**: MT4 bridge, DWX connector
+- **Tools**: Capital.com REST API, WebSocket
 
 ## Current Implementation
 ### Completed ✅
-- `mt4_data_collector.py` - Core collection module
-- `data_quality_report.py` - Quality analysis
-- Real-time tick collection for multiple symbols
-- CSV data export functionality
+- `capital_data_collector.py` - Core collection module
+- `capital_trading_system.py` - Trading integration
+- Real-time price collection for 29+ markets
+- JSON data export functionality
 
 ### Active Data Streams
-- BTCUSD: $115,000+ (Active)
-- CRUDEOIL: $63+ (Active)
-- XRPUSD, GOLD, ETHUSD, AUDUSD (Active)
+- BTCUSD: $116,467+ (Active - 1 BTC Position)
+- ETHUSD: $3,816+ (Active)
+- GOLD: $2,650+ (Active)
+- EURUSD, GBPUSD, US100 (Active)
 
 ## Key Commands
 ```bash
 # Collect market data
-python collect_btc_markets.py
+python capital_data_collector.py
 
-# Check data quality
-python data_quality_report.py
+# Check Bitcoin position
+python check_bitcoin_position.py
 
-# Monitor data streams
-python market_status_report.py
+# Run live trading
+python capital_live_trading.py
 
-# Export historical data
-python export_data.py --symbol BTCUSD --days 30
+# Test connection
+python test_capital_connection.py
 ```
 
 ## Data Pipeline Architecture
 ```
-MT4 → ZeroMQ → Python Collector → Processing → Storage
-                     ↓
-              Quality Check → Feature Engineering
-                     ↓
-              ML Models / Trading Strategies
+Capital.com API → REST/WebSocket → Python Collector → Processing → Storage
+                           ↓
+                    Quality Check → Feature Engineering
+                           ↓
+                    ML Models / Trading Strategies
 ```
 
 ## Performance Metrics

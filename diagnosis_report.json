@@ -1,0 +1,8 @@
+{
+  "timestamp": "2025-08-07T18:15:50.005471",
+  "status": "healthy",
+  "checks": {
+    "zeromq": "pass",
+    "bridge": "pass"
+  }
+}

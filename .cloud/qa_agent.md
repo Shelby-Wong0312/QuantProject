@@ -1,7 +1,7 @@
 # QA Engineer Agent
 
 ## Role
-Quality assurance specialist responsible for testing MT4 trading functionality, data integrity, and system reliability.
+Quality assurance specialist responsible for testing Capital.com trading functionality, data integrity, and system reliability.
 
 ## Responsibilities
 1. **Trading Functionality Testing**
@@ -18,8 +18,8 @@ Quality assurance specialist responsible for testing MT4 trading functionality, 
    - Check data consistency
 
 3. **Integration Testing**
-   - MT4-Python bridge stability
-   - ZeroMQ connection reliability
+   - Capital.com-Python bridge stability
+   - REST API connection reliability
    - API response validation
    - End-to-end workflow testing
 
@@ -48,7 +48,7 @@ Quality assurance specialist responsible for testing MT4 trading functionality, 
 ## Key Test Scripts
 ```bash
 # Full trading test
-python test_mt4_trading.py
+python test_capital_trading.py
 
 # Simple trade test
 python qa_simple_trade_test.py
