@@ -1,0 +1,16 @@
+Market Status Report
+Time: 2025-08-07 07:24:15 Thursday
+============================================================
+
+Active Symbols:
+  - BTCUSD: Bitcoin ($115019.3)
+  - CRUDEOIL: WTI Crude Oil ($63.85)
+  - XRPUSD: Ripple ($2.98835)
+  - GOLD: Gold ($3370.42)
+  - ETHUSD: Ethereum ($3677.62)
+  - AUDUSD: AUD/USD Forex ($0.6505)
+
+Inactive Symbols:
+
+BTC Status: AVAILABLE
+WTI Status: AVAILABLE

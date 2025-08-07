@@ -13,7 +13,13 @@
       "Bash(copy \"C:\\Users\\niuji\\Documents\\QuantProject\\src\\backtesting\\event_loop.py\" \"C:\\Users\\niuji\\Documents\\QuantProject\\core\\event_loop.py\")",
       "Bash(mklink:*)",
       "WebFetch(domain:open-api.capital.com)",
-      "WebFetch(domain:help.capital.com)"
+      "WebFetch(domain:help.capital.com)",
+      "Bash(pip install:*)",
+      "Bash(where python)",
+      "WebFetch(domain:capital.com)",
+      "Bash(set PYTHONIOENCODING=utf-8)",
+      "Bash(grep:*)",
+      "Bash(dir:*)"
     ],
     "deny": []
   }
