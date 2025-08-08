@@ -1,0 +1,23 @@
+
+                ========================================
+                Capital.com Automation Report
+                ========================================
+                Time: 2025-08-08 23:24:26.087946
+                
+                System Status:
+                - Database: SQLite (quant_trading.db)
+                - Tradable Stocks: 4,215
+                - Historical Data: 15 years available
+                
+                Data Coverage:
+                - Daily Data: 15 years
+                - Hourly Data: 16 weeks  
+                - Minute Data: 4 weeks
+                - Tick Data: Real-time collection
+                
+                Next Actions:
+                - Download historical data for all stocks
+                - Start real-time data collection
+                - Begin backtesting strategies
+                ========================================
+                

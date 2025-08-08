@@ -1,0 +1,35 @@
+{
+  "database": {
+    "type": "SQLite",
+    "path": "quant_trading.db",
+    "backup_path": "quant_trading_backup.db"
+  },
+  "tables": {
+    "stocks": "Stock information and validation status",
+    "daily_data": "15+ years of daily OHLC data",
+    "minute_data": "4 weeks of minute-level data",
+    "tick_data": "Real-time tick data",
+    "ohlc_data": "Multi-timeframe OHLC data",
+    "trading_signals": "Trading signals from strategies",
+    "backtest_results": "Backtest performance metrics",
+    "data_stats": "Data coverage statistics"
+  },
+  "performance": {
+    "journal_mode": "WAL",
+    "cache_size": "64MB",
+    "indexes": 18
+  },
+  "statistics": {
+    "stocks_count": 4215,
+    "ohlc_data_count": 0,
+    "daily_data_count": 0,
+    "minute_data_count": 0,
+    "tick_data_count": 0,
+    "trading_signals_count": 0,
+    "backtest_results_count": 0,
+    "data_stats_count": 0,
+    "size_bytes": 614400,
+    "size_mb": 0.5859375
+  },
+  "created_at": "2025-08-08T23:18:32.158296"
+}
