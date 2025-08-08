@@ -1,0 +1,20 @@
+{
+  "timestamp": "2025-08-08T07:11:43.938618",
+  "validation": {
+    "total_stocks_validated": 2750,
+    "tradeable_stocks": 1153,
+    "non_tradeable_stocks": 1597,
+    "tradeable_percentage": 41.9
+  },
+  "data": {
+    "stocks_with_data": 0,
+    "total_minute_records": 0,
+    "total_tick_records": 0,
+    "database_size_mb": 0.39
+  },
+  "files_created": [
+    "stock_data_complete.db",
+    "tradeable_stocks.csv",
+    "final_summary.json"
+  ]
+}

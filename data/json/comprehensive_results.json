@@ -1,0 +1,312 @@
+{
+  "timestamp": "2025-08-08T06:19:25.463845",
+  "validation_results": {
+    "AAL": {
+      "epic": "AALL",
+      "display_name": "Anglo American",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AAON": {
+      "epic": "AAON",
+      "display_name": "AAON Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AAPL": {
+      "epic": "AAPL",
+      "display_name": "Apple Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ABCL": {
+      "epic": "ABCL",
+      "display_name": "AbCellera Biologics Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ABNB": {
+      "epic": "ABNB",
+      "display_name": "Airbnb Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ACAD": {
+      "epic": "ACADS",
+      "display_name": "Academedia",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ACHC": {
+      "epic": "ACHC",
+      "display_name": "Acadia Healthcare Co Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ACIU": {
+      "epic": "ACIU",
+      "display_name": "AC Immune SA",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ACIW": {
+      "epic": "ACIW",
+      "display_name": "ACI Worldwide, Inc.",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ACLS": {
+      "epic": "ACLS",
+      "display_name": "Axcelis",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ACMR": {
+      "epic": "ACMR",
+      "display_name": "ACM Research Inc.",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ACT": {
+      "epic": "ACTG",
+      "display_name": "Acacia Research",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ACTG": {
+      "epic": "ACTG",
+      "display_name": "Acacia Research",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ACXP": {
+      "epic": "ACXP",
+      "display_name": "Acurx Pharmaceuticals, Inc.",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ADAG": {
+      "epic": "ADAG",
+      "display_name": "Adagene Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ADAP": {
+      "epic": "ADAP",
+      "display_name": "Adaptimmune Therapeutics Plc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ADBE": {
+      "epic": "ADBE",
+      "display_name": "Adobe Systems Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ADI": {
+      "epic": "ADI",
+      "display_name": "Analog Devices",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ADMA": {
+      "epic": "ADMA",
+      "display_name": "ADMA Biologics, Inc.",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ADN": {
+      "epic": "ADNT",
+      "display_name": "Adient",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ADP": {
+      "epic": "ADPT",
+      "display_name": "Adaptive Biotechnologies Corporation",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ADPT": {
+      "epic": "ADPT",
+      "display_name": "Adaptive Biotechnologies Corporation",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ADSK": {
+      "epic": "ADSK",
+      "display_name": "Autodesk",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ADTN": {
+      "epic": "ADTNUS",
+      "display_name": "ADTRAN Holdings Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ADUS": {
+      "epic": "ADUS",
+      "display_name": "Addus HomeCare Corp",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ADV": {
+      "epic": "ADVM",
+      "display_name": "Adverum Biotechnologies Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "ADVM": {
+      "epic": "ADVM",
+      "display_name": "Adverum Biotechnologies Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AEHR": {
+      "epic": "AEHR",
+      "display_name": "Aehr Test Systems",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AEI": {
+      "epic": "AEIS",
+      "display_name": "Advanced Energy Industries, Inc.",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AEIS": {
+      "epic": "AEIS",
+      "display_name": "Advanced Energy Industries, Inc.",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AEMD": {
+      "epic": "AEMD",
+      "display_name": "Aethlon Medical, Inc.",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AEP": {
+      "epic": "AEP",
+      "display_name": "American Electric",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AEYE": {
+      "epic": "AEYE",
+      "display_name": "AudioEye, Inc.",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AFCG": {
+      "epic": "AFCG",
+      "display_name": "Advanced Flower Capital Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AFRI": {
+      "epic": "AFRI",
+      "display_name": "Forafric Global Plc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AFRM": {
+      "epic": "AFRM",
+      "display_name": "Affirm Holdings Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AFYA": {
+      "epic": "AFYA",
+      "display_name": "Afya Ltd",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AGEN": {
+      "epic": "AGEN",
+      "display_name": "Agenus",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AGFY": {
+      "epic": "AGFY",
+      "display_name": "Agrify Corporation",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AGNC": {
+      "epic": "AGNC",
+      "display_name": "American Capital",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AGYS": {
+      "epic": "AGYS",
+      "display_name": "Agilysys Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AHCO": {
+      "epic": "AHCO",
+      "display_name": "AdaptHealth Corp.",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AHG": {
+      "epic": "AHG",
+      "display_name": "Akso Health Group",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AIFU": {
+      "epic": "AIFU",
+      "display_name": "AIX Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AIP": {
+      "epic": "AIP",
+      "display_name": "Arteris, Inc.",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AIRE": {
+      "epic": "AIRE",
+      "display_name": "Alternative Income Reit PLC",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AIRS": {
+      "epic": "AIRS",
+      "display_name": "AirSculpt Technologies, Inc.",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AKAM": {
+      "epic": "AKAM",
+      "display_name": "Akamai",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AKBA": {
+      "epic": "AKBA",
+      "display_name": "Akebia Ther",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    },
+    "AKRO": {
+      "epic": "AKRO",
+      "display_name": "Akero Therapeutics Inc",
+      "instrument_type": "SHARES",
+      "tradeable": true
+    }
+  },
+  "summary": {
+    "tradeable_stocks": 50,
+    "non_tradeable_stocks": 0,
+    "total_minute_records": 28005,
+    "total_tick_records": 280050,
+    "stocks_with_data": 20
+  }
+}

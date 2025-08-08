@@ -20,7 +20,8 @@
       "Bash(set PYTHONIOENCODING=utf-8)",
       "Bash(grep:*)",
       "Bash(dir:*)",
-      "Bash(start /B python:*)"
+      "Bash(start /B python:*)",
+      "Bash(start run_validation.bat)"
     ],
     "deny": []
   }

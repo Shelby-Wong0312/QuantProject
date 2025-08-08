@@ -1,0 +1,122 @@
+{
+  "AACBR": {
+    "valid": true,
+    "tradable": false,
+    "epic": "ARCB",
+    "name": "ArcBest Corporation"
+  },
+  "OFSSH": {
+    "valid": true,
+    "tradable": true,
+    "epic": "BWO",
+    "name": "BW Offshore"
+  },
+  "DUK": {
+    "valid": true,
+    "tradable": false,
+    "epic": "DUK",
+    "name": "Duke Energy"
+  },
+  "LCID": {
+    "valid": true,
+    "tradable": false,
+    "epic": "LCID",
+    "name": "Lucid Group, Inc."
+  },
+  "CAKE": {
+    "valid": true,
+    "tradable": true,
+    "epic": "CAKEUSD",
+    "name": "CAKE/USD"
+  },
+  "DNTH": {
+    "valid": true,
+    "tradable": true,
+    "epic": "DENTUSD",
+    "name": "DENT/USD"
+  },
+  "LNZA": {
+    "valid": true,
+    "tradable": true,
+    "epic": "LONN",
+    "name": "Lonza Group Ltd"
+  },
+  "GLYC": {
+    "valid": true,
+    "tradable": true,
+    "epic": "GLEN",
+    "name": "Glencore"
+  },
+  "MCW": {
+    "valid": true,
+    "tradable": false,
+    "epic": "MCW",
+    "name": "Mister Car Wash Inc"
+  },
+  "SISI": {
+    "valid": true,
+    "tradable": true,
+    "epic": "SIRI",
+    "name": "New Sirius XM"
+  },
+  "WSBF": {
+    "valid": true,
+    "tradable": false,
+    "epic": "WSBF",
+    "name": "Waterstone Financial Inc"
+  },
+  "FCFS": {
+    "valid": true,
+    "tradable": true,
+    "epic": "FCSS",
+    "name": "Fidelity China Special Situations"
+  },
+  "ASTC": {
+    "valid": true,
+    "tradable": false,
+    "epic": "ASTC",
+    "name": "Astrotech"
+  },
+  "EDHL": {
+    "valid": true,
+    "tradable": true,
+    "epic": "ETHUSD",
+    "name": "Ethereum / USD"
+  },
+  "ICU": {
+    "valid": true,
+    "tradable": false,
+    "epic": "ICUI",
+    "name": "ICU Medical Inc"
+  },
+  "MHK": {
+    "valid": true,
+    "tradable": false,
+    "epic": "MHK",
+    "name": "Mohawk Industries Inc"
+  },
+  "SCWO": {
+    "valid": true,
+    "tradable": false,
+    "epic": "SCHL",
+    "name": "Scholastic Corp"
+  },
+  "BLFY": {
+    "valid": true,
+    "tradable": true,
+    "epic": "BLURUSD",
+    "name": "BLUR/USD"
+  },
+  "HVIIU": {
+    "valid": true,
+    "tradable": true,
+    "epic": "HVO",
+    "name": "hVIVO plc"
+  },
+  "SG": {
+    "valid": true,
+    "tradable": true,
+    "epic": "SGSN",
+    "name": "SGS"
+  }
+}
