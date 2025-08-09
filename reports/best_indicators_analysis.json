@@ -1,0 +1,265 @@
+{
+  "analysis_date": "2025-08-10T00:43:39.611041",
+  "results": {
+    "CCI_20": [
+      {
+        "symbol": "ACDC",
+        "return": 118.25717639510911,
+        "trades": 25
+      },
+      {
+        "symbol": "AFBI",
+        "return": 104.04108707847244,
+        "trades": 27
+      },
+      {
+        "symbol": "AFCG",
+        "return": 98.66607691308535,
+        "trades": 27
+      },
+      {
+        "symbol": "ACRV",
+        "return": 82.95503063124954,
+        "trades": 25
+      },
+      {
+        "symbol": "ADIL",
+        "return": 79.94627140135964,
+        "trades": 23
+      },
+      {
+        "symbol": "A",
+        "return": 74.01010695300138,
+        "trades": 16
+      },
+      {
+        "symbol": "ACNT",
+        "return": 57.7736659202841,
+        "trades": 24
+      },
+      {
+        "symbol": "ACGLO",
+        "return": 55.97016137352795,
+        "trades": 29
+      },
+      {
+        "symbol": "AFRIW",
+        "return": 52.74768795316134,
+        "trades": 31
+      },
+      {
+        "symbol": "ADVB",
+        "return": 50.694078550377064,
+        "trades": 18
+      }
+    ],
+    "Williams_R": [
+      {
+        "symbol": "A",
+        "return": 122.0381044601878,
+        "trades": 25
+      },
+      {
+        "symbol": "ACDC",
+        "return": 110.60336138577833,
+        "trades": 28
+      },
+      {
+        "symbol": "ABSI",
+        "return": 93.25102818654796,
+        "trades": 36
+      },
+      {
+        "symbol": "AFRIW",
+        "return": 82.38529904855085,
+        "trades": 35
+      },
+      {
+        "symbol": "AAON",
+        "return": 81.03088904848943,
+        "trades": 31
+      },
+      {
+        "symbol": "AFGD",
+        "return": 72.52481479373216,
+        "trades": 35
+      },
+      {
+        "symbol": "ADUR",
+        "return": 63.778353546805874,
+        "trades": 28
+      },
+      {
+        "symbol": "AC",
+        "return": 63.629247868907555,
+        "trades": 39
+      },
+      {
+        "symbol": "ADVB",
+        "return": 62.49544329574155,
+        "trades": 22
+      },
+      {
+        "symbol": "AAL",
+        "return": 62.45624894967219,
+        "trades": 31
+      }
+    ],
+    "Stochastic": [
+      {
+        "symbol": "A",
+        "return": 160.00294225897483,
+        "trades": 63
+      },
+      {
+        "symbol": "AEO",
+        "return": 68.27767024691944,
+        "trades": 63
+      },
+      {
+        "symbol": "AAUC",
+        "return": 58.88402393175836,
+        "trades": 68
+      },
+      {
+        "symbol": "ABSI",
+        "return": 57.063954298327914,
+        "trades": 73
+      },
+      {
+        "symbol": "ACDC",
+        "return": 55.55196751506284,
+        "trades": 68
+      },
+      {
+        "symbol": "AAPL",
+        "return": 51.21004921791015,
+        "trades": 70
+      },
+      {
+        "symbol": "ADVB",
+        "return": 50.77715940831708,
+        "trades": 56
+      },
+      {
+        "symbol": "ACON",
+        "return": 42.732934584972625,
+        "trades": 68
+      },
+      {
+        "symbol": "AEI",
+        "return": 37.585024607011384,
+        "trades": 68
+      },
+      {
+        "symbol": "ADGM",
+        "return": 37.29775265255937,
+        "trades": 65
+      }
+    ],
+    "VolumeSMA": [
+      {
+        "symbol": "ACT",
+        "return": 249.60274514769415,
+        "trades": 3
+      },
+      {
+        "symbol": "ADVB",
+        "return": 236.73565601190813,
+        "trades": 2
+      },
+      {
+        "symbol": "AENT",
+        "return": 206.33791980535884,
+        "trades": 2
+      },
+      {
+        "symbol": "A",
+        "return": 172.94349472242087,
+        "trades": 3
+      },
+      {
+        "symbol": "ACRV",
+        "return": 106.56213135786237,
+        "trades": 2
+      },
+      {
+        "symbol": "ADM",
+        "return": 101.36267491209784,
+        "trades": 3
+      },
+      {
+        "symbol": "AFCG",
+        "return": 98.66607691308535,
+        "trades": 1
+      },
+      {
+        "symbol": "AAUC",
+        "return": 91.29497080282978,
+        "trades": 1
+      },
+      {
+        "symbol": "AEI",
+        "return": 85.8815713421276,
+        "trades": 2
+      },
+      {
+        "symbol": "AAON",
+        "return": 79.4240420746283,
+        "trades": 2
+      }
+    ],
+    "OBV": [
+      {
+        "symbol": "ADM",
+        "return": 101.5079589753538,
+        "trades": 77
+      },
+      {
+        "symbol": "AEO",
+        "return": 96.41162719272269,
+        "trades": 77
+      },
+      {
+        "symbol": "AENT",
+        "return": 92.71696534090832,
+        "trades": 77
+      },
+      {
+        "symbol": "ADVB",
+        "return": 80.42619970108775,
+        "trades": 77
+      },
+      {
+        "symbol": "ACB",
+        "return": 77.73033021304536,
+        "trades": 77
+      },
+      {
+        "symbol": "ACT",
+        "return": 76.0285807250232,
+        "trades": 77
+      },
+      {
+        "symbol": "AFJK",
+        "return": 68.30934375593951,
+        "trades": 77
+      },
+      {
+        "symbol": "ACLX",
+        "return": 67.42394778204566,
+        "trades": 77
+      },
+      {
+        "symbol": "ACM",
+        "return": 62.42578938854366,
+        "trades": 77
+      },
+      {
+        "symbol": "ACRV",
+        "return": 60.89968112757529,
+        "trades": 77
+      }
+    ]
+  }
+}
