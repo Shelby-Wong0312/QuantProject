@@ -14,6 +14,9 @@ from typing import List, Dict, Optional
 import pandas as pd
 from tqdm import tqdm
 import logging
+
+# Add parent directory to path to import src modules
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from src.capital_service import CapitalService
 import requests
 
@@ -22,7 +25,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('download.log'),
+        logging.FileHandler(os.path.join(os.path.dirname(__file__), '..', '..', 'logs', 'download.log')),
         logging.StreamHandler()
     ]
 )
@@ -34,7 +37,7 @@ class FullDataDownloader:
     def __init__(self):
         """初始化下載器"""
         self.service = CapitalService()
-        self.db_path = 'quant_trading.db'
+        self.db_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'quant_trading.db')
         
         # 數據存儲路徑
         self.data_dir = 'historical_data'
@@ -241,7 +244,8 @@ class FullDataDownloader:
         logger.info("Successfully logged in to Capital.com")
         
         # 讀取股票列表
-        with open('TRADABLE_TICKERS.txt', 'r') as f:
+        ticker_file = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'tradable_tickers.txt')
+        with open(ticker_file, 'r') as f:
             all_tickers = [line.strip() for line in f if line.strip()]
         
         # 過濾已完成的

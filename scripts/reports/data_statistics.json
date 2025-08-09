@@ -1,0 +1,136 @@
+{
+  "total_records": 16484874,
+  "unique_stocks": 4215,
+  "date_range": "2010-08-12 to 2025-08-08",
+  "avg_records_per_stock": 3911,
+  "top_volume_stocks": [
+    {
+      "symbol": "SCPH",
+      "avg_volume": 5195752.047813858
+    },
+    {
+      "symbol": "MG",
+      "avg_volume": 5190526.657632319
+    },
+    {
+      "symbol": "GANX",
+      "avg_volume": 5188828.24520583
+    },
+    {
+      "symbol": "SMTI",
+      "avg_volume": 5188351.575811813
+    },
+    {
+      "symbol": "PHLT",
+      "avg_volume": 5188318.923548965
+    },
+    {
+      "symbol": "LOCL",
+      "avg_volume": 5185749.420352851
+    },
+    {
+      "symbol": "BPYPM",
+      "avg_volume": 5185721.947583738
+    },
+    {
+      "symbol": "NAT",
+      "avg_volume": 5184481.887752493
+    },
+    {
+      "symbol": "UBER",
+      "avg_volume": 5181169.034262337
+    },
+    {
+      "symbol": "TFIN",
+      "avg_volume": 5179667.675274866
+    }
+  ],
+  "price_stats": {
+    "avg_price": 531.77,
+    "min_price": 4.83,
+    "max_price": 53103.37,
+    "avg_volume": 5050152
+  },
+  "yearly_data": [
+    {
+      "year": "2010",
+      "stocks": 4215,
+      "records": 425724
+    },
+    {
+      "year": "2011",
+      "stocks": 4215,
+      "records": 1095900
+    },
+    {
+      "year": "2012",
+      "stocks": 4215,
+      "records": 1100115
+    },
+    {
+      "year": "2013",
+      "stocks": 4215,
+      "records": 1100115
+    },
+    {
+      "year": "2014",
+      "stocks": 4215,
+      "records": 1100115
+    },
+    {
+      "year": "2015",
+      "stocks": 4215,
+      "records": 1100115
+    },
+    {
+      "year": "2016",
+      "stocks": 4215,
+      "records": 1100115
+    },
+    {
+      "year": "2017",
+      "stocks": 4215,
+      "records": 1095900
+    },
+    {
+      "year": "2018",
+      "stocks": 4215,
+      "records": 1100115
+    },
+    {
+      "year": "2019",
+      "stocks": 4215,
+      "records": 1100115
+    },
+    {
+      "year": "2020",
+      "stocks": 4215,
+      "records": 1104330
+    },
+    {
+      "year": "2021",
+      "stocks": 4215,
+      "records": 1100115
+    },
+    {
+      "year": "2022",
+      "stocks": 4215,
+      "records": 1095900
+    },
+    {
+      "year": "2023",
+      "stocks": 4215,
+      "records": 1095900
+    },
+    {
+      "year": "2024",
+      "stocks": 4215,
+      "records": 1104330
+    },
+    {
+      "year": "2025",
+      "stocks": 4215,
+      "records": 665970
+    }
+  ]
+}

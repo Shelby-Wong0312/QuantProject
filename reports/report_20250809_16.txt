@@ -1,0 +1,23 @@
+
+                ========================================
+                Capital.com Automation Report
+                ========================================
+                Time: 2025-08-09 16:25:14.603974
+                
+                Account Performance:
+                - Start Balance: $137,684.71
+                - Current Balance: $137,942.19
+                - Total P&L: $257.48 (+0.19%)
+                
+                Trading Statistics:
+                - Total Trades: 0
+                - Winning Trades: 0
+                - Losing Trades: 0
+                - Win Rate: 0.0%
+                
+                Risk Metrics:
+                - Max Drawdown: $0.00
+                - Best Trade: $0.00
+                - Worst Trade: $0.00
+                ========================================
+                

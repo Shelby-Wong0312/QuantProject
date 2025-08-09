@@ -21,7 +21,18 @@
       "Bash(grep:*)",
       "Bash(dir:*)",
       "Bash(start /B python:*)",
-      "Bash(start run_validation.bat)"
+      "Bash(start run_validation.bat)",
+      "Bash(start \"Data Download\" python scripts/download/start_full_download.py)",
+      "Bash(timeout 20 python check_live_progress.py)",
+      "Bash(quick_check.bat)",
+      "Bash(start \"AUTO DOWNLOAD\" cmd /c auto_download.bat)",
+      "Bash(start \"Download Monitor\" python monitor_download.py)",
+      "Bash(copy \"QUANT_ANALYSIS_PLAN.md\" \"documents\\QUANT_ANALYSIS_PLAN.md\")",
+      "Bash(timeout 10 python scripts/generate_complete_report.py)",
+      "Bash(sqlite3:*)",
+      "Bash(start C:UsersniujiDocumentsQuantProjectreportsvisual_backtest_report.html)",
+      "Bash(start \"C:\\Users\\niuji\\Documents\\QuantProject\\reports\\visual_backtest_report.html\")",
+      "Bash(start \"C:\\Users\\niuji\\Documents\\QuantProject\\reports\\15years_visual_report.html\")"
     ],
     "deny": []
   }

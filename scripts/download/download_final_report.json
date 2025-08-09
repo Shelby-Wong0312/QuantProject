@@ -1,0 +1,18 @@
+{
+  "summary": {
+    "total_tickers": 4215,
+    "completed_tickers": 4135,
+    "failed_tickers": 0,
+    "success_rate": "98.1%",
+    "total_records": 0,
+    "storage_used_mb": 826.74,
+    "storage_used_gb": 0.81,
+    "elapsed_time": "0:42:06"
+  },
+  "data_coverage": {
+    "daily_data": "15 years per stock",
+    "date_range": "2010-08-08 to 2025-08-09"
+  },
+  "failed_tickers": [],
+  "timestamp": "2025-08-09T19:19:28.387822"
+}
