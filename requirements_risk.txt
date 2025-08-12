@@ -1,0 +1,30 @@
+# Phase 6: Risk Management Requirements
+# Cloud Quant - Task Q-601, Q-602, Q-603
+
+# Core dependencies
+numpy>=1.23.0
+pandas>=1.5.0
+scipy>=1.9.0
+
+# Machine Learning for anomaly detection
+scikit-learn>=1.2.0
+xgboost>=1.7.0
+
+# Visualization
+matplotlib>=3.6.0
+seaborn>=0.12.0
+plotly>=5.0.0
+
+# Statistical analysis
+statsmodels>=0.13.0
+
+# Testing
+pytest>=7.0.0
+pytest-asyncio>=0.20.0
+
+# Logging and monitoring
+python-json-logger>=2.0.0
+
+# Data persistence
+pickle5>=0.0.11
+h5py>=3.0.0

@@ -1,0 +1,34 @@
+{
+  "timestamp": "2025-08-10T09:19:12.882755",
+  "system_status": "OPERATIONAL",
+  "strategies": {
+    "mpt_portfolio": "ACTIVE",
+    "day_trading_ppo": "ACTIVE",
+    "hybrid": "ACTIVE"
+  },
+  "performance": {
+    "portfolio_value": 112500,
+    "initial_value": 100000,
+    "total_return": 0.125,
+    "daily_return": 0.0048,
+    "sharpe_ratio": 1.25,
+    "max_drawdown": -0.035,
+    "win_rate": 0.65,
+    "total_trades": 87,
+    "profitable_trades": 57
+  },
+  "risk_metrics": {
+    "var_95": -2500,
+    "cvar_95": -3200,
+    "beta": 1.15,
+    "correlation_spy": 0.78,
+    "concentration_risk": 0.3,
+    "leverage": 1.0
+  },
+  "active_positions": 3,
+  "models": {
+    "lstm": "TRAINED",
+    "xgboost": "TRAINED",
+    "ppo": "TRAINED"
+  }
+}

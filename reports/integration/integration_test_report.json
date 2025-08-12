@@ -1,0 +1,85 @@
+{
+  "timestamp": "2025-08-10T19:41:29.603831",
+  "duration": 7.726923,
+  "overall_success_rate": 0.0,
+  "tests_passed": false,
+  "tests_total": 4,
+  "results": {
+    "components": false,
+    "workflow": false,
+    "performance": false,
+    "fault_recovery": false
+  },
+  "detailed_results": {
+    "workflow": {
+      "success_rate": 0.4,
+      "steps": [
+        [
+          "Data Collection",
+          true,
+          "Data collected successfully"
+        ],
+        [
+          "Portfolio Optimization",
+          false,
+          "'MPTOptimizer' object has no attribute 'optimize'"
+        ],
+        [
+          "Risk Management",
+          false,
+          "'EnhancedRiskManager' object has no attribute 'check_trade_risk'"
+        ],
+        [
+          "Paper Trading",
+          false,
+          "'PaperTradingSimulator' object has no attribute 'execute_trade'"
+        ],
+        [
+          "Anomaly Detection",
+          true,
+          "Monitoring active"
+        ]
+      ]
+    },
+    "performance": {
+      "score": 0.6666666666666666,
+      "metrics": {
+        "data_processing": {
+          "time": 0.00977182388305664,
+          "passed": true,
+          "message": "Processed 10000 rows in 0.010s"
+        },
+        "model_inference": {
+          "time": 0.0013489723205566406,
+          "passed": true,
+          "message": "1000 predictions in 0.001s"
+        },
+        "risk_calculation": {
+          "time": 999,
+          "passed": false,
+          "message": "'DynamicStopLoss' object has no attribute 'calculate_atr_stop'"
+        }
+      }
+    },
+    "fault_recovery": {
+      "score": 0.6666666666666666,
+      "tests": [
+        {
+          "test": "Missing Data",
+          "passed": false,
+          "message": "No module named 'src.data.data_validator'"
+        },
+        {
+          "test": "Circuit Breaker",
+          "passed": true,
+          "message": "Breaker triggered: LEVEL_1"
+        },
+        {
+          "test": "Error Recovery",
+          "passed": true,
+          "message": "Error caught and recovered"
+        }
+      ]
+    }
+  }
+}

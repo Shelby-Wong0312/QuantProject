@@ -1,0 +1,65 @@
+{
+  "timestamp": "2025-08-10T19:12:01.518507",
+  "portfolio_value": 1000000,
+  "position_count": 5,
+  "scenarios_tested": 5,
+  "results": [
+    {
+      "scenario": "Market Crash",
+      "impact_amount": -118395.13045302549,
+      "impact_percent": -0.11839513045302548,
+      "var_95": -1242915.5476536711,
+      "cvar_95": -1515200.327626916,
+      "max_loss": -1000000,
+      "recovery_days": 7,
+      "survival_probability": 0.6538461538461537
+    },
+    {
+      "scenario": "Flash Crash",
+      "impact_amount": -57907.75619269997,
+      "impact_percent": -0.05790775619269997,
+      "var_95": -936407.256303942,
+      "cvar_95": -1147252.7327328625,
+      "max_loss": -1000000,
+      "recovery_days": 0,
+      "survival_probability": 0.6333333333333333
+    },
+    {
+      "scenario": "Sector Rotation",
+      "impact_amount": -13919.385146207807,
+      "impact_percent": -0.013919385146207807,
+      "var_95": -220749.3211773267,
+      "cvar_95": -263793.7154498851,
+      "max_loss": -1000000,
+      "recovery_days": 0,
+      "survival_probability": 0.7916666666666666
+    },
+    {
+      "scenario": "Black Swan",
+      "impact_amount": -242015.78488245464,
+      "impact_percent": -0.24201578488245465,
+      "var_95": -2132640.2636326277,
+      "cvar_95": -2601805.0740870293,
+      "max_loss": -1000000,
+      "recovery_days": 29,
+      "survival_probability": 0.6071428571428571
+    },
+    {
+      "scenario": "Liquidity Crisis",
+      "impact_amount": -65777.92678774965,
+      "impact_percent": -0.06577792678774964,
+      "var_95": -740437.434653193,
+      "cvar_95": -895188.5915512047,
+      "max_loss": -1000000,
+      "recovery_days": 2,
+      "survival_probability": 0.76
+    }
+  ],
+  "summary": {
+    "worst_case_impact": -0.24201578488245465,
+    "average_impact": -0.09960319669242751,
+    "median_impact": -0.06577792678774964,
+    "scenarios_with_loss_over_10pct": 2,
+    "average_recovery_days": 7.6
+  }
+}

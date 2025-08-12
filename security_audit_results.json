@@ -1,0 +1,1103 @@
+{
+  "audit_date": "2025-08-11T12:16:43.122116",
+  "vulnerabilities": [
+    {
+      "file": "auto_download_worker.py",
+      "line": 16,
+      "severity": "HIGH",
+      "issue": "Potential security risk: os\\.system",
+      "code": "os.system"
+    },
+    {
+      "file": "capital_automation_system.py",
+      "line": 366,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "capital_automation_system.py",
+      "line": 287,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "check_capital_api.py",
+      "line": 182,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "check_final_status.py",
+      "line": 3,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "continuous_download.py",
+      "line": 20,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "demo_complete.py",
+      "line": 194,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "keep_download_running.py",
+      "line": 14,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "keep_download_running.py",
+      "line": 58,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "monitor_download.py",
+      "line": 15,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "monitor_download.py",
+      "line": 19,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "monitor_progress.py",
+      "line": 78,
+      "severity": "HIGH",
+      "issue": "Potential security risk: os\\.system",
+      "code": "os.system"
+    },
+    {
+      "file": "restart_download.py",
+      "line": 84,
+      "severity": "HIGH",
+      "issue": "Potential security risk: os\\.system",
+      "code": "os.system"
+    },
+    {
+      "file": "run_security_audit.py",
+      "line": 313,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "stable_download.py",
+      "line": 102,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "test_capital_api.py",
+      "line": 145,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "test_pm_coordination.py",
+      "line": 163,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "update_dependencies.py",
+      "line": 113,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "dashboard\\data_connector.py",
+      "line": 229,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "dashboard\\data_connector.py",
+      "line": 316,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "dashboard\\main_dashboard.py",
+      "line": 69,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "dashboard\\main_dashboard.py",
+      "line": 133,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "mt4_bridge\\DWX_ZeroMQ_Connector_v2_0_1_RC8.py",
+      "line": 524,
+      "severity": "HIGH",
+      "issue": "Potential security risk: eval\\(",
+      "code": "eval("
+    },
+    {
+      "file": "mt4_bridge\\DWX_ZeroMQ_Connector_v2_0_1_RC8.py",
+      "line": 740,
+      "severity": "HIGH",
+      "issue": "Potential security risk: eval\\(",
+      "code": "eval("
+    },
+    {
+      "file": "scripts\\analyze_best_indicators.py",
+      "line": 169,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\backtest_all_indicators.py",
+      "line": 339,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\backtest_all_stocks_comprehensive.py",
+      "line": 350,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\backtest_all_stocks_fast.py",
+      "line": 262,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\calculate_indicators.py",
+      "line": 319,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\create_analysis_report.py",
+      "line": 345,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\generate_data_stats.py",
+      "line": 119,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\generate_data_stats.py",
+      "line": 122,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\generate_visual_backtest_report.py",
+      "line": 36,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\indicator_summary.py",
+      "line": 162,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\integration_test.py",
+      "line": 483,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\setup_database.py",
+      "line": 384,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\setup_database.py",
+      "line": 397,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\setup_database.py",
+      "line": 281,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\setup_sqlite_database.py",
+      "line": 426,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\setup_sqlite_database.py",
+      "line": 242,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\test_anomaly_system.py",
+      "line": 387,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\test_api_connection.py",
+      "line": 47,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\test_api_connection.py",
+      "line": 254,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\test_multi_strategy.py",
+      "line": 430,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\train_ppo_trader.py",
+      "line": 366,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\data_validation.py",
+      "line": 275,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\data_validation.py",
+      "line": 280,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\performance_calculator.py",
+      "line": 311,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "tests\\integration_test_suite.py",
+      "line": 510,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "tests\\test_capital_complete.py",
+      "line": 20,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "tests\\test_capital_quick.py",
+      "line": 18,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "tests\\test_optimization.py",
+      "line": 100,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "mt4_bridge\\data_collection\\data_storage.py",
+      "line": 14,
+      "severity": "MEDIUM",
+      "issue": "Use of potentially unsafe module: pickle",
+      "code": "pickle"
+    },
+    {
+      "file": "mt4_bridge\\file_bridge\\python_side.py",
+      "line": 76,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "mt4_bridge\\file_bridge\\python_side.py",
+      "line": 52,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "mt4_bridge\\setup\\check_mt4_env.py",
+      "line": 321,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\data_loader\\data_storage.py",
+      "line": 14,
+      "severity": "MEDIUM",
+      "issue": "Use of potentially unsafe module: pickle",
+      "code": "pickle"
+    },
+    {
+      "file": "scripts\\data_loader\\historical_data_loader.py",
+      "line": 372,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\download\\start_full_download.py",
+      "line": 11,
+      "severity": "MEDIUM",
+      "issue": "Use of potentially unsafe module: pickle",
+      "code": "pickle"
+    },
+    {
+      "file": "scripts\\download\\start_full_download.py",
+      "line": 96,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\download\\start_full_download.py",
+      "line": 248,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\download\\start_full_download.py",
+      "line": 317,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\download\\start_full_download.py",
+      "line": 343,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\download\\start_full_download.py",
+      "line": 75,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\validation\\batch_validate.py",
+      "line": 171,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\validation\\batch_validate.py",
+      "line": 197,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\validation\\batch_validate.py",
+      "line": 200,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\validation\\batch_validate.py",
+      "line": 42,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\validation\\batch_validate.py",
+      "line": 49,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\validation\\batch_validate.py",
+      "line": 65,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\validation\\batch_validate.py",
+      "line": 153,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\validation\\model_validation.py",
+      "line": 391,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\validation\\model_validation.py",
+      "line": 503,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "scripts\\validation\\model_validation.py",
+      "line": 432,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\api\\auth_manager.py",
+      "line": 139,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\api\\auth_manager.py",
+      "line": 163,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\api\\auth_manager.py",
+      "line": 267,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\api\\auth_manager.py",
+      "line": 363,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\api\\auth_manager.py",
+      "line": 40,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\api\\auth_manager.py",
+      "line": 50,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\api\\capital_client.py",
+      "line": 173,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\backtesting\\ml_backtest.py",
+      "line": 590,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\core\\paper_trading.py",
+      "line": 460,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\core\\trading_system.py",
+      "line": 599,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\data\\minute_data_pipeline.py",
+      "line": 81,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\data\\minute_data_pipeline.py",
+      "line": 71,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\data\\model_updater.py",
+      "line": 14,
+      "severity": "MEDIUM",
+      "issue": "Use of potentially unsafe module: pickle",
+      "code": "pickle"
+    },
+    {
+      "file": "src\\data\\model_updater.py",
+      "line": 451,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\data\\realtime_collector.py",
+      "line": 20,
+      "severity": "MEDIUM",
+      "issue": "Use of potentially unsafe module: pickle",
+      "code": "pickle"
+    },
+    {
+      "file": "src\\data_pipeline\\data_cache.py",
+      "line": 39,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\data_pipeline\\data_cache.py",
+      "line": 29,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\data_pipeline\\mt4_data_collector.py",
+      "line": 485,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\integration\\health_monitor.py",
+      "line": 530,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\integration\\health_monitor.py",
+      "line": 556,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\integration\\main_controller.py",
+      "line": 482,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\integration\\main_controller.py",
+      "line": 498,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\integration\\main_controller.py",
+      "line": 548,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\integration\\main_controller.py",
+      "line": 91,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\integration\\run_system.py",
+      "line": 120,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\integration\\run_system.py",
+      "line": 181,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\integration\\run_system.py",
+      "line": 184,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\ml_models\\lstm_price_predictor.py",
+      "line": 299,
+      "severity": "HIGH",
+      "issue": "Potential security risk: eval\\(",
+      "code": "eval("
+    },
+    {
+      "file": "src\\ml_models\\lstm_price_predictor.py",
+      "line": 325,
+      "severity": "HIGH",
+      "issue": "Potential security risk: eval\\(",
+      "code": "eval("
+    },
+    {
+      "file": "src\\ml_models\\xgboost_predictor.py",
+      "line": 620,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\optimization\\hyperparameter_tuning.py",
+      "line": 498,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\optimization\\hyperparameter_tuning.py",
+      "line": 504,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\risk\\circuit_breaker.py",
+      "line": 319,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\risk\\circuit_breaker.py",
+      "line": 314,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\risk\\deleveraging.py",
+      "line": 485,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\risk\\deleveraging.py",
+      "line": 480,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\risk\\risk_manager_enhanced.py",
+      "line": 388,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\risk\\risk_manager_enhanced.py",
+      "line": 381,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\risk\\stress_testing.py",
+      "line": 449,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\rl_trading\\ppo_agent.py",
+      "line": 585,
+      "severity": "HIGH",
+      "issue": "Potential security risk: eval\\(",
+      "code": "eval("
+    },
+    {
+      "file": "src\\rl_trading\\train_agent.py",
+      "line": 111,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\rl_trading\\train_portfolio.py",
+      "line": 172,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\security\\secure_config.py",
+      "line": 236,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\security\\secure_config.py",
+      "line": 34,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\security\\secure_config.py",
+      "line": 41,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\security\\secure_config.py",
+      "line": 58,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\security\\secure_config.py",
+      "line": 73,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\sensory_models\\gnn_model.py",
+      "line": 375,
+      "severity": "HIGH",
+      "issue": "Potential security risk: eval\\(",
+      "code": "eval("
+    },
+    {
+      "file": "src\\sensory_models\\relation_analyzer.py",
+      "line": 374,
+      "severity": "HIGH",
+      "issue": "Potential security risk: eval\\(",
+      "code": "eval("
+    },
+    {
+      "file": "src\\sensory_models\\relation_analyzer.py",
+      "line": 14,
+      "severity": "MEDIUM",
+      "issue": "Use of potentially unsafe module: pickle",
+      "code": "pickle"
+    },
+    {
+      "file": "src\\sensory_models\\relation_analyzer.py",
+      "line": 358,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\sensory_models\\relation_analyzer.py",
+      "line": 366,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\signals\\signal_generator.py",
+      "line": 140,
+      "severity": "HIGH",
+      "issue": "Potential security risk: eval\\(",
+      "code": "eval("
+    },
+    {
+      "file": "src\\signals\\signal_generator.py",
+      "line": 118,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\strategies\\multi_strategy_manager.py",
+      "line": 392,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\strategies\\multi_strategy_manager.py",
+      "line": 400,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\models\\ml_models\\base_model.py",
+      "line": 57,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\models\\ml_models\\base_model.py",
+      "line": 65,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\models\\ml_models\\base_model.py",
+      "line": 329,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\models\\ml_models\\data_preprocessor.py",
+      "line": 331,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\models\\ml_models\\data_preprocessor.py",
+      "line": 339,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\models\\ml_models\\lstm_predictor.py",
+      "line": 429,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\models\\ml_models\\lstm_predictor.py",
+      "line": 445,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\models\\sentiment\\data_pipeline.py",
+      "line": 361,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\models\\sentiment\\data_pipeline.py",
+      "line": 377,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\models\\sentiment\\finbert_analyzer.py",
+      "line": 76,
+      "severity": "HIGH",
+      "issue": "Potential security risk: eval\\(",
+      "code": "eval("
+    },
+    {
+      "file": "src\\models\\sentiment\\finbert_analyzer.py",
+      "line": 452,
+      "severity": "HIGH",
+      "issue": "Potential security risk: eval\\(",
+      "code": "eval("
+    },
+    {
+      "file": "src\\models\\sentiment\\finbert_analyzer.py",
+      "line": 430,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\models\\sentiment\\finbert_analyzer.py",
+      "line": 440,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\models\\sentiment\\news_collector.py",
+      "line": 243,
+      "severity": "HIGH",
+      "issue": "Potential security risk: api_key\\s*=\\s*['\\\"].*['\\\"]",
+      "code": "api_key='your_api_key'"
+    },
+    {
+      "file": "src\\rl_trading\\agents\\base_agent.py",
+      "line": 222,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\rl_trading\\agents\\base_agent.py",
+      "line": 236,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\rl_trading\\agents\\ppo_agent.py",
+      "line": 354,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\rl_trading\\training\\callbacks.py",
+      "line": 137,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\rl_trading\\training\\evaluation.py",
+      "line": 238,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\rl_trading\\training\\evaluation.py",
+      "line": 257,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\rl_trading\\training\\trainer.py",
+      "line": 318,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\rl_trading\\training\\trainer.py",
+      "line": 337,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "src\\rl_trading\\training\\trainer.py",
+      "line": 525,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": "tests\\integration\\test_system_integration.py",
+      "line": 136,
+      "severity": "LOW",
+      "issue": "File opened without explicit encoding",
+      "code": "open() without encoding"
+    },
+    {
+      "file": ".env",
+      "type": "Environment file",
+      "severity": "HIGH",
+      "issue": "Potential exposed secret in configuration"
+    },
+    {
+      "file": "security_audit_results.json",
+      "type": "JSON configuration",
+      "severity": "HIGH",
+      "issue": "Potential exposed secret in configuration"
+    }
+  ],
+  "security_score": 0,
+  "summary": {
+    "total_issues": 156,
+    "high_severity": 16,
+    "medium_severity": 6,
+    "low_severity": 134,
+    "security_score": 0
+  }
+}

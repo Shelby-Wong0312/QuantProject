@@ -10,9 +10,20 @@ import pandas as pd
 import numpy as np
 import sys
 import os
+import subprocess
 
 def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    """Clear screen safely without using shell=True"""
+    try:
+        if os.name == 'nt':
+            # Use clear screen escape sequence for Windows
+            print('\033[2J\033[H', end='')
+        else:
+            # Use clear screen escape sequence for Unix
+            print('\033[2J\033[H', end='')
+    except:
+        # If escape sequences fail, just print newlines
+        print('\n' * 100)
 
 def get_progress():
     """Get current download progress"""
@@ -86,7 +97,7 @@ def main():
     
     # Load all tickers
     try:
-        with open('data/tradable_tickers.txt', 'r') as f:
+        with open('data/tradable_tickers.txt', 'r', encoding='utf-8') as f:
             all_tickers = [line.strip() for line in f if line.strip()]
     except:
         print("ERROR: Cannot find tradable_tickers.txt")

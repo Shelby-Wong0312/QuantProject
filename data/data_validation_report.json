@@ -1,0 +1,1026 @@
+{
+  "timestamp": "2025-08-10T21:03:00.295244",
+  "summary": {
+    "total_symbols_attempted": 100,
+    "successful_downloads": 100,
+    "failed_downloads": 0,
+    "success_rate": "100.0%",
+    "date_range": "2010-01-01 to 2025-08-10",
+    "years_of_data": 15
+  },
+  "quality_metrics": {
+    "symbols_above_threshold": 100,
+    "average_quality_score": 0.9880675562335811,
+    "best_quality_symbol": {
+      "symbol": "ADBE",
+      "score": 0.9888888888888889
+    },
+    "worst_quality_symbol": {
+      "symbol": "AMCR",
+      "score": 0.913918936965812
+    }
+  },
+  "failed_symbols": [],
+  "detailed_quality_scores": {
+    "AMD": {
+      "symbol": "AMD",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 0.9997451580020388,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "ABBV": {
+      "symbol": "ABBV",
+      "completeness": 1.0,
+      "accuracy": 0.9993690851735015,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9887837364178059
+    },
+    "ABT": {
+      "symbol": "ABT",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "ADBE": {
+      "symbol": "ADBE",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "ACN": {
+      "symbol": "ACN",
+      "completeness": 1.0,
+      "accuracy": 0.9994903160040775,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888039415562351
+    },
+    "AES": {
+      "symbol": "AES",
+      "completeness": 1.0,
+      "accuracy": 0.9994903160040775,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888039415562351
+    },
+    "AFL": {
+      "symbol": "AFL",
+      "completeness": 1.0,
+      "accuracy": 0.9994903160040775,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888039415562351
+    },
+    "ABNB": {
+      "symbol": "ABNB",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "A": {
+      "symbol": "A",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "AOS": {
+      "symbol": "AOS",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "MMM": {
+      "symbol": "MMM",
+      "completeness": 1.0,
+      "accuracy": 0.9992354740061162,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9887614678899083
+    },
+    "AKAM": {
+      "symbol": "AKAM",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "APD": {
+      "symbol": "APD",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "ALB": {
+      "symbol": "ALB",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "ALGN": {
+      "symbol": "ALGN",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "ARE": {
+      "symbol": "ARE",
+      "completeness": 1.0,
+      "accuracy": 0.9987257900101937,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9886765205572545
+    },
+    "GOOGL": {
+      "symbol": "GOOGL",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "ALLE": {
+      "symbol": "ALLE",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "GOOG": {
+      "symbol": "GOOG",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "LNT": {
+      "symbol": "LNT",
+      "completeness": 1.0,
+      "accuracy": 0.9974515800203874,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9884641522256201
+    },
+    "ALL": {
+      "symbol": "ALL",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "AMCR": {
+      "symbol": "AMCR",
+      "completeness": 1.0,
+      "accuracy": 0.9621394230769231,
+      "timeliness": 0.9333333333333333,
+      "consistency": 0.5880408653846154,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.913918936965812
+    },
+    "MO": {
+      "symbol": "MO",
+      "completeness": 1.0,
+      "accuracy": 0.9979612640163099,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9885490995582739
+    },
+    "AMZN": {
+      "symbol": "AMZN",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "AEE": {
+      "symbol": "AEE",
+      "completeness": 1.0,
+      "accuracy": 0.9989806320081549,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9887189942235813
+    },
+    "AEP": {
+      "symbol": "AEP",
+      "completeness": 1.0,
+      "accuracy": 0.9979612640163099,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9885490995582739
+    },
+    "AXP": {
+      "symbol": "AXP",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "AIG": {
+      "symbol": "AIG",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "AMT": {
+      "symbol": "AMT",
+      "completeness": 1.0,
+      "accuracy": 0.9992354740061162,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9887614678899083
+    },
+    "AWK": {
+      "symbol": "AWK",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "AMP": {
+      "symbol": "AMP",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "AMGN": {
+      "symbol": "AMGN",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "APH": {
+      "symbol": "APH",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "AON": {
+      "symbol": "AON",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "ADI": {
+      "symbol": "ADI",
+      "completeness": 1.0,
+      "accuracy": 0.9994903160040775,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888039415562351
+    },
+    "AME": {
+      "symbol": "AME",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "APA": {
+      "symbol": "APA",
+      "completeness": 1.0,
+      "accuracy": 0.9994903160040775,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888039415562351
+    },
+    "APO": {
+      "symbol": "APO",
+      "completeness": 1.0,
+      "accuracy": 0.9994462901439646,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.988796603912883
+    },
+    "AAPL": {
+      "symbol": "AAPL",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "APTV": {
+      "symbol": "APTV",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "ANET": {
+      "symbol": "ANET",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "AMAT": {
+      "symbol": "AMAT",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "ACGL": {
+      "symbol": "ACGL",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "ADM": {
+      "symbol": "ADM",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "AIZ": {
+      "symbol": "AIZ",
+      "completeness": 1.0,
+      "accuracy": 0.9992354740061162,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9887614678899083
+    },
+    "AJG": {
+      "symbol": "AJG",
+      "completeness": 1.0,
+      "accuracy": 0.9994903160040775,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888039415562351
+    },
+    "T": {
+      "symbol": "T",
+      "completeness": 1.0,
+      "accuracy": 0.9979612640163099,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9885490995582739
+    },
+    "ATO": {
+      "symbol": "ATO",
+      "completeness": 1.0,
+      "accuracy": 0.9992354740061162,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9887614678899083
+    },
+    "ADSK": {
+      "symbol": "ADSK",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "ADP": {
+      "symbol": "ADP",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "BKR": {
+      "symbol": "BKR",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 0.9997451580020388,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888039415562352
+    },
+    "AZO": {
+      "symbol": "AZO",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "BRK-B": {
+      "symbol": "BRK-B",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "AXON": {
+      "symbol": "AXON",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "AVY": {
+      "symbol": "AVY",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "AVB": {
+      "symbol": "AVB",
+      "completeness": 1.0,
+      "accuracy": 0.9994903160040775,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888039415562351
+    },
+    "BAC": {
+      "symbol": "BAC",
+      "completeness": 1.0,
+      "accuracy": 0.9989806320081549,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9887189942235813
+    },
+    "BDX": {
+      "symbol": "BDX",
+      "completeness": 1.0,
+      "accuracy": 0.9992354740061162,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9887614678899083
+    },
+    "BALL": {
+      "symbol": "BALL",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "BAX": {
+      "symbol": "BAX",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "BBY": {
+      "symbol": "BBY",
+      "completeness": 1.0,
+      "accuracy": 0.9994903160040775,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888039415562351
+    },
+    "BIIB": {
+      "symbol": "BIIB",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "XYZ": {
+      "symbol": "XYZ",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "TECH": {
+      "symbol": "TECH",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "BLK": {
+      "symbol": "BLK",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "BSX": {
+      "symbol": "BSX",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "BA": {
+      "symbol": "BA",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "BK": {
+      "symbol": "BK",
+      "completeness": 1.0,
+      "accuracy": 0.9992354740061162,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9887614678899083
+    },
+    "BX": {
+      "symbol": "BX",
+      "completeness": 1.0,
+      "accuracy": 0.9987257900101937,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9886765205572545
+    },
+    "BKNG": {
+      "symbol": "BKNG",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "BR": {
+      "symbol": "BR",
+      "completeness": 1.0,
+      "accuracy": 0.9994903160040775,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888039415562351
+    },
+    "AVGO": {
+      "symbol": "AVGO",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "BMY": {
+      "symbol": "BMY",
+      "completeness": 1.0,
+      "accuracy": 0.9984709480122325,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9886340468909277
+    },
+    "BRO": {
+      "symbol": "BRO",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "BG": {
+      "symbol": "BG",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "BF-B": {
+      "symbol": "BF-B",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "CZR": {
+      "symbol": "CZR",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "CDNS": {
+      "symbol": "CDNS",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "BLDR": {
+      "symbol": "BLDR",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "BXP": {
+      "symbol": "BXP",
+      "completeness": 1.0,
+      "accuracy": 0.9994903160040775,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888039415562351
+    },
+    "CHRW": {
+      "symbol": "CHRW",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "CPT": {
+      "symbol": "CPT",
+      "completeness": 1.0,
+      "accuracy": 0.9987257900101937,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9886765205572545
+    },
+    "CPB": {
+      "symbol": "CPB",
+      "completeness": 1.0,
+      "accuracy": 0.9994903160040775,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888039415562351
+    },
+    "COF": {
+      "symbol": "COF",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "CARR": {
+      "symbol": "CARR",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "KMX": {
+      "symbol": "KMX",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "CAH": {
+      "symbol": "CAH",
+      "completeness": 1.0,
+      "accuracy": 0.9989806320081549,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9887189942235813
+    },
+    "CCL": {
+      "symbol": "CCL",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "CBOE": {
+      "symbol": "CBOE",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "CAT": {
+      "symbol": "CAT",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "CBRE": {
+      "symbol": "CBRE",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "CDW": {
+      "symbol": "CDW",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "CNC": {
+      "symbol": "CNC",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 0.9997451580020388,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "COR": {
+      "symbol": "COR",
+      "completeness": 1.0,
+      "accuracy": 0.9997451580020388,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888464152225621
+    },
+    "CRL": {
+      "symbol": "CRL",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888888888888889
+    },
+    "CF": {
+      "symbol": "CF",
+      "completeness": 1.0,
+      "accuracy": 0.9992354740061162,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9887614678899083
+    },
+    "CNP": {
+      "symbol": "CNP",
+      "completeness": 1.0,
+      "accuracy": 0.9977064220183486,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9885066258919469
+    },
+    "SCHW": {
+      "symbol": "SCHW",
+      "completeness": 1.0,
+      "accuracy": 0.9994903160040775,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9888039415562351
+    },
+    "CHTR": {
+      "symbol": "CHTR",
+      "completeness": 1.0,
+      "accuracy": 1.0,
+      "timeliness": 0.9333333333333333,
+      "consistency": 0.9954116747387204,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9881241680120091
+    },
+    "CVX": {
+      "symbol": "CVX",
+      "completeness": 1.0,
+      "accuracy": 0.9987257900101937,
+      "timeliness": 0.9333333333333333,
+      "consistency": 1.0,
+      "uniqueness": 1.0,
+      "validity": 1.0,
+      "overall_score": 0.9886765205572545
+    }
+  }
+}

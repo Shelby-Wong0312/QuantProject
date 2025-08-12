@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-08-11T09:36:59.471983",
+  "results": {
+    "demo_api": false,
+    "live_api": false,
+    "websocket": false,
+    "documentation": true,
+    "authentication": false
+  },
+  "summary": {
+    "total": 5,
+    "passed": 1,
+    "failed": 4
+  }
+}

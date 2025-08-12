@@ -1,0 +1,43 @@
+{
+  "account": {
+    "account_id": "fe06f21e-e3e3-495c-832f-bfe16a00d559",
+    "initial_balance": 100000,
+    "cash_balance": 100245.57512627542,
+    "portfolio_value": 112133.79053840565,
+    "total_pnl": -170.19687778360873,
+    "total_commission": 24.281856983258695
+  },
+  "positions": {
+    "GOOGL": {
+      "quantity": 25,
+      "avg_price": 140.07,
+      "current_price": 138.18071037865911,
+      "unrealized_pnl": -94.46448106704395,
+      "realized_pnl": -52.412289913842
+    },
+    "TSLA": {
+      "quantity": 20,
+      "avg_price": 250.125,
+      "current_price": 248.95899465986386,
+      "unrealized_pnl": -23.320106802722762,
+      "realized_pnl": 0
+    }
+  },
+  "performance": {
+    "total_return": 0.1213379053840565,
+    "portfolio_value": 112133.79053840565,
+    "cash_balance": 100245.57512627542,
+    "positions_count": 2,
+    "total_pnl": -170.19687778360873,
+    "realized_pnl": -52.412289913842,
+    "unrealized_pnl": -117.78458786976671,
+    "total_commission": 24.281856983258695,
+    "total_trades": 4,
+    "winning_trades": 0,
+    "win_rate": 0.0,
+    "sharpe_ratio": 0,
+    "max_drawdown": 0
+  },
+  "trade_count": 4,
+  "timestamp": "2025-08-10T19:47:46.184783"
+}

@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-08-10T21:03:10.716638",
+  "validation_period": {
+    "train": "2010-01-01 to 2020-12-31",
+    "test": "2021-01-01 to 2024-12-31"
+  },
+  "summary": {
+    "total_symbols": 5,
+    "passed": 0,
+    "failed": 5,
+    "pass_rate": "0.0%"
+  },
+  "portfolio_metrics": {
+    "avg_annual_return": 0.0,
+    "median_annual_return": 0.0,
+    "best_annual_return": 

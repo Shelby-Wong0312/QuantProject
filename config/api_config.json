@@ -1,0 +1,54 @@
+{
+  "capital_com": {
+    "demo": {
+      "api_url": "https://demo-api-capital.backend-capital.com/api/v1",
+      "streaming_url": "wss://demo-api-streaming-capital.backend-capital.com",
+      "api_key": "YOUR_DEMO_API_KEY",
+      "password": "YOUR_DEMO_PASSWORD",
+      "encrypted": true
+    },
+    "live": {
+      "api_url": "https://api-capital.backend-capital.com/api/v1",
+      "streaming_url": "wss://api-streaming-capital.backend-capital.com",
+      "api_key": "YOUR_LIVE_API_KEY",
+      "password": "YOUR_LIVE_PASSWORD",
+      "encrypted": true
+    },
+    "settings": {
+      "rate_limit": 100,
+      "timeout": 30,
+      "max_connections": 10,
+      "heartbeat_interval": 30,
+      "reconnect_delay": 5,
+      "max_retries": 3
+    }
+  },
+  "system": {
+    "mode": "paper",
+    "strategy": "hybrid",
+    "risk_limits": {
+      "max_drawdown": 0.05,
+      "max_positions": 50,
+      "position_size": 0.02,
+      "stop_loss": 0.02,
+      "take_profit": 0.05
+    },
+    "update_intervals": {
+      "portfolio_rebalance": 86400,
+      "signal_generation": 300,
+      "risk_check": 60,
+      "performance_report": 3600
+    }
+  },
+  "data_sources": {
+    "primary": "capital_com",
+    "backup": "yfinance",
+    "cache_duration": 300
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "logs/trading_system.log",
+    "max_size": "100MB",
+    "backup_count": 5
+  }
+}

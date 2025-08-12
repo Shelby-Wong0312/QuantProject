@@ -1,0 +1,106 @@
+{
+  "timestamp": "2025-08-10T19:35:16.897381",
+  "summary": {
+    "total_tests": 4,
+    "passed_tests": 3,
+    "success_rate": 0.75,
+    "all_tests_passed": false
+  },
+  "detailed_results": {
+    "anomaly_detection": {
+      "passed": true,
+      "anomalies_detected": 5,
+      "accuracy": 1.0,
+      "report": {
+        "total_anomalies": 5,
+        "by_type": {
+          "flash_crash": 2,
+          "correlation_break": 3
+        },
+        "by_severity": {
+          "MEDIUM": 1,
+          "LOW": 3,
+          "HIGH": 1
+        },
+        "recent_anomalies": [
+          {
+            "timestamp": "2025-08-10T19:35:16.428308",
+            "symbol": "AAPL",
+            "type": "flash_crash",
+            "severity": "MEDIUM",
+            "score": 0.0,
+            "description": "Rapid price decline detected, down -5.44%"
+          },
+          {
+            "timestamp": "2025-08-10T19:35:16.444451",
+            "symbol": "GOOGL",
+            "type": "correlation_break",
+            "severity": "LOW",
+            "score": 0.0,
+            "description": "Market correlation structure broken"
+          },
+          {
+            "timestamp": "2025-08-10T19:35:16.461753",
+            "symbol": "MSFT",
+            "type": "correlation_break",
+            "severity": "LOW",
+            "score": 0.0,
+            "description": "Market correlation structure broken"
+          },
+          {
+            "timestamp": "2025-08-10T19:35:16.476591",
+            "symbol": "TSLA",
+            "type": "flash_crash",
+            "severity": "HIGH",
+            "score": 0.0,
+            "description": "Rapid price decline detected, down -8.57%"
+          },
+          {
+            "timestamp": "2025-08-10T19:35:16.490994",
+            "symbol": "AMZN",
+            "type": "correlation_break",
+            "severity": "LOW",
+            "score": 0.0,
+            "description": "Market correlation structure broken"
+          }
+        ],
+        "detection_rate": 5.0
+      }
+    },
+    "circuit_breaker": {
+      "passed": false,
+      "total_triggers": 2,
+      "final_status": {
+        "current_level": "LEVEL_1",
+        "is_paused": true,
+        "trading_enabled": false,
+        "current_portfolio_value": 78000,
+        "drawdown": -0.22,
+        "daily_high": 100000,
+        "daily_low": 78000,
+        "pause_start": "2025-08-10T19:35:16.757040",
+        "pause_end": "2025-08-10T19:40:16.757040",
+        "breaker_count": 1,
+        "pause_remaining_seconds": 299.971654
+      }
+    },
+    "deleveraging": {
+      "passed": true,
+      "strategies_tested": [
+        "proportional",
+        "high_risk_first",
+        "loss_first",
+        "liquid_first",
+        "smart"
+      ],
+      "current_leverage": 5.059575,
+      "execution_time": 0.0
+    },
+    "integration": {
+      "passed": true,
+      "anomalies_detected": 5,
+      "breaker_triggered": "LEVEL_1",
+      "trading_paused": true
+    }
+  }
+}

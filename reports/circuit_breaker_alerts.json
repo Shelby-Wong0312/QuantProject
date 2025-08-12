@@ -1,0 +1,65 @@
+[
+  {
+    "type": "CIRCUIT_BREAKER_ALERT",
+    "timestamp": "2025-08-10T19:34:59.330964",
+    "level": "LEVEL_1",
+    "portfolio_value": 94000,
+    "drawdown": "-6.00%",
+    "pause_duration": "5 minutes",
+    "message": "Circuit breaker LEVEL_1 triggered"
+  },
+  {
+    "type": "CIRCUIT_BREAKER_ALERT",
+    "timestamp": "2025-08-10T19:34:59.331977",
+    "level": "EMERGENCY",
+    "portfolio_value": 78000,
+    "drawdown": "-99.00%",
+    "pause_duration": "-1 minutes",
+    "message": "Circuit breaker EMERGENCY triggered"
+  },
+  {
+    "type": "CIRCUIT_BREAKER_ALERT",
+    "timestamp": "2025-08-10T19:34:59.408099",
+    "level": "LEVEL_1",
+    "portfolio_value": 85000,
+    "drawdown": "-15.00%",
+    "pause_duration": "5 minutes",
+    "message": "Circuit breaker LEVEL_1 triggered"
+  },
+  {
+    "type": "CIRCUIT_BREAKER_ALERT",
+    "timestamp": "2025-08-10T19:35:16.757040",
+    "level": "LEVEL_1",
+    "portfolio_value": 94000,
+    "drawdown": "-6.00%",
+    "pause_duration": "5 minutes",
+    "message": "Circuit breaker LEVEL_1 triggered"
+  },
+  {
+    "type": "CIRCUIT_BREAKER_ALERT",
+    "timestamp": "2025-08-10T19:35:16.785906",
+    "level": "EMERGENCY",
+    "portfolio_value": 78000,
+    "drawdown": "-99.00%",
+    "pause_duration": "-1 minutes",
+    "message": "Circuit breaker EMERGENCY triggered"
+  },
+  {
+    "type": "CIRCUIT_BREAKER_ALERT",
+    "timestamp": "2025-08-10T19:35:16.889270",
+    "level": "LEVEL_1",
+    "portfolio_value": 85000,
+    "drawdown": "-15.00%",
+    "pause_duration": "5 minutes",
+    "message": "Circuit breaker LEVEL_1 triggered"
+  },
+  {
+    "type": "CIRCUIT_BREAKER_ALERT",
+    "timestamp": "2025-08-10T19:41:37.328723",
+    "level": "LEVEL_1",
+    "portfolio_value": 85000,
+    "drawdown": "-15.00%",
+    "pause_duration": "5 minutes",
+    "message": "Circuit breaker LEVEL_1 triggered"
+  }
+]

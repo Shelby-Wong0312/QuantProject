@@ -32,7 +32,12 @@
       "Bash(sqlite3:*)",
       "Bash(start C:UsersniujiDocumentsQuantProjectreportsvisual_backtest_report.html)",
       "Bash(start \"C:\\Users\\niuji\\Documents\\QuantProject\\reports\\visual_backtest_report.html\")",
-      "Bash(start \"C:\\Users\\niuji\\Documents\\QuantProject\\reports\\15years_visual_report.html\")"
+      "Bash(start \"C:\\Users\\niuji\\Documents\\QuantProject\\reports\\15years_visual_report.html\")",
+      "Bash(timeout 10 python:*)",
+      "Bash(timeout 5 python:*)",
+      "Bash(streamlit run:*)",
+      "Bash(timeout:*)",
+      "Bash(del /Q report_*.txt)"
     ],
     "deny": []
   }

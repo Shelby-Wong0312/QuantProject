@@ -1,0 +1,22 @@
+{
+  "training": {
+    "total_timesteps": 50176,
+    "n_episodes": 27,
+    "best_reward": 4.617738843722271
+  },
+  "evaluation": {
+    "mean_reward": 4.323967325012928,
+    "std_reward": 0.24414764099228914,
+    "mean_length": 1851.0,
+    "total_return": 43.239673250129286,
+    "mean_win_rate": 0.5024545385764028,
+    "mean_max_drawdown": -0.0261388272892351
+  },
+  "backtest": {
+    "total_return": 2.0718968331310386,
+    "sharpe_ratio": 4.995643878440953,
+    "max_drawdown": -0.029827190056301377,
+    "num_trades": 208,
+    "win_rate": 0.4567307692307692
+  }
+}

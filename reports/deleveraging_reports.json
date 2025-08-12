@@ -1,0 +1,28 @@
+[
+  {
+    "timestamp": "2025-08-10T19:34:59.346864",
+    "strategy": "smart",
+    "initial_leverage": 5.059575,
+    "target_leverage": 1.0,
+    "final_leverage": 1.0,
+    "positions_planned": 5,
+    "positions_executed": 5,
+    "positions_failed": 0,
+    "total_proceeds": 211723.8928190692,
+    "execution_time": 0.001013,
+    "risk_reduction": 1.0
+  },
+  {
+    "timestamp": "2025-08-10T19:35:16.800720",
+    "strategy": "smart",
+    "initial_leverage": 5.059575,
+    "target_leverage": 1.0,
+    "final_leverage": 1.811915,
+    "positions_planned": 5,
+    "positions_executed": 4,
+    "positions_failed": 1,
+    "total_proceeds": 183701.55492103103,
+    "execution_time": 0.0,
+    "risk_reduction": 1.0
+  }
+]
