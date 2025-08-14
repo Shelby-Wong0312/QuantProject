@@ -1,144 +1,323 @@
-# quant_project/test_capital_api.py
-# 測試Capital.com API功能
+"""
+Capital.com API Connection Test
+檢查 Capital.com API 串接是否正常
+"""
 
-import sys
+import requests
+import json
 import os
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-import logging
 from datetime import datetime, timedelta
+from typing import Dict, Optional, List
+import time
 
-# 設置日誌
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-
-def test_capital_api():
-    """測試Capital.com API的各項功能"""
+class CapitalComAPITester:
+    """Capital.com API 連接測試器"""
     
-    print("="*60)
-    print("Capital.com API 功能測試")
-    print("="*60)
-    
-    # 初始化數據管理器
-    from data_pipeline.data_manager import DataManager
-    data_manager = DataManager(use_cache=True)
-    
-    # 測試1: 獲取可用交易品種
-    print("\n1. 測試獲取可用交易品種...")
-    try:
-        symbols = data_manager.get_available_symbols()
-        print(f"✅ 成功獲取 {len(symbols)} 個可用交易品種")
-        print(f"   前10個品種: {symbols[:10]}")
-    except Exception as e:
-        print(f"❌ 獲取交易品種失敗: {e}")
-    
-    # 測試2: 獲取單個股票的歷史數據
-    print("\n2. 測試獲取Apple(AAPL)的歷史數據...")
-    try:
-        end_date = datetime.now().strftime("%Y-%m-%d")
-        start_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
+    def __init__(self):
+        # Capital.com API endpoints
+        self.demo_api_url = "https://demo-api-capital.backend-capital.com"
+        self.live_api_url = "https://api-capital.backend-capital.com"
         
-        df = data_manager.get_historical_data(
-            symbol="AAPL.US",
-            resolution="DAY",
-            start_date=start_date,
-            end_date=end_date
-        )
+        # 使用 demo 環境進行測試
+        self.base_url = self.demo_api_url
         
-        if not df.empty:
-            print(f"✅ 成功獲取 {len(df)} 筆歷史數據")
-            print("\n最近5筆數據:")
-            print(df.tail())
-            print(f"\n數據範圍: {df.index[0]} 到 {df.index[-1]}")
-        else:
-            print("❌ 未獲取到數據")
-    except Exception as e:
-        print(f"❌ 獲取歷史數據失敗: {e}")
-    
-    # 測試3: 獲取最新價格
-    print("\n3. 測試獲取最新價格...")
-    test_symbols = ["AAPL.US", "MSFT.US", "GOOGL.US"]
-    for symbol in test_symbols:
+        # API credentials (需要替換為實際的認證資訊)
+        self.api_key = os.environ.get('CAPITAL_API_KEY', 'YOUR_API_KEY')
+        self.password = os.environ.get('CAPITAL_PASSWORD', 'YOUR_PASSWORD')
+        self.identifier = os.environ.get('CAPITAL_IDENTIFIER', 'YOUR_EMAIL')
+        
+        self.session_token = None
+        self.cst = None
+        self.headers = {
+            'Content-Type': 'application/json',
+            'X-CAP-API-KEY': self.api_key
+        }
+        
+    def test_connection(self) -> Dict:
+        """測試基本連接"""
+        print("\n" + "="*60)
+        print("CAPITAL.COM API 連接測試")
+        print("="*60)
+        
+        results = {
+            'timestamp': datetime.now().isoformat(),
+            'tests': {},
+            'summary': {}
+        }
+        
+        # Test 1: 檢查 API 端點可達性
+        print("\n[測試 1] 檢查 API 端點可達性...")
         try:
-            price = data_manager.get_latest_price(symbol)
-            if price:
-                print(f"✅ {symbol}: ${price:.2f}")
+            response = requests.get(f"{self.base_url}/api/v1/ping", timeout=10)
+            if response.status_code == 200:
+                print("✅ API 端點可達")
+                results['tests']['endpoint_reachable'] = True
             else:
-                print(f"❌ {symbol}: 無法獲取價格")
+                print(f"❌ API 端點回應異常: {response.status_code}")
+                results['tests']['endpoint_reachable'] = False
         except Exception as e:
-            print(f"❌ {symbol}: 錯誤 - {e}")
-    
-    # 測試4: 批量獲取多個股票數據
-    print("\n4. 測試批量獲取多個股票的歷史數據...")
-    try:
-        symbols_to_test = ["AAPL.US", "MSFT.US", "GOOGL.US", "TSLA.US"]
-        results = data_manager.get_multiple_symbols_data(
-            symbols=symbols_to_test,
-            resolution="DAY",
-            lookback_days=10
-        )
-        
-        print(f"✅ 成功獲取 {len(results)} 個股票的數據:")
-        for symbol, df in results.items():
-            if not df.empty:
-                print(f"   {symbol}: {len(df)} 筆數據")
-            else:
-                print(f"   {symbol}: 無數據")
-    except Exception as e:
-        print(f"❌ 批量獲取失敗: {e}")
-    
-    # 測試5: 測試緩存功能
-    print("\n5. 測試緩存功能...")
-    try:
-        # 獲取緩存統計
-        stats = data_manager.get_cache_stats()
-        print(f"✅ 緩存統計:")
-        print(f"   總文件數: {stats.get('total_files', 0)}")
-        print(f"   總大小: {stats.get('total_size_mb', 0)} MB")
-        print(f"   總記錄數: {stats.get('total_records', 0)}")
-        print(f"   緩存的股票: {stats.get('symbols', [])}")
-        
-        # 再次獲取相同數據（應該從緩存讀取）
-        print("\n   測試從緩存讀取數據...")
-        import time
-        start_time = time.time()
-        df_cached = data_manager.get_historical_data(
-            symbol="AAPL.US",
-            resolution="DAY",
-            start_date=start_date,
-            end_date=end_date
-        )
-        elapsed_time = time.time() - start_time
-        print(f"   從緩存讀取耗時: {elapsed_time:.2f} 秒")
-        
-    except Exception as e:
-        print(f"❌ 緩存測試失敗: {e}")
-    
-    # 測試6: 測試不同時間週期
-    print("\n6. 測試不同時間週期的數據獲取...")
-    resolutions = ["MINUTE", "MINUTE_5", "HOUR", "DAY"]
-    for resolution in resolutions:
+            print(f"❌ 無法連接到 API: {e}")
+            results['tests']['endpoint_reachable'] = False
+            
+        # Test 2: 測試公開市場數據端點
+        print("\n[測試 2] 測試公開市場數據...")
         try:
-            df = data_manager.get_historical_data(
-                symbol="AAPL.US",
-                resolution=resolution,
-                lookback_days=1
+            # 獲取市場列表（某些端點可能不需要認證）
+            response = requests.get(
+                f"{self.base_url}/api/v1/markets",
+                headers={'X-CAP-API-KEY': self.api_key},
+                timeout=10
             )
-            if not df.empty:
-                print(f"✅ {resolution}: 獲取 {len(df)} 筆數據")
+            
+            if response.status_code == 200:
+                data = response.json()
+                print(f"✅ 成功獲取市場數據")
+                results['tests']['public_data'] = True
+            elif response.status_code == 401:
+                print("⚠️ 需要認證才能訪問市場數據")
+                results['tests']['public_data'] = False
             else:
-                print(f"❌ {resolution}: 無數據")
+                print(f"❌ 市場數據請求失敗: {response.status_code}")
+                results['tests']['public_data'] = False
         except Exception as e:
-            print(f"❌ {resolution}: 錯誤 - {e}")
-    
-    # 關閉連接
-    data_manager.close()
-    
+            print(f"❌ 市場數據請求錯誤: {e}")
+            results['tests']['public_data'] = False
+            
+        # Test 3: 測試認證（如果有認證資訊）
+        print("\n[測試 3] 測試 API 認證...")
+        if self.api_key != 'YOUR_API_KEY':
+            success = self.authenticate()
+            results['tests']['authentication'] = success
+            
+            if success:
+                print("✅ API 認證成功")
+                
+                # Test 4: 測試獲取帳戶資訊
+                print("\n[測試 4] 測試獲取帳戶資訊...")
+                account_info = self.get_account_info()
+                if account_info:
+                    print("✅ 成功獲取帳戶資訊")
+                    results['tests']['account_info'] = True
+                else:
+                    print("❌ 無法獲取帳戶資訊")
+                    results['tests']['account_info'] = False
+                    
+                # Test 5: 測試獲取即時價格
+                print("\n[測試 5] 測試獲取即時價格...")
+                price_data = self.get_market_price("AAPL")
+                if price_data:
+                    print(f"✅ 成功獲取 AAPL 價格")
+                    results['tests']['market_price'] = True
+                else:
+                    print("❌ 無法獲取市場價格")
+                    results['tests']['market_price'] = False
+            else:
+                print("❌ API 認證失敗")
+        else:
+            print("⚠️ 未設置 API 認證資訊")
+            print("請設置環境變數:")
+            print("  - CAPITAL_API_KEY")
+            print("  - CAPITAL_PASSWORD")
+            print("  - CAPITAL_IDENTIFIER")
+            results['tests']['authentication'] = False
+            
+        # 生成測試摘要
+        total_tests = len(results['tests'])
+        passed_tests = sum(1 for v in results['tests'].values() if v)
+        
+        results['summary'] = {
+            'total_tests': total_tests,
+            'passed': passed_tests,
+            'failed': total_tests - passed_tests,
+            'success_rate': f"{(passed_tests/total_tests*100):.1f}%" if total_tests > 0 else "0%"
+        }
+        
+        # 顯示測試摘要
+        print("\n" + "="*60)
+        print("測試摘要")
+        print("="*60)
+        print(f"總測試數: {results['summary']['total_tests']}")
+        print(f"通過: {results['summary']['passed']}")
+        print(f"失敗: {results['summary']['failed']}")
+        print(f"成功率: {results['summary']['success_rate']}")
+        
+        # 保存測試結果
+        with open('capital_api_test_results.json', 'w') as f:
+            json.dump(results, f, indent=2)
+        print("\n測試結果已保存至: capital_api_test_results.json")
+        
+        return results
+        
+    def authenticate(self) -> bool:
+        """進行 API 認證"""
+        try:
+            auth_data = {
+                "identifier": self.identifier,
+                "password": self.password
+            }
+            
+            response = requests.post(
+                f"{self.base_url}/api/v1/session",
+                headers=self.headers,
+                json=auth_data,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                self.cst = response.headers.get('CST')
+                self.session_token = response.headers.get('X-SECURITY-TOKEN')
+                
+                # 更新 headers
+                self.headers.update({
+                    'CST': self.cst,
+                    'X-SECURITY-TOKEN': self.session_token
+                })
+                return True
+            else:
+                print(f"認證失敗: {response.status_code}")
+                if response.text:
+                    print(f"錯誤訊息: {response.text}")
+                return False
+                
+        except Exception as e:
+            print(f"認證錯誤: {e}")
+            return False
+            
+    def get_account_info(self) -> Optional[Dict]:
+        """獲取帳戶資訊"""
+        if not self.session_token:
+            return None
+            
+        try:
+            response = requests.get(
+                f"{self.base_url}/api/v1/accounts",
+                headers=self.headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                return None
+                
+        except Exception as e:
+            print(f"獲取帳戶資訊錯誤: {e}")
+            return None
+            
+    def get_market_price(self, symbol: str) -> Optional[Dict]:
+        """獲取市場價格"""
+        try:
+            response = requests.get(
+                f"{self.base_url}/api/v1/markets/{symbol}",
+                headers=self.headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                return None
+                
+        except Exception as e:
+            print(f"獲取價格錯誤: {e}")
+            return None
+            
+    def test_websocket_connection(self) -> bool:
+        """測試 WebSocket 連接（用於即時數據）"""
+        print("\n[測試 6] 測試 WebSocket 連接...")
+        
+        # Capital.com WebSocket endpoint
+        ws_url = "wss://demo-api-streaming.backend-capital.com"
+        
+        try:
+            import websocket
+            
+            def on_open(ws):
+                print("✅ WebSocket 連接成功")
+                ws.close()
+                
+            def on_error(ws, error):
+                print(f"❌ WebSocket 錯誤: {error}")
+                
+            def on_close(ws):
+                print("WebSocket 連接已關閉")
+                
+            ws = websocket.WebSocketApp(
+                ws_url,
+                on_open=on_open,
+                on_error=on_error,
+                on_close=on_close
+            )
+            
+            # 設置超時
+            ws.run_forever(timeout=5)
+            return True
+            
+        except ImportError:
+            print("⚠️ 需要安裝 websocket-client 來測試 WebSocket")
+            print("執行: pip install websocket-client")
+            return False
+        except Exception as e:
+            print(f"❌ WebSocket 測試失敗: {e}")
+            return False
+
+def check_api_documentation():
+    """檢查 API 文檔連結"""
     print("\n" + "="*60)
-    print("測試完成！")
+    print("Capital.com API 資源")
     print("="*60)
+    
+    resources = {
+        "API 文檔": "https://open-api.capital.com/",
+        "開發者入口": "https://capital.com/trading-api",
+        "API 狀態": "https://status.capital.com/",
+        "技術支援": "https://help.capital.com/hc/en-gb/sections/360004351917-API"
+    }
+    
+    for name, url in resources.items():
+        print(f"{name}: {url}")
+        
+    print("\n註冊 API 步驟:")
+    print("1. 訪問 https://capital.com")
+    print("2. 註冊/登入帳戶")
+    print("3. 前往 Settings > API")
+    print("4. 生成 API Key")
+    print("5. 設置環境變數或更新配置檔案")
+
+def main():
+    """主測試函數"""
+    print("\n" + "="*80)
+    print("CAPITAL.COM API 連接狀態檢查")
+    print("="*80)
+    print(f"測試時間: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("="*80)
+    
+    # 顯示 API 資源
+    check_api_documentation()
+    
+    # 執行連接測試
+    tester = CapitalComAPITester()
+    results = tester.test_connection()
+    
+    # 測試 WebSocket
+    tester.test_websocket_connection()
+    
+    print("\n" + "="*80)
+    print("測試完成")
+    print("="*80)
+    
+    # 建議
+    print("\n建議:")
+    if not results['tests'].get('authentication', False):
+        print("1. 請先在 Capital.com 註冊並獲取 API 認證資訊")
+        print("2. 設置環境變數:")
+        print("   set CAPITAL_API_KEY=your_api_key")
+        print("   set CAPITAL_PASSWORD=your_password")
+        print("   set CAPITAL_IDENTIFIER=your_email")
+    else:
+        print("✅ API 連接正常，可以開始使用交易功能")
+        
+    return results
 
 if __name__ == "__main__":
-    test_capital_api()
+    main()

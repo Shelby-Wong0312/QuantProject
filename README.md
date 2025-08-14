@@ -1,6 +1,6 @@
-# QuantProject - AI-Powered Quantitative Trading System
+# 🚀 QuantProject - 量化交易系統
 
-A comprehensive quantitative trading system integrating Capital.com API with advanced AI strategies, supporting 4,215+ tradable US stocks with 15 years of historical data.
+完整的AI量化交易系統，整合Capital.com API，支援40支股票實時交易（WebSocket限制）。
 
 ## 🚀 Features
 

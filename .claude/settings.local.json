@@ -37,8 +37,17 @@
       "Bash(timeout 5 python:*)",
       "Bash(streamlit run:*)",
       "Bash(timeout:*)",
-      "Bash(del /Q report_*.txt)"
+      "Bash(del /Q report_*.txt)",
+      "Bash(del:*)",
+      "Bash(start python live_trading_system_full.py)",
+      "Bash(start:*)",
+      "Bash(taskkill:*)",
+      "Bash(powershell:*)",
+      "Bash(set CAPITAL_API_KEY=kugBoHCUcjaaNwGV)",
+      "Bash(set CAPITAL_IDENTIFIER=niujinheitaizi@gmail.com)",
+      "Bash(set CAPITAL_API_PASSWORD=@Nickatnyte3)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   }
 }

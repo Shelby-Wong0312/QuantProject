@@ -93,6 +93,34 @@ class EnhancedRiskManager:
         
         logger.info(f"Risk Manager initialized - Capital: ${initial_capital:,.0f}")
     
+    def check_trade_allowed(self, symbol: str, signal_type: str = None) -> bool:
+        """
+        檢查是否允許交易
+        
+        Args:
+            symbol: 股票代碼
+            signal_type: 信號類型 (BUY/SELL)
+            
+        Returns:
+            bool: 是否允許交易
+        """
+        # 緊急模式檢查
+        if self.is_emergency_mode:
+            logger.warning(f"Trade blocked for {symbol} - Emergency mode active")
+            return False
+        
+        # 每日虧損檢查
+        if abs(self.daily_pnl) > self.initial_capital * self.max_daily_loss:
+            logger.warning(f"Trade blocked for {symbol} - Daily loss limit exceeded")
+            return False
+        
+        # 回撤檢查
+        if self.current_drawdown > self.max_drawdown:
+            logger.warning(f"Trade blocked for {symbol} - Max drawdown exceeded")
+            return False
+        
+        return True
+    
     async def monitor_positions(self, 
                                positions: Dict,
                                market_data: Dict) -> List[Dict]:

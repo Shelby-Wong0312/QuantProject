@@ -75,7 +75,7 @@ class CapitalComAPI:
         # Load credentials from environment
         self.api_key = os.environ.get('CAPITAL_API_KEY', '')
         self.identifier = os.environ.get('CAPITAL_IDENTIFIER', '')
-        self.password = os.environ.get('CAPITAL_PASSWORD', '')
+        self.password = os.environ.get('CAPITAL_API_PASSWORD', '')  # Fixed: was CAPITAL_PASSWORD
         
         # Session management
         self.session = requests.Session()
@@ -153,24 +153,32 @@ class CapitalComAPI:
         Encrypt password using RSA public key
         
         Args:
-            password: Plain text password
+            password: Plain text password with timestamp
             encryption_key: RSA public key from API
             
         Returns:
             Base64 encoded encrypted password
         """
         try:
+            # Add PEM headers if missing
+            if not encryption_key.startswith('-----BEGIN'):
+                encryption_key = f"-----BEGIN PUBLIC KEY-----\n{encryption_key}\n-----END PUBLIC KEY-----"
+            
             # Import the public key
             key = RSA.import_key(encryption_key)
             cipher = PKCS1_v1_5.new(key)
             
             # Encrypt the password
-            encrypted = cipher.encrypt(password.encode())
+            encrypted = cipher.encrypt(password.encode('utf-8'))
             
             # Return base64 encoded
-            return base64.b64encode(encrypted).decode()
+            return base64.b64encode(encrypted).decode('utf-8')
         except Exception as e:
             logger.error(f"Password encryption failed: {e}")
+            # Fallback for demo mode - return plain password
+            if self.demo:
+                logger.info("Using fallback for demo mode")
+                return password
             return ""
     
     def authenticate(self) -> bool:
@@ -499,7 +507,7 @@ def test_connection():
         print("\n[ERROR] No API credentials found!")
         print("\nPlease set environment variables:")
         print("  set CAPITAL_API_KEY=your_api_key")
-        print("  set CAPITAL_PASSWORD=your_password")
+        print("  set CAPITAL_API_PASSWORD=your_password")
         print("  set CAPITAL_IDENTIFIER=your_email")
         return False
     

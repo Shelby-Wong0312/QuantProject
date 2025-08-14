@@ -66,7 +66,7 @@ class SignalGenerator:
     """
     
     def __init__(self,
-                 ppo_model_path: str = "reports/ppo_trader_final.pt",
+                 ppo_model_path: str = "reports/ml_models/ppo_trader_final.pt",
                  lstm_model_path: Optional[str] = None,
                  config_path: Optional[str] = None):
         """
@@ -128,7 +128,7 @@ class SignalGenerator:
                 logger.warning(f"PPO model not found at {model_path}")
                 return None
             
-            checkpoint = torch.load(model_path, map_location=self.device)
+            checkpoint = torch.load(model_path, map_location=self.device, weights_only=False)
             
             # 重建模型
             obs_dim = 11 * 20  # window_size * features
