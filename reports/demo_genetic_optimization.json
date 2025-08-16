@@ -1,0 +1,78 @@
+{
+  "study_name": "demo_genetic",
+  "optimization_config": {
+    "direction": "maximize",
+    "sampler": "RandomSampler",
+    "pruner": "MedianPruner",
+    "timestamp": "2025-08-16T07:11:08.284213"
+  },
+  "best_parameters": {
+    "ma_short": 7,
+    "ma_long": 162,
+    "threshold": 0.00681103163549189,
+    "risk_factor": 1.0802509531700222
+  },
+  "best_value": 2.455340898441242,
+  "optimization_history": [
+    {
+      "generation": 1,
+      "best_fitness": 1.7300738445639978,
+      "avg_fitness": 1.011531686322846,
+      "std_fitness": 0.47957840577946986
+    },
+    {
+      "generation": 2,
+      "best_fitness": 1.7403248603934252,
+      "avg_fitness": 1.286997251547494,
+      "std_fitness": 0.34680190616179457
+    },
+    {
+      "generation": 3,
+      "best_fitness": 2.0521716774673027,
+      "avg_fitness": 1.5514719062739786,
+      "std_fitness": 0.28739654537093645
+    },
+    {
+      "generation": 4,
+      "best_fitness": 2.1536651195308574,
+      "avg_fitness": 1.8028781179685656,
+      "std_fitness": 0.2325436445116676
+    },
+    {
+      "generation": 5,
+      "best_fitness": 2.2151380251082946,
+      "avg_fitness": 1.9473305075185625,
+      "std_fitness": 0.22394454205248818
+    },
+    {
+      "generation": 6,
+      "best_fitness": 2.252015649971037,
+      "avg_fitness": 2.0154578236018867,
+      "std_fitness": 0.12811781345090645
+    },
+    {
+      "generation": 7,
+      "best_fitness": 2.3785408740077,
+      "avg_fitness": 2.073310902101599,
+      "std_fitness": 0.13831422938972293
+    },
+    {
+      "generation": 8,
+      "best_fitness": 2.3785408740077,
+      "avg_fitness": 2.084024459225239,
+      "std_fitness": 0.13642041867734486
+    },
+    {
+      "generation": 9,
+      "best_fitness": 2.455340898441242,
+      "avg_fitness": 2.081462393583035,
+      "std_fitness": 0.25793433814933997
+    },
+    {
+      "generation": 10,
+      "best_fitness": 2.455340898441242,
+      "avg_fitness": 2.1107518092615196,
+      "std_fitness": 0.19372278389809255
+    }
+  ]
+}

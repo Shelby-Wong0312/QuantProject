@@ -45,7 +45,8 @@
       "Bash(powershell:*)",
       "Bash(set CAPITAL_API_KEY=kugBoHCUcjaaNwGV)",
       "Bash(set CAPITAL_IDENTIFIER=niujinheitaizi@gmail.com)",
-      "Bash(set CAPITAL_API_PASSWORD=@Nickatnyte3)"
+      "Bash(set CAPITAL_API_PASSWORD=@Nickatnyte3)",
+      "WebSearch"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

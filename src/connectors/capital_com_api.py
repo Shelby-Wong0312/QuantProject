@@ -512,18 +512,18 @@ def test_connection():
         return False
     
     print(f"\n[INFO] API Key: {api.api_key[:8]}...")
-    print(f"[INFO] Identifier: {api.identifier}")
+    logger.info( Identifier: {api.identifier}")
     
     # Test authentication
     print("\n[TEST] Authenticating...")
     if api.authenticate():
-        print("[OK] Authentication successful!")
+        logger.info("✓" +  Authentication successful!")
         
         # Get accounts
         print("\n[TEST] Getting accounts...")
         accounts = api.get_accounts()
         if accounts:
-            print(f"[OK] Found {len(accounts)} account(s)")
+            logger.info("✓" +  Found {len(accounts)} account(s)")
             for acc in accounts:
                 print(f"  - {acc.get('accountName')}: {acc.get('balance', {}).get('balance', 0)}")
         
@@ -531,18 +531,18 @@ def test_connection():
         print("\n[TEST] Getting market data for AAPL...")
         market_data = api.get_market_data('AAPL')
         if market_data:
-            print(f"[OK] AAPL - Bid: {market_data.bid}, Ask: {market_data.ask}")
+            logger.info("✓" +  AAPL - Bid: {market_data.bid}, Ask: {market_data.ask}")
         
         # Get positions
         print("\n[TEST] Getting positions...")
         positions = api.get_positions()
         if positions is not None:
-            print(f"[OK] Found {len(positions)} position(s)")
+            logger.info("✓" +  Found {len(positions)} position(s)")
         
         # Logout
         print("\n[TEST] Logging out...")
         api.logout()
-        print("[OK] Logged out successfully")
+        logger.info("✓" +  Logged out successfully")
         
         return True
     else:

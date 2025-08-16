@@ -5,6 +5,11 @@
 import os
 import sys
 from dotenv import load_dotenv, find_dotenv
+import logging
+
+# Setup logger
+logger = logging.getLogger(__name__)
+
 
 # Force UTF-8 encoding
 if sys.platform == 'win32':
@@ -18,11 +23,11 @@ print("--- Starting to load .env file ---")
 env_file_path = find_dotenv()
 
 if env_file_path:
-    print(f"[OK] Found .env file at: {env_file_path}")
+    logger.info("✓" +  Found .env file at: {env_file_path}")
     # verbose=True will print detailed loading process
     load_dotenv(dotenv_path=env_file_path, verbose=True)
 else:
-    print("[WARNING] .env file not found in project directory!")
+    logger.warning( .env file not found in project directory!")
 
 print("--- .env file loading completed ---")
 
@@ -41,16 +46,16 @@ else:
 
 # Check if API credentials are loaded
 if not CAPITAL_API_KEY or not CAPITAL_API_PASSWORD:
-    print("[ERROR] API credentials not found!")
+    logger.error( API credentials not found!")
     print("Please create a .env file with:")
     print("  CAPITAL_API_KEY=your_api_key")
     print("  CAPITAL_API_PASSWORD=your_password")
     sys.exit(1)
 else:
-    print(f"[OK] API Key loaded: {CAPITAL_API_KEY[:4]}...{CAPITAL_API_KEY[-4:]}")
-    print(f"[OK] Demo Mode: {CAPITAL_DEMO_MODE}")
-    print(f"[OK] API URL: {CAPITAL_API_URL}")
-    print(f"[OK] Identifier: {CAPITAL_IDENTIFIER}")
+    logger.info("✓" +  API Key loaded: {CAPITAL_API_KEY[:4]}...{CAPITAL_API_KEY[-4:]}")
+    logger.info("✓" +  Demo Mode: {CAPITAL_DEMO_MODE}")
+    logger.info("✓" +  API URL: {CAPITAL_API_URL}")
+    logger.info("✓" +  Identifier: {CAPITAL_IDENTIFIER}")
 
 # --- Trading Configuration ---
 SYMBOLS_TO_TRADE = ['EUR/USD', 'Apple', 'Gold']

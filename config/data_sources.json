@@ -1,0 +1,98 @@
+{
+  "plan": "B",
+  "description": "Zero-cost data sources configuration",
+  "monthly_cost": 0,
+  "sources": {
+    "real_time": {
+      "provider": "Alpaca Markets",
+      "cost": 0,
+      "api_key_env": "ALPACA_API_KEY",
+      "secret_key_env": "ALPACA_SECRET_KEY",
+      "base_url": "https://paper-api.alpaca.markets",
+      "features": [
+        "Real-time quotes",
+        "WebSocket streaming",
+        "Unlimited REST API",
+        "US stocks coverage"
+      ]
+    },
+    "historical": {
+      "provider": "Yahoo Finance",
+      "cost": 0,
+      "library": "yfinance",
+      "features": [
+        "15 years historical data",
+        "Fundamental data",
+        "4000+ stocks",
+        "Adjusted prices"
+      ]
+    },
+    "technical": {
+      "provider": "Alpha Vantage Free",
+      "cost": 0,
+      "api_key_env": "ALPHA_VANTAGE_API_KEY",
+      "limits": {
+        "per_minute": 5,
+        "per_day": 500
+      },
+      "features": [
+        "50+ technical indicators",
+        "Economic data",
+        "Fundamental data"
+      ]
+    },
+    "execution": {
+      "provider": "Capital.com",
+      "cost": 0,
+      "api_key_env": "CAPITAL_API_KEY",
+      "identifier_env": "CAPITAL_IDENTIFIER",
+      "password_env": "CAPITAL_API_PASSWORD",
+      "demo_mode": true,
+      "features": [
+        "Order execution",
+        "Price validation",
+        "Account management"
+      ]
+    }
+  },
+  "implementation_phases": {
+    "phase1": {
+      "duration": "1 day",
+      "tasks": [
+        "Register Alpaca Markets account",
+        "Register Alpha Vantage free account",
+        "Configure environment variables",
+        "Install required packages"
+      ]
+    },
+    "phase2": {
+      "duration": "2-3 days",
+      "tasks": [
+        "Build alpaca_client.py",
+        "Build yahoo_client.py",
+        "Build alpha_vantage_free.py",
+        "Integrate unified interface"
+      ]
+    },
+    "phase3": {
+      "duration": "2 days",
+      "tasks": [
+        "Test real-time data stream",
+        "Validate historical data",
+        "Verify technical indicators",
+        "Integration testing"
+      ]
+    }
+  },
+  "roi_metrics": {
+    "monthly_cost": 0,
+    "break_even": "Any profit",
+    "roi_calculation": "Infinite (any profit / $0 cost)",
+    "target_monthly_profit": 1000
+  },
+  "upgrade_path": {
+    "current": "Plan B ($0/month)",
+    "next": "Plan A ($99/month) when monthly profit > $2000",
+    "premium": "Original ($278/month) when monthly profit > $5000"
+  }
+}

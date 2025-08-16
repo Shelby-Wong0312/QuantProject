@@ -1,0 +1,97 @@
+{
+  "test_suite": "large_scale_monitoring",
+  "version": "1.0",
+  "total_duration_seconds": 37.64810585975647,
+  "symbols_tested": 1000,
+  "tests_completed": 5,
+  "tests_failed": 0,
+  "database_location": "data/market_data.db",
+  "timestamp": "2025-08-16T05:42:18.880745",
+  "detailed_results": {
+    "batch_performance": {
+      "test_type": "batch_performance",
+      "total_symbols": 1000,
+      "successful_symbols": 46,
+      "failed_symbols": 954,
+      "success_rate_percent": 4.6,
+      "duration_seconds": 13.113708019256592,
+      "throughput_symbols_per_second": 3.507779792904655,
+      "average_time_per_symbol_ms": 13.113708019256592,
+      "timestamp": "2025-08-16T05:41:54.367799"
+    },
+    "cache_performance": {
+      "test_type": "cache_performance",
+      "symbols_tested": 100,
+      "first_request_time_seconds": 3.8356151580810547,
+      "cached_request_time_seconds": 2.9417901039123535,
+      "cache_speedup_factor": 1.3038371272579858,
+      "cache_hit_rate_percent": 420.0,
+      "timestamp": "2025-08-16T05:42:01.146722"
+    },
+    "market_overview": {
+      "test_type": "market_overview",
+      "duration_seconds": 1.250042200088501,
+      "indices_count": 0,
+      "has_vix": true,
+      "market_open": false,
+      "session_type": "pre_market",
+      "timestamp": "2025-08-16T05:42:02.397268"
+    },
+    "watchlist_summary": {
+      "test_type": "watchlist_summary",
+      "duration_seconds": 1.6981120109558105,
+      "summary_data": {
+        "total_symbols": 100,
+        "successful_quotes": 63,
+        "success_rate": 63.0,
+        "price_stats": {
+          "min": 0.3671000003814697,
+          "max": 449.3999938964844,
+          "mean": 75.2546365128623,
+          "median": 38.849998474121094
+        },
+        "volume_stats": {
+          "total": 4686047,
+          "mean": 74381.69841269842,
+          "median": 45976.0
+        },
+        "timestamp": "2025-08-16T05:42:04.096890"
+      },
+      "timestamp": "2025-08-16T05:42:04.096890"
+    },
+    "stress_test": {
+      "test_type": "stress_test",
+      "max_symbols_tested": 1000,
+      "results_by_size": [
+        {
+          "symbol_count": 100,
+          "success_count": 63,
+          "duration": 1.576613426208496,
+          "throughput": 39.959066028953565,
+          "success_rate": 63.0,
+          "memory_efficient": true,
+          "status": "success"
+        },
+        {
+          "symbol_count": 500,
+          "success_count": 108,
+          "duration": 4.071866035461426,
+          "throughput": 26.523465914507028,
+          "success_rate": 21.6,
+          "memory_efficient": true,
+          "status": "success"
+        },
+        {
+          "symbol_count": 1000,
+          "success_count": 157,
+          "duration": 9.132354736328125,
+          "throughput": 17.19162302965089,
+          "success_rate": 15.7,
+          "memory_efficient": true,
+          "status": "success"
+        }
+      ],
+      "timestamp": "2025-08-16T05:42:18.880745"
+    }
+  }
+}

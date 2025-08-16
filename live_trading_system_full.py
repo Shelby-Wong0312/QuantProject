@@ -17,9 +17,9 @@ from concurrent.futures import ThreadPoolExecutor
 import yfinance as yf
 
 # Set API credentials
-os.environ['CAPITAL_API_KEY'] = 'kugBoHCUcjaaNwGV'
-os.environ['CAPITAL_IDENTIFIER'] = 'niujinheitaizi@gmail.com'
-os.environ['CAPITAL_API_PASSWORD'] = '@Nickatnyte3'
+# os.environ['CAPITAL_API_KEY'] removed - use .env file
+# os.environ['CAPITAL_IDENTIFIER'] removed - use .env file
+# os.environ['CAPITAL_API_PASSWORD'] removed - use .env file
 os.environ['CAPITAL_DEMO_MODE'] = 'True'
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))

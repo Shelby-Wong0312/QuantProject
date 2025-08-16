@@ -1,0 +1,828 @@
+{
+  "study_name": "demo_grid_search",
+  "optimization_config": {
+    "direction": "maximize",
+    "sampler": "RandomSampler",
+    "pruner": "MedianPruner",
+    "timestamp": "2025-08-16T07:11:08.097132"
+  },
+  "best_parameters": {
+    "ma_short": 30,
+    "ma_long": 150,
+    "threshold": 0.01,
+    "risk_factor": 1.5
+  },
+  "best_value": 1.4627936338608076,
+  "optimization_history": [
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 50,
+        "threshold": 0.01,
+        "risk_factor": 0.5
+      },
+      "score": 0.5436435085617517,
+      "iteration": 1
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 50,
+        "threshold": 0.01,
+        "risk_factor": 1.0
+      },
+      "score": 0.7426545686331554,
+      "iteration": 2
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 50,
+        "threshold": 0.01,
+        "risk_factor": 1.5
+      },
+      "score": 0.894280991997095,
+      "iteration": 3
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 50,
+        "threshold": 0.02,
+        "risk_factor": 0.5
+      },
+      "score": 0.41218504626170455,
+      "iteration": 4
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 50,
+        "threshold": 0.02,
+        "risk_factor": 1.0
+      },
+      "score": 0.6590076618047812,
+      "iteration": 5
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 50,
+        "threshold": 0.02,
+        "risk_factor": 1.5
+      },
+      "score": 0.7360051290719888,
+      "iteration": 6
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 50,
+        "threshold": 0.03,
+        "risk_factor": 0.5
+      },
+      "score": 0.5135258833306897,
+      "iteration": 7
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 50,
+        "threshold": 0.03,
+        "risk_factor": 1.0
+      },
+      "score": 0.3598247287038242,
+      "iteration": 8
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 50,
+        "threshold": 0.03,
+        "risk_factor": 1.5
+      },
+      "score": 0.8102783201088521,
+      "iteration": 9
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 100,
+        "threshold": 0.01,
+        "risk_factor": 0.5
+      },
+      "score": 0.6278005592079735,
+      "iteration": 10
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 100,
+        "threshold": 0.01,
+        "risk_factor": 1.0
+      },
+      "score": 0.8834997769718965,
+      "iteration": 11
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 100,
+        "threshold": 0.01,
+        "risk_factor": 1.5
+      },
+      "score": 0.8471488775228251,
+      "iteration": 12
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 100,
+        "threshold": 0.02,
+        "risk_factor": 0.5
+      },
+      "score": 0.6058031022839254,
+      "iteration": 13
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 100,
+        "threshold": 0.02,
+        "risk_factor": 1.0
+      },
+      "score": 0.8816104814167149,
+      "iteration": 14
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 100,
+        "threshold": 0.02,
+        "risk_factor": 1.5
+      },
+      "score": 1.0012433933229226,
+      "iteration": 15
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 100,
+        "threshold": 0.03,
+        "risk_factor": 0.5
+      },
+      "score": 0.4177382396217676,
+      "iteration": 16
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 100,
+        "threshold": 0.03,
+        "risk_factor": 1.0
+      },
+      "score": 0.6286203788077561,
+      "iteration": 17
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 100,
+        "threshold": 0.03,
+        "risk_factor": 1.5
+      },
+      "score": 0.8642502554791843,
+      "iteration": 18
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 150,
+        "threshold": 0.01,
+        "risk_factor": 0.5
+      },
+      "score": 0.7680703050063196,
+      "iteration": 19
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 150,
+        "threshold": 0.01,
+        "risk_factor": 1.0
+      },
+      "score": 0.9818537686367855,
+      "iteration": 20
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 150,
+        "threshold": 0.01,
+        "risk_factor": 1.5
+      },
+      "score": 1.1823302003727725,
+      "iteration": 21
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 150,
+        "threshold": 0.02,
+        "risk_factor": 0.5
+      },
+      "score": 0.5925438484698449,
+      "iteration": 22
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 150,
+        "threshold": 0.02,
+        "risk_factor": 1.0
+      },
+      "score": 1.0919255767037417,
+      "iteration": 23
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 150,
+        "threshold": 0.02,
+        "risk_factor": 1.5
+      },
+      "score": 1.0153838797627703,
+      "iteration": 24
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 150,
+        "threshold": 0.03,
+        "risk_factor": 0.5
+      },
+      "score": 0.4784794313825208,
+      "iteration": 25
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 150,
+        "threshold": 0.03,
+        "risk_factor": 1.0
+      },
+      "score": 0.8447549091433997,
+      "iteration": 26
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 150,
+        "threshold": 0.03,
+        "risk_factor": 1.5
+      },
+      "score": 0.8613053259001073,
+      "iteration": 27
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 50,
+        "threshold": 0.01,
+        "risk_factor": 0.5
+      },
+      "score": 0.7882393736147558,
+      "iteration": 28
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 50,
+        "threshold": 0.01,
+        "risk_factor": 1.0
+      },
+      "score": 0.8442937188653404,
+      "iteration": 29
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 50,
+        "threshold": 0.01,
+        "risk_factor": 1.5
+      },
+      "score": 1.0108434840726697,
+      "iteration": 30
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 50,
+        "threshold": 0.02,
+        "risk_factor": 0.5
+      },
+      "score": 0.6104945655504395,
+      "iteration": 31
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 50,
+        "threshold": 0.02,
+        "risk_factor": 1.0
+      },
+      "score": 0.6182353767348466,
+      "iteration": 32
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 50,
+        "threshold": 0.02,
+        "risk_factor": 1.5
+      },
+      "score": 1.006382761328787,
+      "iteration": 33
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 50,
+        "threshold": 0.03,
+        "risk_factor": 0.5
+      },
+      "score": 0.5155593012240329,
+      "iteration": 34
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 50,
+        "threshold": 0.03,
+        "risk_factor": 1.0
+      },
+      "score": 0.7056877784470916,
+      "iteration": 35
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 50,
+        "threshold": 0.03,
+        "risk_factor": 1.5
+      },
+      "score": 0.8362984536503546,
+      "iteration": 36
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 100,
+        "threshold": 0.01,
+        "risk_factor": 0.5
+      },
+      "score": 0.8241421824999844,
+      "iteration": 37
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 100,
+        "threshold": 0.01,
+        "risk_factor": 1.0
+      },
+      "score": 0.985362041715989,
+      "iteration": 38
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 100,
+        "threshold": 0.01,
+        "risk_factor": 1.5
+      },
+      "score": 1.0251332663222914,
+      "iteration": 39
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 100,
+        "threshold": 0.02,
+        "risk_factor": 0.5
+      },
+      "score": 0.7152709694934392,
+      "iteration": 40
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 100,
+        "threshold": 0.02,
+        "risk_factor": 1.0
+      },
+      "score": 0.7573533354883545,
+      "iteration": 41
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 100,
+        "threshold": 0.02,
+        "risk_factor": 1.5
+      },
+      "score": 0.9547072168422731,
+      "iteration": 42
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 100,
+        "threshold": 0.03,
+        "risk_factor": 0.5
+      },
+      "score": 0.5253280637225698,
+      "iteration": 43
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 100,
+        "threshold": 0.03,
+        "risk_factor": 1.0
+      },
+      "score": 0.8380617212808688,
+      "iteration": 44
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 100,
+        "threshold": 0.03,
+        "risk_factor": 1.5
+      },
+      "score": 0.9415151439846421,
+      "iteration": 45
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 150,
+        "threshold": 0.01,
+        "risk_factor": 0.5
+      },
+      "score": 0.9254282937224503,
+      "iteration": 46
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 150,
+        "threshold": 0.01,
+        "risk_factor": 1.0
+      },
+      "score": 1.1128608362378625,
+      "iteration": 47
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 150,
+        "threshold": 0.01,
+        "risk_factor": 1.5
+      },
+      "score": 1.2251371407875367,
+      "iteration": 48
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 150,
+        "threshold": 0.02,
+        "risk_factor": 0.5
+      },
+      "score": 0.8152877306589559,
+      "iteration": 49
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 150,
+        "threshold": 0.02,
+        "risk_factor": 1.0
+      },
+      "score": 1.0268855863065671,
+      "iteration": 50
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 150,
+        "threshold": 0.02,
+        "risk_factor": 1.5
+      },
+      "score": 1.2014973780148621,
+      "iteration": 51
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 150,
+        "threshold": 0.03,
+        "risk_factor": 0.5
+      },
+      "score": 0.7223657608813868,
+      "iteration": 52
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 150,
+        "threshold": 0.03,
+        "risk_factor": 1.0
+      },
+      "score": 0.8105323667834115,
+      "iteration": 53
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 150,
+        "threshold": 0.03,
+        "risk_factor": 1.5
+      },
+      "score": 1.083295407863201,
+      "iteration": 54
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 50,
+        "threshold": 0.01,
+        "risk_factor": 0.5
+      },
+      "score": 0.9619596594577948,
+      "iteration": 55
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 50,
+        "threshold": 0.01,
+        "risk_factor": 1.0
+      },
+      "score": 0.6679105557603622,
+      "iteration": 56
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 50,
+        "threshold": 0.01,
+        "risk_factor": 1.5
+      },
+      "score": 1.183239015479337,
+      "iteration": 57
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 50,
+        "threshold": 0.02,
+        "risk_factor": 0.5
+      },
+      "score": 0.7182717907403458,
+      "iteration": 58
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 50,
+        "threshold": 0.02,
+        "risk_factor": 1.0
+      },
+      "score": 0.740877802121999,
+      "iteration": 59
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 50,
+        "threshold": 0.02,
+        "risk_factor": 1.5
+      },
+      "score": 1.0208402229264466,
+      "iteration": 60
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 50,
+        "threshold": 0.03,
+        "risk_factor": 0.5
+      },
+      "score": 0.6036380003609066,
+      "iteration": 61
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 50,
+        "threshold": 0.03,
+        "risk_factor": 1.0
+      },
+      "score": 0.7845948241595133,
+      "iteration": 62
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 50,
+        "threshold": 0.03,
+        "risk_factor": 1.5
+      },
+      "score": 0.7400703844185685,
+      "iteration": 63
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 100,
+        "threshold": 0.01,
+        "risk_factor": 0.5
+      },
+      "score": 0.7938751417005641,
+      "iteration": 64
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 100,
+        "threshold": 0.01,
+        "risk_factor": 1.0
+      },
+      "score": 0.9611020132253423,
+      "iteration": 65
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 100,
+        "threshold": 0.01,
+        "risk_factor": 1.5
+      },
+      "score": 1.1933091880464888,
+      "iteration": 66
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 100,
+        "threshold": 0.02,
+        "risk_factor": 0.5
+      },
+      "score": 0.6910906340923076,
+      "iteration": 67
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 100,
+        "threshold": 0.02,
+        "risk_factor": 1.0
+      },
+      "score": 0.8315162993603885,
+      "iteration": 68
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 100,
+        "threshold": 0.02,
+        "risk_factor": 1.5
+      },
+      "score": 1.0525234764958946,
+      "iteration": 69
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 100,
+        "threshold": 0.03,
+        "risk_factor": 0.5
+      },
+      "score": 0.7417853689657077,
+      "iteration": 70
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 100,
+        "threshold": 0.03,
+        "risk_factor": 1.0
+      },
+      "score": 0.760545191857048,
+      "iteration": 71
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 100,
+        "threshold": 0.03,
+        "risk_factor": 1.5
+      },
+      "score": 0.9290246779255802,
+      "iteration": 72
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 150,
+        "threshold": 0.01,
+        "risk_factor": 0.5
+      },
+      "score": 0.9496600480091751,
+      "iteration": 73
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 150,
+        "threshold": 0.01,
+        "risk_factor": 1.0
+      },
+      "score": 1.107703983454005,
+      "iteration": 74
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 150,
+        "threshold": 0.01,
+        "risk_factor": 1.5
+      },
+      "score": 1.4627936338608076,
+      "iteration": 75
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 150,
+        "threshold": 0.02,
+        "risk_factor": 0.5
+      },
+      "score": 0.8026517406753416,
+      "iteration": 76
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 150,
+        "threshold": 0.02,
+        "risk_factor": 1.0
+      },
+      "score": 1.2210927674736427,
+      "iteration": 77
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 150,
+        "threshold": 0.02,
+        "risk_factor": 1.5
+      },
+      "score": 1.1227262941058183,
+      "iteration": 78
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 150,
+        "threshold": 0.03,
+        "risk_factor": 0.5
+      },
+      "score": 0.8343224698197631,
+      "iteration": 79
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 150,
+        "threshold": 0.03,
+        "risk_factor": 1.0
+      },
+      "score": 0.9177591001479447,
+      "iteration": 80
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 150,
+        "threshold": 0.03,
+        "risk_factor": 1.5
+      },
+      "score": 0.8635010712026631,
+      "iteration": 81
+    }
+  ]
+}

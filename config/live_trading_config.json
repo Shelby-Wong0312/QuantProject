@@ -1,0 +1,72 @@
+{
+  "trading_parameters": {
+    "max_positions": 10,
+    "position_size_pct": 0.1,
+    "max_single_position": 0.2,
+    "min_position_size": 100,
+    "max_position_size": 10000
+  },
+  
+  "risk_management": {
+    "stop_loss": 0.02,
+    "take_profit": 0.05,
+    "trailing_stop": 0.03,
+    "daily_loss_limit": 0.05,
+    "max_drawdown": 0.1,
+    "risk_per_trade": 0.02
+  },
+  
+  "execution": {
+    "order_timeout": 30,
+    "max_slippage": 0.01,
+    "commission": 0.001,
+    "min_order_size": 1,
+    "use_limit_orders": false
+  },
+  
+  "monitoring": {
+    "update_interval": 1,
+    "strategy_interval": 60,
+    "performance_interval": 30,
+    "risk_check_interval": 1,
+    "health_check_interval": 60
+  },
+  
+  "emergency": {
+    "enable_circuit_breaker": true,
+    "circuit_breaker_threshold": -0.05,
+    "auto_close_positions": true,
+    "alert_email": "",
+    "alert_phone": ""
+  },
+  
+  "symbols": {
+    "watchlist": ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"],
+    "sectors": ["technology", "finance", "healthcare"],
+    "max_symbols": 50
+  },
+  
+  "strategies": {
+    "enabled": ["momentum", "mean_reversion"],
+    "allocation": {
+      "momentum": 0.5,
+      "mean_reversion": 0.3,
+      "trend_following": 0.2
+    }
+  },
+  
+  "data_sources": {
+    "primary": "yahoo_finance",
+    "backup": "alpha_vantage",
+    "cache_duration": 60,
+    "retry_attempts": 3
+  },
+  
+  "logging": {
+    "level": "INFO",
+    "file": "logs/live_trading.log",
+    "max_size": "100MB",
+    "backup_count": 5,
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  }
+}

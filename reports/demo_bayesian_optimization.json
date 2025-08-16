@@ -1,0 +1,349 @@
+{
+  "study_name": "demo_bayesian",
+  "optimization_config": {
+    "direction": "maximize",
+    "sampler": "TPESampler",
+    "pruner": "MedianPruner",
+    "timestamp": "2025-08-16T07:11:08.275125"
+  },
+  "best_parameters": {
+    "ma_short": 5,
+    "ma_long": 182,
+    "threshold": 0.012433914106010212,
+    "risk_factor": 0.8431166304526372,
+    "lookback_period": 24
+  },
+  "best_value": 1.4555302570263406,
+  "optimization_history": [
+    {
+      "params": {
+        "ma_short": 37,
+        "ma_long": 171,
+        "threshold": 0.03358063010278202,
+        "risk_factor": 0.5898246843425337,
+        "lookback_period": 84
+      },
+      "score": 0.851155751753101,
+      "iteration": 1
+    },
+    {
+      "params": {
+        "ma_short": 19,
+        "ma_long": 195,
+        "threshold": 0.043221508440302876,
+        "risk_factor": 1.0200314317572137,
+        "lookback_period": 15
+      },
+      "score": 0.9301150436049145,
+      "iteration": 2
+    },
+    {
+      "params": {
+        "ma_short": 16,
+        "ma_long": 69,
+        "threshold": 0.03251151960708423,
+        "risk_factor": 1.5353453283108445,
+        "lookback_period": 42
+      },
+      "score": 0.70173250425525,
+      "iteration": 3
+    },
+    {
+      "params": {
+        "ma_short": 8,
+        "ma_long": 27,
+        "threshold": 0.046585552640831106,
+        "risk_factor": 1.9144595229033248,
+        "lookback_period": 67
+      },
+      "score": 0.647659347046278,
+      "iteration": 4
+    },
+    {
+      "params": {
+        "ma_short": 14,
+        "ma_long": 63,
+        "threshold": 0.03831121202676072,
+        "risk_factor": 0.8800174702552526,
+        "lookback_period": 66
+      },
+      "score": 0.7999101329501161,
+      "iteration": 5
+    },
+    {
+      "params": {
+        "ma_short": 16,
+        "ma_long": 37,
+        "threshold": 0.005087275017063668,
+        "risk_factor": 0.23643115448584612,
+        "lookback_period": 82
+      },
+      "score": 0.7397500048353014,
+      "iteration": 6
+    },
+    {
+      "params": {
+        "ma_short": 44,
+        "ma_long": 44,
+        "threshold": 0.016247495824395917,
+        "risk_factor": 0.527872978452697,
+        "lookback_period": 45
+      },
+      "score": 0.2984228022490912,
+      "iteration": 7
+    },
+    {
+      "params": {
+        "ma_short": 29,
+        "ma_long": 64,
+        "threshold": 0.04471223756154303,
+        "risk_factor": 1.8029248015072712,
+        "lookback_period": 73
+      },
+      "score": 0.5125495347416568,
+      "iteration": 8
+    },
+    {
+      "params": {
+        "ma_short": 34,
+        "ma_long": 39,
+        "threshold": 0.03671382337516244,
+        "risk_factor": 0.4228938017354804,
+        "lookback_period": 45
+      },
+      "score": 0.2661963051176328,
+      "iteration": 9
+    },
+    {
+      "params": {
+        "ma_short": 21,
+        "ma_long": 165,
+        "threshold": 0.041239719276231754,
+        "risk_factor": 1.9391457735646256,
+        "lookback_period": 37
+      },
+      "score": 0.9271811605702831,
+      "iteration": 10
+    },
+    {
+      "params": {
+        "ma_short": 39,
+        "ma_long": 91,
+        "threshold": 0.01888269969781065,
+        "risk_factor": 1.583693722357614,
+        "lookback_period": 81
+      },
+      "score": 0.6209584330439722,
+      "iteration": 11
+    },
+    {
+      "params": {
+        "ma_short": 14,
+        "ma_long": 88,
+        "threshold": 0.00733262201507771,
+        "risk_factor": 1.797813320348398,
+        "lookback_period": 69
+      },
+      "score": 0.9760645960647185,
+      "iteration": 12
+    },
+    {
+      "params": {
+        "ma_short": 24,
+        "ma_long": 138,
+        "threshold": 0.029418141958614964,
+        "risk_factor": 1.0117518933458636,
+        "lookback_period": 81
+      },
+      "score": 0.923572114309385,
+      "iteration": 13
+    },
+    {
+      "params": {
+        "ma_short": 44,
+        "ma_long": 54,
+        "threshold": 0.02134259890934997,
+        "risk_factor": 1.8234447404611367,
+        "lookback_period": 93
+      },
+      "score": 0.3879307206584076,
+      "iteration": 14
+    },
+    {
+      "params": {
+        "ma_short": 42,
+        "ma_long": 174,
+        "threshold": 0.022164978820594636,
+        "risk_factor": 1.7069304754248722,
+        "lookback_period": 92
+      },
+      "score": 0.7571328479990793,
+      "iteration": 15
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 26,
+        "threshold": 0.04483084599577299,
+        "risk_factor": 0.3603359397548215,
+        "lookback_period": 38
+      },
+      "score": 0.20213316483373245,
+      "iteration": 16
+    },
+    {
+      "params": {
+        "ma_short": 30,
+        "ma_long": 35,
+        "threshold": 0.013438521871442784,
+        "risk_factor": 1.69146914239848,
+        "lookback_period": 88
+      },
+      "score": 0.5130894657175434,
+      "iteration": 17
+    },
+    {
+      "params": {
+        "ma_short": 7,
+        "ma_long": 26,
+        "threshold": 0.039170952850874685,
+        "risk_factor": 0.5508925256500725,
+        "lookback_period": 50
+      },
+      "score": 0.6341273310740746,
+      "iteration": 18
+    },
+    {
+      "params": {
+        "ma_short": 20,
+        "ma_long": 155,
+        "threshold": 0.049195192670578314,
+        "risk_factor": 1.726711362500205,
+        "lookback_period": 64
+      },
+      "score": 0.8896241013161879,
+      "iteration": 19
+    },
+    {
+      "params": {
+        "ma_short": 46,
+        "ma_long": 94,
+        "threshold": 0.04235868822892701,
+        "risk_factor": 1.237959358914209,
+        "lookback_period": 51
+      },
+      "score": 0.5259340955454475,
+      "iteration": 20
+    },
+    {
+      "params": {
+        "ma_short": 11,
+        "ma_long": 190,
+        "threshold": 0.007228620987913131,
+        "risk_factor": 1.3220614078595625,
+        "lookback_period": 13
+      },
+      "score": 1.1496799024121982,
+      "iteration": 21
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 199,
+        "threshold": 0.00739890247879787,
+        "risk_factor": 1.1998390439607334,
+        "lookback_period": 10
+      },
+      "score": 1.2488993001098059,
+      "iteration": 22
+    },
+    {
+      "params": {
+        "ma_short": 11,
+        "ma_long": 119,
+        "threshold": 0.006664999825863411,
+        "risk_factor": 1.349506680388434,
+        "lookback_period": 11
+      },
+      "score": 1.091282735759253,
+      "iteration": 23
+    },
+    {
+      "params": {
+        "ma_short": 10,
+        "ma_long": 195,
+        "threshold": 0.010764062963914599,
+        "risk_factor": 1.2621250624684068,
+        "lookback_period": 11
+      },
+      "score": 1.199995951452953,
+      "iteration": 24
+    },
+    {
+      "params": {
+        "ma_short": 5,
+        "ma_long": 198,
+        "threshold": 0.012629052279213002,
+        "risk_factor": 1.27384631958931,
+        "lookback_period": 24
+      },
+      "score": 1.4327570871339443,
+      "iteration": 25
+    },
+    {
+      "params": {
+        "ma_short": 5,
+        "ma_long": 200,
+        "threshold": 0.010876649242654251,
+        "risk_factor": 0.7954550571863482,
+        "lookback_period": 23
+      },
+      "score": 1.2990148891921582,
+      "iteration": 26
+    },
+    {
+      "params": {
+        "ma_short": 5,
+        "ma_long": 182,
+        "threshold": 0.012433914106010212,
+        "risk_factor": 0.8431166304526372,
+        "lookback_period": 24
+      },
+      "score": 1.4555302570263406,
+      "iteration": 27
+    },
+    {
+      "params": {
+        "ma_short": 5,
+        "ma_long": 144,
+        "threshold": 0.01313702068692517,
+        "risk_factor": 0.7392002004522096,
+        "lookback_period": 25
+      },
+      "score": 1.2709867168461375,
+      "iteration": 28
+    },
+    {
+      "params": {
+        "ma_short": 5,
+        "ma_long": 184,
+        "threshold": 0.02697444767554348,
+        "risk_factor": 0.7935159299522501,
+        "lookback_period": 26
+      },
+      "score": 1.3352456426116581,
+      "iteration": 29
+    },
+    {
+      "params": {
+        "ma_short": 5,
+        "ma_long": 180,
+        "threshold": 0.02245406559385059,
+        "risk_factor": 0.6901006380248974,
+        "lookback_period": 28
+      },
+      "score": 1.4044658023013217,
+      "iteration": 30
+    }
+  ]
+}
