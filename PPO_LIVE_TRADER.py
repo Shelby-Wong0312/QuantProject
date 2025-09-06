@@ -102,6 +102,10 @@ class PPOLiveTrader:
         self.load_model()
         
         # Trading parameters
+        self.symbols_file = os.getenv('SYMBOLS_FILE', '').strip()
+        self.max_symbols = int(os.getenv('MAX_SYMBOLS', '40'))  # cap to avoid overload
+        self.batch_size = int(os.getenv('BATCH_SIZE', '0'))  # 0 = process all each loop
+        self.batch_index = 0
         self.symbols = self.load_symbols()
         self.positions = {}
         self.max_positions = 10
@@ -167,18 +171,76 @@ class PPOLiveTrader:
             print(f"[WARNING] No trained model found at {model_path}")
             print("[WARNING] Using random initialized model")
     
+    def _read_symbols_file(self, path: str) -> List[str]:
+        try:
+            with open(path, 'r', encoding='utf-8-sig') as f:
+                raw: List[str] = []
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    if ',' in line:
+                        raw.extend([p.strip() for p in line.split(',') if p.strip()])
+                    else:
+                        raw.append(line)
+                # normalize and dedupe
+                symbols: List[str] = []
+                seen = set()
+                for s in raw:
+                    s = s.upper()
+                    if s and s not in seen:
+                        seen.add(s)
+                        symbols.append(s)
+                return symbols
+        except Exception as e:
+            logger.error(f"Failed reading symbols from {path}: {e}")
+            return []
+
     def load_symbols(self) -> List[str]:
-        """Load stock symbols"""
-        # Try to load from file
-        if os.path.exists('data/tier_s.txt'):
-            # Use utf-8-sig to automatically drop BOM if present
-            with open('data/tier_s.txt', 'r', encoding='utf-8-sig') as f:
-                symbols = [line.strip() for line in f.readlines() if line.strip()]
-                return symbols[:40]  # Top 40 stocks
-        
-        # Default stocks
-        return ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'META', 'NVDA', 'AMD',
-                'NFLX', 'JPM', 'BAC', 'V', 'MA', 'WMT', 'DIS', 'PYPL']
+        """Load stock symbols with flexible sources and limits"""
+        candidates: List[str] = []
+        sources_tried: List[str] = []
+
+        if self.symbols_file:
+            sources_tried.append(self.symbols_file)
+            if os.path.exists(self.symbols_file):
+                candidates = self._read_symbols_file(self.symbols_file)
+
+        if not candidates:
+            # common repo files as fallbacks
+            fallback_files = [
+                'data/tier_s.txt',
+                'capital_symbols_all.txt',
+                'validated_capital_symbols_final.txt',
+                'validated_yahoo_symbols_final.txt',
+                'capital_tickers.txt',
+                'quick_yahoo_symbols.txt',
+                'yahoo_symbols_all.txt',
+            ]
+            for fp in fallback_files:
+                sources_tried.append(fp)
+                if os.path.exists(fp):
+                    candidates = self._read_symbols_file(fp)
+                    if candidates:
+                        break
+
+        if not candidates:
+            # Default stocks
+            default_syms = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'META', 'NVDA', 'AMD',
+                            'NFLX', 'JPM', 'BAC', 'V', 'MA', 'WMT', 'DIS', 'PYPL']
+            print("[PPO] No symbols file found or empty; using default symbols (16)")
+            return default_syms
+
+        total = len(candidates)
+        if self.max_symbols > 0 and total > self.max_symbols:
+            used = candidates[:self.max_symbols]
+        else:
+            used = candidates
+
+        # Log which source selected
+        src = next((s for s in sources_tried if os.path.exists(s)), 'N/A')
+        print(f"[PPO] Loaded {len(used)}/{total} symbols from {src}. Set MAX_SYMBOLS to adjust; use SYMBOLS_FILE to choose file.")
+        return used
     
     def login_capital(self):
         """Login to Capital.com"""
@@ -410,10 +472,29 @@ class PPOLiveTrader:
         loops = 0
         while True:
             try:
-                print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Scanning {len(self.symbols)} stocks with PPO...")
-                
-                # Process each symbol
-                for symbol in self.symbols:
+                total_syms = len(self.symbols)
+                if total_syms == 0:
+                    print("[WARNING] No symbols to scan. Check SYMBOLS_FILE or data/tier_s.txt")
+                    time.sleep(self.scan_interval)
+                    continue
+
+                # batching support
+                if self.batch_size and self.batch_size > 0 and self.batch_size < total_syms:
+                    start = (self.batch_index * self.batch_size) % total_syms
+                    end = start + self.batch_size
+                    if end <= total_syms:
+                        batch = self.symbols[start:end]
+                    else:
+                        batch = self.symbols[start:] + self.symbols[: end - total_syms]
+                    self.batch_index += 1
+                    scan_set = batch
+                    print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Scanning {len(scan_set)} of {total_syms} stocks (batch_size={self.batch_size})...")
+                else:
+                    scan_set = self.symbols
+                    print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Scanning {total_syms} stocks with PPO...")
+
+                # Process each symbol in scan set
+                for symbol in scan_set:
                     try:
                         # Get PPO signal
                         action = self.get_ppo_signal(symbol)
