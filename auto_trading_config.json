@@ -1,0 +1,45 @@
+{
+  "best_checkpoints": [
+    {
+      "episode": 950,
+      "avg_reward": 409.74830967589253,
+      "std_reward": 4074.6094084564975,
+      "sharpe_ratio": 0.10056137131193237,
+      "max_reward": 40951.59912106992,
+      "min_reward": -5.911329377487706,
+      "win_rate": 0.91,
+      "stability_score": 0.0002453620795763932,
+      "composite_score": 182.12973764383017
+    },
+    {
+      "episode": 900,
+      "avg_reward": 408.76359337897435,
+      "std_reward": 4074.72047669578,
+      "sharpe_ratio": 0.10031696547426501,
+      "max_reward": 40951.59912106992,
+      "min_reward": -99.63636363481547,
+      "win_rate": 0.86,
+      "stability_score": 0.00024535539316737154,
+      "composite_score": 180.7357777966252
+    },
+    {
+      "episode": 800,
+      "avg_reward": 105.93971245712362,
+      "std_reward": 1048.8384041053391,
+      "sharpe_ratio": 0.10100670612503011,
+      "max_reward": 10541.731203216084,
+      "min_reward": 0.0,
+      "win_rate": 0.92,
+      "stability_score": 0.0009525275471820724,
+      "composite_score": 60.80713952223414
+    }
+  ],
+  "test_symbols": [
+    "AAPL",
+    "MSFT",
+    "GOOGL",
+    "TSLA",
+    "NVDA"
+  ],
+  "timestamp": "2025-08-17T22:48:58.835424"
+}

@@ -1,0 +1,52 @@
+[
+  {
+    "symbol": "AAPL",
+    "signal": "HOLD",
+    "confidence": 0.9835397750139236,
+    "current_price": 231.58999633789062,
+    "target_price": 231.58999633789062,
+    "stop_loss": 226.9581964111328,
+    "volatility": 0.014695566583341233,
+    "timestamp": "2025-08-17T22:48:58.299299"
+  },
+  {
+    "symbol": "MSFT",
+    "signal": "HOLD",
+    "confidence": 0.983153447508812,
+    "current_price": 520.1699829101562,
+    "target_price": 520.1699829101562,
+    "stop_loss": 509.76658325195314,
+    "volatility": 0.010915605842762901,
+    "timestamp": "2025-08-17T22:48:58.420741"
+  },
+  {
+    "symbol": "GOOGL",
+    "signal": "HOLD",
+    "confidence": 0.9834892898797989,
+    "current_price": 203.89999389648438,
+    "target_price": 203.89999389648438,
+    "stop_loss": 199.82199401855468,
+    "volatility": 0.012662609878690298,
+    "timestamp": "2025-08-17T22:48:58.522987"
+  },
+  {
+    "symbol": "TSLA",
+    "signal": "HOLD",
+    "confidence": 0.9843800812959671,
+    "current_price": 330.55999755859375,
+    "target_price": 330.55999755859375,
+    "stop_loss": 323.94879760742185,
+    "volatility": 0.03192507216583446,
+    "timestamp": "2025-08-17T22:48:58.618640"
+  },
+  {
+    "symbol": "NVDA",
+    "signal": "HOLD",
+    "confidence": 0.9824883043766022,
+    "current_price": 180.4499969482422,
+    "target_price": 180.4499969482422,
+    "stop_loss": 176.84099700927734,
+    "volatility": 0.01649718857131064,
+    "timestamp": "2025-08-17T22:48:58.827244"
+  }
+]

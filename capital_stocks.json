@@ -1,0 +1,1082 @@
+[
+  {
+    "ticker": "AAPL",
+    "epic": "AAPL",
+    "name": "AAPL",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ABBV",
+    "epic": "ABBV",
+    "name": "ABBV",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ABNB",
+    "epic": "ABNB",
+    "name": "ABNB",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ABT",
+    "epic": "ABT",
+    "name": "ABT",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ADBE",
+    "epic": "ADBE",
+    "name": "ADBE",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ADI",
+    "epic": "ADI",
+    "name": "ADI",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "AMAT",
+    "epic": "AMAT",
+    "name": "AMAT",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "AMD",
+    "epic": "AMD",
+    "name": "AMD",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "AMGN",
+    "epic": "AMGN",
+    "name": "AMGN",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "AMZN",
+    "epic": "AMZN",
+    "name": "AMZN",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ARM",
+    "epic": "ARM",
+    "name": "ARM",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ASML",
+    "epic": "ASML",
+    "name": "ASML",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "AVGO",
+    "epic": "AVGO",
+    "name": "AVGO",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "AXP",
+    "epic": "AXP",
+    "name": "AXP",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "AZN",
+    "epic": "AZN",
+    "name": "AZN",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "BA",
+    "epic": "BA",
+    "name": "BA",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "BABA",
+    "epic": "BABA",
+    "name": "BABA",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "BAC",
+    "epic": "BAC",
+    "name": "BAC",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "BGNE",
+    "epic": "BGNE",
+    "name": "BGNE",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "BIDU",
+    "epic": "BIDU",
+    "name": "BIDU",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "BIIB",
+    "epic": "BIIB",
+    "name": "BIIB",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "BILI",
+    "epic": "BILI",
+    "name": "BILI",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "BK",
+    "epic": "BK",
+    "name": "BK",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "BLK",
+    "epic": "BLK",
+    "name": "BLK",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "BMY",
+    "epic": "BMY",
+    "name": "BMY",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "BP",
+    "epic": "BP",
+    "name": "BP",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "BSX",
+    "epic": "BSX",
+    "name": "BSX",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "BUD",
+    "epic": "BUD",
+    "name": "BUD",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "C",
+    "epic": "C",
+    "name": "C",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "CAT",
+    "epic": "CAT",
+    "name": "CAT",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "CMCSA",
+    "epic": "CMCSA",
+    "name": "CMCSA",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "CME",
+    "epic": "CME",
+    "name": "CME",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "COF",
+    "epic": "COF",
+    "name": "COF",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "COIN",
+    "epic": "COIN",
+    "name": "COIN",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "COST",
+    "epic": "COST",
+    "name": "COST",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "CPNG",
+    "epic": "CPNG",
+    "name": "CPNG",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "CRM",
+    "epic": "CRM",
+    "name": "CRM",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "CRWD",
+    "epic": "CRWD",
+    "name": "CRWD",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "CSCO",
+    "epic": "CSCO",
+    "name": "CSCO",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "CSX",
+    "epic": "CSX",
+    "name": "CSX",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "CVS",
+    "epic": "CVS",
+    "name": "CVS",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "CVX",
+    "epic": "CVX",
+    "name": "CVX",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "DASH",
+    "epic": "DASH",
+    "name": "DASH",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "DDOG",
+    "epic": "DDOG",
+    "name": "DDOG",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "DE",
+    "epic": "DE",
+    "name": "DE",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "DEO",
+    "epic": "DEO",
+    "name": "DEO",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "DFS",
+    "epic": "DFS",
+    "name": "DFS",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "DHR",
+    "epic": "DHR",
+    "name": "DHR",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "DIDI",
+    "epic": "DIDI",
+    "name": "DIDI",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "DIS",
+    "epic": "DIS",
+    "name": "DIS",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "DOCU",
+    "epic": "DOCU",
+    "name": "DOCU",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "EDU",
+    "epic": "EDU",
+    "name": "EDU",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "EMR",
+    "epic": "EMR",
+    "name": "EMR",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ESTC",
+    "epic": "ESTC",
+    "name": "ESTC",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ETN",
+    "epic": "ETN",
+    "name": "ETN",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "EW",
+    "epic": "EW",
+    "name": "EW",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "FDX",
+    "epic": "FDX",
+    "name": "FDX",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "FSLY",
+    "epic": "FSLY",
+    "name": "FSLY",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "FVRR",
+    "epic": "FVRR",
+    "name": "FVRR",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "GE",
+    "epic": "GE",
+    "name": "GE",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "GILD",
+    "epic": "GILD",
+    "name": "GILD",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "GOOG",
+    "epic": "GOOG",
+    "name": "GOOG",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "GOOGL",
+    "epic": "GOOGL",
+    "name": "GOOGL",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "GRAB",
+    "epic": "GRAB",
+    "name": "GRAB",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "GS",
+    "epic": "GS",
+    "name": "GS",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "GSK",
+    "epic": "GSK",
+    "name": "GSK",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "HD",
+    "epic": "HD",
+    "name": "HD",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "HON",
+    "epic": "HON",
+    "name": "HON",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "HOOD",
+    "epic": "HOOD",
+    "name": "HOOD",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "HSBC",
+    "epic": "HSBC",
+    "name": "HSBC",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "IBM",
+    "epic": "IBM",
+    "name": "IBM",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ICE",
+    "epic": "ICE",
+    "name": "ICE",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ILMN",
+    "epic": "ILMN",
+    "name": "ILMN",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "INTC",
+    "epic": "INTC",
+    "name": "INTC",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "IQ",
+    "epic": "IQ",
+    "name": "IQ",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ISRG",
+    "epic": "ISRG",
+    "name": "ISRG",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ITW",
+    "epic": "ITW",
+    "name": "ITW",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "JD",
+    "epic": "JD",
+    "name": "JD",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "JNJ",
+    "epic": "JNJ",
+    "name": "JNJ",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "JPM",
+    "epic": "JPM",
+    "name": "JPM",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "KLAC",
+    "epic": "KLAC",
+    "name": "KLAC",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "KO",
+    "epic": "KO",
+    "name": "KO",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "LCID",
+    "epic": "LCID",
+    "name": "LCID",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "LI",
+    "epic": "LI",
+    "name": "LI",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "LLY",
+    "epic": "LLY",
+    "name": "LLY",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "LMT",
+    "epic": "LMT",
+    "name": "LMT",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "LOW",
+    "epic": "LOW",
+    "name": "LOW",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "LRCX",
+    "epic": "LRCX",
+    "name": "LRCX",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "LYFT",
+    "epic": "LYFT",
+    "name": "LYFT",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "MA",
+    "epic": "MA",
+    "name": "MA",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "MCD",
+    "epic": "MCD",
+    "name": "MCD",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "MCHP",
+    "epic": "MCHP",
+    "name": "MCHP",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "MDB",
+    "epic": "MDB",
+    "name": "MDB",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "MDT",
+    "epic": "MDT",
+    "name": "MDT",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "MELI",
+    "epic": "MELI",
+    "name": "MELI",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "META",
+    "epic": "META",
+    "name": "META",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "MMM",
+    "epic": "MMM",
+    "name": "MMM",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "MRK",
+    "epic": "MRK",
+    "name": "MRK",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "MRNA",
+    "epic": "MRNA",
+    "name": "MRNA",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "MRVL",
+    "epic": "MRVL",
+    "name": "MRVL",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "MS",
+    "epic": "MS",
+    "name": "MS",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "MSFT",
+    "epic": "MSFT",
+    "name": "MSFT",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "MU",
+    "epic": "MU",
+    "name": "MU",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "NET",
+    "epic": "NET",
+    "name": "NET",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "NFLX",
+    "epic": "NFLX",
+    "name": "NFLX",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "NIO",
+    "epic": "NIO",
+    "name": "NIO",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "NKE",
+    "epic": "NKE",
+    "name": "NKE",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "NSC",
+    "epic": "NSC",
+    "name": "NSC",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "NU",
+    "epic": "NU",
+    "name": "NU",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "NVDA",
+    "epic": "NVDA",
+    "name": "NVDA",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "NVO",
+    "epic": "NVO",
+    "name": "NVO",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "NVS",
+    "epic": "NVS",
+    "name": "NVS",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "NXPI",
+    "epic": "NXPI",
+    "name": "NXPI",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "OKTA",
+    "epic": "OKTA",
+    "name": "OKTA",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ORCL",
+    "epic": "ORCL",
+    "name": "ORCL",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "PANW",
+    "epic": "PANW",
+    "name": "PANW",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "PDD",
+    "epic": "PDD",
+    "name": "PDD",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "PEP",
+    "epic": "PEP",
+    "name": "PEP",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "PFE",
+    "epic": "PFE",
+    "name": "PFE",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "PG",
+    "epic": "PG",
+    "name": "PG",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "PH",
+    "epic": "PH",
+    "name": "PH",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "PINS",
+    "epic": "PINS",
+    "name": "PINS",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "PLTR",
+    "epic": "PLTR",
+    "name": "PLTR",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "PNC",
+    "epic": "PNC",
+    "name": "PNC",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "PYPL",
+    "epic": "PYPL",
+    "name": "PYPL",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "QCOM",
+    "epic": "QCOM",
+    "name": "QCOM",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "RBLX",
+    "epic": "RBLX",
+    "name": "RBLX",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "REGN",
+    "epic": "REGN",
+    "name": "REGN",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "RIO",
+    "epic": "RIO",
+    "name": "RIO",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "RIVN",
+    "epic": "RIVN",
+    "name": "RIVN",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ROK",
+    "epic": "ROK",
+    "name": "ROK",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ROKU",
+    "epic": "ROKU",
+    "name": "ROKU",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "RTX",
+    "epic": "RTX",
+    "name": "RTX",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "SAP",
+    "epic": "SAP",
+    "name": "SAP",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "SBUX",
+    "epic": "SBUX",
+    "name": "SBUX",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "SCHW",
+    "epic": "SCHW",
+    "name": "SCHW",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "SE",
+    "epic": "SE",
+    "name": "SE",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "SHEL",
+    "epic": "SHEL",
+    "name": "SHEL",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "SHOP",
+    "epic": "SHOP",
+    "name": "SHOP",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "SMCI",
+    "epic": "SMCI",
+    "name": "SMCI",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "SNAP",
+    "epic": "SNAP",
+    "name": "SNAP",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "SNOW",
+    "epic": "SNOW",
+    "name": "SNOW",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "SNY",
+    "epic": "SNY",
+    "name": "SNY",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "SPGI",
+    "epic": "SPGI",
+    "name": "SPGI",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "SPOT",
+    "epic": "SPOT",
+    "name": "SPOT",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "SQ",
+    "epic": "SQ",
+    "name": "SQ",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "SYK",
+    "epic": "SYK",
+    "name": "SYK",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "T",
+    "epic": "T",
+    "name": "T",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "TAL",
+    "epic": "TAL",
+    "name": "TAL",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "TEAM",
+    "epic": "TEAM",
+    "name": "TEAM",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "TGT",
+    "epic": "TGT",
+    "name": "TGT",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "TM",
+    "epic": "TM",
+    "name": "TM",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "TME",
+    "epic": "TME",
+    "name": "TME",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "TMO",
+    "epic": "TMO",
+    "name": "TMO",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "TOT",
+    "epic": "TOT",
+    "name": "TOT",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "TSLA",
+    "epic": "TSLA",
+    "name": "TSLA",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "TSM",
+    "epic": "TSM",
+    "name": "TSM",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "TTD",
+    "epic": "TTD",
+    "name": "TTD",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "TWLO",
+    "epic": "TWLO",
+    "name": "TWLO",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "TWTR",
+    "epic": "TWTR",
+    "name": "TWTR",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "TXN",
+    "epic": "TXN",
+    "name": "TXN",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "UBER",
+    "epic": "UBER",
+    "name": "UBER",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "UL",
+    "epic": "UL",
+    "name": "UL",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "UNH",
+    "epic": "UNH",
+    "name": "UNH",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "UNP",
+    "epic": "UNP",
+    "name": "UNP",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "UPS",
+    "epic": "UPS",
+    "name": "UPS",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "UPWK",
+    "epic": "UPWK",
+    "name": "UPWK",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "USB",
+    "epic": "USB",
+    "name": "USB",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "V",
+    "epic": "V",
+    "name": "V",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "VIPS",
+    "epic": "VIPS",
+    "name": "VIPS",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "VRTX",
+    "epic": "VRTX",
+    "name": "VRTX",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "VZ",
+    "epic": "VZ",
+    "name": "VZ",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "WB",
+    "epic": "WB",
+    "name": "WB",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "WFC",
+    "epic": "WFC",
+    "name": "WFC",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "WMT",
+    "epic": "WMT",
+    "name": "WMT",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "XLNX",
+    "epic": "XLNX",
+    "name": "XLNX",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "XOM",
+    "epic": "XOM",
+    "name": "XOM",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "XPEV",
+    "epic": "XPEV",
+    "name": "XPEV",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ZM",
+    "epic": "ZM",
+    "name": "ZM",
+    "type": "SHARES"
+  },
+  {
+    "ticker": "ZS",
+    "epic": "ZS",
+    "name": "ZS",
+    "type": "SHARES"
+  }
+]

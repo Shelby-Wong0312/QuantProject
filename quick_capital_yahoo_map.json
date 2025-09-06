@@ -1,0 +1,3682 @@
+[
+  {
+    "capital": "GSG",
+    "yahoo": "GSG",
+    "name": "iShares S&P GSCI Commodity-Indexed Trust"
+  },
+  {
+    "capital": "AMSC",
+    "yahoo": "AMSC",
+    "name": "American Superconductor"
+  },
+  {
+    "capital": "VERX",
+    "yahoo": "VERX",
+    "name": "Vertex Inc"
+  },
+  {
+    "capital": "AMSF",
+    "yahoo": "AMSF",
+    "name": "AMERISAFE Inc"
+  },
+  {
+    "capital": "MSM",
+    "yahoo": "MSM",
+    "name": "MSC Industrial Direct Co Inc"
+  },
+  {
+    "capital": "VERU",
+    "yahoo": "VERU",
+    "name": "Veru Inc."
+  },
+  {
+    "capital": "GSM",
+    "yahoo": "GSM",
+    "name": "Ferroglobe PLC"
+  },
+  {
+    "capital": "BASE",
+    "yahoo": "BASE",
+    "name": "Couchbase, Inc."
+  },
+  {
+    "capital": "VIRT",
+    "yahoo": "VIRT",
+    "name": "Virtu Financial Inc"
+  },
+  {
+    "capital": "MSI",
+    "yahoo": "MSI",
+    "name": "Motorola Solutions Inc"
+  },
+  {
+    "capital": "GSK",
+    "yahoo": "GSK",
+    "name": "GlaxoSmithKline plc"
+  },
+  {
+    "capital": "VERI",
+    "yahoo": "VERI",
+    "name": "Veritone Inc"
+  },
+  {
+    "capital": "VIRC",
+    "yahoo": "VIRC",
+    "name": "Virco Mfg. Corp"
+  },
+  {
+    "capital": "MASS",
+    "yahoo": "MASS",
+    "name": "908 Devices Inc"
+  },
+  {
+    "capital": "IGSB",
+    "yahoo": "IGSB",
+    "name": "iShares 1-5 Year Investment Grade Corporate Bond ETF"
+  },
+  {
+    "capital": "HMST",
+    "yahoo": "HMST",
+    "name": "HomeStreet Inc"
+  },
+  {
+    "capital": "MASI",
+    "yahoo": "MASI",
+    "name": "Masimo Corporation"
+  },
+  {
+    "capital": "MMSI",
+    "yahoo": "MMSI",
+    "name": "Merit Medical Systems Inc"
+  },
+  {
+    "capital": "BARK",
+    "yahoo": "BARK",
+    "name": "The Original BARK Company"
+  },
+  {
+    "capital": "AMRK",
+    "yahoo": "AMRK",
+    "name": "A-Mark Precious Metals, Inc."
+  },
+  {
+    "capital": "MRK",
+    "yahoo": "MRK",
+    "name": "Merck & Co Inc - USD"
+  },
+  {
+    "capital": "BARUSD",
+    "yahoo": "BAR",
+    "name": "FC Barcelona to US Dollar"
+  },
+  {
+    "capital": "VGSH",
+    "yahoo": "VGSH",
+    "name": "Vanguard Short-Term Treasury ETF"
+  },
+  {
+    "capital": "VCSH",
+    "yahoo": "VCSH",
+    "name": "Vanguard Short-Term Corporate Bond ETF"
+  },
+  {
+    "capital": "CARV",
+    "yahoo": "CARV",
+    "name": "Carver"
+  },
+  {
+    "capital": "MARA",
+    "yahoo": "MARA",
+    "name": "Marathon Digital Holdings, Inc"
+  },
+  {
+    "capital": "NMRK",
+    "yahoo": "NMRK",
+    "name": "Newmark Group Inc"
+  },
+  {
+    "capital": "PEPG",
+    "yahoo": "PEPG",
+    "name": "PepGen Inc"
+  },
+  {
+    "capital": "PYPL",
+    "yahoo": "PYPL",
+    "name": "PayPal Holdings Inc"
+  },
+  {
+    "capital": "VIPS",
+    "yahoo": "VIPS",
+    "name": "Vipshop"
+  },
+  {
+    "capital": "IQV",
+    "yahoo": "IQV",
+    "name": "IQVIA Holdings Inc."
+  },
+  {
+    "capital": "QQQ",
+    "yahoo": "QQQ",
+    "name": "Invesco QQQ Trust"
+  },
+  {
+    "capital": "TQQQ",
+    "yahoo": "TQQQ",
+    "name": "ProShares UltraPro QQQ"
+  },
+  {
+    "capital": "EVT",
+    "yahoo": "EVT",
+    "name": "Evotec SE"
+  },
+  {
+    "capital": "QQQJ",
+    "yahoo": "QQQJ",
+    "name": "Invesco NASDAQ Next Gen 100 ETF"
+  },
+  {
+    "capital": "AAPL",
+    "yahoo": "AAPL",
+    "name": "Apple Inc"
+  },
+  {
+    "capital": "UPS",
+    "yahoo": "UPS",
+    "name": "United Parcel"
+  },
+  {
+    "capital": "SQQQ",
+    "yahoo": "SQQQ",
+    "name": "ProShares UltraPro Short QQQ"
+  },
+  {
+    "capital": "SPY",
+    "yahoo": "SPY",
+    "name": "SPDR S&P 500 ETF"
+  },
+  {
+    "capital": "MAPS",
+    "yahoo": "MAPS",
+    "name": "WM Technology Inc"
+  },
+  {
+    "capital": "KOPN",
+    "yahoo": "KOPN",
+    "name": "Kopin Corporation"
+  },
+  {
+    "capital": "RIVN",
+    "yahoo": "RIVN",
+    "name": "Rivian Automotive Inc."
+  },
+  {
+    "capital": "SCVL",
+    "yahoo": "SCVL",
+    "name": "Shoe Carnival Inc"
+  },
+  {
+    "capital": "SAVA",
+    "yahoo": "SAVA",
+    "name": "Cassava Sciences Inc"
+  },
+  {
+    "capital": "IWM",
+    "yahoo": "IWM",
+    "name": "iShares Russell 2000 ETF"
+  },
+  {
+    "capital": "TEVA",
+    "yahoo": "TEVA",
+    "name": "Teva Pharma Ind Adr Rep 1"
+  },
+  {
+    "capital": "BMAX",
+    "yahoo": "BMAX",
+    "name": "Byggmax"
+  },
+  {
+    "capital": "PCVX",
+    "yahoo": "PCVX",
+    "name": "Vaxcyte Inc"
+  },
+  {
+    "capital": "LIAB",
+    "yahoo": "LIAB",
+    "name": "Lindab"
+  },
+  {
+    "capital": "CVE",
+    "yahoo": "CVE",
+    "name": "Cenovus Energy Inc"
+  },
+  {
+    "capital": "ACVA",
+    "yahoo": "ACVA",
+    "name": "ACV Auctions Inc"
+  },
+  {
+    "capital": "WVE",
+    "yahoo": "WVE",
+    "name": "WaVe Life Sciences Ltd"
+  },
+  {
+    "capital": "GOVX",
+    "yahoo": "GOVX",
+    "name": "GeoVax Labs, Inc."
+  },
+  {
+    "capital": "AVA",
+    "yahoo": "AVA",
+    "name": "Avista Corp"
+  },
+  {
+    "capital": "AVB",
+    "yahoo": "AVB",
+    "name": "AvalonBay"
+  },
+  {
+    "capital": "SVC",
+    "yahoo": "SVC",
+    "name": "Service Properties Trust"
+  },
+  {
+    "capital": "CEVA",
+    "yahoo": "CEVA",
+    "name": "CEVA"
+  },
+  {
+    "capital": "AVO",
+    "yahoo": "AVO",
+    "name": "Mission Produce Inc"
+  },
+  {
+    "capital": "AVT",
+    "yahoo": "AVT",
+    "name": "Avnet"
+  },
+  {
+    "capital": "SVV",
+    "yahoo": "SVV",
+    "name": "Savers Value Village Inc"
+  },
+  {
+    "capital": "OVV",
+    "yahoo": "OVV",
+    "name": "Ovintiv Inc."
+  },
+  {
+    "capital": "FIVN",
+    "yahoo": "FIVN",
+    "name": "Five9 Inc"
+  },
+  {
+    "capital": "IVV",
+    "yahoo": "IVV",
+    "name": "iShares Core S&P 500 ETF"
+  },
+  {
+    "capital": "DAVA",
+    "yahoo": "DAVA",
+    "name": "Endava PLC"
+  },
+  {
+    "capital": "CVS",
+    "yahoo": "CVS",
+    "name": "CVS Health"
+  },
+  {
+    "capital": "GEVO",
+    "yahoo": "GEVO",
+    "name": "Gevo, Inc."
+  },
+  {
+    "capital": "EVR",
+    "yahoo": "EVR",
+    "name": "Evercore"
+  },
+  {
+    "capital": "IVR",
+    "yahoo": "IVR",
+    "name": "Invesco Mortgage Capital Inc."
+  },
+  {
+    "capital": "AVY",
+    "yahoo": "AVY",
+    "name": "Avery Dennison"
+  },
+  {
+    "capital": "CVX",
+    "yahoo": "CVX",
+    "name": "Chevron"
+  },
+  {
+    "capital": "IVZ",
+    "yahoo": "IVZ",
+    "name": "Invesco"
+  },
+  {
+    "capital": "IOVA",
+    "yahoo": "IOVA",
+    "name": "Iovance Biotherapeutics"
+  },
+  {
+    "capital": "HIVE",
+    "yahoo": "HIVE",
+    "name": "HIVE Blockchain Technologies Ltd."
+  },
+  {
+    "capital": "FIVE",
+    "yahoo": "FIVE",
+    "name": "Five Below"
+  },
+  {
+    "capital": "NUVL",
+    "yahoo": "NUVL",
+    "name": "NUVALENT CL A ORD"
+  },
+  {
+    "capital": "LOVE",
+    "yahoo": "LOVE",
+    "name": "Lovesac"
+  },
+  {
+    "capital": "NOV",
+    "yahoo": "NOV",
+    "name": "National Oilwell"
+  },
+  {
+    "capital": "NAVI",
+    "yahoo": "NAVI",
+    "name": "Navient Corp"
+  },
+  {
+    "capital": "IMVT",
+    "yahoo": "IMVT",
+    "name": "Immunovant Inc"
+  },
+  {
+    "capital": "LGVN",
+    "yahoo": "LGVN",
+    "name": "Longeveron Inc"
+  },
+  {
+    "capital": "LEVI",
+    "yahoo": "LEVI",
+    "name": "Levi Strauss & Co."
+  },
+  {
+    "capital": "VETUSD",
+    "yahoo": "VET",
+    "name": "VeChain / USD"
+  },
+  {
+    "capital": "VKTX",
+    "yahoo": "VKTX",
+    "name": "Viking Therapeutics, Inc."
+  },
+  {
+    "capital": "VITL",
+    "yahoo": "VITL",
+    "name": "Vital Farms Inc"
+  },
+  {
+    "capital": "CATH",
+    "yahoo": "CATH",
+    "name": "Global X S&P 500 Catholic Values ETF"
+  },
+  {
+    "capital": "CATY",
+    "yahoo": "CATY",
+    "name": "Cathay General Bancorp"
+  },
+  {
+    "capital": "CATX",
+    "yahoo": "CATX",
+    "name": "Perspective Therapeutics Inc"
+  },
+  {
+    "capital": "MSTR",
+    "yahoo": "MSTR",
+    "name": "Strategy"
+  },
+  {
+    "capital": "MATW",
+    "yahoo": "MATW",
+    "name": "Matthews International Corp"
+  },
+  {
+    "capital": "LITUSD",
+    "yahoo": "LIT",
+    "name": "LIT/USD"
+  },
+  {
+    "capital": "MSTY",
+    "yahoo": "MSTY",
+    "name": "YieldMax MSTR Option Income Strategy ETF"
+  },
+  {
+    "capital": "METV",
+    "yahoo": "METV",
+    "name": "Roundhill Ball Metaverse ETF"
+  },
+  {
+    "capital": "LITE",
+    "yahoo": "LITE",
+    "name": "Lumentum"
+  },
+  {
+    "capital": "TGS",
+    "yahoo": "TGS",
+    "name": "TGS"
+  },
+  {
+    "capital": "GOOGL",
+    "yahoo": "GOOGL",
+    "name": "Alphabet Inc - A"
+  },
+  {
+    "capital": "AMZN",
+    "yahoo": "AMZN",
+    "name": "Amazon.com Inc"
+  },
+  {
+    "capital": "VIXM",
+    "yahoo": "VIXM",
+    "name": "ProShares VIX Mid-Term Futures ETF"
+  },
+  {
+    "capital": "VCYT",
+    "yahoo": "VCYT",
+    "name": "Veracyte Inc"
+  },
+  {
+    "capital": "VOYA",
+    "yahoo": "VOYA",
+    "name": "Voya Financial Inc"
+  },
+  {
+    "capital": "BAER",
+    "yahoo": "BAER",
+    "name": "Julius Baer"
+  },
+  {
+    "capital": "QABA",
+    "yahoo": "QABA",
+    "name": "First Trust NASDAQ ABA Community Bank Index Fund"
+  },
+  {
+    "capital": "MCD",
+    "yahoo": "MCD",
+    "name": "McDonald's"
+  },
+  {
+    "capital": "MSCI",
+    "yahoo": "MSCI",
+    "name": "MSCI"
+  },
+  {
+    "capital": "AMBA",
+    "yahoo": "AMBA",
+    "name": "Ambarella, Inc. - Ordinary Shar"
+  },
+  {
+    "capital": "AKBA",
+    "yahoo": "AKBA",
+    "name": "Akebia Ther"
+  },
+  {
+    "capital": "ADV",
+    "yahoo": "ADV",
+    "name": "ADVA Optical Networking SE"
+  },
+  {
+    "capital": "WBA",
+    "yahoo": "WBA",
+    "name": "Walgreen"
+  },
+  {
+    "capital": "CABA",
+    "yahoo": "CABA",
+    "name": "Cabaletta Bio, Inc."
+  },
+  {
+    "capital": "BABA",
+    "yahoo": "BABA",
+    "name": "Alibaba Group Holding Limited"
+  },
+  {
+    "capital": "VICR",
+    "yahoo": "VICR",
+    "name": "Vicor Corp"
+  },
+  {
+    "capital": "VECO",
+    "yahoo": "VECO",
+    "name": "Veeco Instruments Inc"
+  },
+  {
+    "capital": "VSCO",
+    "yahoo": "VSCO",
+    "name": "Victoria's Secret & Co."
+  },
+  {
+    "capital": "VICI",
+    "yahoo": "VICI",
+    "name": "VICI Properties"
+  },
+  {
+    "capital": "GSBC",
+    "yahoo": "GSBC",
+    "name": "Great Southern Bancorp"
+  },
+  {
+    "capital": "GSBD",
+    "yahoo": "GSBD",
+    "name": "Goldman Sachs BDC Inc"
+  },
+  {
+    "capital": "MAG",
+    "yahoo": "MAG",
+    "name": "MAG Silver Corp."
+  },
+  {
+    "capital": "MAA",
+    "yahoo": "MAA",
+    "name": "Mid-America Apartment"
+  },
+  {
+    "capital": "MAC",
+    "yahoo": "MAC",
+    "name": "Macerich"
+  },
+  {
+    "capital": "MAN",
+    "yahoo": "MAN",
+    "name": "ManpowerGroup"
+  },
+  {
+    "capital": "GSAT",
+    "yahoo": "GSAT",
+    "name": "Globalstar, Inc."
+  },
+  {
+    "capital": "CAT",
+    "yahoo": "CAT",
+    "name": "Caterpillar"
+  },
+  {
+    "capital": "MAT",
+    "yahoo": "MAT",
+    "name": "Mattel"
+  },
+  {
+    "capital": "AMAT",
+    "yahoo": "AMAT",
+    "name": "Applied"
+  },
+  {
+    "capital": "DMAC",
+    "yahoo": "DMAC",
+    "name": "DiaMedica Therapeutics Inc."
+  },
+  {
+    "capital": "MAS",
+    "yahoo": "MAS",
+    "name": "Masco"
+  },
+  {
+    "capital": "MAR",
+    "yahoo": "MAR",
+    "name": "Marriott"
+  },
+  {
+    "capital": "LMAT",
+    "yahoo": "LMAT",
+    "name": "LeMaitre Vascular Inc"
+  },
+  {
+    "capital": "HCAT",
+    "yahoo": "HCAT",
+    "name": "Health Catalyst"
+  },
+  {
+    "capital": "IMAX",
+    "yahoo": "IMAX",
+    "name": "IMAX Corp"
+  },
+  {
+    "capital": "EVO",
+    "yahoo": "EVO",
+    "name": "Evolution Gaming Group AB"
+  },
+  {
+    "capital": "VSAT",
+    "yahoo": "VSAT",
+    "name": "Viasat Inc"
+  },
+  {
+    "capital": "VIAV",
+    "yahoo": "VIAV",
+    "name": "Viavi Solutions Inc"
+  },
+  {
+    "capital": "QVCGA",
+    "yahoo": "QVCGA",
+    "name": "QVC Group Inc"
+  },
+  {
+    "capital": "WEAV",
+    "yahoo": "WEAV",
+    "name": "Weave Communications Inc"
+  },
+  {
+    "capital": "RCAT",
+    "yahoo": "RCAT",
+    "name": "Red Cat Holdings, Inc."
+  },
+  {
+    "capital": "FV",
+    "yahoo": "FV",
+    "name": "US 5Y T-Note"
+  },
+  {
+    "capital": "MGV",
+    "yahoo": "MGV",
+    "name": "Vanguard Mega Cap Value Index Fund ETF Shares"
+  },
+  {
+    "capital": "KGS",
+    "yahoo": "KGS",
+    "name": "Kodiak Gas Services Inc"
+  },
+  {
+    "capital": "CSGS",
+    "yahoo": "CSGS",
+    "name": "CSG Systems"
+  },
+  {
+    "capital": "WFC",
+    "yahoo": "WFC",
+    "name": "Wells Fargo & Co"
+  },
+  {
+    "capital": "PAGS",
+    "yahoo": "PAGS",
+    "name": "PagSeguro Digital"
+  },
+  {
+    "capital": "BGFV",
+    "yahoo": "BGFV",
+    "name": "Big 5"
+  },
+  {
+    "capital": "ENOV",
+    "yahoo": "ENOV",
+    "name": "Enovis Corporation"
+  },
+  {
+    "capital": "MSFT",
+    "yahoo": "MSFT",
+    "name": "Microsoft Corp"
+  },
+  {
+    "capital": "MSEX",
+    "yahoo": "MSEX",
+    "name": "Middlesex Water Co"
+  },
+  {
+    "capital": "LITL",
+    "yahoo": "LITL",
+    "name": "Litigation Capital Management Ltd"
+  },
+  {
+    "capital": "CNVS",
+    "yahoo": "CNVS",
+    "name": "Cineverse Corp"
+  },
+  {
+    "capital": "VEEV",
+    "yahoo": "VEEV",
+    "name": "Veeva Systems Inc"
+  },
+  {
+    "capital": "VCEL",
+    "yahoo": "VCEL",
+    "name": "Vericel Corp"
+  },
+  {
+    "capital": "VMEO",
+    "yahoo": "VMEO",
+    "name": "Vimeo, Inc."
+  },
+  {
+    "capital": "MDV",
+    "yahoo": "MDV",
+    "name": "Modiv Industrial Inc"
+  },
+  {
+    "capital": "BIDU",
+    "yahoo": "BIDU",
+    "name": "Baidu Inc - ADR"
+  },
+  {
+    "capital": "VSEC",
+    "yahoo": "VSEC",
+    "name": "VSE Corp"
+  },
+  {
+    "capital": "KODK",
+    "yahoo": "KODK",
+    "name": "Eastman Kodak Company"
+  },
+  {
+    "capital": "MODV",
+    "yahoo": "MODV",
+    "name": "ModivCare Inc"
+  },
+  {
+    "capital": "AIV",
+    "yahoo": "AIV",
+    "name": "AIMCO"
+  },
+  {
+    "capital": "IIIV",
+    "yahoo": "IIIV",
+    "name": "I3 Verticals Inc"
+  },
+  {
+    "capital": "MAIN",
+    "yahoo": "MAIN",
+    "name": "Main Street Capital Corp"
+  },
+  {
+    "capital": "CHD",
+    "yahoo": "CHD",
+    "name": "Church & Dwight"
+  },
+  {
+    "capital": "VCIT",
+    "yahoo": "VCIT",
+    "name": "Vanguard Intermediate-Term Corporate Bond ETF"
+  },
+  {
+    "capital": "VGIT",
+    "yahoo": "VGIT",
+    "name": "Vanguard Intermediate-Term Treasury ETF"
+  },
+  {
+    "capital": "SHV",
+    "yahoo": "SHV",
+    "name": "iShares Short Treasury Bond ETF"
+  },
+  {
+    "capital": "GSHD",
+    "yahoo": "GSHD",
+    "name": "Goosehead Insurance Inc"
+  },
+  {
+    "capital": "KOD",
+    "yahoo": "KOD",
+    "name": "Kodiak Sciences Inc."
+  },
+  {
+    "capital": "VONV",
+    "yahoo": "VONV",
+    "name": "Vanguard Russell 1000 Value Index Fund ETF Shares"
+  },
+  {
+    "capital": "MOV",
+    "yahoo": "MOV",
+    "name": "Movado Group Inc"
+  },
+  {
+    "capital": "COP",
+    "yahoo": "COP",
+    "name": "ConocoPhillips"
+  },
+  {
+    "capital": "KOS",
+    "yahoo": "KOS",
+    "name": "Kosmos Energy Ltd.  (DE)"
+  },
+  {
+    "capital": "VONG",
+    "yahoo": "VONG",
+    "name": "Vanguard Russell 1000 Growth Index Fund ETF Shares"
+  },
+  {
+    "capital": "IGOV",
+    "yahoo": "IGOV",
+    "name": "iShares International Treasury Bond ETF"
+  },
+  {
+    "capital": "BAND",
+    "yahoo": "BAND",
+    "name": "Bandwidth Inc."
+  },
+  {
+    "capital": "BANF",
+    "yahoo": "BANF",
+    "name": "BancFirst Corp"
+  },
+  {
+    "capital": "UNH",
+    "yahoo": "UNH",
+    "name": "Unitedhealth"
+  },
+  {
+    "capital": "PKOH",
+    "yahoo": "PKOH",
+    "name": "Park-Ohio Holdings Corp"
+  },
+  {
+    "capital": "VEON",
+    "yahoo": "VEON",
+    "name": "VEON Ltd"
+  },
+  {
+    "capital": "VWOB",
+    "yahoo": "VWOB",
+    "name": "Vanguard Emerging Markets Government Bond ETF"
+  },
+  {
+    "capital": "BANR",
+    "yahoo": "BANR",
+    "name": "Banner Corp"
+  },
+  {
+    "capital": "MANU",
+    "yahoo": "MANU",
+    "name": "Manchester United"
+  },
+  {
+    "capital": "LINE",
+    "yahoo": "LINE",
+    "name": "Lineage Inc"
+  },
+  {
+    "capital": "LIND",
+    "yahoo": "LIND",
+    "name": "Lindblad Expeditions Holdings Inc"
+  },
+  {
+    "capital": "MANH",
+    "yahoo": "MANH",
+    "name": "Manhattan Associates Inc"
+  },
+  {
+    "capital": "AMD",
+    "yahoo": "AMD",
+    "name": "Advanced Micro Devices Inc"
+  },
+  {
+    "capital": "CMA",
+    "yahoo": "CMA",
+    "name": "Comerica Inc"
+  },
+  {
+    "capital": "VGLT",
+    "yahoo": "VGLT",
+    "name": "Vanguard Long-Term Treasury ETF"
+  },
+  {
+    "capital": "VCLT",
+    "yahoo": "VCLT",
+    "name": "Vanguard Long-Term Corporate Bond ETF"
+  },
+  {
+    "capital": "FEMS",
+    "yahoo": "FEMS",
+    "name": "First Trust Emerging Markets Small Cap AlphaDEX Fund"
+  },
+  {
+    "capital": "WMT",
+    "yahoo": "WMT",
+    "name": "Wal-Mart Stores Inc"
+  },
+  {
+    "capital": "AQMS",
+    "yahoo": "AQMS",
+    "name": "Aqua Metals Inc"
+  },
+  {
+    "capital": "TSLA",
+    "yahoo": "TSLA",
+    "name": "Tesla Inc"
+  },
+  {
+    "capital": "CMS",
+    "yahoo": "CMS",
+    "name": "CMS Energy"
+  },
+  {
+    "capital": "VALE",
+    "yahoo": "VALE",
+    "name": "Vale"
+  },
+  {
+    "capital": "HUMA",
+    "yahoo": "HUMA",
+    "name": "Humacyte, Inc."
+  },
+  {
+    "capital": "NAMS",
+    "yahoo": "NAMS",
+    "name": "Newamsterdam Pharma Co NV"
+  },
+  {
+    "capital": "MAMA",
+    "yahoo": "MAMA",
+    "name": "Mama's Creations Inc"
+  },
+  {
+    "capital": "HIMS",
+    "yahoo": "HIMS",
+    "name": "Hims & Hers Health, Inc."
+  },
+  {
+    "capital": "BILI",
+    "yahoo": "BILI",
+    "name": "Bilibili Inc."
+  },
+  {
+    "capital": "SLB",
+    "yahoo": "SLB",
+    "name": "Schlumberger"
+  },
+  {
+    "capital": "SLV",
+    "yahoo": "SLV",
+    "name": "iShares Silver Trust"
+  },
+  {
+    "capital": "VYMI",
+    "yahoo": "VYMI",
+    "name": "Vanguard International High Dividend Yield ETF"
+  },
+  {
+    "capital": "KOLD",
+    "yahoo": "KOLD",
+    "name": "ProShares UltraShort Bloomberg Natural Gas"
+  },
+  {
+    "capital": "MELI",
+    "yahoo": "MELI",
+    "name": "MercadoLibre"
+  },
+  {
+    "capital": "LIAC",
+    "yahoo": "LIAC",
+    "name": "Lithium Americas Corp. (NewCo)"
+  },
+  {
+    "capital": "MASKUSD",
+    "yahoo": "MASK",
+    "name": "MASK/USD"
+  },
+  {
+    "capital": "VTRS",
+    "yahoo": "VTRS",
+    "name": "Viatris Inc."
+  },
+  {
+    "capital": "VST",
+    "yahoo": "VST",
+    "name": "Vistra Energy"
+  },
+  {
+    "capital": "VRRM",
+    "yahoo": "VRRM",
+    "name": "Verra Mobility Corp"
+  },
+  {
+    "capital": "MVST",
+    "yahoo": "MVST",
+    "name": "Microvast Holdings, Inc."
+  },
+  {
+    "capital": "NVST",
+    "yahoo": "NVST",
+    "name": "Envista"
+  },
+  {
+    "capital": "HDSN",
+    "yahoo": "HDSN",
+    "name": "Hudson"
+  },
+  {
+    "capital": "JDST",
+    "yahoo": "JDST",
+    "name": "Direxion Daily Junior Gold Miners Index Bear 2X Shares"
+  },
+  {
+    "capital": "UVSP",
+    "yahoo": "UVSP",
+    "name": "Univest Financial Corp"
+  },
+  {
+    "capital": "UPST",
+    "yahoo": "UPST",
+    "name": "Upstart Holdings, Inc."
+  },
+  {
+    "capital": "VRA",
+    "yahoo": "VRA",
+    "name": "Vera Bradley Inc"
+  },
+  {
+    "capital": "VCTL",
+    "yahoo": "VCTL",
+    "name": "Victrex"
+  },
+  {
+    "capital": "FVRR",
+    "yahoo": "FVRR",
+    "name": "Fiverr"
+  },
+  {
+    "capital": "CVRX",
+    "yahoo": "CVRX",
+    "name": "CVRx, Inc."
+  },
+  {
+    "capital": "VRT",
+    "yahoo": "VRT",
+    "name": "Vertiv Holdings Co"
+  },
+  {
+    "capital": "TRV",
+    "yahoo": "TRV",
+    "name": "Travelers Cos"
+  },
+  {
+    "capital": "VRSN",
+    "yahoo": "VRSN",
+    "name": "VeriSign"
+  },
+  {
+    "capital": "VRSK",
+    "yahoo": "VRSK",
+    "name": "Verisk"
+  },
+  {
+    "capital": "NVRI",
+    "yahoo": "NVRI",
+    "name": "Enviri Corp"
+  },
+  {
+    "capital": "IDRV",
+    "yahoo": "IDRV",
+    "name": "iShares Self-Driving EV & Tech ETF"
+  },
+  {
+    "capital": "JPM",
+    "yahoo": "JPM",
+    "name": "JPMorgan Chase & Co"
+  },
+  {
+    "capital": "VTLE",
+    "yahoo": "VTLE",
+    "name": "Vital Energy, Inc"
+  },
+  {
+    "capital": "DVP",
+    "yahoo": "DVP",
+    "name": "Develop Global Ltd"
+  },
+  {
+    "capital": "VNQI",
+    "yahoo": "VNQI",
+    "name": "Vanguard Global ex-U.S. Real Estate Index Fund ETF Shares"
+  },
+  {
+    "capital": "STVN",
+    "yahoo": "STVN",
+    "name": "Stevanato Group S.p.A."
+  },
+  {
+    "capital": "VWO",
+    "yahoo": "VWO",
+    "name": "Vanguard FTSE Emerging Markets ETF"
+  },
+  {
+    "capital": "QRVO",
+    "yahoo": "QRVO",
+    "name": "Qorvo"
+  },
+  {
+    "capital": "TPVG",
+    "yahoo": "TPVG",
+    "name": "TriplePoint Venture Growth BDC Corp"
+  },
+  {
+    "capital": "TRVG",
+    "yahoo": "TRVG",
+    "name": "Trivago NV"
+  },
+  {
+    "capital": "GRVY",
+    "yahoo": "GRVY",
+    "name": "Gravity Co Ltd"
+  },
+  {
+    "capital": "BHVN",
+    "yahoo": "BHVN",
+    "name": "BIOHAVEN ORD"
+  },
+  {
+    "capital": "DVA",
+    "yahoo": "DVA",
+    "name": "DaVita"
+  },
+  {
+    "capital": "CRVL",
+    "yahoo": "CRVL",
+    "name": "CorVel Corp"
+  },
+  {
+    "capital": "VC",
+    "yahoo": "VC",
+    "name": "Visteon Corp"
+  },
+  {
+    "capital": "ENVX",
+    "yahoo": "ENVX",
+    "name": "Enovix Corp"
+  },
+  {
+    "capital": "LVO",
+    "yahoo": "LVO",
+    "name": "LiveOne Inc"
+  },
+  {
+    "capital": "NVO",
+    "yahoo": "NVO",
+    "name": "Novo Nisk Adr Repsg 1"
+  },
+  {
+    "capital": "DVN",
+    "yahoo": "DVN",
+    "name": "Devon"
+  },
+  {
+    "capital": "ADVM",
+    "yahoo": "ADVM",
+    "name": "Adverum Biotechnologies Inc"
+  },
+  {
+    "capital": "PVH",
+    "yahoo": "PVH",
+    "name": "PVH"
+  },
+  {
+    "capital": "ARVN",
+    "yahoo": "ARVN",
+    "name": "Arvinas Inc"
+  },
+  {
+    "capital": "ALVO",
+    "yahoo": "ALVO",
+    "name": "Alvotech SA"
+  },
+  {
+    "capital": "ANVS",
+    "yahoo": "ANVS",
+    "name": "Annovis Bio, Inc."
+  },
+  {
+    "capital": "BVS",
+    "yahoo": "BVS",
+    "name": "Bioventus Inc."
+  },
+  {
+    "capital": "LVS",
+    "yahoo": "LVS",
+    "name": "Las Vegas Sands"
+  },
+  {
+    "capital": "NVS",
+    "yahoo": "NVS",
+    "name": "Novartis ADR"
+  },
+  {
+    "capital": "NVR",
+    "yahoo": "NVR",
+    "name": "NVR"
+  },
+  {
+    "capital": "VTWG",
+    "yahoo": "VTWG",
+    "name": "Vanguard Russell 2000 Growth"
+  },
+  {
+    "capital": "CRVS",
+    "yahoo": "CRVS",
+    "name": "Corvus Pharmaceuticals, Inc."
+  },
+  {
+    "capital": "DVY",
+    "yahoo": "DVY",
+    "name": "iShares Trust - iShares Select Dividend ETF"
+  },
+  {
+    "capital": "VZ",
+    "yahoo": "VZ",
+    "name": "Verizon Communications Inc"
+  },
+  {
+    "capital": "INVH",
+    "yahoo": "INVH",
+    "name": "Invitation Homes Inc."
+  },
+  {
+    "capital": "MRVI",
+    "yahoo": "MRVI",
+    "name": "Maravai Life Sciences Inc."
+  },
+  {
+    "capital": "MRVL",
+    "yahoo": "MRVL",
+    "name": "Marvell Technology Group Ltd."
+  },
+  {
+    "capital": "HLVX",
+    "yahoo": "HLVX",
+    "name": "HilleVax Inc"
+  },
+  {
+    "capital": "NNVC",
+    "yahoo": "NNVC",
+    "name": "NanoViricides, Inc."
+  },
+  {
+    "capital": "VRTX",
+    "yahoo": "VRTX",
+    "name": "Vertex"
+  },
+  {
+    "capital": "VBTX",
+    "yahoo": "VBTX",
+    "name": "Veritex Holdings Inc"
+  },
+  {
+    "capital": "TVTX",
+    "yahoo": "TVTX",
+    "name": "Travere Therapeutics, Inc."
+  },
+  {
+    "capital": "LUV",
+    "yahoo": "LUV",
+    "name": "Southwest"
+  },
+  {
+    "capital": "VNET",
+    "yahoo": "VNET",
+    "name": "Vianet Group PLC"
+  },
+  {
+    "capital": "ELV",
+    "yahoo": "ELV",
+    "name": "Elevance Health Inc."
+  },
+  {
+    "capital": "VTI",
+    "yahoo": "VTI",
+    "name": "Vanguard Total Stock Market ETF"
+  },
+  {
+    "capital": "VXUS",
+    "yahoo": "VXUS",
+    "name": "Vanguard Total International Stock ETF"
+  },
+  {
+    "capital": "SBUX",
+    "yahoo": "SBUX",
+    "name": "Starbucks Corp"
+  },
+  {
+    "capital": "TV",
+    "yahoo": "TV",
+    "name": "Grupo Televisa (ADR)"
+  },
+  {
+    "capital": "FTV",
+    "yahoo": "FTV",
+    "name": "Fortive Corp"
+  },
+  {
+    "capital": "VTR",
+    "yahoo": "VTR",
+    "name": "Ventas"
+  },
+  {
+    "capital": "APTV",
+    "yahoo": "APTV",
+    "name": "Aptiv PLC"
+  },
+  {
+    "capital": "EVTL",
+    "yahoo": "EVTL",
+    "name": "Vertical Aerospace Ltd."
+  },
+  {
+    "capital": "FDEV",
+    "yahoo": "FDEV",
+    "name": "FRONTIER DEVELOPMENTS PLC ORD 0"
+  },
+  {
+    "capital": "INTC",
+    "yahoo": "INTC",
+    "name": "Intel Corp"
+  },
+  {
+    "capital": "NVTS",
+    "yahoo": "NVTS",
+    "name": "Navitas Semiconductor Corporation"
+  },
+  {
+    "capital": "BATRK",
+    "yahoo": "BATRK",
+    "name": "Atlanta Braves Holdings Inc - C"
+  },
+  {
+    "capital": "UVXY",
+    "yahoo": "UVXY",
+    "name": "ProShares Ultra VIX Short-Term Futures ETF"
+  },
+  {
+    "capital": "VYM",
+    "yahoo": "VYM",
+    "name": "Vanguard High Dividend Yield Index Fund ETF"
+  },
+  {
+    "capital": "SVXY",
+    "yahoo": "SVXY",
+    "name": "ProShares Short VIX Short-Term Futures ETF"
+  },
+  {
+    "capital": "LYV",
+    "yahoo": "LYV",
+    "name": "Live Nation"
+  },
+  {
+    "capital": "KVYO",
+    "yahoo": "KVYO",
+    "name": "Klaviyo Inc"
+  },
+  {
+    "capital": "SPYG",
+    "yahoo": "SPYG",
+    "name": "SPDR Series Trust - SPDR Portfolio S&P 500 Growth ETF"
+  },
+  {
+    "capital": "CVXUSD",
+    "yahoo": "CVX",
+    "name": "CVX/USD"
+  },
+  {
+    "capital": "PVBC",
+    "yahoo": "PVBC",
+    "name": "Provident Bancorp Inc"
+  },
+  {
+    "capital": "CVCO",
+    "yahoo": "CVCO",
+    "name": "Cavco Industries Inc"
+  },
+  {
+    "capital": "STBA",
+    "yahoo": "STBA",
+    "name": "S&T Bancorp Inc"
+  },
+  {
+    "capital": "WTBA",
+    "yahoo": "WTBA",
+    "name": "West BanCorp Inc"
+  },
+  {
+    "capital": "BA",
+    "yahoo": "BA",
+    "name": "Boeing Co"
+  },
+  {
+    "capital": "CVBF",
+    "yahoo": "CVBF",
+    "name": "CVB Financial"
+  },
+  {
+    "capital": "AVBP",
+    "yahoo": "AVBP",
+    "name": "ArriVent Biopharma Inc"
+  },
+  {
+    "capital": "ABBV",
+    "yahoo": "ABBV",
+    "name": "AbbVie"
+  },
+  {
+    "capital": "FRBA",
+    "yahoo": "FRBA",
+    "name": "First Bank"
+  },
+  {
+    "capital": "MVBF",
+    "yahoo": "MVBF",
+    "name": "MVB Financial Corp"
+  },
+  {
+    "capital": "BBAI",
+    "yahoo": "BBAI",
+    "name": "BigBear.ai Holdings, Inc."
+  },
+  {
+    "capital": "BAC",
+    "yahoo": "BAC",
+    "name": "Bank of America Corp"
+  },
+  {
+    "capital": "VAC",
+    "yahoo": "VAC",
+    "name": "Marriott Vacations Worldwide Corp"
+  },
+  {
+    "capital": "BAM",
+    "yahoo": "BAM",
+    "name": "Brookfield Corporation"
+  },
+  {
+    "capital": "EBAY",
+    "yahoo": "EBAY",
+    "name": "eBay"
+  },
+  {
+    "capital": "CVAC",
+    "yahoo": "CVAC",
+    "name": "CureVac N.V."
+  },
+  {
+    "capital": "DVAX",
+    "yahoo": "DVAX",
+    "name": "Dynavax Technologies Corp"
+  },
+  {
+    "capital": "BAH",
+    "yahoo": "BAH",
+    "name": "Booz Allen Hamilton Holding Corp"
+  },
+  {
+    "capital": "BAP",
+    "yahoo": "BAP",
+    "name": "Credicorp"
+  },
+  {
+    "capital": "AVAV",
+    "yahoo": "AVAV",
+    "name": "AeroVironment Inc"
+  },
+  {
+    "capital": "BAX",
+    "yahoo": "BAX",
+    "name": "Baxter"
+  },
+  {
+    "capital": "NVAX",
+    "yahoo": "NVAX",
+    "name": "Novavax Inc"
+  },
+  {
+    "capital": "HBAN",
+    "yahoo": "HBAN",
+    "name": "Huntington Bancshares Inc/OH"
+  },
+  {
+    "capital": "SBAC",
+    "yahoo": "SBAC",
+    "name": "SBA"
+  },
+  {
+    "capital": "V",
+    "yahoo": "V",
+    "name": "Visa Inc"
+  },
+  {
+    "capital": "ADVT",
+    "yahoo": "ADVT",
+    "name": "AdvancedAdvT Ltd"
+  },
+  {
+    "capital": "CVGI",
+    "yahoo": "CVGI",
+    "name": "Commercial Vehicle Group Inc"
+  },
+  {
+    "capital": "IVVD",
+    "yahoo": "IVVD",
+    "name": "Invivyd Inc."
+  },
+  {
+    "capital": "VGK",
+    "yahoo": "VGK",
+    "name": "Vanguard FTSE Europe ETF"
+  },
+  {
+    "capital": "AVGO",
+    "yahoo": "AVGO",
+    "name": "Broadcom Inc."
+  },
+  {
+    "capital": "VGT",
+    "yahoo": "VGT",
+    "name": "Vanguard Information Technology ETF"
+  },
+  {
+    "capital": "ALGS",
+    "yahoo": "ALGS",
+    "name": "Aligos Therapeutics, Inc."
+  },
+  {
+    "capital": "GS",
+    "yahoo": "GS",
+    "name": "Goldman Sachs"
+  },
+  {
+    "capital": "NGS",
+    "yahoo": "NGS",
+    "name": "Natural Gas Services Group Inc"
+  },
+  {
+    "capital": "EVGO",
+    "yahoo": "EVGO",
+    "name": "EVgo, Inc."
+  },
+  {
+    "capital": "NRGV",
+    "yahoo": "NRGV",
+    "name": "Energy Vault Holdings Inc."
+  },
+  {
+    "capital": "NVGS",
+    "yahoo": "NVGS",
+    "name": "Navigator Holdings Ltd"
+  },
+  {
+    "capital": "AMS",
+    "yahoo": "AMS",
+    "name": "HAL Trust"
+  },
+  {
+    "capital": "PFE",
+    "yahoo": "PFE",
+    "name": "Pfizer Inc"
+  },
+  {
+    "capital": "VFC",
+    "yahoo": "VFC",
+    "name": "VF Corp"
+  },
+  {
+    "capital": "META",
+    "yahoo": "META",
+    "name": "Meta Platforms Inc"
+  },
+  {
+    "capital": "VFS",
+    "yahoo": "VFS",
+    "name": "VinFast Auto Ltd"
+  },
+  {
+    "capital": "PRGS",
+    "yahoo": "PRGS",
+    "name": "Progress Software Corp"
+  },
+  {
+    "capital": "EVER",
+    "yahoo": "EVER",
+    "name": "EverQuote Inc"
+  },
+  {
+    "capital": "VEA",
+    "yahoo": "VEA",
+    "name": "Vanguard FTSE Developed Markets Index Fund ETF Shares"
+  },
+  {
+    "capital": "VEL",
+    "yahoo": "VEL",
+    "name": "Velocity Financial LLC"
+  },
+  {
+    "capital": "VEU",
+    "yahoo": "VEU",
+    "name": "Vanguard FTSE All-World ex-US Index Fund ETF Shares"
+  },
+  {
+    "capital": "PEP",
+    "yahoo": "PEP",
+    "name": "Pepsi"
+  },
+  {
+    "capital": "ABEV",
+    "yahoo": "ABEV",
+    "name": "Ambev"
+  },
+  {
+    "capital": "NVEC",
+    "yahoo": "NVEC",
+    "name": "NVE Corp"
+  },
+  {
+    "capital": "PDD",
+    "yahoo": "PDD",
+    "name": "PDD Holdings Inc"
+  },
+  {
+    "capital": "VREX",
+    "yahoo": "VREX",
+    "name": "Varex Imaging Corp"
+  },
+  {
+    "capital": "CHDN",
+    "yahoo": "CHDN",
+    "name": "Churchill Downs Inc"
+  },
+  {
+    "capital": "HDB",
+    "yahoo": "HDB",
+    "name": "HDFC Bank"
+  },
+  {
+    "capital": "AVDL",
+    "yahoo": "AVDL",
+    "name": "Avadel Pharmaceuticals PLC"
+  },
+  {
+    "capital": "AVDX",
+    "yahoo": "AVDX",
+    "name": "AvidXchange Holdings Inc"
+  },
+  {
+    "capital": "FDX",
+    "yahoo": "FDX",
+    "name": "FedEx Corp"
+  },
+  {
+    "capital": "NVDY",
+    "yahoo": "NVDY",
+    "name": "YieldMax NVDA Option Income Strategy ETF"
+  },
+  {
+    "capital": "XPEV",
+    "yahoo": "XPEV",
+    "name": "XPeng Inc - ADR"
+  },
+  {
+    "capital": "NVDA",
+    "yahoo": "NVDA",
+    "name": "NVIDIA Corp"
+  },
+  {
+    "capital": "NKE",
+    "yahoo": "NKE",
+    "name": "Nike Inc"
+  },
+  {
+    "capital": "TMV",
+    "yahoo": "TMV",
+    "name": "TeamViewer AG"
+  },
+  {
+    "capital": "KO",
+    "yahoo": "KO",
+    "name": "Coca-Cola Co"
+  },
+  {
+    "capital": "ARKO",
+    "yahoo": "ARKO",
+    "name": "Arko Corp."
+  },
+  {
+    "capital": "FNKO",
+    "yahoo": "FNKO",
+    "name": "Funko"
+  },
+  {
+    "capital": "JD",
+    "yahoo": "JD",
+    "name": "JD.com Inc - ADR"
+  },
+  {
+    "capital": "LI",
+    "yahoo": "LI",
+    "name": "Klepierre"
+  },
+  {
+    "capital": "DRIV",
+    "yahoo": "DRIV",
+    "name": "Global X Autonomous & Electric Vehicles ETF"
+  },
+  {
+    "capital": "BLIN",
+    "yahoo": "BLIN",
+    "name": "Bridgeline Digital"
+  },
+  {
+    "capital": "EFIV",
+    "yahoo": "EFIV",
+    "name": "SPDR S&P 500 ESG ETF"
+  },
+  {
+    "capital": "NIO",
+    "yahoo": "NIO",
+    "name": "NIO Inc - ADR"
+  },
+  {
+    "capital": "FFIV",
+    "yahoo": "FFIV",
+    "name": "F5 Networks"
+  },
+  {
+    "capital": "LIN",
+    "yahoo": "LIN",
+    "name": "Linde plc"
+  },
+  {
+    "capital": "LII",
+    "yahoo": "LII",
+    "name": "Lennox International Inc"
+  },
+  {
+    "capital": "VIK",
+    "yahoo": "VIK",
+    "name": "Viking Holdings Ltd"
+  },
+  {
+    "capital": "LIT",
+    "yahoo": "LIT",
+    "name": "Global X Lithium & Battery Tech ETF"
+  },
+  {
+    "capital": "VIR",
+    "yahoo": "VIR",
+    "name": "Vir Biotechnology"
+  },
+  {
+    "capital": "MVIS",
+    "yahoo": "MVIS",
+    "name": "Microvision, Inc."
+  },
+  {
+    "capital": "MDIV",
+    "yahoo": "MDIV",
+    "name": "First Trust Multi-Asset Diversified Income Index Fund"
+  },
+  {
+    "capital": "HLIT",
+    "yahoo": "HLIT",
+    "name": "Harmonic"
+  },
+  {
+    "capital": "HD",
+    "yahoo": "HD",
+    "name": "Home Depot"
+  },
+  {
+    "capital": "TDIV",
+    "yahoo": "TDIV",
+    "name": "First Trust NASDAQ Technology Dividend Index Fund"
+  },
+  {
+    "capital": "UVIX",
+    "yahoo": "UVIX",
+    "name": "2x Long VIX Futures ETF"
+  },
+  {
+    "capital": "VTIP",
+    "yahoo": "VTIP",
+    "name": "Vanguard Short-Term Inflation-Protected Securities Index Fund ETF Shares"
+  },
+  {
+    "capital": "VHT",
+    "yahoo": "VHT",
+    "name": "Vanguard Health Care ETF"
+  },
+  {
+    "capital": "VIS",
+    "yahoo": "VIS",
+    "name": "Viscofan"
+  },
+  {
+    "capital": "VOD",
+    "yahoo": "VOD",
+    "name": "Vodafone Group PLC - ADR"
+  },
+  {
+    "capital": "VRNT",
+    "yahoo": "VRNT",
+    "name": "Verint Systems Inc"
+  },
+  {
+    "capital": "XOM",
+    "yahoo": "XOM",
+    "name": "Exxon Mobil Corp"
+  },
+  {
+    "capital": "VOO",
+    "yahoo": "VOO",
+    "name": "Vanguard S&P 500 ETF"
+  },
+  {
+    "capital": "VRNS",
+    "yahoo": "VRNS",
+    "name": "Varonis Systems"
+  },
+  {
+    "capital": "DOV",
+    "yahoo": "DOV",
+    "name": "Dover"
+  },
+  {
+    "capital": "ELIS",
+    "yahoo": "ELIS",
+    "name": "Elis"
+  },
+  {
+    "capital": "VOR",
+    "yahoo": "VOR",
+    "name": "Vor Biopharma Inc."
+  },
+  {
+    "capital": "VRNA",
+    "yahoo": "VRNA",
+    "name": "Verona Pharma PLC"
+  },
+  {
+    "capital": "CLOV",
+    "yahoo": "CLOV",
+    "name": "Clover Health Investments"
+  },
+  {
+    "capital": "CVNA",
+    "yahoo": "CVNA",
+    "name": "Carvana Co."
+  },
+  {
+    "capital": "VNO",
+    "yahoo": "VNO",
+    "name": "Vornado"
+  },
+  {
+    "capital": "JNJ",
+    "yahoo": "JNJ",
+    "name": "Johnson & Johnson"
+  },
+  {
+    "capital": "VNT",
+    "yahoo": "VNT",
+    "name": "Vontier Corporation"
+  },
+  {
+    "capital": "VNOM",
+    "yahoo": "VNOM",
+    "name": "Viper Energy Inc"
+  },
+  {
+    "capital": "FNV",
+    "yahoo": "FNV",
+    "name": "Franco Nevada - USD"
+  },
+  {
+    "capital": "VNQ",
+    "yahoo": "VNQ",
+    "name": "Vanguard Real Estate ETF"
+  },
+  {
+    "capital": "AVNW",
+    "yahoo": "AVNW",
+    "name": "Aviat Networks Inc"
+  },
+  {
+    "capital": "VMD",
+    "yahoo": "VMD",
+    "name": "Viemed Healthcare"
+  },
+  {
+    "capital": "ADMA",
+    "yahoo": "ADMA",
+    "name": "ADMA Biologics, Inc."
+  },
+  {
+    "capital": "MA",
+    "yahoo": "MA",
+    "name": "Mastercard Inc"
+  },
+  {
+    "capital": "VMC",
+    "yahoo": "VMC",
+    "name": "Vulcan Materials Co"
+  },
+  {
+    "capital": "LMT",
+    "yahoo": "LMT",
+    "name": "Lockheed"
+  },
+  {
+    "capital": "MS",
+    "yahoo": "MS",
+    "name": "Morgan Stanley"
+  },
+  {
+    "capital": "RVLV",
+    "yahoo": "RVLV",
+    "name": "Revolve Group, Inc."
+  },
+  {
+    "capital": "RZLV",
+    "yahoo": "RZLV",
+    "name": "Rezolve AI Ltd"
+  },
+  {
+    "capital": "CLMT",
+    "yahoo": "CLMT",
+    "name": "Calumet Inc"
+  },
+  {
+    "capital": "KRMA",
+    "yahoo": "KRMA",
+    "name": "Global X Conscious Companies ETF"
+  },
+  {
+    "capital": "OLMA",
+    "yahoo": "OLMA",
+    "name": "Olema Pharmaceuticals, Inc."
+  },
+  {
+    "capital": "VLO",
+    "yahoo": "VLO",
+    "name": "Valero"
+  },
+  {
+    "capital": "XLI",
+    "yahoo": "XLI",
+    "name": "Industrial Select Sector SPDR Fund"
+  },
+  {
+    "capital": "CVLG",
+    "yahoo": "CVLG",
+    "name": "Covenant Logistics Group Inc"
+  },
+  {
+    "capital": "XLV",
+    "yahoo": "XLV",
+    "name": "Health Care Select Sector SPDR Fund"
+  },
+  {
+    "capital": "CVLT",
+    "yahoo": "CVLT",
+    "name": "Commvault Systems"
+  },
+  {
+    "capital": "DNLI",
+    "yahoo": "DNLI",
+    "name": "Denali Therapeutics"
+  },
+  {
+    "capital": "BANDUSD",
+    "yahoo": "BAND",
+    "name": "Band Protocol / USD"
+  },
+  {
+    "capital": "VLY",
+    "yahoo": "VLY",
+    "name": "Valley National Bancorp"
+  },
+  {
+    "capital": "OLLI",
+    "yahoo": "OLLI",
+    "name": "Ollie's Bargain Outlet Holdings Inc"
+  },
+  {
+    "capital": "MANAUSD",
+    "yahoo": "MANA",
+    "name": "Decentraland / USD"
+  },
+  {
+    "capital": "LINKUSD",
+    "yahoo": "LINK",
+    "name": "ChainLink / USD"
+  },
+  {
+    "capital": "DUST",
+    "yahoo": "DUST",
+    "name": "Direxion Daily Gold Miners Index Bear 2X Shares"
+  },
+  {
+    "capital": "FISUSD",
+    "yahoo": "FIS",
+    "name": "FIS/USD"
+  },
+  {
+    "capital": "SIRI",
+    "yahoo": "SIRI",
+    "name": "New Sirius XM"
+  },
+  {
+    "capital": "CASH",
+    "yahoo": "CASH",
+    "name": "Meta Financial"
+  },
+  {
+    "capital": "SARK",
+    "yahoo": "SARK",
+    "name": "Tradr 2X Short Innovation Daily ETF"
+  },
+  {
+    "capital": "PERF",
+    "yahoo": "PERF",
+    "name": "Perfect Corp"
+  },
+  {
+    "capital": "BLNE",
+    "yahoo": "BLNE",
+    "name": "Beeline Holdings Inc"
+  },
+  {
+    "capital": "SSRM",
+    "yahoo": "SSRM",
+    "name": "SSR Mining Inc"
+  },
+  {
+    "capital": "BYSI",
+    "yahoo": "BYSI",
+    "name": "BeyondSpring Inc."
+  },
+  {
+    "capital": "TARS",
+    "yahoo": "TARS",
+    "name": "Tarsus Pharmaceuticals, Inc."
+  },
+  {
+    "capital": "USB",
+    "yahoo": "USB",
+    "name": "US Bancorp"
+  },
+  {
+    "capital": "WSC",
+    "yahoo": "WSC",
+    "name": "WillScot Holdings Corp"
+  },
+  {
+    "capital": "RERE",
+    "yahoo": "RERE",
+    "name": "ATRenew Inc"
+  },
+  {
+    "capital": "RARE",
+    "yahoo": "RARE",
+    "name": "Ultragenyx Pharmaceutical Inc"
+  },
+  {
+    "capital": "SSL",
+    "yahoo": "SSL",
+    "name": "Sasol Limited"
+  },
+  {
+    "capital": "BUSE",
+    "yahoo": "BUSE",
+    "name": "First Busey"
+  },
+  {
+    "capital": "WSM",
+    "yahoo": "WSM",
+    "name": "Williams-Sonoma"
+  },
+  {
+    "capital": "FAST",
+    "yahoo": "FAST",
+    "name": "Fastenal"
+  },
+  {
+    "capital": "CSL",
+    "yahoo": "CSL",
+    "name": "Carlisle Cos Inc"
+  },
+  {
+    "capital": "QCRH",
+    "yahoo": "QCRH",
+    "name": "QCR Holdings Inc"
+  },
+  {
+    "capital": "ASO",
+    "yahoo": "ASO",
+    "name": "Academy Sports and Outdoors, Inc."
+  },
+  {
+    "capital": "USO",
+    "yahoo": "USO",
+    "name": "United States Oil Fund"
+  },
+  {
+    "capital": "BCSF",
+    "yahoo": "BCSF",
+    "name": "Bain Capital Specialty Finance Inc"
+  },
+  {
+    "capital": "SSO",
+    "yahoo": "SSO",
+    "name": "ProShares Ultra S&P500"
+  },
+  {
+    "capital": "FI",
+    "yahoo": "FI",
+    "name": "Fiserv"
+  },
+  {
+    "capital": "PERI",
+    "yahoo": "PERI",
+    "name": "Perion Network Ltd"
+  },
+  {
+    "capital": "EOSUSD",
+    "yahoo": "EOS",
+    "name": "EOS / USD"
+  },
+  {
+    "capital": "AOSL",
+    "yahoo": "AOSL",
+    "name": "Alpha & Omega Semiconductor"
+  },
+  {
+    "capital": "QSI",
+    "yahoo": "QSI",
+    "name": "Quantum-Si incorporated"
+  },
+  {
+    "capital": "ASH",
+    "yahoo": "ASH",
+    "name": "Ashland"
+  },
+  {
+    "capital": "TCRX",
+    "yahoo": "TCRX",
+    "name": "TScan Therapeutics Inc"
+  },
+  {
+    "capital": "OSK",
+    "yahoo": "OSK",
+    "name": "Oshkosh"
+  },
+  {
+    "capital": "CASY",
+    "yahoo": "CASY",
+    "name": "Casey's General Stores Inc"
+  },
+  {
+    "capital": "SGRY",
+    "yahoo": "SGRY",
+    "name": "Surgery Partners Inc"
+  },
+  {
+    "capital": "GUSH",
+    "yahoo": "GUSH",
+    "name": "Direxion Daily S&P Oil & Gas Exp. & Prod. Bull 2X Shares"
+  },
+  {
+    "capital": "SST",
+    "yahoo": "SST",
+    "name": "System1 Inc."
+  },
+  {
+    "capital": "FOSL",
+    "yahoo": "FOSL",
+    "name": "Fossil Group, Inc."
+  },
+  {
+    "capital": "AQST",
+    "yahoo": "AQST",
+    "name": "Aquestive Therapeutics, Inc."
+  },
+  {
+    "capital": "EOSE",
+    "yahoo": "EOSE",
+    "name": "Eos Energy Enterprises Inc"
+  },
+  {
+    "capital": "SSP",
+    "yahoo": "SSP",
+    "name": "The EW Scripps Co"
+  },
+  {
+    "capital": "FISI",
+    "yahoo": "FISI",
+    "name": "Financial Institutions Inc"
+  },
+  {
+    "capital": "BKSY",
+    "yahoo": "BKSY",
+    "name": "BlackSky Technology Inc"
+  },
+  {
+    "capital": "TYRA",
+    "yahoo": "TYRA",
+    "name": "Tyra Biosciences Inc"
+  },
+  {
+    "capital": "ESS",
+    "yahoo": "ESS",
+    "name": "Essex Property"
+  },
+  {
+    "capital": "QSR",
+    "yahoo": "QSR",
+    "name": "Restaurant Brands"
+  },
+  {
+    "capital": "KSS",
+    "yahoo": "KSS",
+    "name": "Kohl's"
+  },
+  {
+    "capital": "CBGL",
+    "yahoo": "CBGL",
+    "name": "Close Brothers"
+  },
+  {
+    "capital": "WERN",
+    "yahoo": "WERN",
+    "name": "Werner Enterprises Inc"
+  },
+  {
+    "capital": "CASS",
+    "yahoo": "CASS",
+    "name": "Cass Information Systems Inc"
+  },
+  {
+    "capital": "DWSN",
+    "yahoo": "DWSN",
+    "name": "Dawson Geophysical"
+  },
+  {
+    "capital": "TERN",
+    "yahoo": "TERN",
+    "name": "Terns Pharmaceuticals Inc"
+  },
+  {
+    "capital": "CWST",
+    "yahoo": "CWST",
+    "name": "Casella"
+  },
+  {
+    "capital": "DASH",
+    "yahoo": "DASH",
+    "name": "DoorDash Inc"
+  },
+  {
+    "capital": "CSX",
+    "yahoo": "CSX",
+    "name": "CSX"
+  },
+  {
+    "capital": "PCRX",
+    "yahoo": "PCRX",
+    "name": "Pacira BioSciences Inc"
+  },
+  {
+    "capital": "COST",
+    "yahoo": "COST",
+    "name": "Costco Wholesale Corporation"
+  },
+  {
+    "capital": "SB",
+    "yahoo": "SB",
+    "name": "Sugar US"
+  },
+  {
+    "capital": "IESC",
+    "yahoo": "IESC",
+    "name": "IES Holdings Inc"
+  },
+  {
+    "capital": "HCSG",
+    "yahoo": "HCSG",
+    "name": "Healthcare Services Group Inc"
+  },
+  {
+    "capital": "IUSG",
+    "yahoo": "IUSG",
+    "name": "iShares Core S&P U.S. Growth ETF"
+  },
+  {
+    "capital": "LASR",
+    "yahoo": "LASR",
+    "name": "nLight Inc"
+  },
+  {
+    "capital": "ZURA",
+    "yahoo": "ZURA",
+    "name": "Zura Bio Ltd"
+  },
+  {
+    "capital": "IOSP",
+    "yahoo": "IOSP",
+    "name": "Innospec Inc"
+  },
+  {
+    "capital": "OCSL",
+    "yahoo": "OCSL",
+    "name": "Oaktree Specialty Lending Corp"
+  },
+  {
+    "capital": "NKSH",
+    "yahoo": "NKSH",
+    "name": "National Bankshares Inc"
+  },
+  {
+    "capital": "YORW",
+    "yahoo": "YORW",
+    "name": "The York Water Co"
+  },
+  {
+    "capital": "MKSI",
+    "yahoo": "MKSI",
+    "name": "MKS Instruments"
+  },
+  {
+    "capital": "LESL",
+    "yahoo": "LESL",
+    "name": "Leslie's Inc"
+  },
+  {
+    "capital": "NWSA",
+    "yahoo": "NWSA",
+    "name": "News Corp - A"
+  },
+  {
+    "capital": "NSSC",
+    "yahoo": "NSSC",
+    "name": "Napco Security Technologies Inc"
+  },
+  {
+    "capital": "ARE",
+    "yahoo": "ARE",
+    "name": "Alexandria RE Equities"
+  },
+  {
+    "capital": "TWST",
+    "yahoo": "TWST",
+    "name": "Twist Bioscience Corporation"
+  },
+  {
+    "capital": "BURL",
+    "yahoo": "BURL",
+    "name": "Burlington Stores"
+  },
+  {
+    "capital": "YRD",
+    "yahoo": "YRD",
+    "name": "Yirendai"
+  },
+  {
+    "capital": "ICG",
+    "yahoo": "ICG",
+    "name": "Intermediate Capital Group"
+  },
+  {
+    "capital": "CURI",
+    "yahoo": "CURI",
+    "name": "CuriosityStream Inc."
+  },
+  {
+    "capital": "SRE",
+    "yahoo": "SRE",
+    "name": "Sempra"
+  },
+  {
+    "capital": "BGRN",
+    "yahoo": "BGRN",
+    "name": "iShares Trust - iShares Global Green Bond ETF"
+  },
+  {
+    "capital": "SRG",
+    "yahoo": "SRG",
+    "name": "Seritage Growth Properties"
+  },
+  {
+    "capital": "BMRN",
+    "yahoo": "BMRN",
+    "name": "BioMarin"
+  },
+  {
+    "capital": "SUSL",
+    "yahoo": "SUSL",
+    "name": "iShares ESG MSCI USA Leaders ETF"
+  },
+  {
+    "capital": "ORA",
+    "yahoo": "ORA",
+    "name": "Ormat Technologies"
+  },
+  {
+    "capital": "URA",
+    "yahoo": "URA",
+    "name": "Global X Uranium ETF"
+  },
+  {
+    "capital": "BIRK",
+    "yahoo": "BIRK",
+    "name": "Birkenstock Holding Ltd"
+  },
+  {
+    "capital": "CCRN",
+    "yahoo": "CCRN",
+    "name": "Cross Country"
+  },
+  {
+    "capital": "ACCS",
+    "yahoo": "ACCS",
+    "name": "Accsys Technologies PLC"
+  },
+  {
+    "capital": "CRM",
+    "yahoo": "CRM",
+    "name": "Salesforce Inc"
+  },
+  {
+    "capital": "ARM",
+    "yahoo": "ARM",
+    "name": "ARM Holdings PLC"
+  },
+  {
+    "capital": "IRM",
+    "yahoo": "IRM",
+    "name": "Iron Mountain"
+  },
+  {
+    "capital": "BIRD",
+    "yahoo": "BIRD",
+    "name": "Allbirds Inc"
+  },
+  {
+    "capital": "SCSC",
+    "yahoo": "SCSC",
+    "name": "ScanSource Inc"
+  },
+  {
+    "capital": "ORN",
+    "yahoo": "ORN",
+    "name": "Orion Group Holdings Inc"
+  },
+  {
+    "capital": "CRI",
+    "yahoo": "CRI",
+    "name": "Carter's Inc"
+  },
+  {
+    "capital": "ORI",
+    "yahoo": "ORI",
+    "name": "Old Republic"
+  },
+  {
+    "capital": "URI",
+    "yahoo": "URI",
+    "name": "United Rentals"
+  },
+  {
+    "capital": "CARG",
+    "yahoo": "CARG",
+    "name": "CarGurus"
+  },
+  {
+    "capital": "BMRC",
+    "yahoo": "BMRC",
+    "name": "Bank of Marin Bancorp"
+  },
+  {
+    "capital": "AKRO",
+    "yahoo": "AKRO",
+    "name": "Akero Therapeutics Inc"
+  },
+  {
+    "capital": "ERJ",
+    "yahoo": "ERJ",
+    "name": "Embraer S.A."
+  },
+  {
+    "capital": "AMRN",
+    "yahoo": "AMRN",
+    "name": "Amarin Corporation plc"
+  },
+  {
+    "capital": "FORR",
+    "yahoo": "FORR",
+    "name": "Forrester Research Inc"
+  },
+  {
+    "capital": "DARE",
+    "yahoo": "DARE",
+    "name": "Daré Bioscience, Inc."
+  },
+  {
+    "capital": "FORM",
+    "yahoo": "FORM",
+    "name": "FormFactor"
+  },
+  {
+    "capital": "CYRX",
+    "yahoo": "CYRX",
+    "name": "Cryoport Inc."
+  },
+  {
+    "capital": "WASH",
+    "yahoo": "WASH",
+    "name": "Washington Trust Bancorp Inc"
+  },
+  {
+    "capital": "POST",
+    "yahoo": "POST",
+    "name": "Post Holdings"
+  },
+  {
+    "capital": "ARW",
+    "yahoo": "ARW",
+    "name": "Arrow Electronics Inc (ARW)\t"
+  },
+  {
+    "capital": "AIRS",
+    "yahoo": "AIRS",
+    "name": "AirSculpt Technologies, Inc."
+  },
+  {
+    "capital": "CARZ",
+    "yahoo": "CARZ",
+    "name": "First Trust NASDAQ Global Auto Index Fund"
+  },
+  {
+    "capital": "L",
+    "yahoo": "L",
+    "name": "Dr. Martens plc"
+  },
+  {
+    "capital": "CORZ",
+    "yahoo": "CORZ",
+    "name": "Core Scientific Inc"
+  },
+  {
+    "capital": "ASRT",
+    "yahoo": "ASRT",
+    "name": "Assertio Holdings, Inc."
+  },
+  {
+    "capital": "BCRX",
+    "yahoo": "BCRX",
+    "name": "BioCryst"
+  },
+  {
+    "capital": "KRP",
+    "yahoo": "KRP",
+    "name": "Kimbell Royalty Partners LP"
+  },
+  {
+    "capital": "DMRC",
+    "yahoo": "DMRC",
+    "name": "Digimarc Corp"
+  },
+  {
+    "capital": "GERN",
+    "yahoo": "GERN",
+    "name": "Geron"
+  },
+  {
+    "capital": "FWRD",
+    "yahoo": "FWRD",
+    "name": "Forward Air"
+  },
+  {
+    "capital": "DORM",
+    "yahoo": "DORM",
+    "name": "Dorman"
+  },
+  {
+    "capital": "ROST",
+    "yahoo": "ROST",
+    "name": "Ross"
+  },
+  {
+    "capital": "FORD",
+    "yahoo": "FORD",
+    "name": "Forward Industries"
+  },
+  {
+    "capital": "CERS",
+    "yahoo": "CERS",
+    "name": "Cerus Corp"
+  },
+  {
+    "capital": "CARS",
+    "yahoo": "CARS",
+    "name": "Cars.com Inc."
+  },
+  {
+    "capital": "FWRG",
+    "yahoo": "FWRG",
+    "name": "First Watch Restaurant Group, Inc."
+  },
+  {
+    "capital": "CARR",
+    "yahoo": "CARR",
+    "name": "Carrier Global Corporation"
+  },
+  {
+    "capital": "AORT",
+    "yahoo": "AORT",
+    "name": "Artivion Inc"
+  },
+  {
+    "capital": "AIRUSD",
+    "yahoo": "AIR",
+    "name": "AIR/USD"
+  },
+  {
+    "capital": "MRX",
+    "yahoo": "MRX",
+    "name": "Marex Group PLC"
+  },
+  {
+    "capital": "CORT",
+    "yahoo": "CORT",
+    "name": "Corcept Therapeutics Inc"
+  },
+  {
+    "capital": "ERX",
+    "yahoo": "ERX",
+    "name": "Direxion Daily Energy Bull 2X Shares"
+  },
+  {
+    "capital": "CERT",
+    "yahoo": "CERT",
+    "name": "Certara, Inc."
+  },
+  {
+    "capital": "CART",
+    "yahoo": "CART",
+    "name": "Maplebear Inc"
+  },
+  {
+    "capital": "ASRUSD",
+    "yahoo": "ASR",
+    "name": "ASR/USD"
+  },
+  {
+    "capital": "TASK",
+    "yahoo": "TASK",
+    "name": "TaskUs Inc."
+  },
+  {
+    "capital": "BSRR",
+    "yahoo": "BSRR",
+    "name": "Sierra Bancorp"
+  },
+  {
+    "capital": "NMRUSD",
+    "yahoo": "NMR",
+    "name": "NMR/USD"
+  },
+  {
+    "capital": "HURC",
+    "yahoo": "HURC",
+    "name": "Hurco Cos Inc"
+  },
+  {
+    "capital": "ISRG",
+    "yahoo": "ISRG",
+    "name": "Intuitive"
+  },
+  {
+    "capital": "KURA",
+    "yahoo": "KURA",
+    "name": "Kura Oncology Inc"
+  },
+  {
+    "capital": "HERO",
+    "yahoo": "HERO",
+    "name": "Global X Video Games & Esports ETF"
+  },
+  {
+    "capital": "HURN",
+    "yahoo": "HURN",
+    "name": "Huron"
+  },
+  {
+    "capital": "MIRUSD",
+    "yahoo": "MIR",
+    "name": "MIR/USD"
+  },
+  {
+    "capital": "MKRUSD",
+    "yahoo": "MKR",
+    "name": "MKR/USD"
+  },
+  {
+    "capital": "MERC",
+    "yahoo": "MERC",
+    "name": "Mercer International Inc"
+  },
+  {
+    "capital": "MGRC",
+    "yahoo": "MGRC",
+    "name": "McGrath RentCorp"
+  },
+  {
+    "capital": "MCRB",
+    "yahoo": "MCRB",
+    "name": "Seres Therapeutics Inc"
+  },
+  {
+    "capital": "KARUSD",
+    "yahoo": "KAR",
+    "name": "KAR/USD"
+  },
+  {
+    "capital": "IART",
+    "yahoo": "IART",
+    "name": "Integra LifeSciences Holdings Corp"
+  },
+  {
+    "capital": "MYRG",
+    "yahoo": "MYRG",
+    "name": "MYR Group Inc"
+  },
+  {
+    "capital": "MCRI",
+    "yahoo": "MCRI",
+    "name": "Monarch Casino & Resort Inc"
+  },
+  {
+    "capital": "CPRI",
+    "yahoo": "CPRI",
+    "name": "Capri"
+  },
+  {
+    "capital": "NMRA",
+    "yahoo": "NMRA",
+    "name": "Neumora Therapeutics Inc"
+  },
+  {
+    "capital": "MORN",
+    "yahoo": "MORN",
+    "name": "Morningstar Inc"
+  },
+  {
+    "capital": "REPL",
+    "yahoo": "REPL",
+    "name": "Replimune"
+  },
+  {
+    "capital": "SOPH",
+    "yahoo": "SOPH",
+    "name": "Sophia Genetics SA"
+  },
+  {
+    "capital": "SMPL",
+    "yahoo": "SMPL",
+    "name": "The Simply Good Foods Co"
+  },
+  {
+    "capital": "SUPN",
+    "yahoo": "SUPN",
+    "name": "Supernus Pharmaceuticals Inc"
+  },
+  {
+    "capital": "AQB",
+    "yahoo": "AQB",
+    "name": "AquaBounty Technologies, Inc."
+  },
+  {
+    "capital": "SQM",
+    "yahoo": "SQM",
+    "name": "Sociedad Quimica y Minera"
+  },
+  {
+    "capital": "EQT",
+    "yahoo": "EQT",
+    "name": "EQT"
+  },
+  {
+    "capital": "TCPC",
+    "yahoo": "TCPC",
+    "name": "BlackRock TCP Capital Corp"
+  },
+  {
+    "capital": "EQR",
+    "yahoo": "EQR",
+    "name": "Equity Residential"
+  },
+  {
+    "capital": "XWEL",
+    "yahoo": "XWEL",
+    "name": "XWELL, Inc"
+  },
+  {
+    "capital": "EPD",
+    "yahoo": "EPD",
+    "name": "Enterprise Products"
+  },
+  {
+    "capital": "APD",
+    "yahoo": "APD",
+    "name": "Air Products And Chemicals"
+  },
+  {
+    "capital": "IPG",
+    "yahoo": "IPG",
+    "name": "Interpublic Group of Cos Inc"
+  },
+  {
+    "capital": "YPF",
+    "yahoo": "YPF",
+    "name": "YPF Sociedad Anonima"
+  },
+  {
+    "capital": "SPG",
+    "yahoo": "SPG",
+    "name": "Simon Property"
+  },
+  {
+    "capital": "APA",
+    "yahoo": "APA",
+    "name": "Apache"
+  },
+  {
+    "capital": "EYPT",
+    "yahoo": "EYPT",
+    "name": "EyePoint Pharmaceuticals, Inc."
+  },
+  {
+    "capital": "DAPP",
+    "yahoo": "DAPP",
+    "name": "VanEck Vectors ETF Trust - VanEck Vectors Digital Transformation ETF"
+  },
+  {
+    "capital": "GPC",
+    "yahoo": "GPC",
+    "name": "Genuine Parts"
+  },
+  {
+    "capital": "SPB",
+    "yahoo": "SPB",
+    "name": "Spectrum Brands"
+  },
+  {
+    "capital": "MPC",
+    "yahoo": "MPC",
+    "name": "Marathon Petroleum"
+  },
+  {
+    "capital": "WPC",
+    "yahoo": "WPC",
+    "name": "W.P. Carey Inc. REIT"
+  },
+  {
+    "capital": "CPB",
+    "yahoo": "CPB",
+    "name": "Campbell Soup"
+  },
+  {
+    "capital": "AUPH",
+    "yahoo": "AUPH",
+    "name": "Aurinia Pharmaceuticals Inc."
+  },
+  {
+    "capital": "WPM",
+    "yahoo": "WPM",
+    "name": "Silver Wheaton"
+  },
+  {
+    "capital": "ASPI",
+    "yahoo": "ASPI",
+    "name": "ASP Isotopes Inc"
+  },
+  {
+    "capital": "AMPH",
+    "yahoo": "AMPH",
+    "name": "Amphastar Pharmaceuticals Inc"
+  },
+  {
+    "capital": "GPN",
+    "yahoo": "GPN",
+    "name": "Global Payments"
+  },
+  {
+    "capital": "API",
+    "yahoo": "API",
+    "name": "Agora, Inc."
+  },
+  {
+    "capital": "OPI",
+    "yahoo": "OPI",
+    "name": "Office Properties Income Trust"
+  },
+  {
+    "capital": "APH",
+    "yahoo": "APH",
+    "name": "Amphenol Corp"
+  },
+  {
+    "capital": "AMPL",
+    "yahoo": "AMPL",
+    "name": "Amplitude, Inc."
+  },
+  {
+    "capital": "GPK",
+    "yahoo": "GPK",
+    "name": "Graphic Packaging"
+  },
+  {
+    "capital": "BCPC",
+    "yahoo": "BCPC",
+    "name": "Balchem Corp"
+  },
+  {
+    "capital": "CPK",
+    "yahoo": "CPK",
+    "name": "Chesapeake Utilities Corp"
+  },
+  {
+    "capital": "OPK",
+    "yahoo": "OPK",
+    "name": "OPKO Health, Inc."
+  },
+  {
+    "capital": "SPT",
+    "yahoo": "SPT",
+    "name": "Sprout Social"
+  },
+  {
+    "capital": "PSNY",
+    "yahoo": "PSNY",
+    "name": "Polestar Automotive Holding UK PLC"
+  },
+  {
+    "capital": "CPT",
+    "yahoo": "CPT",
+    "name": "Camden Property Trust"
+  },
+  {
+    "capital": "CMPX",
+    "yahoo": "CMPX",
+    "name": "Compass Therapeutics, Inc."
+  },
+  {
+    "capital": "MPW",
+    "yahoo": "MPW",
+    "name": "Medical Properties"
+  },
+  {
+    "capital": "APP",
+    "yahoo": "APP",
+    "name": "Applovin Corporation"
+  },
+  {
+    "capital": "CPS",
+    "yahoo": "CPS",
+    "name": "Cooper-Standard Holdings Inc."
+  },
+  {
+    "capital": "SPR",
+    "yahoo": "SPR",
+    "name": "Spirit Aerosystems"
+  },
+  {
+    "capital": "ECPG",
+    "yahoo": "ECPG",
+    "name": "Encore Capital Group Inc"
+  },
+  {
+    "capital": "EPR",
+    "yahoo": "EPR",
+    "name": "EPR Properties"
+  },
+  {
+    "capital": "IAG",
+    "yahoo": "IAG",
+    "name": "IAG - GBP"
+  },
+  {
+    "capital": "OPUSD",
+    "yahoo": "OP",
+    "name": "OP/USD"
+  },
+  {
+    "capital": "CMPR",
+    "yahoo": "CMPR",
+    "name": "Cimpress PLC"
+  },
+  {
+    "capital": "OPY",
+    "yahoo": "OPY",
+    "name": "Oppenheimer Holdings Inc"
+  },
+  {
+    "capital": "MPX",
+    "yahoo": "MPX",
+    "name": "Marine Products Corp"
+  },
+  {
+    "capital": "ESPO",
+    "yahoo": "ESPO",
+    "name": "VanEck Vectors Video Gaming & eSports ETF"
+  },
+  {
+    "capital": "HOPE",
+    "yahoo": "HOPE",
+    "name": "Hope Bancorp"
+  },
+  {
+    "capital": "KSPI",
+    "yahoo": "KSPI",
+    "name": "Kaspi.KZ JSC - ADR"
+  },
+  {
+    "capital": "JEPI",
+    "yahoo": "JEPI",
+    "name": "JPMorgan Equity Premium Income ETF"
+  },
+  {
+    "capital": "NWPX",
+    "yahoo": "NWPX",
+    "name": "Northwest Pipe Co"
+  },
+  {
+    "capital": "MGAM",
+    "yahoo": "MGAM",
+    "name": "Morgan Advanced Materials"
+  },
+  {
+    "capital": "LOPE",
+    "yahoo": "LOPE",
+    "name": "Grand Canyon Education Inc"
+  },
+  {
+    "capital": "IMPP",
+    "yahoo": "IMPP",
+    "name": "Imperial Petroleum Inc."
+  },
+  {
+    "capital": "ISPR",
+    "yahoo": "ISPR",
+    "name": "Ispire Technology Inc"
+  },
+  {
+    "capital": "IIPR",
+    "yahoo": "IIPR",
+    "name": "IIPR"
+  },
+  {
+    "capital": "OSPN",
+    "yahoo": "OSPN",
+    "name": "OneSpan Inc"
+  },
+  {
+    "capital": "MGPI",
+    "yahoo": "MGPI",
+    "name": "MGP Ingredients Inc"
+  },
+  {
+    "capital": "KMPR",
+    "yahoo": "KMPR",
+    "name": "Kemper Corporation"
+  },
+  {
+    "capital": "JEPQ",
+    "yahoo": "JEPQ",
+    "name": "JPMorgan Nasdaq Equity Premium Income ETF"
+  },
+  {
+    "capital": "WWD",
+    "yahoo": "WWD",
+    "name": "Woodward Inc"
+  },
+  {
+    "capital": "EWD",
+    "yahoo": "EWD",
+    "name": "iShares MSCI Sweden ETF"
+  },
+  {
+    "capital": "AMWD",
+    "yahoo": "AMWD",
+    "name": "American Woodmark Corp"
+  },
+  {
+    "capital": "EWM",
+    "yahoo": "EWM",
+    "name": "iShares MSCI Malaysia ETF"
+  },
+  {
+    "capital": "ACWI",
+    "yahoo": "ACWI",
+    "name": "iShares MSCI ACWI ETF"
+  },
+  {
+    "capital": "UWM",
+    "yahoo": "UWM",
+    "name": "ProShares Ultra Russell2000"
+  },
+  {
+    "capital": "CSWC",
+    "yahoo": "CSWC",
+    "name": "Capital Southwest"
+  },
+  {
+    "capital": "GWH",
+    "yahoo": "GWH",
+    "name": "ESS Tech Inc."
+  },
+  {
+    "capital": "CWH",
+    "yahoo": "CWH",
+    "name": "Camping World Holdings Inc"
+  },
+  {
+    "capital": "AMWL",
+    "yahoo": "AMWL",
+    "name": "American Well Corporation"
+  },
+  {
+    "capital": "AWK",
+    "yahoo": "AWK",
+    "name": "American Water"
+  },
+  {
+    "capital": "SWK",
+    "yahoo": "SWK",
+    "name": "Stanley Black"
+  },
+  {
+    "capital": "FKWL",
+    "yahoo": "FKWL",
+    "name": "Franklin Wireless Corp."
+  },
+  {
+    "capital": "GWW",
+    "yahoo": "GWW",
+    "name": "Grainger W.W."
+  },
+  {
+    "capital": "WWW",
+    "yahoo": "WWW",
+    "name": "Wolverine World Wide Inc"
+  },
+  {
+    "capital": "ACWX",
+    "yahoo": "ACWX",
+    "name": "iShares MSCI ACWI ex U.S. ETF"
+  },
+  {
+    "capital": "DAWN",
+    "yahoo": "DAWN",
+    "name": "Day One Biopharmaceuticals"
+  },
+  {
+    "capital": "EWZ",
+    "yahoo": "EWZ",
+    "name": "iShares MSCI Brazil Capped ETF"
+  },
+  {
+    "capital": "EWW",
+    "yahoo": "EWW",
+    "name": "iShares MSCI Mexico ETF"
+  },
+  {
+    "capital": "NEWT",
+    "yahoo": "NEWT",
+    "name": "NewtekOne Inc"
+  },
+  {
+    "capital": "KEFI",
+    "yahoo": "KEFI",
+    "name": "Kefi Gold and Copper PLC"
+  },
+  {
+    "capital": "POWL",
+    "yahoo": "POWL",
+    "name": "Powell Industries"
+  },
+  {
+    "capital": "POWI",
+    "yahoo": "POWI",
+    "name": "Power Integrations Inc"
+  },
+  {
+    "capital": "TOWN",
+    "yahoo": "TOWN",
+    "name": "Towne Bank/Portsmouth VA"
+  },
+  {
+    "capital": "COHR",
+    "yahoo": "COHR",
+    "name": "COHERENT CORP"
+  },
+  {
+    "capital": "SSTI",
+    "yahoo": "SSTI",
+    "name": "SoundThinking Inc"
+  },
+  {
+    "capital": "RYTM",
+    "yahoo": "RYTM",
+    "name": "Rhythm Pharmaceuticals Inc"
+  },
+  {
+    "capital": "PSTG",
+    "yahoo": "PSTG",
+    "name": "Pure Storage"
+  },
+  {
+    "capital": "RGTI",
+    "yahoo": "RGTI",
+    "name": "Rigetti Computing, Inc."
+  },
+  {
+    "capital": "UCTT",
+    "yahoo": "UCTT",
+    "name": "Ultra Clean Holdings Inc"
+  },
+  {
+    "capital": "TU",
+    "yahoo": "TU",
+    "name": "US 2Y T-Note"
+  },
+  {
+    "capital": "YUM",
+    "yahoo": "YUM",
+    "name": "Yum"
+  },
+  {
+    "capital": "SMTC",
+    "yahoo": "SMTC",
+    "name": "Semtech Corp"
+  },
+  {
+    "capital": "PLUR",
+    "yahoo": "PLUR",
+    "name": "Pluri Inc."
+  },
+  {
+    "capital": "USTUSD",
+    "yahoo": "UST",
+    "name": "UST/USD (TerraClassicUSD)"
+  },
+  {
+    "capital": "WATT",
+    "yahoo": "WATT",
+    "name": "Energous"
+  },
+  {
+    "capital": "TGTX",
+    "yahoo": "TGTX",
+    "name": "TG Therapeutics, Inc."
+  },
+  {
+    "capital": "PATK",
+    "yahoo": "PATK",
+    "name": "Patrick Industries Inc"
+  },
+  {
+    "capital": "ASUR",
+    "yahoo": "ASUR",
+    "name": "Asure"
+  },
+  {
+    "capital": "AUR",
+    "yahoo": "AUR",
+    "name": "Aurora Innovation, Inc."
+  },
+  {
+    "capital": "MUR",
+    "yahoo": "MUR",
+    "name": "Murphy"
+  },
+  {
+    "capital": "SATS",
+    "yahoo": "SATS",
+    "name": "EchoStar Corp"
+  },
+  {
+    "capital": "COUR",
+    "yahoo": "COUR",
+    "name": "Coursera, Inc."
+  },
+  {
+    "capital": "TITN",
+    "yahoo": "TITN",
+    "name": "Titan Machinery Inc"
+  },
+  {
+    "capital": "PCTY",
+    "yahoo": "PCTY",
+    "name": "Paylocity Holding Corp"
+  },
+  {
+    "capital": "MUX",
+    "yahoo": "MUX",
+    "name": "McEwen Inc"
+  },
+  {
+    "capital": "WT",
+    "yahoo": "WT",
+    "name": "WisdomTree Inc"
+  },
+  {
+    "capital": "LAUR",
+    "yahoo": "LAUR",
+    "name": "Laureate Education Inc"
+  },
+  {
+    "capital": "YETI",
+    "yahoo": "YETI",
+    "name": "YETI Holdings, Inc."
+  },
+  {
+    "capital": "ICUI",
+    "yahoo": "ICUI",
+    "name": "ICU Medical Inc"
+  },
+  {
+    "capital": "OSUR",
+    "yahoo": "OSUR",
+    "name": "OraSure Technologies Inc"
+  },
+  {
+    "capital": "OKUR",
+    "yahoo": "OKUR",
+    "name": "OnKure Therapeutics Inc"
+  },
+  {
+    "capital": "ZETA",
+    "yahoo": "ZETA",
+    "name": "Zeta Global Holdings Corp."
+  },
+  {
+    "capital": "IEUS",
+    "yahoo": "IEUS",
+    "name": "iShares MSCI Europe Small-Cap ETF"
+  },
+  {
+    "capital": "OCUL",
+    "yahoo": "OCUL",
+    "name": "Ocular Therapeutix Inc"
+  },
+  {
+    "capital": "XMTR",
+    "yahoo": "XMTR",
+    "name": "Xometry Inc"
+  },
+  {
+    "capital": "JOUT",
+    "yahoo": "JOUT",
+    "name": "Johnson Outdoors Inc"
+  },
+  {
+    "capital": "FETUSD",
+    "yahoo": "FET",
+    "name": "FET/USD"
+  },
+  {
+    "capital": "GETY",
+    "yahoo": "GETY",
+    "name": "Getty Images Holdings Inc"
+  },
+  {
+    "capital": "GTE",
+    "yahoo": "GTE",
+    "name": "Gran Tierra Energy Inc"
+  },
+  {
+    "capital": "MTD",
+    "yahoo": "MTD",
+    "name": "Mettler-Toledo"
+  },
+  {
+    "capital": "ASTC",
+    "yahoo": "ASTC",
+    "name": "Astrotech"
+  },
+  {
+    "capital": "CYTK",
+    "yahoo": "CYTK",
+    "name": "Cytokinetics Inc"
+  },
+  {
+    "capital": "CSTL",
+    "yahoo": "CSTL",
+    "name": "Castle Biosciences Inc."
+  },
+  {
+    "capital": "ITA",
+    "yahoo": "ITA",
+    "name": "iShares U.S. Aerospace & Defense ETF"
+  },
+  {
+    "capital": "ASTE",
+    "yahoo": "ASTE",
+    "name": "Astec Industries Inc"
+  },
+  {
+    "capital": "AMTD",
+    "yahoo": "AMTD",
+    "name": "AMTD IDEA Group"
+  },
+  {
+    "capital": "MYSE",
+    "yahoo": "MYSE",
+    "name": "Myseum Inc"
+  },
+  {
+    "capital": "ACTG",
+    "yahoo": "ACTG",
+    "name": "Acacia Research"
+  },
+  {
+    "capital": "TMUS",
+    "yahoo": "TMUS",
+    "name": "T-Mobile"
+  },
+  {
+    "capital": "STC",
+    "yahoo": "STC",
+    "name": "Stewart Information Services Corp"
+  },
+  {
+    "capital": "MTB",
+    "yahoo": "MTB",
+    "name": "M&T Bank Corp"
+  },
+  {
+    "capital": "TOUR",
+    "yahoo": "TOUR",
+    "name": "Tuniu Corporation"
+  },
+  {
+    "capital": "EWTX",
+    "yahoo": "EWTX",
+    "name": "Edgewise Therapeutics, Inc."
+  },
+  {
+    "capital": "LUMN",
+    "yahoo": "LUMN",
+    "name": "Lumen Technologies"
+  },
+  {
+    "capital": "ETN",
+    "yahoo": "ETN",
+    "name": "Eaton"
+  },
+  {
+    "capital": "MTN",
+    "yahoo": "MTN",
+    "name": "Vail Resorts"
+  },
+  {
+    "capital": "BITF",
+    "yahoo": "BITF",
+    "name": "Bitfarms Ltd."
+  },
+  {
+    "capital": "AUTL",
+    "yahoo": "AUTL",
+    "name": "Autolus Therapeutics PLC"
+  },
+  {
+    "capital": "AMTM",
+    "yahoo": "AMTM",
+    "name": "Amentum Holdings Inc"
+  },
+  {
+    "capital": "EWTUSD",
+    "yahoo": "EWT",
+    "name": "EWT/USD"
+  },
+  {
+    "capital": "FSTR",
+    "yahoo": "FSTR",
+    "name": "L B Foster Co"
+  },
+  {
+    "capital": "STT",
+    "yahoo": "STT",
+    "name": "State Street"
+  },
+  {
+    "capital": "COTY",
+    "yahoo": "COTY",
+    "name": "Coty"
+  },
+  {
+    "capital": "BITUSD",
+    "yahoo": "BIT",
+    "name": "BIT/USD"
+  },
+  {
+    "capital": "ESTA",
+    "yahoo": "ESTA",
+    "name": "Establishment Labs Holdings Inc"
+  },
+  {
+    "capital": "CETX",
+    "yahoo": "CETX",
+    "name": "Cemtrex"
+  },
+  {
+    "capital": "ITW",
+    "yahoo": "ITW",
+    "name": "Illinois Tool Works Inc"
+  },
+  {
+    "capital": "ASTS",
+    "yahoo": "ASTS",
+    "name": "AST SpaceMobile, Inc."
+  },
+  {
+    "capital": "ESTC",
+    "yahoo": "ESTC",
+    "name": "Elastic N.V."
+  },
+  {
+    "capital": "AYTU",
+    "yahoo": "AYTU",
+    "name": "Aytu BioScience, Inc."
+  },
+  {
+    "capital": "WTS",
+    "yahoo": "WTS",
+    "name": "Watts Water Technologies Inc"
+  },
+  {
+    "capital": "ETR",
+    "yahoo": "ETR",
+    "name": "Entergy Corp"
+  },
+  {
+    "capital": "BOTZ",
+    "yahoo": "BOTZ",
+    "name": "Global X Robotics & Artificial Intelligence ETF"
+  },
+  {
+    "capital": "FATE",
+    "yahoo": "FATE",
+    "name": "Fate Therapeutics Inc"
+  },
+  {
+    "capital": "AMTX",
+    "yahoo": "AMTX",
+    "name": "Aemetis Inc."
+  },
+  {
+    "capital": "STX",
+    "yahoo": "STX",
+    "name": "Seagate"
+  },
+  {
+    "capital": "DCTH",
+    "yahoo": "DCTH",
+    "name": "Delcath Systems, Inc."
+  },
+  {
+    "capital": "GTX",
+    "yahoo": "GTX",
+    "name": "Garrett Motion Inc"
+  },
+  {
+    "capital": "RCUS",
+    "yahoo": "RCUS",
+    "name": "Arcus Biosciences, Inc."
+  },
+  {
+    "capital": "STZ",
+    "yahoo": "STZ",
+    "name": "Constellation Brands"
+  },
+  {
+    "capital": "BETR",
+    "yahoo": "BETR",
+    "name": "Better Home & Finance Holding Co"
+  },
+  {
+    "capital": "NCTY",
+    "yahoo": "NCTY",
+    "name": "The9 Limited"
+  },
+  {
+    "capital": "LSTR",
+    "yahoo": "LSTR",
+    "name": "Landstar System Inc"
+  },
+  {
+    "capital": "LYTS",
+    "yahoo": "LYTS",
+    "name": "LSI Industries Inc"
+  },
+  {
+    "capital": "HSTM",
+    "yahoo": "HSTM",
+    "name": "HealthStream Inc"
+  },
+  {
+    "capital": "MKTX",
+    "yahoo": "MKTX",
+    "name": "MarketAxesss"
+  },
+  {
+    "capital": "HOTH",
+    "yahoo": "HOTH",
+    "name": "Hoth Therapeutics"
+  },
+  {
+    "capital": "NKTR",
+    "yahoo": "NKTR",
+    "name": "Nektar"
+  },
+  {
+    "capital": "NATL",
+    "yahoo": "NATL",
+    "name": "NCR Atleos Corp"
+  }
+]
