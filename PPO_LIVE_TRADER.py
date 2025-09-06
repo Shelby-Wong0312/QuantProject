@@ -89,6 +89,11 @@ class PPOLiveTrader:
         self.base_url = "https://demo-api-capital.backend-capital.com"
         self.session_token = None
         self.cst = None
+
+        # Safety / test flags
+        self.dry_run = os.getenv('DRY_RUN', '0') == '1'  # When true, skip login and never place orders
+        self.max_loops = int(os.getenv('MAX_LOOPS', '0'))  # When >0, stop after N scan loops
+        self.scan_interval = int(os.getenv('SCAN_INTERVAL_SECONDS', '60'))  # Interval between scans
         
         # Load PPO model
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -165,7 +170,8 @@ class PPOLiveTrader:
         """Load stock symbols"""
         # Try to load from file
         if os.path.exists('data/tier_s.txt'):
-            with open('data/tier_s.txt', 'r') as f:
+            # Use utf-8-sig to automatically drop BOM if present
+            with open('data/tier_s.txt', 'r', encoding='utf-8-sig') as f:
                 symbols = [line.strip() for line in f.readlines() if line.strip()]
                 return symbols[:40]  # Top 40 stocks
         
@@ -175,6 +181,9 @@ class PPOLiveTrader:
     
     def login_capital(self):
         """Login to Capital.com"""
+        if self.dry_run:
+            print("[DRY-RUN] Skip Capital.com login (no orders will be sent)")
+            return False
         headers = {
             "X-CAP-API-KEY": self.api_key,
             "Content-Type": "application/json"
@@ -329,6 +338,9 @@ class PPOLiveTrader:
     
     def place_capital_order(self, symbol: str, direction: str, size: int):
         """Place order on Capital.com"""
+        if self.dry_run:
+            print(f"[DRY-RUN] 模擬下單：{direction} {size} {symbol}")
+            return
         if not self.cst:
             return
         
@@ -388,11 +400,12 @@ class PPOLiveTrader:
         print(" PPO LIVE TRADING SYSTEM")
         print(" AI-Powered Trading with Trained PPO Model")
         print("="*60)
-        
+
         # Connect to Capital.com
         self.login_capital()
-        
+
         # Main loop
+        loops = 0
         while True:
             try:
                 print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Scanning {len(self.symbols)} stocks with PPO...")
@@ -430,7 +443,13 @@ class PPOLiveTrader:
                         print(f"  {sym}: Entry=${pos['entry_price']:.2f}, Shares={pos['shares']}")
                 
                 # Wait before next scan
-                time.sleep(60)  # Scan every minute
+                time.sleep(self.scan_interval)
+
+                # Stop in test mode after N loops
+                loops += 1
+                if self.max_loops and loops >= self.max_loops:
+                    print(f"[INFO] MAX_LOOPS={self.max_loops} reached, exiting test run.")
+                    break
                 
             except KeyboardInterrupt:
                 print("\n[EXIT] PPO Trading System stopped")
