@@ -95,17 +95,21 @@ class PPOLiveTrader:
         self.dry_run = os.getenv('DRY_RUN', '0') == '1'  # When true, skip login and never place orders
         self.max_loops = int(os.getenv('MAX_LOOPS', '0'))  # When >0, stop after N scan loops
         self.scan_interval = int(os.getenv('SCAN_INTERVAL_SECONDS', '60'))  # Interval between scans
-        
+
         # Load PPO model
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model = ActorCritic(obs_dim=220, action_dim=4)  # Match trained model dimensions
         self.load_model()
-        
+
         # Trading parameters
         self.symbols_file = os.getenv('SYMBOLS_FILE', '').strip()
-        self.max_symbols = int(os.getenv('MAX_SYMBOLS', '40'))  # cap to avoid overload
+        self.max_symbols = int(os.getenv('MAX_SYMBOLS', '40'))  # 0 or negative = no cap
         self.batch_size = int(os.getenv('BATCH_SIZE', '0'))  # 0 = process all each loop
         self.batch_index = 0
+        # Symbol mappings (Capital <-> Yahoo, EPIC codes)
+        self.symbol_map_yahoo: Dict[str, str] = {}
+        self.symbol_map_epic: Dict[str, str] = {}
+        self.load_symbol_mappings()
         self.symbols = self.load_symbols()
         self.positions = {}
         self.max_positions = 10
@@ -170,6 +174,50 @@ class PPOLiveTrader:
         else:
             print(f"[WARNING] No trained model found at {model_path}")
             print("[WARNING] Using random initialized model")
+
+    def load_symbol_mappings(self):
+        """Load Capital<->Yahoo mapping to ensure we price/order correctly."""
+        # Prefer full mapping file
+        try:
+            if os.path.exists('capital_yahoo_full_mapping.json'):
+                with open('capital_yahoo_full_mapping.json', 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                mapped = data.get('mapped') if isinstance(data, dict) else None
+                if isinstance(mapped, list):
+                    for item in mapped:
+                        cap = str(item.get('capital_ticker', '')).upper()
+                        epic = str(item.get('capital_epic', '')).upper()
+                        yh = str(item.get('yahoo_symbol', '')).upper()
+                        if cap:
+                            if yh:
+                                self.symbol_map_yahoo[cap] = yh
+                            if epic:
+                                self.symbol_map_epic[cap] = epic
+        except Exception as e:
+            logger.error(f"Failed to load full mapping: {e}")
+
+        # Fallback: simple mapping (capital->yahoo)
+        try:
+            if os.path.exists('capital_yahoo_simple_map.json'):
+                with open('capital_yahoo_simple_map.json', 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                if isinstance(data, dict):
+                    for cap, yh in data.items():
+                        cap_u = str(cap).upper()
+                        yh_u = str(yh).upper()
+                        self.symbol_map_yahoo.setdefault(cap_u, yh_u)
+        except Exception as e:
+            logger.error(f"Failed to load simple mapping: {e}")
+
+    def get_yahoo_symbol(self, capital_ticker: str) -> str:
+        s = str(capital_ticker).upper()
+        return self.symbol_map_yahoo.get(s, s)
+
+    def get_epic(self, capital_ticker: str) -> str:
+        s = str(capital_ticker).upper()
+        if s in self.symbol_map_epic:
+            return self.symbol_map_epic[s]
+        return f"US.{s}.CASH"
     
     def _read_symbols_file(self, path: str) -> List[str]:
         try:
@@ -207,11 +255,11 @@ class PPOLiveTrader:
                 candidates = self._read_symbols_file(self.symbols_file)
 
         if not candidates:
-            # common repo files as fallbacks
+            # common repo files as fallbacks (prefer validated list)
             fallback_files = [
+                'validated_capital_symbols_final.txt',
                 'data/tier_s.txt',
                 'capital_symbols_all.txt',
-                'validated_capital_symbols_final.txt',
                 'validated_yahoo_symbols_final.txt',
                 'capital_tickers.txt',
                 'quick_yahoo_symbols.txt',
@@ -232,7 +280,7 @@ class PPOLiveTrader:
             return default_syms
 
         total = len(candidates)
-        if self.max_symbols > 0 and total > self.max_symbols:
+        if self.max_symbols and self.max_symbols > 0 and total > self.max_symbols:
             used = candidates[:self.max_symbols]
         else:
             used = candidates
@@ -268,6 +316,8 @@ class PPOLiveTrader:
                 self.session_token = response.headers.get("X-SECURITY-TOKEN")
                 print("[OK] Capital.com connected")
                 return True
+            else:
+                logger.error(f"Capital.com login failed: HTTP {response.status_code} {response.text[:200] if response.text else ''}")
         except Exception as e:
             print(f"[ERROR] Capital.com connection failed: {e}")
         
@@ -277,7 +327,8 @@ class PPOLiveTrader:
         """Extract features for PPO model"""
         try:
             # Get historical data
-            ticker = yf.Ticker(symbol)
+            yahoo_symbol = self.get_yahoo_symbol(symbol)
+            ticker = yf.Ticker(yahoo_symbol)
             hist = ticker.history(period="3mo", interval="1d")
             
             if len(hist) < self.lookback:
@@ -385,7 +436,7 @@ class PPOLiveTrader:
                 
                 # Execute on Capital.com if connected
                 if self.cst:
-                    self.place_capital_order(symbol, 'BUY', shares)
+                    self.place_order(symbol, 'BUY', shares)
         
         elif action == 2:  # Sell
             if symbol in self.positions:
@@ -397,7 +448,7 @@ class PPOLiveTrader:
                 
                 # Execute on Capital.com if connected
                 if self.cst:
-                    self.place_capital_order(symbol, 'SELL', position['shares'])
+                    self.place_order(symbol, 'SELL', position['shares'])
     
     def place_capital_order(self, symbol: str, direction: str, size: int):
         """Place order on Capital.com"""
@@ -430,12 +481,62 @@ class PPOLiveTrader:
                 print(f"[CAPITAL.COM] Order executed: {direction} {size} {symbol}")
         except Exception as e:
             logger.error(f"Capital.com order failed: {e}")
+
+    def place_order(self, symbol: str, direction: str, size: int):
+        """Place order using mapping and auto re-login on auth failure."""
+        if self.dry_run:
+            print(f"[DRY-RUN] Simulate order: {direction} {size} {symbol}")
+            return
+
+        if not self.cst:
+            # Try to login if not connected
+            if not self.login_capital():
+                logger.error("Cannot place order: not connected to Capital.com")
+                return
+
+        headers = {
+            "CST": self.cst,
+            "X-SECURITY-TOKEN": self.session_token,
+            "Content-Type": "application/json",
+        }
+
+        epic = self.get_epic(symbol)
+        payload = {"epic": epic, "direction": direction, "size": size}
+
+        try:
+            response = requests.post(
+                f"{self.base_url}/api/v1/positions",
+                headers=headers,
+                json=payload,
+                timeout=10,
+            )
+            if response.status_code == 200:
+                print(f"[CAPITAL.COM] Order executed: {direction} {size} {symbol} (EPIC={epic})")
+                return
+            if response.status_code in (401, 403):
+                logger.warning("Auth failed (401/403). Re-login and retry once.")
+                if self.login_capital():
+                    headers["CST"] = self.cst
+                    headers["X-SECURITY-TOKEN"] = self.session_token
+                    response = requests.post(
+                        f"{self.base_url}/api/v1/positions",
+                        headers=headers,
+                        json=payload,
+                        timeout=10,
+                    )
+                    if response.status_code == 200:
+                        print(f"[CAPITAL.COM] Order executed after relogin: {direction} {size} {symbol} (EPIC={epic})")
+                        return
+            logger.error(f"Order failed: HTTP {response.status_code} {response.text[:200] if getattr(response,'text',None) else ''}")
+        except Exception as e:
+            logger.error(f"Capital.com order exception: {e}")
     
     def check_positions(self):
         """Check stop loss and take profit"""
         for symbol in list(self.positions.keys()):
             try:
-                current_price = yf.Ticker(symbol).info.get('regularMarketPrice', 0)
+                yahoo_symbol = self.get_yahoo_symbol(symbol)
+                current_price = yf.Ticker(yahoo_symbol).info.get('regularMarketPrice', 0)
                 position = self.positions[symbol]
                 
                 # Check stop loss
@@ -444,7 +545,7 @@ class PPOLiveTrader:
                     print(f"[STOP LOSS] {symbol} @ ${current_price:.2f} | Loss: ${pnl:.2f}")
                     del self.positions[symbol]
                     if self.cst:
-                        self.place_capital_order(symbol, 'SELL', position['shares'])
+                        self.place_order(symbol, 'SELL', position['shares'])
                 
                 # Check take profit
                 elif current_price >= position['take_profit']:
@@ -452,7 +553,7 @@ class PPOLiveTrader:
                     print(f"[TAKE PROFIT] {symbol} @ ${current_price:.2f} | Profit: ${pnl:.2f}")
                     del self.positions[symbol]
                     if self.cst:
-                        self.place_capital_order(symbol, 'SELL', position['shares'])
+                        self.place_order(symbol, 'SELL', position['shares'])
                         
             except Exception as e:
                 logger.error(f"Error checking position {symbol}: {e}")

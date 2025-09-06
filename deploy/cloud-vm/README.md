@@ -28,10 +28,11 @@
 
    - 設定 `APP_ENTRY` 為要常駐執行的腳本（如 `PPO_LIVE_TRADER.py` 或 `PPO_LIVE_MONITOR.py`）。
    - 將 API 金鑰與機密填入 `.env`。請勿將 `.env` 提交到 Git。
-   - 股票清單：
-     - 可在 `.env` 設定 `SYMBOLS_FILE`（例如 `capital_symbols_all.txt`）。
-     - 預設最多只載入 `MAX_SYMBOLS=40` 檔，避免過載；可自行調整。
-     - 若要分批巡檢，設定 `BATCH_SIZE`（例如 200 表示每輪掃 200 檔，輪流掃完整清單）。
+   - 股票清單與掃描：
+     - 預設 `.env` 使用 `SYMBOLS_FILE=validated_capital_symbols_final.txt`，監控所有可交易的股票。
+     - `MAX_SYMBOLS=0` 代表不限制，全部載入；如需限流可設數字上限。
+     - `BATCH_SIZE=200` 代表每輪掃 200 檔，下一輪接續，循環覆蓋全部清單；上千檔時建議 100~500。
+     - `SCAN_INTERVAL_SECONDS` 可調整每輪間隔（例如 5 秒）。
 
 4) 執行安裝腳本（建立 venv 並安裝 systemd 服務）
    bash deploy/cloud-vm/setup_ubuntu.sh
