@@ -86,7 +86,8 @@ class PPOLiveTrader:
         self.api_key = os.getenv('CAPITAL_API_KEY')
         self.identifier = os.getenv('CAPITAL_IDENTIFIER')
         self.password = os.getenv('CAPITAL_API_PASSWORD')
-        self.base_url = "https://demo-api-capital.backend-capital.com"
+        # Allow switching Demo/Live via env; default to Demo
+        self.base_url = os.getenv('CAPITAL_BASE_URL', "https://demo-api-capital.backend-capital.com")
         self.session_token = None
         self.cst = None
 
@@ -400,6 +401,7 @@ class PPOLiveTrader:
         print(" PPO LIVE TRADING SYSTEM")
         print(" AI-Powered Trading with Trained PPO Model")
         print("="*60)
+        print(f"[CONFIG] base_url={self.base_url} dry_run={self.dry_run} interval={self.scan_interval}s")
 
         # Connect to Capital.com
         self.login_capital()
