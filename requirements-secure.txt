@@ -1,0 +1,3 @@
+# Security dependencies for CI and Docker builds
+bandit>=1.7.5
+safety>=2.3.5
