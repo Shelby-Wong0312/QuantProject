@@ -103,8 +103,10 @@ class PPOLiveTrader:
 
         # Trading parameters
         self.symbols_file = os.getenv('SYMBOLS_FILE', '').strip()
-        self.max_symbols = int(os.getenv('MAX_SYMBOLS', '40'))  # 0 or negative = no cap
-        self.batch_size = int(os.getenv('BATCH_SIZE', '0'))  # 0 = process all each loop
+        # Default to 0 (no cap) so thousands can be loaded if not configured
+        self.max_symbols = int(os.getenv('MAX_SYMBOLS', '0'))  # 0 or negative = no cap
+        # Default to 200 to avoid overloading when scanning thousands
+        self.batch_size = int(os.getenv('BATCH_SIZE', '200'))  # 0 = process all each loop
         self.batch_index = 0
         # Symbol mappings (Capital <-> Yahoo, EPIC codes)
         self.symbol_map_yahoo: Dict[str, str] = {}
