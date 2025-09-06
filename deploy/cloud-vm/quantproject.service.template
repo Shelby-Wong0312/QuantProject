@@ -1,0 +1,18 @@
+[Unit]
+Description=Quant Project Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User={{USER}}
+WorkingDirectory={{WORKING_DIR}}
+EnvironmentFile={{WORKING_DIR}}/.env
+ExecStart={{RUN_SH}}
+Restart=always
+RestartSec=5
+LimitNOFILE=1048576
+
+[Install]
+WantedBy=multi-user.target
+
