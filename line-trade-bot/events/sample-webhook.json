@@ -1,0 +1,11 @@
+{
+  "version": "2.0",
+  "routeKey": "POST /line/webhook",
+  "rawPath": "/line/webhook",
+  "headers": {
+    "x-line-signature": "<mock>"
+  },
+  "isBase64Encoded": false,
+  "body": "{\n  \"events\": [\n    {\n      \"type\": \"message\",\n      \"replyToken\": \"dummy\",\n      \"source\": {\n        \"type\": \"user\",\n        \"userId\": \"Uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"\n      },\n      \"message\": {\n        \"type\": \"text\",\n        \"text\": \"/help\"\n      }\n    }\n  ]\n}"
+}
+

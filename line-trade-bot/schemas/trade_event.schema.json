@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/trade_event.schema.json",
+  "title": "TradeEvent",
+  "description": "A single trade event used for push notifications and storage.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["trade", "event"],
+      "description": "Optional hint; ingestion does not require it."
+    },
+    "symbol": { "type": "string", "minLength": 1 },
+    "ticker": { "type": "string", "minLength": 1 },
+    "side": {
+      "type": "string",
+      "description": "Order/action side (case-insensitive).",
+      "enum": ["BUY", "SELL", "LONG", "SHORT", "OPEN", "CLOSE", "EXIT", "ADD", "REDUCE"]
+    },
+    "action": {
+      "type": "string",
+      "description": "Alias of side (case-insensitive).",
+      "enum": ["BUY", "SELL", "LONG", "SHORT", "OPEN", "CLOSE", "EXIT", "ADD", "REDUCE"]
+    },
+    "qty": {
+      "description": "Quantity size.",
+      "oneOf": [ {"type": "number"}, {"type": "integer"} ],
+      "minimum": 0
+    },
+    "quantity": {
+      "description": "Alias of qty.",
+      "oneOf": [ {"type": "number"}, {"type": "integer"} ],
+      "minimum": 0
+    },
+    "price": { "type": "number", "minimum": 0 },
+    "source": { "type": "string" },
+    "note": { "type": "string" },
+    "message": { "type": "string" },
+    "ts": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Client timestamp in ms. HTTP ingestion ignores this and sets server time."
+    }
+  },
+  "allOf": [
+    { "anyOf": [ {"required": ["symbol"]}, {"required": ["ticker"]} ] },
+    { "anyOf": [ {"required": ["side"]}, {"required": ["action"]} ] }
+  ],
+  "examples": [
+    {"symbol":"BTCUSDT","side":"BUY","price":50000.5,"qty":0.01,"source":"mybot","note":"entry"},
+    {"ticker":"AAPL","action":"SELL","quantity":10,"price":195.2}
+  ]
+}
+

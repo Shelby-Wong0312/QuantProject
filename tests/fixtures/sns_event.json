@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+        "TopicArn": "arn:aws:sns:ap-northeast-1:123456789012:trade-events",
+        "Subject": null,
+        "Message": "{\n  \"symbol\": \"BTCUSDT\",\n  \"side\": \"BUY\",\n  \"price\": 50000.5,\n  \"qty\": 0.01,\n  \"source\": \"bot\",\n  \"note\": \"entry\"\n}",
+        "Timestamp": "2025-01-01T12:00:00.000Z",
+        "SignatureVersion": "1",
+        "Signature": "<sig>",
+        "SigningCertUrl": "https://sns.ap-northeast-1.amazonaws.com/SimpleNotificationService.pem",
+        "UnsubscribeUrl": "https://sns.ap-northeast-1.amazonaws.com/?Action=Unsubscribe",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}
+

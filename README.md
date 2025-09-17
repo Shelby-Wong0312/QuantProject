@@ -1,168 +1,128 @@
-# 🚀 Ultimate Simple Auto Trader
+# Trade Events to LINE — Terraform (ap-northeast-1)
 
-極簡量化交易系統 - 一個檔案監控4000+股票並自動交易
+本專案提供交易事件推播到 LINE 與雙向查詢的雲端後端（API Gateway + Lambda + DynamoDB + SNS）。
 
-A minimalist quantitative trading system that monitors 4000+ stocks, generates signals, and executes trades automatically in just 300 lines of code.
+- 單向：交易系統透過 SNS Topic `trade-events` 或 HTTP `POST /events` 發佈事件，Lambda 轉送至已授權對話（LineGroups 白名單 + 訂閱名單）。
+- 雙向：LINE 使用者在對話中輸入指令（/help, /subscribe, /unsubscribe, /last N, /status, /positions），由 webhook 即時回覆。
+- 機密：SSM Parameter Store，Lambda 僅可讀取指定參數 ARN（不可列出）。
 
-## ✨ Why Simple?
+## 路徑結構
 
-**Traditional Quant Systems:**
-- 40+ files, 2700+ lines of code
-- Complex multi-tier architecture
-- Over-engineered abstractions
-- Difficult to understand and maintain
+- `/infra/terraform/` Terraform 專案（模組化：provider、dynamodb、sns、iam、lambda、apigw）
+- `/app/infra_bridge/event_bus.py` 提供 `publish_trade_event(...)`，供外部交易系統直接匯入呼叫 SNS
+- 既有 Lambda 程式碼位於 `line-trade-bot/src/...`（webhook/ingest/line_push + common layer），Terraform 會從此路徑打包部署
 
-**This System:**
-- **1 file, 300 lines of code**
-- Same functionality, 90% less complexity
-- Easy to understand, modify, and deploy
-- **Complexity ≠ Profitability**
+## 打包與部署
 
-## 🚀 Features
+1) 打包（依賴層）
+- `make package`
+  - 內部會執行 `line-trade-bot/scripts/build_deps_layer.sh|.ps1` 產生 `infra/terraform/build/deps_layer.zip`
 
-- **Monitor 4000+ Stocks** - Real-time monitoring via Yahoo Finance
-- **Auto Signal Generation** - RSI, Volume Spike, Price Breakout detection
-- **Auto Trading** - Seamless integration with Capital.com API
-- **Risk Management** - Built-in 2% stop loss and 5% take profit
-- **Multi-threading** - Parallel processing for speed
-- **Zero Dependencies** - Only 5 essential packages needed
+2) 建立 SSM 機密（建議）
+- `aws ssm put-parameter --name /prod/line/CAT --type SecureString --value '<LINE_CHANNEL_ACCESS_TOKEN>' --overwrite`
+- `aws ssm put-parameter --name /prod/line/SECRET --type SecureString --value '<LINE_CHANNEL_SECRET>' --overwrite`
+- `aws ssm put-parameter --name /prod/ingest/TOKEN --type SecureString --value '<INGEST_AUTH_TOKEN>' --overwrite`
 
-## 📊 System Architecture
+3) 部署（預設區域 ap-northeast-1）
+- `make deploy`（等同於 terraform init + apply，會帶入必要變數）
 
+完成後輸出：`api_endpoint`、`webhook_endpoint`（設定到 LINE）、`events_endpoint`、`trade_events_topic_arn` 與各表名稱。
+
+## 本地測試
+
+1) 單元測試（pytest + moto）
+- 安裝依賴：`pip install -r requirements.txt`
+- 執行測試：`pytest -q`
+- 說明：測試會以 moto 模擬 DynamoDB/SNS，並以假 line-bot-sdk（dummy）攔截推播呼叫，不需實際連線 AWS/LINE。
+
+2) sam local invoke（僅示例）
+- 注意：這些 Lambda 會呼叫 AWS SDK（DynamoDB/SSM/SNS），若本機未連線 AWS 或未使用 LocalStack，則可能失敗。建議以 pytest 測邏輯、以已部署的 `aws lambda invoke` 測整合。
+
+- 準備：`cd line-trade-bot && sam build`
+
+- 觸發 IngestFunction（提供 HTTP API v2 事件 JSON）
+  - 建立 `env.dev.json`（必要環境變數，示例僅供說明）：
+    ```json
+    {
+      "IngestFunction": {
+        "INGEST_TOKEN": "dev-token",
+        "EVENTS_TABLE": "TradeEvents",
+        "SUBSCRIBERS_TABLE": "trade-events-subscribers",
+        "LINE_GROUPS_TABLE": "LineGroups",
+        "SYSTEM_STATE_TABLE": "SystemState",
+        "LINE_CHANNEL_ACCESS_TOKEN": "DUMMY"
+      }
+    }
+    ```
+  - 執行：
+    `sam local invoke IngestFunction -e events/sample-ingest.json --env-vars env.dev.json`
+
+- 觸發 WebhookFunction（需要正確簽章）
+  - 產生簽章：
+    ```bash
+    export LINE_CHANNEL_SECRET=secret
+    SIG=$(python - <<'PY'
+import os,sys,hashlib,hmac,base64,json
+secret=os.environ.get('LINE_CHANNEL_SECRET','secret')
+body=json.dumps({"events":[{"type":"message","replyToken":"r1","source":{"type":"user","userId":"U1"},"message":{"type":"text","text":"/help"}}]})
+print(base64.b64encode(hmac.new(secret.encode(), body.encode(), hashlib.sha256).digest()).decode())
+PY
+    )
+    ```
+  - 建立事件檔 `events/webhook-help.json`（將上面產生的 $SIG 放入 header）：
+    ```json
+    {"version":"2.0","headers":{"X-Line-Signature":"REPLACE_SIG"},"isBase64Encoded":false,
+     "body":"{\n  \"events\": [{\n    \"type\": \"message\",\n    \"replyToken\": \"r1\",\n    \"source\": {\"type\": \"user\", \"userId\": \"U1\"},\n    \"message\": {\"type\": \"text\", \"text\": \"/help\"}\n  }]\n}"}
+    ```
+  - 執行：
+    `sam local invoke WebhookFunction -e events/webhook-help.json --env-vars env.dev.json`
+
+3) 已部署函式（aws lambda invoke）
+- 取得函式名稱（Terraform 輸出或於 Console 查看）：
+  - `${project_name}-webhook`、`${project_name}-ingest`、`${project_name}-line-push`
+- 範例（webhook）：
+  - `aws lambda invoke --function-name line-trade-bot-webhook --payload fileb://line-trade-bot/events/sample-webhook.json out.json`
+  - 注意：sample-webhook.json 需要有效簽章，參考上面產生方式。
+
+## 指令
+- `/help`、`/subscribe`、`/unsubscribe`、`/last [n]`、`/status [accountId]`、`/positions [accountId]`
+
+## 事件格式（TradeEvent 短版）
 ```
-Yahoo Finance (Free Real-time Data)
-    ↓
-Signal Scanner (RSI + Volume + Breakout)
-    ↓
-Trade Executor (Capital.com API)
-    ↓
-Risk Manager (Stop Loss + Position Sizing)
-```
-
-## 📁 Files
-
-```
-QuantProject/
-├── ULTIMATE_SIMPLE_TRADER.py  # Main system (300 lines)
-├── RUN_SIMPLE_TRADER.bat      # Windows launcher
-├── test_ultimate.py           # Test script
-├── .env                       # API credentials
-└── data/
-    └── all_symbols.txt        # 4000+ stock symbols
-```
-
-## 🛠️ Quick Start
-
-### 1. Clone & Install (30 seconds)
-```bash
-git clone https://github.com/yourusername/QuantProject.git
-cd QuantProject
-pip install yfinance pandas numpy requests python-dotenv
-```
-
-### 2. Configure API (.env file)
-```env
-CAPITAL_API_KEY=your_api_key
-CAPITAL_IDENTIFIER=your_email
-CAPITAL_API_PASSWORD=your_password
-```
-
-### 3. Run!
-```bash
-python ULTIMATE_SIMPLE_TRADER.py
-```
-
-That's it! System will start monitoring 4000+ stocks immediately.
-
-## 📈 Trading Strategy
-
-### Buy Signals
-- **RSI < 30** (Oversold condition)
-- **Volume > 2x average** (Unusual activity)
-- **Price > MA20 * 1.02** (Breakout)
-
-### Sell Signals
-- **RSI > 70** (Overbought condition)
-- **Stop Loss** (-2% from entry)
-- **Take Profit** (+5% from entry)
-
-### Risk Management
-- Maximum 20 concurrent positions
-- 1% capital per trade
-- Automatic stop loss/take profit
-
-## 📊 How It Works
-
-```python
-# 1. Scan 4000+ stocks every 30 seconds
-for symbol in stocks:
-    signal = get_signals(symbol)
-    
-# 2. Calculate indicators
-RSI = calculate_rsi(prices, period=14)
-Volume_Ratio = current_volume / average_volume
-
-# 3. Generate signals
-if RSI < 30 and Volume_Ratio > 2:
-    execute_trade('BUY', symbol)
-    
-# 4. Manage positions
-if price < stop_loss or price > take_profit:
-    close_position(symbol)
+{
+  "symbol": "BTCUSDT",
+  "side": "BUY",
+  "qty": 0.01,
+  "price": 50000.5,
+  "source": "mybot",
+  "note": "entry"
+}
 ```
 
-## 🎯 Performance
-
-- **Scan Speed**: 4000+ stocks in ~10 seconds
-- **Signal Rate**: ~5-10 signals per scan
-- **Execution**: < 1 second per trade
-- **CPU Usage**: < 20% on modern hardware
-- **Memory**: < 500MB RAM
-
-## 🧪 Testing
-
-```bash
-# Test signal generation
-python test_ultimate.py
-
-# Expected output:
-[TEST] System initialized successfully!
-[TEST] Loaded 4000 stocks
-[TEST] Testing signal generation...
-  AAPL: No signal
-  ABBV: SELL (RSI=81.7)
-  ...
-[TEST] All tests passed!
+## 以程式發佈（Python）
 ```
+from app.infra_bridge.event_bus import publish_trade_event
 
-## 🔧 Customization
-
-Easy to modify parameters in `ULTIMATE_SIMPLE_TRADER.py`:
-
-```python
-# Trading parameters
-self.min_rsi = 30         # RSI oversold level
-self.max_rsi = 70         # RSI overbought level
-self.volume_spike = 2.0   # Volume multiplier
-self.position_size = 0.01 # 1% per trade
-self.stop_loss = 0.02     # 2% stop loss
-self.take_profit = 0.05   # 5% take profit
+publish_trade_event(
+    symbol="BTCUSDT", side="BUY", price=50000.5, qty=0.01,
+    source="mybot", note="entry"
+)
 ```
-
-## ⚠️ Disclaimer
-
-This software is for educational purposes only. Trading involves substantial risk of loss. Always test with demo accounts first. Past performance does not guarantee future results.
-
-## 📄 License
-
-MIT License - Use at your own risk
-
-## 🤝 Contributing
-
-Pull requests welcome! Keep it simple.
 
 ---
+更多細節（格式、指令、擴充）可參考 `line-trade-bot/README.md` 與 `schemas/`。
 
-**Remember: The best trading system is the one you understand.**
+## 上線驗收清單
 
-Built with ❤️ for traders who prefer results over complexity
+- [ ] SSM 機密已建立且授權最小化（/prod/line/CAT、/prod/line/SECRET、/prod/ingest/TOKEN）
+- [ ] Terraform 已成功部署（區域 ap-northeast-1），輸出包含 `webhook_endpoint`、`events_endpoint`、`trade_events_topic_arn`
+- [ ] LINE Console 已回填 `webhook_endpoint` 並啟用 Use webhook；關閉 Autoreply/Greeting；開啟 Group 設定（如需）
+- [ ] DynamoDB 表啟用 SSE（KMS 預設）
+- [ ] Lambda 環境變數不含明文機密（僅為 SSM 參數名稱）
+- [ ] IAM 僅授權必要資源（DynamoDB 指定表/索引、SSM 指定參數 ARN、Logs 最小權限）
+- [ ] `/help`、`/subscribe` 測試成功；/subscribe 後 `LineGroups` 與訂閱表有資料
+- [ ] SNS 發佈交易事件可收到推播；`TradeEvents` 有寫入（含 ts=ISO8601、bucket=ALL）
+- [ ] `/last N` 僅以 GSI 倒序查詢，N 預設 5；/status 以兩位小數顯示；/positions 回傳文字欄位
+- [ ] 大於 100 個目標時分批推播（每批 50），單筆失敗不影響整體
+- [ ] CloudWatch Logs 有結構化日誌（trace_id, event_type, status），錯誤只記錄不終止流程
+- [ ] 設定 CloudWatch 警報（Lambda Error、429/5xx 計數、DynamoDB Throttle、自訂 Metric Filter 如 push_retry/error）

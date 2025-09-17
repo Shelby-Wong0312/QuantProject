@@ -1,0 +1,11 @@
+{
+  "version": "2.0",
+  "routeKey": "POST /events",
+  "rawPath": "/events",
+  "headers": {
+    "x-auth-token": "REPLACE_WITH_TOKEN"
+  },
+  "isBase64Encoded": false,
+  "body": "{\n  \"symbol\": \"BTCUSDT\",\n  \"side\": \"BUY\",\n  \"price\": 50000.5,\n  \"qty\": 0.01,\n  \"source\": \"mybot\",\n  \"note\": \"entry\"\n}"
+}
+

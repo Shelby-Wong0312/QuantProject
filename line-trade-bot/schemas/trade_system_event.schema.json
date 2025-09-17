@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/trade_system_event.schema.json",
+  "title": "TradeSystemEvent",
+  "description": "Union schema for events accepted by the system via HTTP or SNS.",
+  "oneOf": [
+    { "$ref": "./trade_event.schema.json" },
+    { "$ref": "./status_snapshot.schema.json" },
+    { "$ref": "./positions_snapshot.schema.json" }
+  ]
+}
+

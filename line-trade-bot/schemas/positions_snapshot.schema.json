@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/positions_snapshot.schema.json",
+  "title": "PositionsSnapshot",
+  "description": "Account positions snapshot for /positions.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "type": { "type": "string", "enum": ["positions"] },
+    "accountId": { "type": "string" },
+    "positions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "symbol": { "type": "string" },
+          "ticker": { "type": "string" },
+          "side": { "type": "string", "enum": ["LONG", "SHORT", "BUY", "SELL"] },
+          "direction": { "type": "string", "enum": ["LONG", "SHORT", "BUY", "SELL"] },
+          "qty": { "oneOf": [ {"type": "number"}, {"type": "integer"} ] },
+          "size": { "oneOf": [ {"type": "number"}, {"type": "integer"} ] },
+          "quantity": { "oneOf": [ {"type": "number"}, {"type": "integer"} ] },
+          "avgPrice": { "type": "number" },
+          "entryPrice": { "type": "number" },
+          "avg": { "type": "number" },
+          "price": { "type": "number" },
+          "unrealizedPnL": { "type": "number" },
+          "upnl": { "type": "number" },
+          "pnl": { "type": "number" }
+        },
+        "anyOf": [
+          { "anyOf": [ {"required": ["symbol"]}, {"required": ["ticker"]} ] }
+        ]
+      }
+    },
+    "netExposure": { "type": "number" },
+    "grossExposure": { "type": "number" },
+    "updatedAt": { "type": "integer", "minimum": 0 },
+    "source": { "type": "string" }
+  },
+  "required": ["positions"],
+  "examples": [
+    {
+      "type": "positions",
+      "accountId": "default",
+      "positions": [
+        {"symbol":"BTCUSDT","side":"LONG","qty":0.25,"avgPrice":50000.5,"unrealizedPnL":120.3},
+        {"symbol":"ETHUSDT","direction":"SHORT","size":1.0,"avgPrice":3000.0,"unrealizedPnL":-50}
+      ]
+    }
+  ]
+}
+

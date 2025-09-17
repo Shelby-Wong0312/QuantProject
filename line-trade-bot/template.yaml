@@ -1,0 +1,216 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Trade events to LINE bot with query commands (SAM)
+
+Globals:
+  Function:
+    Runtime: python3.11
+    Timeout: 15
+    MemorySize: 256
+    Architectures:
+      - x86_64
+
+Parameters:
+  LineChannelAccessToken:
+    Type: String
+    NoEcho: true
+    Description: LINE Messaging API Channel Access Token
+  LineChannelSecret:
+    Type: String
+    NoEcho: true
+    Description: LINE Messaging API Channel Secret
+  IngestAuthToken:
+    Type: String
+    NoEcho: true
+    Description: Shared secret for /events ingestion endpoint (X-Auth-Token header)
+
+Resources:
+  TradeBotApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - '*'
+        AllowMethods:
+          - POST
+          - OPTIONS
+        AllowHeaders:
+          - '*'
+
+  CommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: trade-bot-common
+      Description: Shared utilities for LINE bot
+      ContentUri: src/common_layer/
+      CompatibleRuntimes:
+        - python3.11
+      RetentionPolicy: Delete
+
+  TradeEventsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: trade-events-topic
+
+  SubscribersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: recipientId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: recipientId
+          KeyType: HASH
+
+  EventsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: ts
+          AttributeType: N
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: ts
+          KeyType: RANGE
+
+  LineGroupsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: groupId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: groupId
+          KeyType: HASH
+
+  SystemStateTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+
+  WebhookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/webhook/
+      Handler: app.lambda_handler
+      Layers:
+        - !Ref CommonLayer
+      Environment:
+        Variables:
+          SUBSCRIBERS_TABLE: !Ref SubscribersTable
+          EVENTS_TABLE: !Ref EventsTable
+          LINE_GROUPS_TABLE: !Ref LineGroupsTable
+          GROUP_WHITELIST_TABLE: !Ref LineGroupsTable
+          SYSTEM_STATE_TABLE: !Ref SystemStateTable
+          LINE_CHANNEL_ACCESS_TOKEN: !Ref LineChannelAccessToken
+          LINE_CHANNEL_SECRET: !Ref LineChannelSecret
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SubscribersTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref EventsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref LineGroupsTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref SystemStateTable
+      Events:
+        Webhook:
+          Type: HttpApi
+          Properties:
+            Path: /line/webhook
+            Method: POST
+            ApiId: !Ref TradeBotApi
+
+  IngestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/ingest/
+      Handler: app.lambda_handler
+      Layers:
+        - !Ref CommonLayer
+      Environment:
+        Variables:
+          SUBSCRIBERS_TABLE: !Ref SubscribersTable
+          EVENTS_TABLE: !Ref EventsTable
+          LINE_CHANNEL_ACCESS_TOKEN: !Ref LineChannelAccessToken
+          INGEST_TOKEN: !Ref IngestAuthToken
+          LINE_GROUPS_TABLE: !Ref LineGroupsTable
+          GROUP_WHITELIST_TABLE: !Ref LineGroupsTable
+          SYSTEM_STATE_TABLE: !Ref SystemStateTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref EventsTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref SubscribersTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref LineGroupsTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref SystemStateTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SystemStateTable
+      Events:
+        Ingest:
+          Type: HttpApi
+          Properties:
+            Path: /events
+            Method: POST
+            ApiId: !Ref TradeBotApi
+
+  LinePushFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/line_push/
+      Handler: app.lambda_handler
+      Layers:
+        - !Ref CommonLayer
+      Environment:
+        Variables:
+          SUBSCRIBERS_TABLE: !Ref SubscribersTable
+          EVENTS_TABLE: !Ref EventsTable
+          LINE_CHANNEL_ACCESS_TOKEN: !Ref LineChannelAccessToken
+          LINE_GROUPS_TABLE: !Ref LineGroupsTable
+          GROUP_WHITELIST_TABLE: !Ref LineGroupsTable
+          SYSTEM_STATE_TABLE: !Ref SystemStateTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref EventsTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref SubscribersTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref LineGroupsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SystemStateTable
+      Events:
+        SnsSub:
+          Type: SNS
+          Properties:
+            Topic: !Ref TradeEventsTopic
+
+Outputs:
+  ApiUrl:
+    Description: Base URL of the HTTP API
+    Value: !GetAtt TradeBotApi.ApiEndpoint
+  WebhookEndpoint:
+    Description: LINE Webhook Endpoint
+    Value: !Sub "${TradeBotApi.ApiEndpoint}/line/webhook"
+  IngestEndpoint:
+    Description: Trade events ingestion endpoint
+    Value: !Sub "${TradeBotApi.ApiEndpoint}/events"
+  TradeEventsTopicArn:
+    Description: SNS Topic ARN for trade events
+    Value: !Ref TradeEventsTopic
+  TradeEventsTopicName:
+    Description: SNS Topic name for trade events
+    Value: !GetAtt TradeEventsTopic.TopicName

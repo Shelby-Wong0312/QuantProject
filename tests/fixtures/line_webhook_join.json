@@ -1,0 +1,11 @@
+{
+  "version": "2.0",
+  "routeKey": "POST /line/webhook",
+  "rawPath": "/line/webhook",
+  "headers": {
+    "X-Line-Signature": "REPLACE_SIG"
+  },
+  "isBase64Encoded": false,
+  "body": "{\n  \"events\": [\n    {\n      \"type\": \"join\",\n      \"replyToken\": \"r-join\",\n      \"source\": {\n        \"type\": \"group\",\n        \"groupId\": \"Gxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"\n      }\n    }\n  ]\n}"
+}
+

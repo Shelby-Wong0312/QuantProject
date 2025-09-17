@@ -1,408 +1,219 @@
+# path: live_trading_system.py
 """
-Live Automated Trading System
-實時自動交易系統 - Production Ready
+把你的交易引擎接上：
+  - 交易事件 -> SNS -> (line-push) -> LINE 群
+  - 摘要/持倉/交易 -> DynamoDB -> LINE 指令 (/status /positions /last N)
+
+需要環境變數（在交易主機/容器）：
+  TRADE_EVENTS_TOPIC_ARN=arn:aws:sns:ap-northeast-1:<acct>:trade-events
+  STATE_TABLE=SystemState
+  EVENTS_TABLE=TradeEvents
+  AWS_REGION=ap-northeast-1  # 可省略，預設即此
+以及執行身分最小 IAM：
+  sns:Publish -> 上述 topic
+  dynamodb:PutItem -> SystemState、TradeEvents
 """
+from __future__ import annotations
 
-import asyncio
-import logging
-import json
-import sqlite3
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional
-import pandas as pd
-import numpy as np
-import sys
-import os
+import logging, os, threading, time
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from typing import Any, Dict, Iterable, List, Optional
 
-# Add project root to path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from infra.publish_to_sns import publish_trade_event
+from infra.state_writer import write_summary, write_positions_text, append_trade_event
 
-from src.connectors.capital_com_api import CapitalComAPI
-from src.risk.risk_manager_enhanced import EnhancedRiskManager
-from src.signals.signal_generator import SignalGenerator
+# ---- logging ----
+logging.basicConfig(level=os.getenv("LTS_LOG_LEVEL","INFO").upper(),
+                    format="%(asctime)s %(levelname)s %(name)s %(message)s")
+log = logging.getLogger("live_trading_system")
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('logs/live_trading.log'),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+# ---- domain models ----
+@dataclass
+class Order:
+    symbol: str
+    side: str           # "buy" | "sell"
+    quantity: float
+    price: Optional[float] = None
+    deal_id: Optional[str] = None
+    extra: Optional[Dict[str, Any]] = None
 
+@dataclass
+class Fill:
+    symbol: str
+    side: str           # "buy" | "sell"
+    quantity: float
+    price: float
+    pnl: Optional[float] = None
+    deal_id: Optional[str] = None
+    extra: Optional[Dict[str, Any]] = None
+
+@dataclass
+class Position:
+    symbol: str
+    quantity: float     # 正負代表多/空
+    avg_price: float
+
+class BrokerAdapter:
+    """你的引擎需提供：equity/cash/upnl/rpnl 屬性與 positions() 列舉 Position。"""
+    @property
+    def equity(self) -> float: raise NotImplementedError
+    @property
+    def cash(self) -> float:   raise NotImplementedError
+    @property
+    def upnl(self) -> float:   raise NotImplementedError
+    @property
+    def rpnl(self) -> float:   raise NotImplementedError
+    def positions(self) -> Iterable[Position]: raise NotImplementedError
+
+# ---- helpers ----
+def _fmt_num(v: Optional[float], nd: int = 4) -> str:
+    if v is None: return "0"
+    x = round(float(v), nd)
+    if abs(x) < 10 ** (-nd): x = 0.0
+    return f"{x:.{nd}f}"
+
+def positions_as_text(positions: Iterable[Position]) -> str:
+    lines: List[str] = []
+    for p in positions:
+        sign = "+" if p.quantity > 0 else ""
+        lines.append(f"{p.symbol} {sign}{_fmt_num(p.quantity,4)} @ { _fmt_num(p.avg_price,4) }")
+    return "\n".join(lines) if lines else "No positions"
+
+# ---- main wiring ----
 class LiveTradingSystem:
-    """實時自動交易系統"""
-    
-    def __init__(self):
-        self.api = None
-        self.risk_manager = None
-        self.signal_generator = None
-        self.active_positions = {}
-        self.trade_history = []
-        self.running = False
-        self.total_trades = 0
-        self.profitable_trades = 0
-        
-        # Trading parameters
-        self.symbols = ['AAPL', 'MSFT', 'GOOGL', 'TSLA', 'NVDA']
-        self.position_size = 100  # shares per trade
-        self.max_positions = 5
-        self.check_interval = 60  # seconds
-        
-    async def initialize(self):
-        """初始化系統組件"""
-        print("\n[INIT] Initializing Trading System...")
-        
-        # 1. Initialize API
-        print("[INIT] Connecting to Capital.com API...")
-        self.api = CapitalComAPI()
-        if not self.api.authenticate():
-            raise Exception("Failed to connect to Capital.com API")
-        print(f"[OK] Connected - Account: {self.api.account_id}")
-        
-        # 2. Get account info
-        account_info = self.api.get_account_info()
-        if account_info:
-            balance = account_info.get('balance', 0)
-            print(f"[OK] Account Balance: ${balance:,.2f}")
-        
-        # 3. Initialize Risk Manager
-        print("[INIT] Setting up Risk Manager...")
-        self.risk_manager = EnhancedRiskManager(
-            initial_capital=140370.87,
-            max_daily_loss=0.02,
-            max_position_loss=0.01,
-            max_drawdown=0.10
-        )
-        print("[OK] Risk Manager configured")
-        
-        # 4. Initialize Signal Generator
-        print("[INIT] Loading Signal Generator...")
-        self.signal_generator = SignalGenerator()
-        print("[OK] Signal Generator ready")
-        
-        # 5. Initialize database
-        self.init_database()
-        print("[OK] Database connected")
-        
-        print("\n[READY] System initialized successfully!")
-        return True
-    
-    def init_database(self):
-        """初始化交易數據庫"""
-        conn = sqlite3.connect('data/live_trades.db')
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS trades (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TEXT,
-                symbol TEXT,
-                action TEXT,
-                quantity INTEGER,
-                price REAL,
-                total_value REAL,
-                pnl REAL,
-                status TEXT
-            )
-        ''')
-        conn.commit()
-        conn.close()
-    
-    def save_trade(self, trade_data: Dict):
-        """保存交易記錄"""
-        conn = sqlite3.connect('data/live_trades.db')
-        cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO trades (timestamp, symbol, action, quantity, price, total_value, pnl, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            trade_data['timestamp'],
-            trade_data['symbol'],
-            trade_data['action'],
-            trade_data['quantity'],
-            trade_data['price'],
-            trade_data['total_value'],
-            trade_data.get('pnl', 0),
-            trade_data['status']
-        ))
-        conn.commit()
-        conn.close()
-    
-    async def check_market_conditions(self) -> bool:
-        """檢查市場條件是否適合交易"""
-        # Check if market is open
-        now = datetime.now()
-        hour = now.hour
-        
-        # US market hours (9:30 AM - 4:00 PM EST)
-        # Convert to your timezone as needed
-        if hour < 9 or hour > 16:
-            return False
-        
-        # Check volatility
-        # Add volatility check logic here
-        
-        return True
-    
-    async def generate_signals(self) -> Dict[str, str]:
-        """生成交易信號"""
-        signals = {}
-        
-        for symbol in self.symbols:
-            try:
-                # Get current price
-                price = self.api.get_market_price(symbol)
-                if not price:
-                    continue
-                
-                # Generate signal (simplified for demo)
-                # In production, use ML models or technical indicators
-                signal = self.analyze_symbol(symbol, price)
-                signals[symbol] = signal
-                
-            except Exception as e:
-                logger.error(f"Error generating signal for {symbol}: {e}")
-        
-        return signals
-    
-    def analyze_symbol(self, symbol: str, current_price: float) -> str:
-        """分析個股並生成信號"""
-        # Simplified logic - replace with real strategy
-        import random
-        
-        # Random signal for demo (replace with real analysis)
-        rand = random.random()
-        if rand < 0.1:  # 10% chance to buy
-            return 'BUY'
-        elif rand < 0.15:  # 5% chance to sell
-            return 'SELL'
-        else:
-            return 'HOLD'
-    
-    async def execute_trade(self, symbol: str, action: str):
-        """執行交易"""
+    def __init__(self, broker: BrokerAdapter, snapshot_enabled: bool = True):
+        self.broker = broker
+        self._snapshot_enabled = snapshot_enabled
+        self._stop = threading.Event()
+        self._th: Optional[threading.Thread] = None
+        log.info("LiveTradingSystem ready (snapshot_enabled=%s)", snapshot_enabled)
+
+    # ----- 事件掛點：請在你的程式對應位置呼叫 -----
+    def on_order_submitted(self, order: Order) -> None:
+        side = (order.side or "").lower()
+        payload = {
+            "symbol": order.symbol,
+            "side": side if side in ("buy","sell") else "buy",
+            "quantity": float(order.quantity),
+            "price": float(order.price) if order.price is not None else 0.0,
+            "status": "submitted",
+            "dealId": order.deal_id,
+            "extra": order.extra or {},
+        }
         try:
-            current_price = self.api.get_market_price(symbol)
-            if not current_price:
-                return
-            
-            # Risk check
-            if not self.risk_manager.check_trade_allowed(
-                symbol=symbol,
-                quantity=self.position_size,
-                price=current_price
-            ):
-                logger.warning(f"Trade rejected by risk manager: {symbol} {action}")
-                return
-            
-            # Execute order
-            if action == 'BUY':
-                if len(self.active_positions) >= self.max_positions:
-                    logger.info(f"Max positions reached, skipping {symbol}")
-                    return
-                
-                # Place buy order
-                order = self.api.place_order(
-                    symbol=symbol,
-                    direction='BUY',
-                    size=self.position_size,
-                    order_type='MARKET'
-                )
-                
-                if order and order.get('status') == 'FILLED':
-                    self.active_positions[symbol] = {
-                        'quantity': self.position_size,
-                        'entry_price': current_price,
-                        'entry_time': datetime.now()
-                    }
-                    self.total_trades += 1
-                    
-                    # Save trade
-                    self.save_trade({
-                        'timestamp': datetime.now().isoformat(),
-                        'symbol': symbol,
-                        'action': 'BUY',
-                        'quantity': self.position_size,
-                        'price': current_price,
-                        'total_value': self.position_size * current_price,
-                        'status': 'FILLED'
-                    })
-                    
-                    logger.info(f"[TRADE] Bought {self.position_size} shares of {symbol} at ${current_price:.2f}")
-            
-            elif action == 'SELL' and symbol in self.active_positions:
-                # Place sell order
-                position = self.active_positions[symbol]
-                
-                order = self.api.place_order(
-                    symbol=symbol,
-                    direction='SELL',
-                    size=position['quantity'],
-                    order_type='MARKET'
-                )
-                
-                if order and order.get('status') == 'FILLED':
-                    # Calculate P&L
-                    pnl = (current_price - position['entry_price']) * position['quantity']
-                    if pnl > 0:
-                        self.profitable_trades += 1
-                    
-                    # Remove from active positions
-                    del self.active_positions[symbol]
-                    
-                    # Save trade
-                    self.save_trade({
-                        'timestamp': datetime.now().isoformat(),
-                        'symbol': symbol,
-                        'action': 'SELL',
-                        'quantity': position['quantity'],
-                        'price': current_price,
-                        'total_value': position['quantity'] * current_price,
-                        'pnl': pnl,
-                        'status': 'FILLED'
-                    })
-                    
-                    logger.info(f"[TRADE] Sold {position['quantity']} shares of {symbol} at ${current_price:.2f}, P&L: ${pnl:.2f}")
-        
+            publish_trade_event(**payload)
+            log.info("submitted -> SNS: %s", payload)
         except Exception as e:
-            logger.error(f"Error executing trade for {symbol}: {e}")
-    
-    async def monitor_positions(self):
-        """監控現有持倉"""
-        for symbol, position in list(self.active_positions.items()):
-            try:
-                current_price = self.api.get_market_price(symbol)
-                if not current_price:
-                    continue
-                
-                entry_price = position['entry_price']
-                pnl_pct = (current_price - entry_price) / entry_price
-                
-                # Check stop loss (5%)
-                if pnl_pct <= -0.05:
-                    logger.warning(f"[STOP LOSS] Triggered for {symbol}")
-                    await self.execute_trade(symbol, 'SELL')
-                
-                # Check take profit (10%)
-                elif pnl_pct >= 0.10:
-                    logger.info(f"[TAKE PROFIT] Triggered for {symbol}")
-                    await self.execute_trade(symbol, 'SELL')
-                
-            except Exception as e:
-                logger.error(f"Error monitoring {symbol}: {e}")
-    
-    def display_status(self):
-        """顯示系統狀態"""
-        print("\n" + "="*60)
-        print(f"[STATUS] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print("="*60)
-        
-        # Account info
-        account_info = self.api.get_account_info()
-        if account_info:
-            print(f"Balance: ${account_info.get('balance', 0):,.2f}")
-            print(f"Equity: ${account_info.get('equity', 0):,.2f}")
-        
-        # Positions
-        print(f"\nActive Positions: {len(self.active_positions)}/{self.max_positions}")
-        for symbol, position in self.active_positions.items():
-            current_price = self.api.get_market_price(symbol)
-            if current_price:
-                pnl = (current_price - position['entry_price']) * position['quantity']
-                pnl_pct = (current_price - position['entry_price']) / position['entry_price'] * 100
-                print(f"  {symbol}: {position['quantity']} shares @ ${position['entry_price']:.2f} | Current: ${current_price:.2f} | P&L: ${pnl:+.2f} ({pnl_pct:+.1f}%)")
-        
-        # Statistics
-        win_rate = (self.profitable_trades / self.total_trades * 100) if self.total_trades > 0 else 0
-        print(f"\nTotal Trades: {self.total_trades}")
-        print(f"Win Rate: {win_rate:.1f}%")
-        print("-"*60)
-    
-    async def run(self):
-        """主交易循環"""
-        self.running = True
-        logger.info("Starting automated trading...")
-        
-        while self.running:
-            try:
-                # Check market conditions
-                if not await self.check_market_conditions():
-                    logger.info("Market closed or conditions not suitable")
-                    await asyncio.sleep(300)  # Wait 5 minutes
-                    continue
-                
-                # Generate signals
-                signals = await self.generate_signals()
-                
-                # Execute trades based on signals
-                for symbol, signal in signals.items():
-                    if signal in ['BUY', 'SELL']:
-                        await self.execute_trade(symbol, signal)
-                
-                # Monitor existing positions
-                await self.monitor_positions()
-                
-                # Display status
-                self.display_status()
-                
-                # Wait for next cycle
-                await asyncio.sleep(self.check_interval)
-                
-            except KeyboardInterrupt:
-                logger.info("Stopping trading system...")
-                self.running = False
-                break
-            except Exception as e:
-                logger.error(f"Error in main loop: {e}")
-                await asyncio.sleep(10)
-    
-    async def shutdown(self):
-        """關閉系統"""
-        logger.info("Shutting down trading system...")
-        
-        # Close all positions
-        for symbol in list(self.active_positions.keys()):
-            logger.info(f"Closing position: {symbol}")
-            await self.execute_trade(symbol, 'SELL')
-        
-        logger.info("All positions closed. System shutdown complete.")
+            log.warning("publish submitted failed: %s", e)
 
-async def main():
-    """主程序"""
-    print("""
-    ╔════════════════════════════════════════════════════╗
-    ║        LIVE AUTOMATED TRADING SYSTEM               ║
-    ║              Capital.com Demo Account              ║
-    ║                                                    ║
-    ║  Risk Parameters:                                  ║
-    ║  - Max Daily Loss: 2%                             ║
-    ║  - Stop Loss: 5%                                  ║
-    ║  - Take Profit: 10%                               ║
-    ║  - Max Positions: 5                               ║
-    ║                                                    ║
-    ║         Press Ctrl+C to stop trading              ║
-    ╚════════════════════════════════════════════════════╝
-    """)
-    
-    system = LiveTradingSystem()
-    
-    try:
-        # Initialize system
-        if await system.initialize():
-            # Start trading
-            await system.run()
-    except KeyboardInterrupt:
-        print("\n[STOPPING] User requested shutdown...")
-    except Exception as e:
-        logger.error(f"Fatal error: {e}")
-    finally:
-        await system.shutdown()
+    def on_order_filled(self, fill: Fill) -> None:
+        side = (fill.side or "").lower()
+        payload = {
+            "symbol": fill.symbol,
+            "side": side if side in ("buy","sell") else "buy",
+            "quantity": float(fill.quantity),
+            "price": float(fill.price),
+            "status": "filled",
+            "dealId": fill.deal_id,
+            "pnl": float(fill.pnl) if fill.pnl is not None else None,
+            "extra": fill.extra or {},
+        }
+        try:
+            publish_trade_event(**payload)
+            log.info("filled -> SNS: %s", payload)
+        except Exception as e:
+            log.warning("publish filled failed: %s", e)
+        # /last N 查詢用
+        try:
+            append_trade_event(symbol=fill.symbol, side=payload["side"],
+                               quantity=float(fill.quantity), price=float(fill.price))
+        except Exception as e:
+            log.warning("append_trade_event failed: %s", e)
 
+    def on_order_rejected(self, order: Order, reason: str) -> None:
+        side = (order.side or "").lower()
+        payload = {
+            "symbol": order.symbol,
+            "side": side if side in ("buy","sell") else "buy",
+            "quantity": float(order.quantity),
+            "price": float(order.price) if order.price is not None else 0.0,
+            "status": "rejected",
+            "dealId": order.deal_id,
+            "extra": {"reason": reason, **(order.extra or {})},
+        }
+        try:
+            publish_trade_event(**payload)
+            log.info("rejected -> SNS: %s", payload)
+        except Exception as e:
+            log.warning("publish rejected failed: %s", e)
+
+    # ----- 週期性快照：供 /status、/positions -----
+    def sync_state_snapshot(self) -> None:
+        try:
+            equity = float(getattr(self.broker, "equity"))
+            cash   = float(getattr(self.broker, "cash"))
+            upnl   = float(getattr(self.broker, "upnl"))
+            rpnl   = float(getattr(self.broker, "rpnl"))
+        except Exception as e:
+            log.warning("read broker summary failed: %s", e)
+            return
+        try:
+            write_summary(equity=equity, cash=cash, upnl=upnl, rpnl=rpnl)
+        except Exception as e:
+            log.warning("write_summary failed: %s", e)
+        try:
+            text = positions_as_text(self.broker.positions())
+            write_positions_text(text)
+        except Exception as e:
+            log.warning("write_positions_text failed: %s", e)
+        log.debug("snapshot synced.")
+
+    def start_state_sync(self, period_sec: int = 60) -> None:
+        if self._th and self._th.is_alive(): return
+        self._stop.clear()
+        def _loop():
+            log.info("state sync loop started (period=%ss)", period_sec)
+            while not self._stop.is_set():
+                try:
+                    if self._snapshot_enabled:
+                        self.sync_state_snapshot()
+                except Exception as e:
+                    log.warning("snapshot loop error: %s", e)
+                finally:
+                    for _ in range(max(1, int(period_sec))):
+                        if self._stop.is_set(): break
+                        time.sleep(1)
+            log.info("state sync loop stopped")
+        self._th = threading.Thread(target=_loop, name="lts-sync", daemon=True)
+        self._th.start()
+
+    def stop(self) -> None:
+        self._stop.set()
+        if self._th and self._th.is_alive():
+            self._th.join(timeout=5)
+
+# ---- 可選：本檔直接跑做快速驗收 ----
 if __name__ == "__main__":
-    # Create logs directory if not exists
-    os.makedirs('logs', exist_ok=True)
-    
-    # Run the trading system
-    asyncio.run(main())
+    class _DemoBroker(BrokerAdapter):
+        def __init__(self):
+            self._equity=100000.0; self._cash=60000.0; self._upnl=12.34; self._rpnl=345.67
+            self._pos=[Position("US100",-2,18350.5), Position("XAUUSD",1,2405.0)]
+        @property
+        def equity(self): return self._equity
+        @property
+        def cash(self):   return self._cash
+        @property
+        def upnl(self):   return self._upnl
+        @property
+        def rpnl(self):   return self._rpnl
+        def positions(self): return list(self._pos)
+
+    demo = _DemoBroker()
+    lts = LiveTradingSystem(demo, snapshot_enabled=True)
+    lts.sync_state_snapshot()  # 寫一次 /status、/positions
+    lts.on_order_submitted(Order("XAUUSD","buy",1,2405.0,"SUB123"))
+    lts.on_order_filled(Fill("XAUUSD","buy",1,2405.2,12.3,"FILL123"))
+    lts.start_state_sync(period_sec=30)
+    time.sleep(60)
+    lts.stop()
