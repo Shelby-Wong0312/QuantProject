@@ -16,7 +16,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 # os.environ['CAPITAL_API_PASSWORD'] removed - use .env file
 os.environ['CAPITAL_DEMO_MODE'] = 'True'
 
-from src.connectors.capital_com_api import CapitalComAPI
+from quantproject.connectors.capital_com_api import CapitalComAPI
 
 def buy_wti_oil():
     """Execute WTI oil purchase"""

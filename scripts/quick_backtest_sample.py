@@ -15,7 +15,7 @@ import json
 import warnings
 warnings.filterwarnings('ignore')
 
-from src.indicators.momentum_indicators import CCI
+from quantproject.indicators.momentum_indicators import CCI
 
 print("=" * 80)
 print("QUICK BACKTEST - SAMPLE STOCKS WITH 15 YEARS DATA")

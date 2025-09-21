@@ -17,8 +17,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Import top performing indicators
-from src.indicators.momentum_indicators import CCI, WilliamsR, Stochastic
-from src.indicators.volume_indicators import VolumeSMA, OBV
+from quantproject.indicators.momentum_indicators import CCI, WilliamsR, Stochastic
+from quantproject.indicators.volume_indicators import VolumeSMA, OBV
 
 
 class DetailedAnalysis:

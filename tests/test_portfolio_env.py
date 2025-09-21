@@ -11,8 +11,8 @@ import sys
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.rl_trading.environments.portfolio_env import PortfolioTradingEnvironment, PortfolioState
-from src.rl_trading.agents.portfolio_agent import PortfolioAgent, PortfolioAgentFactory
+from quantproject.rl_trading.environments.portfolio_env import PortfolioTradingEnvironment, PortfolioState
+from quantproject.rl_trading.agents.portfolio_agent import PortfolioAgent, PortfolioAgentFactory
 
 
 class TestPortfolioEnvironment(unittest.TestCase):

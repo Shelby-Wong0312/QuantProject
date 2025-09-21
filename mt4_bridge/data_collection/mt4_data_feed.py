@@ -17,8 +17,8 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from core.event import MarketEvent
-from core.event_loop import EventLoop
+from quantproject.core.event import MarketEvent
+from quantproject.core.event_loop import EventLoop
 from .tick_collector import TickCollector, TickData
 from .ohlc_aggregator import OHLCAggregator, TimeFrame, OHLCBar
 from ..zeromq.python_side import MT4Bridge
@@ -385,8 +385,8 @@ async def example_usage():
     import os
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
     
-    from core.event_loop import EventLoop
-    from core.event import EventType
+    from quantproject.core.event_loop import EventLoop
+    from quantproject.core.event import EventType
     
     # 設置日誌
     logging.basicConfig(

@@ -18,9 +18,9 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Import indicators for visualization
-from src.indicators.momentum_indicators import CCI, WilliamsR, Stochastic, RSI, MACD
-from src.indicators.volatility_indicators import BollingerBands
-from src.indicators.volume_indicators import OBV, VolumeSMA
+from quantproject.indicators.momentum_indicators import CCI, WilliamsR, Stochastic, RSI, MACD
+from quantproject.indicators.volatility_indicators import BollingerBands
+from quantproject.indicators.volume_indicators import OBV, VolumeSMA
 
 
 class VisualBacktestReport:

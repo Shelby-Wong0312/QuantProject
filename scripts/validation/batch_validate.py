@@ -15,7 +15,7 @@ project_root = os.path.dirname(os.path.abspath(__file__))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from src.capital_service import CapitalService
+from quantproject.capital_service import CapitalService
 
 def main():
     """Main validation function - MUST COMPLETE ALL 7000+ STOCKS"""

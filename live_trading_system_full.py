@@ -24,9 +24,11 @@ os.environ['CAPITAL_DEMO_MODE'] = 'True'
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from src.connectors.capital_com_api import CapitalComAPI
-from src.risk.risk_manager_enhanced import EnhancedRiskManager
-from src.signals.signal_generator import SignalGenerator
+from quantproject.connectors.capital_com_api import CapitalComAPI
+from quantproject.risk.risk_manager_enhanced import EnhancedRiskManager
+from quantproject.signals.signal_generator import SignalGenerator
+from infra.publish_to_sns import publish_trade_event
+from infra.state_writer import append_trade_event
 
 # Configure logging
 logging.basicConfig(
@@ -418,7 +420,15 @@ class FullMarketTradingSystem:
                 if len(self.active_positions) >= self.max_positions:
                     logger.info(f"Max positions ({self.max_positions}) reached")
                     return
-                
+
+                deal_id = f"sim-{symbol}-{int(datetime.now().timestamp())}"
+                # 下單成功（提交）
+                publish_trade_event(
+                    symbol=symbol, side='buy',
+                    quantity=float(shares), price=float(current_price),
+                    status="submitted", deal_id=deal_id
+                )
+
                 # Record position
                 self.active_positions[symbol] = {
                     'quantity': shares,
@@ -426,7 +436,7 @@ class FullMarketTradingSystem:
                     'entry_time': datetime.now()
                 }
                 self.total_trades += 1
-                
+
                 # Save trade
                 self.save_trade({
                     'timestamp': datetime.now().isoformat(),
@@ -437,23 +447,42 @@ class FullMarketTradingSystem:
                     'total_value': shares * current_price,
                     'status': 'EXECUTED'
                 })
-                
+
+                # 成交回報（BUY 無 pnl）
+                publish_trade_event(
+                    symbol=symbol, side='buy',
+                    quantity=float(shares), price=float(current_price),
+                    status="filled", deal_id=deal_id, pnl=None
+                )
+                append_trade_event(
+                    symbol=symbol, side='buy',
+                    quantity=float(shares), price=float(current_price)
+                )
+
                 logger.info(f"[TRADE] Bought {shares} shares of {symbol} at ${current_price:.2f}")
-            
+
             elif action == 'SELL' and symbol in self.active_positions:
                 position = self.active_positions[symbol]
-                
+
+                deal_id = f"sim-{symbol}-{int(datetime.now().timestamp())}"
+                # 下單成功（提交）
+                publish_trade_event(
+                    symbol=symbol, side='sell',
+                    quantity=float(position['quantity']), price=float(current_price),
+                    status="submitted", deal_id=deal_id
+                )
+
                 # Calculate P&L
                 pnl = (current_price - position['entry_price']) * position['quantity']
                 self.daily_pnl += pnl
                 self.total_pnl += pnl
-                
+
                 if pnl > 0:
                     self.profitable_trades += 1
-                
+
                 # Remove position
                 del self.active_positions[symbol]
-                
+
                 # Save trade
                 self.save_trade({
                     'timestamp': datetime.now().isoformat(),
@@ -465,9 +494,18 @@ class FullMarketTradingSystem:
                     'pnl': pnl,
                     'status': 'EXECUTED'
                 })
-                
+                # 成交回報（SELL 帶 pnl）
+                publish_trade_event(
+                    symbol=symbol, side='sell',
+                    quantity=float(position['quantity']), price=float(current_price),
+                    status="filled", deal_id=deal_id, pnl=float(pnl)
+                )
+                append_trade_event(
+                    symbol=symbol, side='sell',
+                    quantity=float(position['quantity']), price=float(current_price)
+                )
+
                 logger.info(f"[TRADE] Sold {position['quantity']} shares of {symbol} at ${current_price:.2f}, P&L: ${pnl:.2f}")
-                
         except Exception as e:
             logger.error(f"Error executing trade for {symbol}: {e}")
     

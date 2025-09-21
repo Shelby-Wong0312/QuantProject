@@ -33,7 +33,7 @@ async def main():
         print("\n[1/6] 載入系統模組...")
         from monitoring.tiered_monitor import TieredMonitor
         from data_pipeline.free_data_client import FreeDataClient
-        from src.indicators.indicator_calculator import IndicatorCalculator
+        from quantproject.indicators.indicator_calculator import IndicatorCalculator
         from monitoring.signal_scanner import SignalScanner
         
         print("   ✓ 核心模組載入成功")

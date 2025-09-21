@@ -25,7 +25,7 @@ results = {
 print("\n1. Checking Component Integration...")
 try:
     # Test ML integration
-    from src.strategies.ml_strategy_integration import MLStrategyIntegration
+    from quantproject.strategies.ml_strategy_integration import MLStrategyIntegration
     strategy = MLStrategyIntegration()
     results["tests"]["ml_integration"] = "PASS"
     print("   [OK] ML Strategy Integration")
@@ -35,7 +35,7 @@ except Exception as e:
 
 try:
     # Test data pipeline
-    from src.data.feature_pipeline import FeaturePipeline
+    from quantproject.data.feature_pipeline import FeaturePipeline
     pipeline = FeaturePipeline()
     results["tests"]["data_pipeline"] = "PASS"
     print("   [OK] Data Pipeline")
@@ -45,7 +45,7 @@ except Exception as e:
 
 try:
     # Test backtesting
-    from src.backtesting.ml_backtest import MLBacktester, BacktestConfig
+    from quantproject.backtesting.ml_backtest import MLBacktester, BacktestConfig
     config = BacktestConfig()
     backtester = MLBacktester(config)
     results["tests"]["backtesting"] = "PASS"

@@ -14,8 +14,8 @@ from datetime import datetime, timedelta
 import warnings
 warnings.filterwarnings('ignore')
 
-from src.portfolio.mpt_optimizer import MPTOptimizer
-from src.ml_models.lstm_price_predictor import LSTMPricePredictor
+from quantproject.portfolio.mpt_optimizer import MPTOptimizer
+from quantproject.models.ml_models import LSTMPricePredictor
 import torch
 
 

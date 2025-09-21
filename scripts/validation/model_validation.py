@@ -20,9 +20,9 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Import our ML systems
-from src.strategies.ml_strategy_integration import MLStrategyIntegration
-from src.backtesting.ml_backtest import MLBacktester, BacktestConfig
-from src.data.feature_pipeline import FeaturePipeline
+from quantproject.strategies.ml_strategy_integration import MLStrategyIntegration
+from quantproject.backtesting.ml_backtest import MLBacktester, BacktestConfig
+from quantproject.data.feature_pipeline import FeaturePipeline
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

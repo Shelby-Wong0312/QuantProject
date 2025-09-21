@@ -49,7 +49,7 @@ python mt4_bridge\verify_connection.py
 
 ```python
 # 在Python中
-from src.data_pipeline import start_data_collection, get_realtime_data
+from quantproject.data_pipeline import start_data_collection, get_realtime_data
 
 # 啟動數據收集
 pipeline = start_data_collection(['EURUSD', 'GBPUSD'])
@@ -70,7 +70,7 @@ python mt4_bridge\test_mt4_bridge.py
 查看實時數據：
 
 ```python
-from src.data_pipeline import MT4DataPipeline
+from quantproject.data_pipeline import MT4DataPipeline
 
 # 創建管道
 pipeline = MT4DataPipeline()
@@ -116,7 +116,7 @@ print(f"收到 {stats['total_ticks']} 個tick")
 查看系統狀態：
 
 ```python
-from src.data_pipeline import get_pipeline
+from quantproject.data_pipeline import get_pipeline
 
 pipeline = get_pipeline()
 stats = pipeline.get_stats()

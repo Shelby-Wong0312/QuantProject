@@ -23,7 +23,7 @@ def main():
     
     # Import our free data client
     from data_pipeline.free_data_client import FreeDataClient
-    from src.connectors.capital_com_api import CapitalComAPI
+    from quantproject.connectors.capital_com_api import CapitalComAPI
     
     print("\n[1] Initializing Data Sources...")
     

@@ -1,0 +1,42 @@
+"""QuantProject application package.
+
+This namespace consolidates core trading services, data pipelines, strategies,
+and supporting utilities so agents and developers can import from a single tree.
+"""
+
+__all__ = [
+    "analysis",
+    "analytics",
+    "api",
+    "backtesting",
+    "connectors",
+    "core",
+    "data",
+    "data_pipeline",
+    "data_processing",
+    "data_providers",
+    "execution",
+    "indicators",
+    "integration",
+    "live_trading",
+    "logging",
+    "ml",
+    "ml_models",
+    "models",
+    "monitoring",
+    "optimization",
+    "performance",
+    "portfolio",
+    "reports",
+    "risk",
+    "risk_management",
+    "rl",
+    "rl_trading",
+    "security",
+    "sensory_models",
+    "signals",
+    "strategies",
+    "testing",
+    "utils",
+    "visualization",
+]

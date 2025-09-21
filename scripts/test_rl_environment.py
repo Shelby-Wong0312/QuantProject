@@ -13,8 +13,8 @@ import pandas as pd
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 
-from src.rl_trading.trading_env import TradingEnvironment, Actions
-from src.data.minute_data_pipeline import MinuteData, MinuteDataPipeline
+from quantproject.rl_trading.environments.trading_env import TradingEnvironment, Actions
+from quantproject.data.minute_data_pipeline import MinuteData, MinuteDataPipeline
 
 
 def create_test_data(n_steps=1000):

@@ -54,8 +54,8 @@ class SystemIntegrationTester:
         
         # Check ML Models
         try:
-            from src.ml_models.lstm_attention import LSTMAttentionModel
-            from src.ml_models.xgboost_ensemble import XGBoostEnsemble
+            from quantproject.models.ml_models import LSTMPricePredictor
+            from quantproject.models.ml_models import XGBoostPredictor
             self.components['ml_models'] = True
             print("[OK] ML Models: Available")
         except ImportError as e:
@@ -63,8 +63,8 @@ class SystemIntegrationTester:
         
         # Check RL Trading
         try:
-            from src.rl_trading.ppo_agent import PPOAgent
-            from src.rl_trading.trading_env import TradingEnvironment
+            from quantproject.rl_trading import PPOAgent
+            from quantproject.rl_trading import TradingEnvironment
             self.components['rl_trading'] = True
             print("[OK] RL Trading: Available")
         except ImportError as e:
@@ -72,7 +72,7 @@ class SystemIntegrationTester:
         
         # Check Portfolio Optimization
         try:
-            from src.portfolio.mpt_optimizer import MPTOptimizer
+            from quantproject.portfolio.mpt_optimizer import MPTOptimizer
             self.components['portfolio_optimization'] = True
             print("[OK] Portfolio Optimization: Available")
         except ImportError as e:
@@ -80,9 +80,9 @@ class SystemIntegrationTester:
         
         # Check Risk Management
         try:
-            from src.risk.risk_manager_enhanced import EnhancedRiskManager
-            from src.risk.dynamic_stop_loss import DynamicStopLoss
-            from src.risk.stress_testing import StressTester
+            from quantproject.risk.risk_manager_enhanced import EnhancedRiskManager
+            from quantproject.risk.dynamic_stop_loss import DynamicStopLoss
+            from quantproject.risk.stress_testing import StressTester
             self.components['risk_management'] = True
             print("[OK] Risk Management: Available")
         except ImportError as e:
@@ -90,8 +90,8 @@ class SystemIntegrationTester:
         
         # Check Data Collection
         try:
-            from src.data.realtime_collector import RealtimeDataCollector
-            from src.data.data_validator import DataValidator
+            from quantproject.data.realtime_collector import RealtimeDataCollector
+            from quantproject.data.data_validator import DataValidator
             self.components['data_collection'] = True
             print("[OK] Data Collection: Available")
         except ImportError as e:
@@ -99,7 +99,7 @@ class SystemIntegrationTester:
         
         # Check Paper Trading
         try:
-            from src.core.paper_trading import PaperTradingSimulator
+            from quantproject.core.paper_trading import PaperTradingSimulator
             self.components['paper_trading'] = True
             print("[OK] Paper Trading: Available")
         except ImportError as e:
@@ -113,9 +113,9 @@ class SystemIntegrationTester:
         
         # Check Anomaly Detection
         try:
-            from src.risk.anomaly_detection import MarketAnomalyDetector
-            from src.risk.circuit_breaker import CircuitBreaker
-            from src.risk.deleveraging import RapidDeleveraging
+            from quantproject.risk.anomaly_detection import MarketAnomalyDetector
+            from quantproject.risk.circuit_breaker import CircuitBreaker
+            from quantproject.risk.deleveraging import RapidDeleveraging
             self.components['anomaly_detection'] = True
             print("[OK] Anomaly Detection: Available")
         except ImportError as e:
@@ -139,7 +139,7 @@ class SystemIntegrationTester:
         # Step 1: Data Collection
         print("\n[1] Testing Data Collection...")
         try:
-            from src.data.realtime_collector import RealtimeDataCollector
+            from quantproject.data.realtime_collector import RealtimeDataCollector
             collector = RealtimeDataCollector(['AAPL', 'GOOGL', 'MSFT'])
             # Simulate data collection
             workflow_steps.append(('Data Collection', True, 'Data collected successfully'))
@@ -151,7 +151,7 @@ class SystemIntegrationTester:
         # Step 2: Portfolio Optimization
         print("\n[2] Testing Portfolio Optimization...")
         try:
-            from src.portfolio.mpt_optimizer import MPTOptimizer
+            from quantproject.portfolio.mpt_optimizer import MPTOptimizer
             optimizer = MPTOptimizer()
             # Generate test data
             test_returns = pd.DataFrame(np.random.randn(100, 3) * 0.01)
@@ -165,7 +165,7 @@ class SystemIntegrationTester:
         # Step 3: Risk Management
         print("\n[3] Testing Risk Management...")
         try:
-            from src.risk.risk_manager_enhanced import EnhancedRiskManager
+            from quantproject.risk.risk_manager_enhanced import EnhancedRiskManager
             risk_manager = EnhancedRiskManager(initial_capital=100000)
             risk_check = risk_manager.check_trade_risk('AAPL', 100, 150.0, 'BUY')
             workflow_steps.append(('Risk Management', True, 'Risk checks passed'))
@@ -177,7 +177,7 @@ class SystemIntegrationTester:
         # Step 4: Paper Trading Execution
         print("\n[4] Testing Paper Trading...")
         try:
-            from src.core.paper_trading import PaperTradingSimulator
+            from quantproject.core.paper_trading import PaperTradingSimulator
             simulator = PaperTradingSimulator(initial_balance=100000)
             # Execute test trade
             result = await simulator.execute_trade('AAPL', 10, 'BUY')
@@ -190,7 +190,7 @@ class SystemIntegrationTester:
         # Step 5: Anomaly Detection
         print("\n[5] Testing Anomaly Detection...")
         try:
-            from src.risk.anomaly_detection import MarketAnomalyDetector
+            from quantproject.risk.anomaly_detection import MarketAnomalyDetector
             detector = MarketAnomalyDetector()
             # Test with synthetic data
             workflow_steps.append(('Anomaly Detection', True, 'Monitoring active'))
@@ -277,7 +277,7 @@ class SystemIntegrationTester:
         print("\n[3] Risk Calculation Speed Test...")
         start = time.time()
         try:
-            from src.risk.dynamic_stop_loss import DynamicStopLoss
+            from quantproject.risk.dynamic_stop_loss import DynamicStopLoss
             stop_loss = DynamicStopLoss()
             # Test stop loss calculation
             for _ in range(100):
@@ -328,7 +328,7 @@ class SystemIntegrationTester:
         # Test 1: Handle Missing Data
         print("\n[1] Testing Missing Data Handling...")
         try:
-            from src.data.data_validator import DataValidator
+            from quantproject.data.data_validator import DataValidator
             validator = DataValidator()
             
             # Create data with missing values
@@ -357,7 +357,7 @@ class SystemIntegrationTester:
         # Test 2: Circuit Breaker Activation
         print("\n[2] Testing Circuit Breaker...")
         try:
-            from src.risk.circuit_breaker import CircuitBreaker
+            from quantproject.risk.circuit_breaker import CircuitBreaker
             breaker = CircuitBreaker(initial_value=100000)
             
             # Trigger circuit breaker

@@ -18,12 +18,12 @@ from pathlib import Path
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.strategies.ml_strategy_integration import MLStrategyIntegration
-from src.data.feature_pipeline import FeaturePipeline
-from src.data.model_updater import ModelUpdater, UpdateConfig
-from src.data.data_quality_monitor import DataQualityMonitor
-from src.backtesting.ml_backtest import MLBacktester, BacktestConfig
-from src.core.paper_trading import PaperTradingSimulator
+from quantproject.strategies.ml_strategy_integration import MLStrategyIntegration
+from quantproject.data.feature_pipeline import FeaturePipeline
+from quantproject.data.model_updater import ModelUpdater, UpdateConfig
+from quantproject.data.data_quality_monitor import DataQualityMonitor
+from quantproject.backtesting.ml_backtest import MLBacktester, BacktestConfig
+from quantproject.core.paper_trading import PaperTradingSimulator
 
 
 class TestMLIntegration(unittest.TestCase):

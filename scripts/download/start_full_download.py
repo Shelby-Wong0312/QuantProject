@@ -15,9 +15,9 @@ import pandas as pd
 from tqdm import tqdm
 import logging
 
-# Add parent directory to path to import src modules
+# Add parent directory to path to import quantproject modules
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from src.capital_service import CapitalService
+from quantproject.capital_service import CapitalService
 import requests
 
 # 設置日誌

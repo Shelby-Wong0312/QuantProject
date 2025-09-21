@@ -7,7 +7,7 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
-from risk_management import RiskMetrics, PositionSizing, StopLoss, ROIMonitor, ROITarget
+from quantproject.risk import RiskMetrics, PositionSizing, StopLoss, ROIMonitor, ROITarget
 import numpy as np
 import pandas as pd
 

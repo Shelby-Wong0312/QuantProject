@@ -13,21 +13,21 @@ import logging
 # 添加項目路徑
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from src.strategies.traditional.momentum_strategy import create_momentum_strategy
-from src.strategies.traditional.mean_reversion import create_mean_reversion_strategy
-from src.strategies.traditional.breakout_strategy import create_breakout_strategy
-from src.strategies.traditional.trend_following import create_trend_following_strategy
+from quantproject.strategies.traditional.momentum_strategy import create_momentum_strategy
+from quantproject.strategies.traditional.mean_reversion import create_mean_reversion_strategy
+from quantproject.strategies.traditional.breakout_strategy import create_breakout_strategy
+from quantproject.strategies.traditional.trend_following import create_trend_following_strategy
 
 # ML策略 (可選)
 try:
-    from src.strategies.ml.random_forest_strategy import create_random_forest_strategy
+    from quantproject.strategies.ml.random_forest_strategy import create_random_forest_strategy
     ML_AVAILABLE = True
 except ImportError:
     ML_AVAILABLE = False
     print("ML策略需要安裝 scikit-learn: pip install scikit-learn")
 
 try:
-    from src.strategies.ml.lstm_predictor import create_lstm_strategy
+    from quantproject.strategies.ml.lstm_predictor import create_lstm_strategy
     LSTM_AVAILABLE = True
 except ImportError:
     LSTM_AVAILABLE = False
@@ -140,7 +140,7 @@ def test_strategy(strategy, data: pd.DataFrame, strategy_name: str):
             print(f"  Position Ratio: {abs(position_size * test_signal.price) / portfolio_value:.1%}")
         
         # 測試風險管理 (模擬持倉)
-        from src.strategies.strategy_interface import Position
+        from quantproject.strategies.strategy_interface import Position
         
         test_position = Position(
             symbol=data.attrs.get('symbol', 'TEST'),

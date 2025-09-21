@@ -21,7 +21,7 @@ project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
 # Import components
-from src.indicators.indicator_calculator import IndicatorCalculator, CalculationConfig
+from quantproject.indicators.indicator_calculator import IndicatorCalculator, CalculationConfig
 
 def generate_test_data(n_stocks: int = 50, n_periods: int = 100) -> Dict[str, pd.DataFrame]:
     """生成小規模測試數據"""

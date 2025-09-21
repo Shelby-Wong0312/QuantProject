@@ -17,7 +17,7 @@ MT4 數據收集系統
 
 使用示例：
     from mt4_bridge.data_collection import MT4DataFeed, TimeFrame
-    from core.event_loop import EventLoop
+    from quantproject.core.event_loop import EventLoop
     
     # 創建事件循環
     event_loop = EventLoop()

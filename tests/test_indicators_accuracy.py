@@ -21,10 +21,10 @@ project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
 # Import indicators
-from src.indicators.trend_indicators import SMA, EMA, WMA, VWAP
-from src.indicators.momentum_indicators import RSI, MACD, Stochastic, WilliamsR, CCI
-from src.indicators.volatility_indicators import BollingerBands, ATR, KeltnerChannel
-from src.indicators.volume_indicators import OBV, MFI, ADLine
+from quantproject.indicators.trend_indicators import SMA, EMA, WMA, VWAP
+from quantproject.indicators.momentum_indicators import RSI, MACD, Stochastic, WilliamsR, CCI
+from quantproject.indicators.volatility_indicators import BollingerBands, ATR, KeltnerChannel
+from quantproject.indicators.volume_indicators import OBV, MFI, ADLine
 
 logger = logging.getLogger(__name__)
 
@@ -447,7 +447,7 @@ class IndicatorAccuracyTest(unittest.TestCase):
     
     def test_signal_generation(self):
         """測試信號生成"""
-        from src.indicators.signal_generator import IndicatorSignalGenerator
+        from quantproject.indicators.signal_generator import IndicatorSignalGenerator
         
         signal_generator = IndicatorSignalGenerator()
         signals = signal_generator.generate_signals(self.test_data, 'TEST')

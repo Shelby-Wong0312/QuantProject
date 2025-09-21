@@ -82,7 +82,7 @@ DWX_ZeroMQ_Server: Binding PUB Socket on Port 32770
 ### 快速測試連接
 
 ```python
-from src.data_pipeline.dwx_data_collector import DWXDataCollector
+from quantproject.data_pipeline.dwx_data_collector import DWXDataCollector
 
 # 創建收集器
 collector = DWXDataCollector()
@@ -153,7 +153,7 @@ netstat -an | findstr 32770
 ### 基本用法
 
 ```python
-from src.data_pipeline.dwx_data_collector import DWXDataCollector
+from quantproject.data_pipeline.dwx_data_collector import DWXDataCollector
 import time
 
 # 初始化

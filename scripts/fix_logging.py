@@ -199,7 +199,7 @@ Example of proper logging usage
 """
 
 import logging
-from src.utils.logger_config import setup_logger
+from quantproject.utils.logger_config import setup_logger
 
 # Setup logger for this module
 logger = setup_logger(__name__)
@@ -245,7 +245,7 @@ if __name__ == "__main__":
     print("="*60)
     
     print("\nNext steps:")
-    print("1. Use 'from src.utils.logger_config import setup_logger'")
+    print("1. Use 'from quantproject.utils.logger_config import setup_logger'")
     print("2. Create logger: logger = setup_logger(__name__)")
     print("3. Replace print() with logger.info(), logger.error(), etc.")
     print("4. Check logs in 'logs/trading_system.log'")

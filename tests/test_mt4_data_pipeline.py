@@ -17,7 +17,7 @@ import numpy as np
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.data_pipeline.mt4_data_collector import (
+from quantproject.data_pipeline.mt4_data_collector import (
     MT4DataPipeline, MarketData, DataQualityChecker,
     DataCache, get_pipeline, create_pipeline,
     start_data_collection, get_realtime_data, get_historical_data

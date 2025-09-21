@@ -21,9 +21,9 @@ import sys
 sys.path.append(str(Path(__file__).parent.parent))
 
 try:
-    from src.data.realtime_collector import RealtimeDataCollector
-    from src.risk.risk_manager_enhanced import EnhancedRiskManager
-    from src.core.paper_trading import PaperTradingSimulator
+    from quantproject.data.realtime_collector import RealtimeDataCollector
+    from quantproject.risk.risk_manager_enhanced import EnhancedRiskManager
+    from quantproject.core.paper_trading import PaperTradingSimulator
 except ImportError:
     # Create dummy classes if modules not available
     class RealtimeDataCollector:

@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   trading-system:
@@ -10,11 +9,12 @@ services:
       - ./reports:/app/reports
       - ./config:/app/config
     environment:
-      - CAPITAL_API_KEY=${CAPITAL_API_KEY}
-      - CAPITAL_PASSWORD=${CAPITAL_PASSWORD}
-      - CAPITAL_IDENTIFIER=${CAPITAL_IDENTIFIER}
-      - DB_PATH=/app/data/quant_trading.db
-      - LOG_LEVEL=INFO
+      CAPITAL_API_KEY: "kugBoHCUcjaaNwGV"
+      CAPITAL_PASSWORD: "@Nickatnyte3"
+      CAPITAL_IDENTIFIER: "niujinheitaizi@gmail.com"
+      CAPITAL_ACCOUNT_TYPE: "demo"
+      DB_PATH: "/app/data/quant_trading.db"
+      LOG_LEVEL: "INFO"
     ports:
       - "8000:8000"
       - "8080:8080"

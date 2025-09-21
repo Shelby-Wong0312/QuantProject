@@ -13,8 +13,8 @@ import pandas as pd
 from datetime import datetime, timedelta
 import time
 
-from src.signals.signal_generator import SignalGenerator, SignalStrength
-from src.data.data_manager import DataManager
+from quantproject.signals.signal_generator import SignalGenerator, SignalStrength
+from quantproject.data.data_manager import DataManager
 
 
 def test_signal_generation():

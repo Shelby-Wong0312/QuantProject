@@ -15,10 +15,10 @@ import sys
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.optimization.hyperparameter_optimizer import HyperparameterOptimizer
-from src.optimization.performance_benchmark import PerformanceBenchmark, BenchmarkResult
-from src.optimization.system_profiler import SystemProfiler, ProfilingResult
-from src.optimization.optimization_report import OptimizationReport, DynamicResourceManager
+from quantproject.optimization.hyperparameter_optimizer import HyperparameterOptimizer
+from quantproject.optimization.performance_benchmark import PerformanceBenchmark, BenchmarkResult
+from quantproject.optimization.system_profiler import SystemProfiler, ProfilingResult
+from quantproject.optimization.optimization_report import OptimizationReport, DynamicResourceManager
 
 
 class TestHyperparameterOptimizer(unittest.TestCase):

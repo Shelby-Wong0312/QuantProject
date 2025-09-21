@@ -1,21 +1,11 @@
-"""
-Machine Learning Models for Financial Prediction
+"""Deprecated shim for `src.models.ml_models`; import from :mod:`quantproject.models.ml_models`."""
 
-This module provides:
-- LSTM trend prediction models
-- Feature extraction pipelines
-- Model training and evaluation utilities
-"""
+import warnings
 
-from .base_model import BasePredictor, ModelConfig
-from .lstm_predictor import LSTMPredictor
-from .data_preprocessor import TimeSeriesPreprocessor
-from .model_trainer import ModelTrainer
+warnings.warn(
+    "Importing from `src.models.ml_models` is deprecated. Please use `quantproject.models.ml_models` instead.",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
-__all__ = [
-    'BasePredictor',
-    'ModelConfig',
-    'LSTMPredictor',
-    'TimeSeriesPreprocessor',
-    'ModelTrainer'
-]
+from quantproject.models.ml_models import *  # noqa: F401,F403

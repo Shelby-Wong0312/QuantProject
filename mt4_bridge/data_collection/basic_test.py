@@ -20,8 +20,8 @@ def test_imports():
     
     try:
         # Test core event system imports
-        from core.event import EventType, MarketEvent
-        from core.event_loop import EventLoop
+        from quantproject.core.event import EventType, MarketEvent
+        from quantproject.core.event_loop import EventLoop
         print("[PASS] Core event system imported successfully")
         
         # Test MT4 data collection imports
@@ -173,8 +173,8 @@ async def test_event_system():
     print("Testing event system compatibility...")
     
     try:
-        from core.event import EventType, MarketEvent
-        from core.event_loop import EventLoop
+        from quantproject.core.event import EventType, MarketEvent
+        from quantproject.core.event_loop import EventLoop
         import pandas as pd
         
         # Create event loop

@@ -3,7 +3,7 @@ Monitor Live Trading System
 """
 import time
 from datetime import datetime
-from src.connectors.capital_com_api import CapitalComAPI
+from quantproject.connectors.capital_com_api import CapitalComAPI
 import sqlite3
 
 def monitor():

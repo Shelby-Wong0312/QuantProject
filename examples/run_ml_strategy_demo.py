@@ -14,13 +14,13 @@ import logging
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from src.core.paper_trading import PaperTradingSimulator
-from src.ml_models.lstm_attention import LSTMAttentionModel
-from src.ml_models.xgboost_ensemble import XGBoostEnsemble
-from src.rl_trading.ppo_agent import PPOAgent
-from src.portfolio.mpt_optimizer import MPTOptimizer
-from src.risk.dynamic_stop_loss import DynamicStopLoss
-from src.strategies.strategy_manager import StrategyManager
+from quantproject.core.paper_trading import PaperTradingSimulator
+from quantproject.models.ml_models import LSTMPricePredictor
+from quantproject.models.ml_models import XGBoostPredictor
+from quantproject.rl_trading import PPOAgent
+from quantproject.portfolio.mpt_optimizer import MPTOptimizer
+from quantproject.risk.dynamic_stop_loss import DynamicStopLoss
+from quantproject.strategies.strategy_manager import StrategyManager
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -41,14 +41,14 @@ class MLTradingSystem:
         )
         
         # Initialize models
-        self.lstm_model = LSTMAttentionModel(
+        self.lstm_model = LSTMPricePredictor(
             input_dim=20,
             hidden_dim=128,
             num_layers=3,
             dropout=0.2
         )
         
-        self.xgboost = XGBoostEnsemble()
+        self.xgboost = XGBoostPredictor()
         
         self.ppo_agent = PPOAgent(
             state_dim=20,

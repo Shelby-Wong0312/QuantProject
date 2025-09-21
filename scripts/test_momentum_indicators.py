@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 import pandas as pd
 import numpy as np
 import sqlite3
-from src.indicators.momentum_indicators import RSI, MACD, Stochastic, WilliamsR, CCI
+from quantproject.indicators.momentum_indicators import RSI, MACD, Stochastic, WilliamsR, CCI
 import matplotlib.pyplot as plt
 
 def test_indicators():

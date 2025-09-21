@@ -18,7 +18,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Import only the winner indicator for speed
-from src.indicators.momentum_indicators import CCI
+from quantproject.indicators.momentum_indicators import CCI
 
 
 class FastComprehensiveBacktest:

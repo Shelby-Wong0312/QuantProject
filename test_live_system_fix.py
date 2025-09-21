@@ -19,9 +19,9 @@ def test_strategy_initialization():
     try:
         # Test 1: Import strategy classes
         print("\n[1] Testing imports...")
-        from src.strategies.traditional.momentum_strategy import MomentumStrategy
-        from src.strategies.traditional.mean_reversion import MeanReversionStrategy
-        from src.strategies.strategy_interface import StrategyConfig
+        from quantproject.strategies.traditional.momentum_strategy import MomentumStrategy
+        from quantproject.strategies.traditional.mean_reversion import MeanReversionStrategy
+        from quantproject.strategies.strategy_interface import StrategyConfig
         print("   [OK] Imports successful")
         
         # Test 2: Create strategy configs
@@ -113,7 +113,7 @@ def test_strategy_initialization():
         
         # Test 5: Test live system initialization
         print("\n[5] Testing LiveTradingSystem...")
-        from src.live_trading.live_system import LiveTradingSystem
+        from quantproject.live_trading.live_system import LiveTradingSystem
         
         system = LiveTradingSystem()
         print("   [OK] LiveTradingSystem initialized")
@@ -127,7 +127,7 @@ def test_strategy_initialization():
         print("\nYou can now run the live trading system with:")
         print("  python start_live_trading_simple.py")
         print("or")
-        print("  python -c \"import asyncio; from src.live_trading.live_system import main; asyncio.run(main())\"")
+        print("  python -c \"import asyncio; from quantproject.live_trading.live_system import main; asyncio.run(main())\"")
         
         return True
         

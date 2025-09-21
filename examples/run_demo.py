@@ -8,7 +8,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from src.core.paper_trading import PaperTradingSimulator
+from quantproject.core.paper_trading import PaperTradingSimulator
 import pandas as pd
 import numpy as np
 from datetime import datetime

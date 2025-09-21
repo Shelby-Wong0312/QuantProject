@@ -1,2 +1,2 @@
 # Import from src location
-from src.strategies.trading_strategies import *
+from quantproject.strategies.trading_strategies import *

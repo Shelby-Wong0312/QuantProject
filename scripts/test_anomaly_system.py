@@ -17,9 +17,9 @@ from typing import Dict
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.risk.anomaly_detection import MarketAnomalyDetector, AnomalyType, SeverityLevel
-from src.risk.circuit_breaker import CircuitBreaker, BreakerLevel
-from src.risk.deleveraging import RapidDeleveraging, DeleveragingStrategy, Position
+from quantproject.risk.anomaly_detection import MarketAnomalyDetector, AnomalyType, SeverityLevel
+from quantproject.risk.circuit_breaker import CircuitBreaker, BreakerLevel
+from quantproject.risk.deleveraging import RapidDeleveraging, DeleveragingStrategy, Position
 
 # Configure logging
 logging.basicConfig(

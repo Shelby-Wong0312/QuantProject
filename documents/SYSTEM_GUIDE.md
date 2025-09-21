@@ -148,7 +148,7 @@ rl_agent:
 ### 1. 數據流程
 ```python
 # 數據獲取 → 清洗 → 特徵工程 → 模型輸入
-from src.data_processing.pipeline import DataPipeline
+from quantproject.data_processing.pipeline import DataPipeline
 
 pipeline = DataPipeline()
 processed_data = pipeline.process(raw_data)
@@ -157,13 +157,13 @@ processed_data = pipeline.process(raw_data)
 ### 2. 模型推理
 ```python
 # LSTM 預測
-from src.models.ml_models.lstm_predictor import LSTMPredictor
+from quantproject.models.ml_models.lstm_predictor import LSTMPredictor
 
 predictor = LSTMPredictor.load("./models/lstm/")
 predictions = predictor.predict(data, horizons=[1, 5, 20])
 
 # 情緒分析
-from src.models.sentiment.finbert_analyzer import FinBERTAnalyzer
+from quantproject.models.sentiment.finbert_analyzer import FinBERTAnalyzer
 
 analyzer = FinBERTAnalyzer()
 sentiment_scores = analyzer.analyze(news_data)
@@ -172,7 +172,7 @@ sentiment_scores = analyzer.analyze(news_data)
 ### 3. RL 決策
 ```python
 # 獲取交易決策
-from src.rl_trading.agents.ppo_agent import PPOAgent
+from quantproject.rl_trading.agents.ppo_agent import PPOAgent
 
 agent = PPOAgent.load("./models/rl/")
 state = env.get_observation()
@@ -182,7 +182,7 @@ action = agent.predict(state)
 ### 4. 風險控制
 ```python
 # 倉位管理
-from src.rl_trading.utils.risk_manager import RiskManager
+from quantproject.rl_trading.utils.risk_manager import RiskManager
 
 risk_manager = RiskManager(
     max_position_size=0.1,

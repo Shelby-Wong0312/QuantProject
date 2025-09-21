@@ -42,7 +42,7 @@ def test_strategy_creation():
     print("=" * 40)
     
     try:
-        from src.strategies.traditional.momentum_strategy import create_momentum_strategy
+        from quantproject.strategies.traditional.momentum_strategy import create_momentum_strategy
         momentum = create_momentum_strategy(['TEST'])
         print("SUCCESS: Momentum Strategy created successfully")
         print(f"  Name: {momentum.name}")
@@ -51,7 +51,7 @@ def test_strategy_creation():
         print(f"FAILED: Momentum Strategy failed: {e}")
     
     try:
-        from src.strategies.traditional.mean_reversion import create_mean_reversion_strategy
+        from quantproject.strategies.traditional.mean_reversion import create_mean_reversion_strategy
         mean_rev = create_mean_reversion_strategy(['TEST'])
         print("SUCCESS: Mean Reversion Strategy created successfully")
         print(f"  Name: {mean_rev.name}")
@@ -60,7 +60,7 @@ def test_strategy_creation():
         print(f"FAILED: Mean Reversion Strategy failed: {e}")
     
     try:
-        from src.strategies.traditional.breakout_strategy import create_breakout_strategy
+        from quantproject.strategies.traditional.breakout_strategy import create_breakout_strategy
         breakout = create_breakout_strategy(['TEST'])
         print("SUCCESS: Breakout Strategy created successfully")
         print(f"  Name: {breakout.name}")
@@ -69,7 +69,7 @@ def test_strategy_creation():
         print(f"FAILED: Breakout Strategy failed: {e}")
     
     try:
-        from src.strategies.traditional.trend_following import create_trend_following_strategy
+        from quantproject.strategies.traditional.trend_following import create_trend_following_strategy
         trend = create_trend_following_strategy(['TEST'])
         print("SUCCESS: Trend Following Strategy created successfully")
         print(f"  Name: {trend.name}")
@@ -85,7 +85,7 @@ def test_indicators():
     data = generate_test_data(60)
     
     try:
-        from src.indicators.momentum_indicators import RSI, MACD
+        from quantproject.indicators.momentum_indicators import RSI, MACD
         
         # 測試RSI
         rsi_indicator = RSI(period=14)
@@ -111,7 +111,7 @@ def test_signal_generation():
     
     # 測試動量策略信號生成
     try:
-        from src.strategies.traditional.momentum_strategy import create_momentum_strategy
+        from quantproject.strategies.traditional.momentum_strategy import create_momentum_strategy
         momentum = create_momentum_strategy(['TEST'])
         
         # 簡單測試 - 檢查方法是否存在
@@ -131,7 +131,7 @@ def test_ml_strategies():
     print("=" * 40)
     
     try:
-        from src.strategies.ml.random_forest_strategy import create_random_forest_strategy
+        from quantproject.strategies.ml.random_forest_strategy import create_random_forest_strategy
         rf_strategy = create_random_forest_strategy(['TEST'])
         print("SUCCESS: Random Forest Strategy created successfully")
         print(f"  Name: {rf_strategy.name}")
@@ -142,7 +142,7 @@ def test_ml_strategies():
         print(f"FAILED: Random Forest Strategy failed: {e}")
     
     try:
-        from src.strategies.ml.lstm_predictor import create_lstm_strategy
+        from quantproject.strategies.ml.lstm_predictor import create_lstm_strategy
         lstm_strategy = create_lstm_strategy(['TEST'])
         print("SUCCESS: LSTM Strategy created successfully")
         print(f"  Name: {lstm_strategy.name}")

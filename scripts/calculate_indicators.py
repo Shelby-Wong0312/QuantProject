@@ -16,7 +16,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Dict, List, Tuple
 import logging
 
-from src.indicators.trend_indicators import (
+from quantproject.indicators.trend_indicators import (
     SMA, EMA, WMA, VWAP, 
     MovingAverageCrossover, GoldenCross, DeathCross
 )

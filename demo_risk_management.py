@@ -12,7 +12,7 @@ import os
 # Add src to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
-from risk_management import RiskMetrics, PositionSizing, StopLoss, ROIMonitor, ROITarget
+from quantproject.risk import RiskMetrics, PositionSizing, StopLoss, ROIMonitor, ROITarget
 
 
 def demo_risk_metrics():

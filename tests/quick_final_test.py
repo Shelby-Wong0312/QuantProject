@@ -61,8 +61,8 @@ def test_system():
         import yfinance
         import torch
         import sklearn
-        from src.core.trading_system import TradingSystem
-        from src.connectors.capital_com_api import CapitalComAPI
+        from quantproject.core.trading_system import TradingSystem
+        from quantproject.connectors.capital_com_api import CapitalComAPI
         print("  [OK] All core modules loaded")
         results['tests']['modules'] = 'PASS'
     except ImportError as e:

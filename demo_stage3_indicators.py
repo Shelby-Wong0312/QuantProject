@@ -13,7 +13,7 @@ project_root = Path(__file__).parent
 sys.path.append(str(project_root))
 
 # Import the indicators library
-from src.indicators import (
+from quantproject.indicators import (
     RSI, MACD, BollingerBands, SMA,
     IndicatorCalculator, CalculationConfig,
     IndicatorSignalGenerator

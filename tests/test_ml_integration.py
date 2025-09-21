@@ -8,9 +8,9 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from src.strategies.ml_strategy_integration import MLStrategyIntegration
-from src.backtesting.ml_backtest import MLBacktester, BacktestConfig
-from src.optimization.hyperparameter_tuning import HyperparameterTuner, OptimizationConfig
+from quantproject.strategies.ml_strategy_integration import MLStrategyIntegration
+from quantproject.backtesting.ml_backtest import MLBacktester, BacktestConfig
+from quantproject.optimization.hyperparameter_tuning import HyperparameterTuner, OptimizationConfig
 
 async def test_ml_integration():
     """Run complete ML integration test"""

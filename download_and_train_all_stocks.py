@@ -133,8 +133,8 @@ def start_ppo_training(stock_data):
     
     # 導入訓練模塊
     try:
-        from src.rl.train_ppo import PPOTrainer
-        from src.rl.trading_env import TradingEnvironment
+        from quantproject.rl.train_ppo import PPOTrainer
+        from quantproject.rl.trading_env import TradingEnvironment
         
         # Create environment
         print("Creating trading environment...")

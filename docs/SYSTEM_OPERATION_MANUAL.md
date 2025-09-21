@@ -114,9 +114,9 @@ python main_trading.py --mode production --capital 100000
 
 **LSTM Prediction**
 ```python
-from src.ml_models.lstm_attention import LSTMAttentionModel
+from quantproject.models.ml_models import LSTMPricePredictor
 
-model = LSTMAttentionModel(
+model = LSTMPricePredictor(
     input_dim=20,
     hidden_dim=128,
     num_layers=3
@@ -126,9 +126,9 @@ predictions = model.predict(data)
 
 **XGBoost Ensemble**
 ```python
-from src.ml_models.xgboost_ensemble import XGBoostEnsemble
+from quantproject.models.ml_models import XGBoostPredictor
 
-ensemble = XGBoostEnsemble()
+ensemble = XGBoostPredictor()
 ensemble.train(X_train, y_train)
 signals = ensemble.predict(X_test)
 ```
@@ -137,7 +137,7 @@ signals = ensemble.predict(X_test)
 
 **MPT Optimization**
 ```python
-from src.portfolio.mpt_optimizer import MPTOptimizer
+from quantproject.portfolio.mpt_optimizer import MPTOptimizer
 
 optimizer = MPTOptimizer()
 weights = optimizer.optimize(
@@ -150,7 +150,7 @@ weights = optimizer.optimize(
 
 **Dynamic Stop Loss**
 ```python
-from src.risk.dynamic_stop_loss import DynamicStopLoss
+from quantproject.risk.dynamic_stop_loss import DynamicStopLoss
 
 stop_loss = DynamicStopLoss(
     atr_multiplier=2.0,
@@ -161,7 +161,7 @@ stop_price = stop_loss.calculate_stop('AAPL', current_price)
 
 **Circuit Breaker**
 ```python
-from src.risk.circuit_breaker import CircuitBreaker
+from quantproject.risk.circuit_breaker import CircuitBreaker
 
 breaker = CircuitBreaker(initial_value=100000)
 breaker.check_trigger(portfolio_value)
@@ -171,7 +171,7 @@ breaker.check_trigger(portfolio_value)
 
 **Real-time Data**
 ```python
-from src.data.realtime_collector import RealtimeDataCollector
+from quantproject.data.realtime_collector import RealtimeDataCollector
 
 collector = RealtimeDataCollector(['AAPL', 'GOOGL'])
 await collector.start_collection()

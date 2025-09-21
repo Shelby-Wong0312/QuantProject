@@ -151,7 +151,7 @@ class SystemTestSuite:
         
         # 測試交易引擎
         try:
-            from src.core.trading_system import TradingSystem
+            from quantproject.core.trading_system import TradingSystem
             tests.append(('交易引擎載入', True, 'TradingSystem 模組正常'))
         except ImportError:
             tests.append(('交易引擎載入', False, '無法載入 TradingSystem'))
@@ -205,7 +205,7 @@ class SystemTestSuite:
         
         # 測試Capital.com API
         try:
-            from src.connectors.capital_com_api import CapitalComAPI
+            from quantproject.connectors.capital_com_api import CapitalComAPI
             api = CapitalComAPI()
             # 檢查API配置
             if os.path.exists('.env'):

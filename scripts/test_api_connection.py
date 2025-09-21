@@ -14,8 +14,8 @@ from datetime import datetime
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.api.capital_client import CapitalComClient, Environment, Order, OrderType, OrderSide
-from src.api.auth_manager import AuthManager
+from quantproject.api.capital_client import CapitalComClient, Environment, Order, OrderType, OrderSide
+from quantproject.api.auth_manager import AuthManager
 import logging
 
 # Setup logging

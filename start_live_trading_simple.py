@@ -20,7 +20,7 @@ async def main():
     
     try:
         # Import the live trading system
-        from src.live_trading.live_system import LiveTradingSystem
+        from quantproject.live_trading.live_system import LiveTradingSystem
         
         # Initialize system
         system = LiveTradingSystem()

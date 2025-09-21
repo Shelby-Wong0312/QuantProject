@@ -1,0 +1,19 @@
+﻿services:
+  trading-system:
+    env_file:
+      - .env
+    volumes:
+      - ./scripts:/app/scripts
+      - ./state:/app/state
+    command: sh -lc "pip install -q --no-cache-dir flask redis requests gunicorn && gunicorn -w 1 -b 0.0.0.0:8000 'scripts.line_webhook_open:app'"
+
+  poller:
+    image: quantproject-trading-system:latest
+    working_dir: /app
+    volumes:
+      - ./scripts:/app/scripts
+      - ./state:/app/state
+      - ./secrets:/run/secrets:ro
+    command: sh -lc "export CAPITAL_API_KEY=$(tr -d '\r\n' </run/secrets/capital_api_key.txt); export CAPITAL_PASSWORD=$(tr -d '\r\n' </run/secrets/capital_password.txt); export CAPITAL_IDENTIFIER=$(tr -d '\r\n' </run/secrets/capital_identifier.txt); export CAPITAL_ACCOUNT_TYPE=demo; mkdir -p /app/state; while true; do python scripts/diagnostics/check_capital_api.py --account-summary --verbose || true; if [ -f capital_api_status.json ]; then mv -f capital_api_status.json /app/state/capital_api_status.json; fi; sleep 60; done"
+    depends_on:
+      - trading-system

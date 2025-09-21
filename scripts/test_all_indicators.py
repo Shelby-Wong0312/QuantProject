@@ -13,10 +13,10 @@ from datetime import datetime
 import time
 
 # Import all indicators
-from src.indicators.trend_indicators import SMA, EMA, WMA, VWAP, MovingAverageCrossover
-from src.indicators.momentum_indicators import RSI, MACD, Stochastic, WilliamsR, CCI
-from src.indicators.volatility_indicators import BollingerBands, ATR, KeltnerChannel, DonchianChannel
-from src.indicators.volume_indicators import OBV, VolumeSMA, MFI, ADLine
+from quantproject.indicators.trend_indicators import SMA, EMA, WMA, VWAP, MovingAverageCrossover
+from quantproject.indicators.momentum_indicators import RSI, MACD, Stochastic, WilliamsR, CCI
+from quantproject.indicators.volatility_indicators import BollingerBands, ATR, KeltnerChannel, DonchianChannel
+from quantproject.indicators.volume_indicators import OBV, VolumeSMA, MFI, ADLine
 
 
 def test_stock_indicators(symbol='AAPL'):

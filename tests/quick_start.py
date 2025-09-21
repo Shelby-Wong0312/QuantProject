@@ -8,7 +8,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from src.core.paper_trading import PaperTradingSimulator
+from quantproject.core.paper_trading import PaperTradingSimulator
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -155,7 +155,7 @@ async def run_signal_generation_demo():
     print("   SIGNAL GENERATION DEMO")
     print("="*60)
     
-    from src.signals.signal_generator import SignalGenerator
+    from quantproject.signals.signal_generator import SignalGenerator
     
     # 初始化信號生成器
     generator = SignalGenerator()

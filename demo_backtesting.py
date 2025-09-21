@@ -12,9 +12,9 @@ from pathlib import Path
 # Add project root to path
 sys.path.append(str(Path(__file__).parent))
 
-from src.backtesting import run_backtest, BacktestEngine, BacktestConfig
-from src.strategies.base_strategy import BaseStrategy
-from src.strategies.strategy_interface import TradingSignal, SignalType, StrategyConfig
+from quantproject.backtesting import run_backtest, BacktestEngine, BacktestConfig
+from quantproject.strategies.base_strategy import BaseStrategy
+from quantproject.strategies.strategy_interface import TradingSignal, SignalType, StrategyConfig
 
 
 class SimpleMAStrategy(BaseStrategy):

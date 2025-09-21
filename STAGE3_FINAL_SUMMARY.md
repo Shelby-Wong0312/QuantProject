@@ -142,18 +142,18 @@ Small-Scale Performance Test Results
 ### API接口簡潔易用
 ```python
 # 單個指標
-from src.indicators import RSI
+from quantproject.indicators import RSI
 rsi = RSI(period=14)
 result = rsi.calculate(data)
 
 # 批量計算
-from src.indicators import IndicatorCalculator, CalculationConfig
+from quantproject.indicators import IndicatorCalculator, CalculationConfig
 config = CalculationConfig(timeframes=['1d'], use_multiprocessing=True)
 calculator = IndicatorCalculator(config)
 results = calculator.calculate_all_indicators(stocks_data)
 
 # 信號生成
-from src.indicators import IndicatorSignalGenerator
+from quantproject.indicators import IndicatorSignalGenerator
 signal_gen = IndicatorSignalGenerator()
 signals = signal_gen.generate_signals(data, 'AAPL')
 ```

@@ -3,7 +3,7 @@ Example of proper logging usage
 """
 
 import logging
-from src.utils.logger_config import setup_logger
+from quantproject.utils.logger_config import setup_logger
 
 # Setup logger for this module
 logger = setup_logger(__name__)

@@ -18,8 +18,8 @@ from typing import Optional
 # Add project root to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from src.core.trading_system import IntegratedTradingSystem, SystemConfig, SystemMode, StrategyType
-from src.core.paper_trading import PaperTradingSimulator
+from quantproject.core.trading_system import IntegratedTradingSystem, SystemConfig, SystemMode, StrategyType
+from quantproject.core.paper_trading import PaperTradingSimulator
 
 # Configure logging
 logging.basicConfig(

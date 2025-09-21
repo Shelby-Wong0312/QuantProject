@@ -19,7 +19,7 @@ init()
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from mt4_bridge.connector import MT4Connector, create_default_connector
-from src.data_pipeline.mt4_data_collector import MT4DataPipeline, MarketData
+from quantproject.data_pipeline.mt4_data_collector import MT4DataPipeline, MarketData
 
 def print_success(msg):
     print(f"{Fore.GREEN}✓ {msg}{Style.RESET_ALL}")

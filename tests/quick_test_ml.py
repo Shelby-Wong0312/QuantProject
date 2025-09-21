@@ -10,7 +10,7 @@ print("Testing ML Integration Components...")
 # Test 1: ML Strategy Integration
 print("\n1. Testing ML Strategy Integration...")
 try:
-    from src.strategies.ml_strategy_integration import MLStrategyIntegration
+    from quantproject.strategies.ml_strategy_integration import MLStrategyIntegration
     strategy = MLStrategyIntegration(initial_capital=100000)
     print("   [OK] ML Strategy Integration loaded successfully")
 except Exception as e:
@@ -19,7 +19,7 @@ except Exception as e:
 # Test 2: Backtesting System
 print("\n2. Testing Backtesting System...")
 try:
-    from src.backtesting.ml_backtest import MLBacktester, BacktestConfig
+    from quantproject.backtesting.ml_backtest import MLBacktester, BacktestConfig
     config = BacktestConfig()
     backtester = MLBacktester(config)
     print("   [OK] Backtesting System loaded successfully")
@@ -29,7 +29,7 @@ except Exception as e:
 # Test 3: Hyperparameter Tuning
 print("\n3. Testing Hyperparameter Tuning...")
 try:
-    from src.optimization.hyperparameter_tuning import HyperparameterTuner, OptimizationConfig
+    from quantproject.optimization.hyperparameter_tuning import HyperparameterTuner, OptimizationConfig
     opt_config = OptimizationConfig()
     tuner = HyperparameterTuner(opt_config)
     print("   [OK] Hyperparameter Tuning loaded successfully")

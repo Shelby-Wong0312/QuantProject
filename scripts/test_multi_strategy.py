@@ -18,13 +18,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # 導入策略
-from src.strategies.cci_strategy import CCI20Strategy
-from src.strategies.williams_r_strategy import WilliamsRStrategy
-from src.strategies.stochastic_strategy import StochasticStrategy
-from src.strategies.volume_sma_strategy import VolumeSMAStrategy
-from src.strategies.obv_strategy import OBVStrategy
-from src.strategies.multi_strategy_manager import MultiStrategyManager
-from src.strategies.signal_aggregator import SignalAggregator
+from quantproject.strategies.cci_strategy import CCI20Strategy
+from quantproject.strategies.williams_r_strategy import WilliamsRStrategy
+from quantproject.strategies.stochastic_strategy import StochasticStrategy
+from quantproject.strategies.volume_sma_strategy import VolumeSMAStrategy
+from quantproject.strategies.obv_strategy import OBVStrategy
+from quantproject.strategies.multi_strategy_manager import MultiStrategyManager
+from quantproject.strategies.signal_aggregator import SignalAggregator
 
 
 def load_test_data(symbol='AAPL', days=100):

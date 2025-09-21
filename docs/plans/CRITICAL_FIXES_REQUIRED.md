@@ -65,18 +65,18 @@ Create new integrated demo that actually uses our models:
 # File: run_ml_demo.py
 
 import asyncio
-from src.ml_models.lstm_attention import LSTMAttentionModel
-from src.ml_models.xgboost_ensemble import XGBoostEnsemble
-from src.rl_trading.ppo_agent import PPOAgent
-from src.core.paper_trading import PaperTradingSimulator
-from src.strategies.strategy_manager import StrategyManager
+from quantproject.models.ml_models import LSTMPricePredictor
+from quantproject.models.ml_models import XGBoostPredictor
+from quantproject.rl_trading import PPOAgent
+from quantproject.core.paper_trading import PaperTradingSimulator
+from quantproject.strategies.strategy_manager import StrategyManager
 
 async def run_ml_trading_demo():
     """Run demo with actual ML/DL/RL strategies"""
     
     # Initialize models
-    lstm_model = LSTMAttentionModel()
-    xgboost_model = XGBoostEnsemble()
+    lstm_model = LSTMPricePredictor()
+    xgboost_model = XGBoostPredictor()
     ppo_agent = PPOAgent()
     
     # Initialize strategy manager

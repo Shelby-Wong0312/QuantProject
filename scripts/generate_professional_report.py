@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 import json
 from datetime import datetime
-from src.performance_calculator import PerformanceCalculator
+from quantproject.performance_calculator import PerformanceCalculator
 
 class ProfessionalReportGenerator:
     """Generate professional investment analysis report with real performance metrics"""

@@ -23,8 +23,8 @@ project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
 # Import components
-from src.indicators.indicator_calculator import IndicatorCalculator, CalculationConfig
-from src.indicators.signal_generator import IndicatorSignalGenerator
+from quantproject.indicators.indicator_calculator import IndicatorCalculator, CalculationConfig
+from quantproject.indicators.signal_generator import IndicatorSignalGenerator
 
 logger = logging.getLogger(__name__)
 

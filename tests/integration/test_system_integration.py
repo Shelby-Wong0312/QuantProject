@@ -15,9 +15,9 @@ import sys
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
-from src.integration.main_controller import MainController
-from src.integration.data_pipeline import DataPipeline
-from src.integration.health_monitor import HealthMonitor, HealthStatus
+from quantproject.integration.main_controller import MainController
+from quantproject.integration.data_pipeline import DataPipeline
+from quantproject.integration.health_monitor import HealthMonitor, HealthStatus
 
 
 class TestMainController(unittest.TestCase):
@@ -42,10 +42,10 @@ class TestMainController(unittest.TestCase):
         self.controller = MainController()
         self.controller.config = self.config
     
-    @patch('src.integration.main_controller.CapitalComClient')
-    @patch('src.integration.main_controller.LSTMPredictor')
-    @patch('src.integration.main_controller.FinBERTAnalyzer')
-    @patch('src.integration.main_controller.PPOAgent')
+    @patch('quantproject.integration.main_controller.CapitalComClient')
+    @patch('quantproject.integration.main_controller.LSTMPredictor')
+    @patch('quantproject.integration.main_controller.FinBERTAnalyzer')
+    @patch('quantproject.integration.main_controller.PPOAgent')
     async def test_initialize_components(self, mock_ppo, mock_finbert, mock_lstm, mock_client):
         """Test component initialization"""
         # Mock client connection
@@ -306,7 +306,7 @@ class TestHealthMonitor(unittest.TestCase):
     
     def test_determine_overall_status(self):
         """Test overall status determination"""
-        from src.integration.health_monitor import ComponentHealth
+        from quantproject.integration.health_monitor import ComponentHealth
         
         # Test all healthy
         component_health = {
@@ -340,10 +340,10 @@ class TestHealthMonitor(unittest.TestCase):
 class TestIntegration(unittest.TestCase):
     """End-to-end integration tests"""
     
-    @patch('src.integration.main_controller.CapitalComClient')
-    @patch('src.integration.main_controller.LSTMPredictor')
-    @patch('src.integration.main_controller.FinBERTAnalyzer')
-    @patch('src.integration.main_controller.PPOAgent')
+    @patch('quantproject.integration.main_controller.CapitalComClient')
+    @patch('quantproject.integration.main_controller.LSTMPredictor')
+    @patch('quantproject.integration.main_controller.FinBERTAnalyzer')
+    @patch('quantproject.integration.main_controller.PPOAgent')
     async def test_full_system_flow(self, mock_ppo, mock_finbert, mock_lstm, mock_client):
         """Test full system integration flow"""
         # Create controller

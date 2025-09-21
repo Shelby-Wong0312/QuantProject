@@ -16,7 +16,7 @@ import sqlite3
 import warnings
 warnings.filterwarnings('ignore')
 
-from src.indicators.momentum_indicators import CCI
+from quantproject.indicators.momentum_indicators import CCI
 
 
 class Visual15YearsReport:

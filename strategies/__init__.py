@@ -1,2 +1,2 @@
 # Import from src.strategies
-from src.strategies import *
+from quantproject.strategies import *

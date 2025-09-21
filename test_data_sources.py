@@ -130,7 +130,7 @@ def test_capital():
     
     try:
         sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-        from src.connectors.capital_com_api import CapitalComAPI
+        from quantproject.connectors.capital_com_api import CapitalComAPI
         
         api = CapitalComAPI()
         if api.authenticate():

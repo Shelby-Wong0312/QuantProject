@@ -17,8 +17,8 @@ sys.path.insert(0, str(project_root))
 
 try:
     # 導入核心事件系統
-    from core.event import EventType, MarketEvent
-    from core.event_loop import EventLoop
+    from quantproject.core.event import EventType, MarketEvent
+    from quantproject.core.event_loop import EventLoop
     
     # 導入 MT4 數據收集組件
     from mt4_bridge.data_collection import (

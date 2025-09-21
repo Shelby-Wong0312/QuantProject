@@ -13,11 +13,11 @@ import sys
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.sensory_models.graph_constructor import StockGraphConstructor
-from src.sensory_models.gnn_model import (
+from quantproject.sensory_models.graph_constructor import StockGraphConstructor
+from quantproject.sensory_models.gnn_model import (
     StockCorrelationGNN, TemporalStockGNN, StockGATLayer, GNNFeatureExtractor
 )
-from src.sensory_models.relation_analyzer import StockRelationAnalyzer, RelationFeatureExtractor
+from quantproject.sensory_models.relation_analyzer import StockRelationAnalyzer, RelationFeatureExtractor
 
 
 class TestGraphConstructor(unittest.TestCase):
