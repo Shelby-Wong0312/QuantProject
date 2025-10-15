@@ -11,6 +11,7 @@ import pandas as pd
 
 class SignalType(Enum):
     """Standard signal types for trading strategies"""
+
     BUY = "BUY"
     SELL = "SELL"
     HOLD = "HOLD"
@@ -20,6 +21,7 @@ class SignalType(Enum):
 
 class StrategyStatus(Enum):
     """Strategy execution status"""
+
     ACTIVE = "ACTIVE"
     INACTIVE = "INACTIVE"
     PAUSED = "PAUSED"
@@ -30,7 +32,7 @@ class StrategyStatus(Enum):
 class TradingSignal:
     """
     Standardized trading signal structure
-    
+
     Attributes:
         symbol: Trading symbol (e.g., 'AAPL', 'EURUSD')
         signal_type: Type of signal (BUY, SELL, HOLD)
@@ -40,6 +42,7 @@ class TradingSignal:
         price: Price at signal generation
         metadata: Additional signal-specific data
     """
+
     symbol: str
     signal_type: SignalType
     strength: float
@@ -47,12 +50,12 @@ class TradingSignal:
     timestamp: pd.Timestamp
     price: Optional[float] = None
     metadata: Optional[Dict[str, Any]] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         """Validate signal data after initialization"""
         if not 0.0 <= self.strength <= 1.0:
             raise ValueError(f"Signal strength must be between 0.0 and 1.0, got {self.strength}")
-        
+
         if self.price is not None and self.price <= 0:
             raise ValueError(f"Price must be positive, got {self.price}")
 
@@ -61,7 +64,7 @@ class TradingSignal:
 class StrategyConfig:
     """
     Strategy configuration parameters
-    
+
     Attributes:
         name: Unique strategy name
         enabled: Whether strategy is active
@@ -71,6 +74,7 @@ class StrategyConfig:
         parameters: Strategy-specific parameters
         symbols: List of symbols this strategy trades
     """
+
     name: str
     enabled: bool = True
     weight: float = 1.0
@@ -78,15 +82,15 @@ class StrategyConfig:
     max_positions: int = 10
     parameters: Dict[str, Any] = field(default_factory=dict)
     symbols: List[str] = field(default_factory=list)
-    
+
     def __post_init__(self):
         """Validate configuration after initialization"""
         if not 0.0 <= self.weight <= 1.0:
             raise ValueError(f"Weight must be between 0.0 and 1.0, got {self.weight}")
-        
+
         if not 0.0 <= self.risk_limit <= 1.0:
             raise ValueError(f"Risk limit must be between 0.0 and 1.0, got {self.risk_limit}")
-        
+
         if self.max_positions <= 0:
             raise ValueError(f"Max positions must be positive, got {self.max_positions}")
 
@@ -95,7 +99,7 @@ class StrategyConfig:
 class StrategyPerformance:
     """
     Strategy performance metrics
-    
+
     Attributes:
         strategy_name: Name of the strategy
         total_return: Total return percentage
@@ -106,6 +110,7 @@ class StrategyPerformance:
         avg_trade_duration: Average trade duration in minutes
         last_updated: Last performance calculation timestamp
     """
+
     strategy_name: str
     total_return: float = 0.0
     win_rate: float = 0.0
@@ -120,7 +125,7 @@ class StrategyPerformance:
 class Position:
     """
     Trading position information
-    
+
     Attributes:
         symbol: Trading symbol
         size: Position size (positive for long, negative for short)
@@ -132,6 +137,7 @@ class Position:
         stop_loss: Stop loss price (optional)
         take_profit: Take profit price (optional)
     """
+
     symbol: str
     size: float
     entry_price: float
@@ -141,7 +147,7 @@ class Position:
     pnl: float = 0.0
     stop_loss: Optional[float] = None
     take_profit: Optional[float] = None
-    
+
     def update_pnl(self, current_price: float):
         """Update position P&L with current price"""
         self.current_price = current_price
@@ -155,7 +161,7 @@ class Position:
 class RiskMetrics:
     """
     Risk management metrics
-    
+
     Attributes:
         var_95: Value at Risk at 95% confidence level
         expected_shortfall: Expected Shortfall (Conditional VaR)
@@ -164,6 +170,7 @@ class RiskMetrics:
         correlation: Correlation with benchmark
         exposure: Current market exposure
     """
+
     var_95: float = 0.0
     expected_shortfall: float = 0.0
     beta: float = 1.0

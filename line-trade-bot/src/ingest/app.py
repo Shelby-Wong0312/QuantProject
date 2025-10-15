@@ -12,12 +12,13 @@ from typing import Dict, Any, Optional
 
 # --- 動態把專案根目錄放到 sys.path，確保能 import 到 infra/* ---
 import sys, pathlib
+
 _THIS = pathlib.Path(__file__).resolve()
 # 嘗試往上最多 5 層找 infra 目錄
 for up in range(1, 6):
-    cand = _THIS.parents[up-1] / "infra"
+    cand = _THIS.parents[up - 1] / "infra"
     if cand.is_dir():
-        sys.path.append(str(_THIS.parents[up-1]))
+        sys.path.append(str(_THIS.parents[up - 1]))
         break
 
 # 這裡會用到你前面建立的兩個模組
@@ -27,9 +28,9 @@ try:
 except Exception as e:
     # 若還沒建立 infra/*，保留原 ingest 功能，但不做 LINE/DDB
     publish_trade_event = None  # type: ignore
-    write_summary = None        # type: ignore
-    write_positions_text = None # type: ignore
-    append_trade_event = None   # type: ignore
+    write_summary = None  # type: ignore
+    write_positions_text = None  # type: ignore
+    append_trade_event = None  # type: ignore
 
 # 原本就有的依賴（保留）
 from common.ingest_core import process_payload
@@ -49,8 +50,10 @@ def _auth_ok(headers: Dict[str, str]) -> bool:
     token = None
     try:
         from common.secrets import get_param, get_secret
-        token = get_param(os.environ.get("INGEST_TOKEN_PARAM", "")) or \
-                get_secret(os.environ.get("INGEST_TOKEN_SECRET_ID", ""))
+
+        token = get_param(os.environ.get("INGEST_TOKEN_PARAM", "")) or get_secret(
+            os.environ.get("INGEST_TOKEN_SECRET_ID", "")
+        )
     except Exception:
         token = None
     if not token:
@@ -87,7 +90,11 @@ def _format_event(ev: Dict[str, Any]) -> str:
 
 # ---------- 將自由格式 payload 映射到我們的標準欄位 ----------
 def _normalize_trade(ev: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-    et = (ev.get("event") or ev.get("type") or ev.get("status") or ev.get("action") or "").strip().lower()
+    et = (
+        (ev.get("event") or ev.get("type") or ev.get("status") or ev.get("action") or "")
+        .strip()
+        .lower()
+    )
     # 映射可能的事件別名
     if et in ("submitted", "submit", "placed", "accepted", "ack"):
         status = "submitted"
@@ -119,8 +126,37 @@ def _normalize_trade(ev: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         "price": float(price),
         "status": status,
         "dealId": deal_id,
-        "pnl": (float(pnl) if isinstance(pnl, (int, float, str)) and str(pnl).replace('.', '', 1).lstrip('-').isdigit() else None),
-        "extra": {k: v for k, v in ev.items() if k not in {"event","type","status","action","symbol","ticker","side","quantity","qty","price","fill_price","avg_price","dealId","deal_id","orderId","order_id","pnl","profit"}}
+        "pnl": (
+            float(pnl)
+            if isinstance(pnl, (int, float, str))
+            and str(pnl).replace(".", "", 1).lstrip("-").isdigit()
+            else None
+        ),
+        "extra": {
+            k: v
+            for k, v in ev.items()
+            if k
+            not in {
+                "event",
+                "type",
+                "status",
+                "action",
+                "symbol",
+                "ticker",
+                "side",
+                "quantity",
+                "qty",
+                "price",
+                "fill_price",
+                "avg_price",
+                "dealId",
+                "deal_id",
+                "orderId",
+                "order_id",
+                "pnl",
+                "profit",
+            }
+        },
     }
     return out
 
@@ -137,25 +173,30 @@ def _maybe_update_state(ev: Dict[str, Any]) -> Dict[str, bool]:
     try:
         if write_summary and isinstance(ev.get("summary"), dict):
             s = ev["summary"]
-            eq = float(s.get("equity", 0)); ca = float(s.get("cash", 0))
-            up = float(s.get("upnl", 0));  rp = float(s.get("rpnl", 0))
-            write_summary(equity=eq, cash=ca, upnl=up, rpnl=rp); updated["summary"] = True
+            eq = float(s.get("equity", 0))
+            ca = float(s.get("cash", 0))
+            up = float(s.get("upnl", 0))
+            rp = float(s.get("rpnl", 0))
+            write_summary(equity=eq, cash=ca, upnl=up, rpnl=rp)
+            updated["summary"] = True
     except Exception as e:
         print("write_summary failed:", e)
 
     try:
         if write_positions_text:
             if isinstance(ev.get("positions_text"), str) and ev["positions_text"].strip():
-                write_positions_text(ev["positions_text"]); updated["positions"] = True
+                write_positions_text(ev["positions_text"])
+                updated["positions"] = True
             elif isinstance(ev.get("positions"), list) and ev["positions"]:
                 lines = []
                 for p in ev["positions"]:
                     sym = p.get("symbol") or p.get("ticker") or "?"
                     qty = p.get("qty") or p.get("quantity") or 0
-                    ap  = p.get("avg_price") or p.get("price") or 0
+                    ap = p.get("avg_price") or p.get("price") or 0
                     sign = "+" if float(qty) > 0 else ""
                     lines.append(f"{sym} {sign}{float(qty):.4f} @ {float(ap):.4f}")
-                write_positions_text("\n".join(lines)); updated["positions"] = True
+                write_positions_text("\n".join(lines))
+                updated["positions"] = True
     except Exception as e:
         print("write_positions_text failed:", e)
 
@@ -216,11 +257,14 @@ def lambda_handler(event, context):
         subscribers = -1
         print("process_payload failed:", e)
 
-    return _resp(200, {
-        "ok": True,
-        "delivered": bool(delivered or trade_dispatched),
-        "subscribers": subscribers,
-        "summary_updated": state_updated["summary"],
-        "positions_updated": state_updated["positions"],
-        "trade_dispatched": trade_dispatched,
-    })
+    return _resp(
+        200,
+        {
+            "ok": True,
+            "delivered": bool(delivered or trade_dispatched),
+            "subscribers": subscribers,
+            "summary_updated": state_updated["summary"],
+            "positions_updated": state_updated["positions"],
+            "trade_dispatched": trade_dispatched,
+        },
+    )

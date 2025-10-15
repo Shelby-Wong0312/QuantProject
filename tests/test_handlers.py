@@ -23,10 +23,14 @@ def install_dummy_linebot(collected):
             self.token = token
 
         def push_message(self, to, message):
-            collected.setdefault("push", []).append({"to": to, "text": getattr(message, "text", None)})
+            collected.setdefault("push", []).append(
+                {"to": to, "text": getattr(message, "text", None)}
+            )
 
         def reply_message(self, reply_token, message):
-            collected.setdefault("reply", []).append({"replyToken": reply_token, "text": getattr(message, "text", None)})
+            collected.setdefault("reply", []).append(
+                {"replyToken": reply_token, "text": getattr(message, "text", None)}
+            )
 
     models = ModuleType("linebot.models")
 
@@ -59,14 +63,16 @@ def test_line_push_trade_event_happy_path(monkeypatch):
             {"AttributeName": "ts", "AttributeType": "S"},
             {"AttributeName": "bucket", "AttributeType": "S"},
         ],
-        GlobalSecondaryIndexes=[{
-            "IndexName": "recent-index",
-            "KeySchema": [
-                {"AttributeName": "bucket", "KeyType": "HASH"},
-                {"AttributeName": "ts", "KeyType": "RANGE"},
-            ],
-            "Projection": {"ProjectionType": "ALL"},
-        }],
+        GlobalSecondaryIndexes=[
+            {
+                "IndexName": "recent-index",
+                "KeySchema": [
+                    {"AttributeName": "bucket", "KeyType": "HASH"},
+                    {"AttributeName": "ts", "KeyType": "RANGE"},
+                ],
+                "Projection": {"ProjectionType": "ALL"},
+            }
+        ],
         BillingMode="PAY_PER_REQUEST",
     )
     ddb.create_table(
@@ -88,13 +94,15 @@ def test_line_push_trade_event_happy_path(monkeypatch):
     groups.put_item(Item={"targetId": "U1", "type": "user", "createdAt": 0})
 
     # env
-    os.environ.update({
-        "SUBSCRIBERS_TABLE": "trade-events-subscribers",
-        "EVENTS_TABLE": "TradeEvents",
-        "GROUPS_TABLE": "LineGroups",
-        "STATE_TABLE": "SystemState",
-        "LINE_CHANNEL_ACCESS_TOKEN": "dummy-token",
-    })
+    os.environ.update(
+        {
+            "SUBSCRIBERS_TABLE": "trade-events-subscribers",
+            "EVENTS_TABLE": "TradeEvents",
+            "GROUPS_TABLE": "LineGroups",
+            "STATE_TABLE": "SystemState",
+            "LINE_CHANNEL_ACCESS_TOKEN": "dummy-token",
+        }
+    )
 
     # install dummy linebot
     calls = {}
@@ -102,13 +110,24 @@ def test_line_push_trade_event_happy_path(monkeypatch):
 
     # import handler
     import app.handlers.line_push_lambda as handler
+
     importlib.reload(handler)
 
     event = {
         "Records": [
             {
                 "EventSource": "aws:sns",
-                "Sns": {"Message": json.dumps({"symbol": "BTCUSDT", "side": "BUY", "price": 50000.5, "qty": 0.01, "source": "bot"})},
+                "Sns": {
+                    "Message": json.dumps(
+                        {
+                            "symbol": "BTCUSDT",
+                            "side": "BUY",
+                            "price": 50000.5,
+                            "qty": 0.01,
+                            "source": "bot",
+                        }
+                    )
+                },
             }
         ]
     }
@@ -155,45 +174,63 @@ def test_line_webhook_help_and_subscribe(monkeypatch):
             {"AttributeName": "ts", "AttributeType": "S"},
             {"AttributeName": "bucket", "AttributeType": "S"},
         ],
-        GlobalSecondaryIndexes=[{
-            "IndexName": "recent-index",
-            "KeySchema": [
-                {"AttributeName": "bucket", "KeyType": "HASH"},
-                {"AttributeName": "ts", "KeyType": "RANGE"},
-            ],
-            "Projection": {"ProjectionType": "ALL"},
-        }],
+        GlobalSecondaryIndexes=[
+            {
+                "IndexName": "recent-index",
+                "KeySchema": [
+                    {"AttributeName": "bucket", "KeyType": "HASH"},
+                    {"AttributeName": "ts", "KeyType": "RANGE"},
+                ],
+                "Projection": {"ProjectionType": "ALL"},
+            }
+        ],
         BillingMode="PAY_PER_REQUEST",
     )
 
     # env
-    os.environ.update({
-        "SUBSCRIBERS_TABLE": "trade-events-subscribers",
-        "GROUPS_TABLE": "LineGroups",
-        "STATE_TABLE": "SystemState",
-        "EVENTS_TABLE": "TradeEvents",
-        "LINE_CHANNEL_ACCESS_TOKEN": "dummy-token",
-        "LINE_CHANNEL_SECRET": "s3cr3t",
-    })
+    os.environ.update(
+        {
+            "SUBSCRIBERS_TABLE": "trade-events-subscribers",
+            "GROUPS_TABLE": "LineGroups",
+            "STATE_TABLE": "SystemState",
+            "EVENTS_TABLE": "TradeEvents",
+            "LINE_CHANNEL_ACCESS_TOKEN": "dummy-token",
+            "LINE_CHANNEL_SECRET": "s3cr3t",
+        }
+    )
 
     calls = {}
     install_dummy_linebot(calls)
     import app.handlers.line_webhook_lambda as webhook
+
     importlib.reload(webhook)
 
     def make_event(text: str) -> Dict[str, Any]:
-        body = json.dumps({
-            "events": [
-                {
-                    "type": "message",
-                    "replyToken": "r1",
-                    "source": {"type": "user", "userId": "U9"},
-                    "message": {"type": "text", "text": text},
-                }
-            ]
-        })
-        sig = base64.b64encode(hmac.new(os.environ["LINE_CHANNEL_SECRET"].encode("utf-8"), body.encode("utf-8"), hashlib.sha256).digest()).decode("utf-8")
-        return {"version": "2.0", "headers": {"X-Line-Signature": sig}, "isBase64Encoded": False, "body": body}
+        body = json.dumps(
+            {
+                "events": [
+                    {
+                        "type": "message",
+                        "replyToken": "r1",
+                        "source": {"type": "user", "userId": "U9"},
+                        "message": {"type": "text", "text": text},
+                    }
+                ]
+            }
+        )
+        sig = base64.b64encode(
+            hmac.new(
+                os.environ["LINE_CHANNEL_SECRET"].encode("utf-8"),
+                body.encode("utf-8"),
+                hashlib.sha256,
+            ).digest()
+        ).decode("utf-8")
+        return {
+            "version": "2.0",
+            "headers": {"X-Line-Signature": sig},
+            "isBase64Encoded": False,
+            "body": body,
+        }
 
     # /help
     res = webhook.lambda_handler(make_event("/help"), None)
@@ -243,29 +280,33 @@ def test_line_webhook_status_and_last_three(monkeypatch):
         KeySchema=[{"AttributeName": "ts", "KeyType": "HASH"}],
         AttributeDefinitions=[
             {"AttributeName": "ts", "AttributeType": "S"},
-            {"AttributeName": "bucket", "AttributeType": "S"}
+            {"AttributeName": "bucket", "AttributeType": "S"},
         ],
-        GlobalSecondaryIndexes=[{
-            "IndexName": "recent-index",
-            "KeySchema": [
-                {"AttributeName": "bucket", "KeyType": "HASH"},
-                {"AttributeName": "ts", "KeyType": "RANGE"}
-            ],
-            "Projection": {"ProjectionType": "ALL"}
-        }],
-        BillingMode="PAY_PER_REQUEST"
+        GlobalSecondaryIndexes=[
+            {
+                "IndexName": "recent-index",
+                "KeySchema": [
+                    {"AttributeName": "bucket", "KeyType": "HASH"},
+                    {"AttributeName": "ts", "KeyType": "RANGE"},
+                ],
+                "Projection": {"ProjectionType": "ALL"},
+            }
+        ],
+        BillingMode="PAY_PER_REQUEST",
     )
 
     # Seed SystemState summary
     state_tbl = boto3.resource("dynamodb").Table("SystemState")
-    state_tbl.put_item(Item={
-        "pk": "summary",
-        "accountId": "default",
-        "equity": 100000,
-        "cash": 60000,
-        "unrealizedPnL": 800.5,
-        "realizedPnL": -1200
-    })
+    state_tbl.put_item(
+        Item={
+            "pk": "summary",
+            "accountId": "default",
+            "equity": 100000,
+            "cash": 60000,
+            "unrealizedPnL": 800.5,
+            "realizedPnL": -1200,
+        }
+    )
 
     # Seed LineGroups whitelist for user U9
     boto3.resource("dynamodb").Table("LineGroups").put_item(Item={"targetId": "U9"})
@@ -274,50 +315,70 @@ def test_line_webhook_status_and_last_three(monkeypatch):
     ev_tbl = boto3.resource("dynamodb").Table("TradeEvents")
     base = "2025-01-01T12:00:00."
     for ms in ["001Z", "010Z", "020Z", "030Z", "040Z"]:
-        ev_tbl.put_item(Item={
-            "ts": base + ms,
-            "bucket": "ALL",
-            "symbol": "BTCUSDT",
-            "side": "BUY",
-            "qty": 0.01,
-            "price": 50000.0
-        })
+        ev_tbl.put_item(
+            Item={
+                "ts": base + ms,
+                "bucket": "ALL",
+                "symbol": "BTCUSDT",
+                "side": "BUY",
+                "qty": 0.01,
+                "price": 50000.0,
+            }
+        )
 
     # Env
-    os.environ.update({
-        "SUBSCRIBERS_TABLE": "trade-events-subscribers",
-        "GROUPS_TABLE": "LineGroups",
-        "STATE_TABLE": "SystemState",
-        "EVENTS_TABLE": "TradeEvents",
-        "LINE_CHANNEL_ACCESS_TOKEN": "dummy-token",
-        "LINE_CHANNEL_SECRET": "s3cr3t",
-    })
+    os.environ.update(
+        {
+            "SUBSCRIBERS_TABLE": "trade-events-subscribers",
+            "GROUPS_TABLE": "LineGroups",
+            "STATE_TABLE": "SystemState",
+            "EVENTS_TABLE": "TradeEvents",
+            "LINE_CHANNEL_ACCESS_TOKEN": "dummy-token",
+            "LINE_CHANNEL_SECRET": "s3cr3t",
+        }
+    )
 
     calls = {}
     install_dummy_linebot(calls)
     import app.handlers.line_webhook_lambda as webhook
+
     importlib.reload(webhook)
 
     def signed_event(text: str) -> Dict[str, Any]:
-        body = json.dumps({
-            "events": [
-                {
-                    "type": "message",
-                    "replyToken": "r1",
-                    "source": {"type": "user", "userId": "U9"},
-                    "message": {"type": "text", "text": text}
-                }
-            ]
-        })
-        sig = base64.b64encode(hmac.new(os.environ["LINE_CHANNEL_SECRET"].encode("utf-8"), body.encode("utf-8"), hashlib.sha256).digest()).decode("utf-8")
-        return {"version": "2.0", "headers": {"X-Line-Signature": sig}, "isBase64Encoded": False, "body": body}
+        body = json.dumps(
+            {
+                "events": [
+                    {
+                        "type": "message",
+                        "replyToken": "r1",
+                        "source": {"type": "user", "userId": "U9"},
+                        "message": {"type": "text", "text": text},
+                    }
+                ]
+            }
+        )
+        sig = base64.b64encode(
+            hmac.new(
+                os.environ["LINE_CHANNEL_SECRET"].encode("utf-8"),
+                body.encode("utf-8"),
+                hashlib.sha256,
+            ).digest()
+        ).decode("utf-8")
+        return {
+            "version": "2.0",
+            "headers": {"X-Line-Signature": sig},
+            "isBase64Encoded": False,
+            "body": body,
+        }
 
     # /status should return 2-decimal numbers
     calls["reply"] = []
     res = webhook.lambda_handler(signed_event("/status"), None)
     assert res.get("statusCode") == 200
     reply_text = calls.get("reply", [{}])[-1].get("text", "")
-    assert "Equity" in reply_text and ": 100000.00" in reply_text or "Equity：100000.00" in reply_text
+    assert (
+        "Equity" in reply_text and ": 100000.00" in reply_text or "Equity：100000.00" in reply_text
+    )
 
     # /last 3 returns 3 lines
     calls["reply"] = []
@@ -325,4 +386,3 @@ def test_line_webhook_status_and_last_three(monkeypatch):
     assert res2.get("statusCode") == 200
     text2 = calls.get("reply", [{}])[-1].get("text", "")
     assert len(text2.splitlines()) == 3
-

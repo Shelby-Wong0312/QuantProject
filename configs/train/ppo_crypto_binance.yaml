@@ -1,0 +1,41 @@
+﻿timeframe: "60m"
+start: "2024-01-01"
+end:   "2025-09-25"
+symbols: ["BTC-USD", "ETH-USD"]
+
+obs:
+  window: 128
+  features: ["logret","rsi","macd","atr","vol_ewma","range_pct","trend_persist","breakout_flags"]
+
+action:
+  max_weight: 0.50
+  max_dweight: 0.10
+
+risk:
+  gross_leverage_cap: 1.5
+  dd_hard: 0.25
+
+costs:
+  commission_bps: 4
+  slippage_alpha: 0.20
+  slippage_beta: 0.40
+
+train:
+  policy: "MlpLstmPolicy"
+  policy_kwargs:
+    net_arch: [256, 256]
+    lstm_hidden_size: 128
+    n_lstm_layers: 1
+    shared_lstm: true
+  total_timesteps: 800000
+  n_steps: 2048
+  batch_size: 512
+  lr: 2.5e-4
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.003
+  vf_coef: 0.5
+
+log:
+  dir: "runs/rl3/crypto_binance"

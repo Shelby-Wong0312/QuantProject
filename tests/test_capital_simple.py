@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 # Load environment variables
@@ -26,24 +26,19 @@ print(f"Identifier: {CAPITAL_IDENTIFIER}" if CAPITAL_IDENTIFIER else "Identifier
 print(f"Password: {'*' * len(CAPITAL_API_PASSWORD) if CAPITAL_API_PASSWORD else 'NOT FOUND'}")
 print("=" * 60)
 
+
 class SimpleCapitalTest:
     def __init__(self):
         self.session = requests.Session()
         self.cst = None
         self.x_security_token = None
-        
+
     def login(self):
         """Login to Capital.com API"""
         login_url = f"{CAPITAL_BASE_URL}/session"
-        headers = {
-            "X-CAP-API-KEY": CAPITAL_API_KEY,
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "identifier": CAPITAL_IDENTIFIER,
-            "password": CAPITAL_API_PASSWORD
-        }
-        
+        headers = {"X-CAP-API-KEY": CAPITAL_API_KEY, "Content-Type": "application/json"}
+        payload = {"identifier": CAPITAL_IDENTIFIER, "password": CAPITAL_API_PASSWORD}
+
         try:
             response = self.session.post(login_url, headers=headers, json=payload, timeout=15)
             if response.status_code == 200:
@@ -57,28 +52,25 @@ class SimpleCapitalTest:
         except Exception as e:
             print(f"❌ Login error: {e}")
             return False
-    
+
     def get_markets(self):
         """Get available markets"""
         if not self.cst:
             print("❌ Not logged in")
             return
-            
+
         url = f"{CAPITAL_BASE_URL}/markets"
-        headers = {
-            "CST": self.cst,
-            "X-SECURITY-TOKEN": self.x_security_token
-        }
-        
+        headers = {"CST": self.cst, "X-SECURITY-TOKEN": self.x_security_token}
+
         try:
             response = self.session.get(url, headers=headers, timeout=30)
             if response.status_code == 200:
                 data = response.json()
-                markets = data.get('markets', [])
+                markets = data.get("markets", [])
                 print(f"✅ Found {len(markets)} available markets")
-                
+
                 # Show first 10 US stocks
-                us_stocks = [m for m in markets if '.US' in m.get('epic', '')][:10]
+                us_stocks = [m for m in markets if ".US" in m.get("epic", "")][:10]
                 print("\nFirst 10 US stocks:")
                 for stock in us_stocks:
                     print(f"  - {stock['epic']}: {stock['instrumentName']}")
@@ -89,41 +81,38 @@ class SimpleCapitalTest:
         except Exception as e:
             print(f"❌ Error getting markets: {e}")
             return []
-    
+
     def get_historical_data(self, symbol="AAPL.US", resolution="DAY", days_back=30):
         """Get historical price data"""
         if not self.cst:
             print("❌ Not logged in")
             return
-            
+
         end_date = datetime.now()
         start_date = end_date - timedelta(days=days_back)
-        
+
         url = f"{CAPITAL_BASE_URL}/prices/{symbol}"
-        headers = {
-            "CST": self.cst,
-            "X-SECURITY-TOKEN": self.x_security_token
-        }
+        headers = {"CST": self.cst, "X-SECURITY-TOKEN": self.x_security_token}
         params = {
             "resolution": resolution,
             "from": start_date.strftime("%Y-%m-%dT00:00:00"),
             "to": end_date.strftime("%Y-%m-%dT23:59:59"),
-            "max": 1000
+            "max": 1000,
         }
-        
+
         try:
             response = self.session.get(url, headers=headers, params=params, timeout=30)
             if response.status_code == 200:
                 data = response.json()
-                prices = data.get('prices', [])
+                prices = data.get("prices", [])
                 print(f"✅ Got {len(prices)} price records for {symbol}")
-                
+
                 if prices:
                     # Show last 5 prices
                     print(f"\nLast 5 prices for {symbol}:")
                     for price in prices[-5:]:
-                        date = price['snapshotTime']
-                        close = price['closePrice']['ask']
+                        date = price["snapshotTime"]
+                        close = price["closePrice"]["ask"]
                         print(f"  {date}: ${close}")
                 return prices
             else:
@@ -132,26 +121,23 @@ class SimpleCapitalTest:
         except Exception as e:
             print(f"❌ Error getting prices: {e}")
             return []
-    
+
     def get_market_info(self, symbol="AAPL.US"):
         """Get current market info and price"""
         if not self.cst:
             print("❌ Not logged in")
             return
-            
+
         url = f"{CAPITAL_BASE_URL}/markets/{symbol}"
-        headers = {
-            "CST": self.cst,
-            "X-SECURITY-TOKEN": self.x_security_token
-        }
-        
+        headers = {"CST": self.cst, "X-SECURITY-TOKEN": self.x_security_token}
+
         try:
             response = self.session.get(url, headers=headers, timeout=15)
             if response.status_code == 200:
                 data = response.json()
-                snapshot = data.get('snapshot', {})
-                if snapshot.get('offer') and snapshot.get('bid'):
-                    mid_price = (snapshot['offer'] + snapshot['bid']) / 2
+                snapshot = data.get("snapshot", {})
+                if snapshot.get("offer") and snapshot.get("bid"):
+                    mid_price = (snapshot["offer"] + snapshot["bid"]) / 2
                     print(f"✅ {symbol} current price: ${mid_price:.2f}")
                     print(f"   Bid: ${snapshot['bid']}, Ask: ${snapshot['offer']}")
                     print(f"   Market status: {data.get('marketStatus', 'Unknown')}")
@@ -163,27 +149,28 @@ class SimpleCapitalTest:
             print(f"❌ Error getting market info: {e}")
             return {}
 
+
 def main():
     """Run the tests"""
     tester = SimpleCapitalTest()
-    
+
     # Test 1: Login
     print("\nTest 1: Login to Capital.com API")
     print("-" * 40)
     if not tester.login():
         print("Cannot proceed without login")
         return
-    
+
     # Test 2: Get available markets
     print("\nTest 2: Get available markets")
     print("-" * 40)
     tester.get_markets()
-    
+
     # Test 3: Get historical data
     print("\nTest 3: Get historical data for AAPL")
     print("-" * 40)
     tester.get_historical_data("AAPL.US", "DAY", 30)
-    
+
     # Test 4: Get current prices for multiple symbols
     print("\nTest 4: Get current prices")
     print("-" * 40)
@@ -191,8 +178,9 @@ def main():
     for symbol in symbols:
         tester.get_market_info(symbol)
         print()
-    
+
     print("\nAll tests completed!")
+
 
 if __name__ == "__main__":
     main()

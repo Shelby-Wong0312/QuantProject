@@ -5,7 +5,8 @@ Based on suggestion.md feedback - Creates a real investment report, not just dat
 
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import pandas as pd
 import numpy as np
@@ -13,26 +14,30 @@ import json
 from datetime import datetime
 from src.performance_calculator import PerformanceCalculator
 
+
 class ProfessionalReportGenerator:
     """Generate professional investment analysis report with real performance metrics"""
-    
+
     def __init__(self):
         self.calculator = PerformanceCalculator()
-        self.output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                                       'analysis_reports', 'html_reports')
+        self.output_dir = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "analysis_reports",
+            "html_reports",
+        )
         os.makedirs(self.output_dir, exist_ok=True)
-        
+
     def generate_report(self):
         """Generate the complete professional report"""
-        
+
         # Calculate performance metrics
         print("Calculating performance metrics...")
         perf_data = self.calculator.generate_performance_summary()
-        
+
         # Extract metrics
-        strategy = perf_data['strategy_metrics']
-        benchmark = perf_data['benchmark_metrics']
-        
+        strategy = perf_data["strategy_metrics"]
+        benchmark = perf_data["benchmark_metrics"]
+
         # Generate HTML
         html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -1287,24 +1292,24 @@ class ProfessionalReportGenerator:
     </script>
 </body>
 </html>"""
-        
+
         # Save report
-        report_path = os.path.join(self.output_dir, 'professional_investment_report.html')
-        with open(report_path, 'w', encoding='utf-8') as f:
+        report_path = os.path.join(self.output_dir, "professional_investment_report.html")
+        with open(report_path, "w", encoding="utf-8") as f:
             f.write(html_content)
-        
+
         print(f"\nProfessional Investment Report Generated!")
         print(f"Location: {report_path}")
-        
+
         return report_path
-    
+
     def _generate_stock_list(self, stocks, is_gainers):
         """Generate HTML for stock list"""
         html = ""
         for stock in stocks[:5]:
-            return_val = stock.get('total_return', 0)
-            return_class = 'positive' if return_val > 0 else 'negative'
-            symbol = stock.get('symbol', 'N/A')
+            return_val = stock.get("total_return", 0)
+            return_class = "positive" if return_val > 0 else "negative"
+            symbol = stock.get("symbol", "N/A")
             html += f"""
                 <div class="stock-item">
                     <span class="stock-symbol">{symbol}</span>
@@ -1314,13 +1319,13 @@ class ProfessionalReportGenerator:
                 </div>
             """
         return html
-    
+
     def _generate_traded_list(self, stocks):
         """Generate HTML for most traded stocks"""
         html = ""
         for stock in stocks[:5]:
-            symbol = stock.get('symbol', 'N/A')
-            volume = stock.get('avg_volume', 0)
+            symbol = stock.get("symbol", "N/A")
+            volume = stock.get("avg_volume", 0)
             html += f"""
                 <div class="stock-item">
                     <span class="stock-symbol">{symbol}</span>
@@ -1331,10 +1336,11 @@ class ProfessionalReportGenerator:
             """
         return html
 
+
 def main():
-    print("="*60)
+    print("=" * 60)
     print("GENERATING PROFESSIONAL INVESTMENT ANALYSIS REPORT")
-    print("="*60)
+    print("=" * 60)
     print("\nThis report addresses all feedback from suggestion.md:")
     print("- Focus on PERFORMANCE, not data inventory")
     print("- Key metrics: Sharpe Ratio, Max Drawdown, Annual Returns")
@@ -1342,13 +1348,13 @@ def main():
     print("- Equity curve visualization")
     print("- Risk analysis and disclosure")
     print("- Professional investment report format")
-    
+
     generator = ProfessionalReportGenerator()
     report_path = generator.generate_report()
-    
-    print("\n" + "="*60)
+
+    print("\n" + "=" * 60)
     print("REPORT GENERATION COMPLETE!")
-    print("="*60)
+    print("=" * 60)
     print("\nKey Features of the New Report:")
     print("1. Annualized Return prominently displayed")
     print("2. Sharpe Ratio as the primary risk-adjusted metric")
@@ -1359,14 +1365,16 @@ def main():
     print("7. Top profit/loss contributors (not by price!)")
     print("8. Professional risk disclosure")
     print("9. Clean, institutional-grade design")
-    
+
     # Try to open in browser
     try:
         import webbrowser
-        webbrowser.open(f'file:///{os.path.abspath(report_path)}')
+
+        webbrowser.open(f"file:///{os.path.abspath(report_path)}")
         print("\n[SUCCESS] Report opened in browser")
     except:
         print(f"\n[SUCCESS] Report saved to: {report_path}")
+
 
 if __name__ == "__main__":
     main()

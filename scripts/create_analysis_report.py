@@ -7,40 +7,43 @@ import sqlite3
 import os
 from datetime import datetime
 
+
 def create_html_report():
     """Create HTML analysis report"""
-    
+
     # Database path
-    db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                           'data', 'quant_trading.db')
-    
+    db_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+    )
+
     # Output directories
-    base_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                            'analysis_reports')
-    html_dir = os.path.join(base_dir, 'html_reports')
-    data_dir = os.path.join(base_dir, 'data_exports')
-    
+    base_dir = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "analysis_reports"
+    )
+    html_dir = os.path.join(base_dir, "html_reports")
+    data_dir = os.path.join(base_dir, "data_exports")
+
     # Ensure directories exist
     os.makedirs(html_dir, exist_ok=True)
     os.makedirs(data_dir, exist_ok=True)
-    
+
     # Connect to database
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    
+
     # Get statistics
     cursor.execute("SELECT COUNT(*) FROM daily_data")
     total_records = cursor.fetchone()[0]
-    
+
     cursor.execute("SELECT COUNT(DISTINCT symbol) FROM daily_data")
     total_stocks = cursor.fetchone()[0]
-    
+
     cursor.execute("SELECT MIN(date), MAX(date) FROM daily_data")
     date_range = cursor.fetchone()
-    
+
     cursor.execute("SELECT AVG(close_price), MIN(close_price), MAX(close_price) FROM daily_data")
     price_stats = cursor.fetchone()
-    
+
     # Get top stocks by price
     top_stocks_query = """
         SELECT symbol, AVG(close_price) as avg_price, AVG(volume) as avg_volume
@@ -50,7 +53,7 @@ def create_html_report():
         LIMIT 20
     """
     top_stocks_df = pd.read_sql_query(top_stocks_query, conn)
-    
+
     # Get recent transactions
     transactions_query = """
         SELECT symbol, date, open_price, high_price, low_price, close_price, volume
@@ -59,13 +62,13 @@ def create_html_report():
         LIMIT 1000
     """
     transactions_df = pd.read_sql_query(transactions_query, conn)
-    
+
     # Export transaction data to CSV
-    csv_path = os.path.join(data_dir, 'transactions.csv')
-    transactions_df.to_csv(csv_path, index=False, encoding='utf-8-sig')
-    
+    csv_path = os.path.join(data_dir, "transactions.csv")
+    transactions_df.to_csv(csv_path, index=False, encoding="utf-8-sig")
+
     # Create HTML report
-    html_content = f'''<!DOCTYPE html>
+    html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -242,19 +245,19 @@ def create_html_report():
                         <th>Average Volume</th>
                     </tr>
                 </thead>
-                <tbody>'''
-    
+                <tbody>"""
+
     # Add top stocks to table
     for idx, row in top_stocks_df.iterrows():
-        html_content += f'''
+        html_content += f"""
                     <tr>
                         <td>{idx + 1}</td>
                         <td><strong>{row['symbol']}</strong></td>
                         <td>${row['avg_price']:.2f}</td>
                         <td>{int(row['avg_volume']):,}</td>
-                    </tr>'''
-    
-    html_content += '''
+                    </tr>"""
+
+    html_content += """
                 </tbody>
             </table>
         </div>
@@ -273,11 +276,11 @@ def create_html_report():
                         <th>Volume</th>
                     </tr>
                 </thead>
-                <tbody>'''
-    
+                <tbody>"""
+
     # Add recent transactions (first 100)
     for idx, row in transactions_df.head(100).iterrows():
-        html_content += f'''
+        html_content += f"""
                     <tr>
                         <td>{row['date']}</td>
                         <td><strong>{row['symbol']}</strong></td>
@@ -286,9 +289,9 @@ def create_html_report():
                         <td>${row['low_price']:.2f}</td>
                         <td>${row['close_price']:.2f}</td>
                         <td>{int(row['volume']):,}</td>
-                    </tr>'''
-    
-    html_content += f'''
+                    </tr>"""
+
+    html_content += f"""
                 </tbody>
             </table>
             <a href="../data_exports/transactions.csv" class="download-btn">Download Full Transaction Data (CSV)</a>
@@ -313,13 +316,13 @@ def create_html_report():
         </div>
     </div>
 </body>
-</html>'''
-    
+</html>"""
+
     # Save HTML report
-    html_path = os.path.join(html_dir, 'analysis_report.html')
-    with open(html_path, 'w', encoding='utf-8') as f:
+    html_path = os.path.join(html_dir, "analysis_report.html")
+    with open(html_path, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     # Export full data sample
     full_data_query = """
         SELECT * FROM daily_data 
@@ -327,29 +330,30 @@ def create_html_report():
         LIMIT 10000
     """
     full_df = pd.read_sql_query(full_data_query, conn)
-    full_csv_path = os.path.join(data_dir, 'sample_10000_records.csv')
-    full_df.to_csv(full_csv_path, index=False, encoding='utf-8-sig')
-    
+    full_csv_path = os.path.join(data_dir, "sample_10000_records.csv")
+    full_df.to_csv(full_csv_path, index=False, encoding="utf-8-sig")
+
     # Export summary statistics
     summary_stats = {
-        'total_records': total_records,
-        'total_stocks': total_stocks,
-        'date_range': f"{date_range[0]} to {date_range[1]}",
-        'avg_price': price_stats[0],
-        'min_price': price_stats[1],
-        'max_price': price_stats[2]
+        "total_records": total_records,
+        "total_stocks": total_stocks,
+        "date_range": f"{date_range[0]} to {date_range[1]}",
+        "avg_price": price_stats[0],
+        "min_price": price_stats[1],
+        "max_price": price_stats[2],
     }
-    
+
     import json
-    json_path = os.path.join(data_dir, 'summary_statistics.json')
-    with open(json_path, 'w') as f:
+
+    json_path = os.path.join(data_dir, "summary_statistics.json")
+    with open(json_path, "w") as f:
         json.dump(summary_stats, f, indent=2)
-    
+
     conn.close()
-    
-    print("="*60)
+
+    print("=" * 60)
     print("ANALYSIS REPORT GENERATION COMPLETE")
-    print("="*60)
+    print("=" * 60)
     print(f"\nFiles created:")
     print(f"1. HTML Report: {html_path}")
     print(f"2. Transaction Data: {csv_path}")
@@ -361,16 +365,18 @@ def create_html_report():
     print("- Recent 1000 transactions")
     print("- Data quality assessment")
     print("- Downloadable CSV exports")
-    
+
     return html_path
+
 
 if __name__ == "__main__":
     report_path = create_html_report()
-    
+
     # Try to open in browser
     try:
         import webbrowser
-        webbrowser.open(f'file:///{os.path.abspath(report_path)}')
+
+        webbrowser.open(f"file:///{os.path.abspath(report_path)}")
         print("\nReport opened in browser!")
     except:
         print(f"\nPlease open the report manually: {report_path}")

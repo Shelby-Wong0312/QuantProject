@@ -21,7 +21,7 @@ try:
     print("SUCCESS!")
 except Exception as e:
     print(f"ERROR: {e}")
-    
+
 # Test with wrong shape
 wrong_tensor = torch.FloatTensor(obs).reshape(220, 1)
 print(f"\nWrong tensor shape: {wrong_tensor.shape}")

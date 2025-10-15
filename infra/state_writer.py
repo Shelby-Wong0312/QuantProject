@@ -21,7 +21,6 @@ def _ddb_resource():
     return boto3.resource("dynamodb", region_name=region)
 
 
-
 def write_summary(equity: float, cash: float, upnl: float, rpnl: float) -> None:
     table_name = os.getenv(STATE_TABLE_ENV, DEFAULT_STATE_TABLE)
     table = _ddb_resource().Table(table_name)
@@ -37,7 +36,6 @@ def write_summary(equity: float, cash: float, upnl: float, rpnl: float) -> None:
     logger.info("Wrote summary state to %s", table_name)
 
 
-
 def write_positions_text(text: str) -> None:
     table_name = os.getenv(STATE_TABLE_ENV, DEFAULT_STATE_TABLE)
     table = _ddb_resource().Table(table_name)
@@ -48,7 +46,6 @@ def write_positions_text(text: str) -> None:
     }
     table.put_item(Item=item)
     logger.info("Wrote positions text to %s", table_name)
-
 
 
 def append_trade_event(
@@ -80,6 +77,6 @@ def append_trade_event(
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     write_summary(equity=100000.0, cash=55000.0, upnl=1234.56, rpnl=-321.0)
-    write_positions_text('BTCUSDT +0.5 @ 50000.0\nXAUUSD -1 @ 2405.0')
+    write_positions_text("BTCUSDT +0.5 @ 50000.0\nXAUUSD -1 @ 2405.0")
     append_trade_event(symbol="BTCUSDT", side="BUY", quantity=0.5, price=50000.0)
     print("State snapshot and trade event written to DynamoDB")

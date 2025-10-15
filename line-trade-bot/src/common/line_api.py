@@ -33,7 +33,7 @@ def _post_json(url: str, payload: dict, timeout: int = 5) -> dict:
     try:
         return _attempt()
     except urllib.error.HTTPError as e:
-        status = getattr(e, 'code', 0)
+        status = getattr(e, "code", 0)
         retriable = status == 429 or (isinstance(status, int) and 500 <= status < 600)
         if retriable:
             time.sleep(0.5 + random.random() * 0.5)
@@ -44,7 +44,7 @@ def _post_json(url: str, payload: dict, timeout: int = 5) -> dict:
                     err_body = e2.read().decode("utf-8")  # type: ignore
                 except Exception:
                     err_body = str(e2)
-                return {"error": True, "status": getattr(e2, 'code', status), "body": err_body}
+                return {"error": True, "status": getattr(e2, "code", status), "body": err_body}
         try:
             err_body = e.read().decode("utf-8")
         except Exception:

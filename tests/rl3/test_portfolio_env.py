@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 import pytest
@@ -43,6 +42,7 @@ def _make_env(**overrides):
         lambda_turnover=0.05,
         reward_clip=0.05,
         dd_hard=0.05,
+        dweight_threshold=0.0,
     )
     cfg_defaults.update(overrides)
     cfg = EnvConfig(features=["logret", "range_pct"], **cfg_defaults)
@@ -133,3 +133,20 @@ def test_reward_and_dd_ranges():
         assert info["dd"] <= 0.0 and info["dd"] >= -1.0
         if terminated:
             break
+
+
+def test_dweight_threshold_blocks_small_changes():
+    env = _make_env(
+        dweight_threshold=0.05, max_dweight=0.2, reward_cost_bps=0.0, lambda_turnover=0.0
+    )
+    env.reset()
+
+    small_action = np.array([0.02, -0.02], dtype=np.float32)
+    *_rest, info_small = env.step(small_action)
+    assert np.allclose(info_small["weights"], 0.0)
+    assert info_small["turnover"] == pytest.approx(0.0, abs=1e-12)
+
+    large_action = np.array([0.15, -0.15], dtype=np.float32)
+    *_rest, info_large = env.step(large_action)
+    assert info_large["turnover"] > 0.0
+    assert np.any(np.abs(info_large["weights"]) > 1e-6)

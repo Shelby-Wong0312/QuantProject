@@ -19,13 +19,27 @@ def lambda_handler(event, context):
                 continue
             ptype = str(payload.get("type") or "event").lower()
             # status payload example keys: equity, cash, unrealizedPnL, realizedPnL
-            if ptype == "status" or any(k in payload for k in ("equity", "cash", "unrealizedPnL", "unrealized_pnl", "realizedPnL", "realized_pnl")):
+            if ptype == "status" or any(
+                k in payload
+                for k in (
+                    "equity",
+                    "cash",
+                    "unrealizedPnL",
+                    "unrealized_pnl",
+                    "realizedPnL",
+                    "realized_pnl",
+                )
+            ):
                 account_id = str(payload.get("accountId") or payload.get("account") or "default")
                 status = {
                     "equity": payload.get("equity"),
                     "cash": payload.get("cash"),
-                    "unrealizedPnL": payload.get("unrealizedPnL") or payload.get("unrealized_pnl") or payload.get("upnl"),
-                    "realizedPnL": payload.get("realizedPnL") or payload.get("realized_pnl") or payload.get("rpnl"),
+                    "unrealizedPnL": payload.get("unrealizedPnL")
+                    or payload.get("unrealized_pnl")
+                    or payload.get("upnl"),
+                    "realizedPnL": payload.get("realizedPnL")
+                    or payload.get("realized_pnl")
+                    or payload.get("rpnl"),
                     "accountId": account_id,
                 }
                 db.put_status(account_id, status)

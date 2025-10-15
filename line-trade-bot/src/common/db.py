@@ -70,4 +70,3 @@ def get_last_events(limit: int = 5) -> List[Dict[str, Any]]:
         Limit=max(1, min(limit, 50)),
     )
     return resp.get("Items", [])
-

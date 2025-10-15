@@ -19,5 +19,7 @@ def test_report_has_real_values() -> None:
 
     assert any(abs(x) > 1e-12 for x in returns), "returns should not be all zeros"
     assert not any(math.isnan(x) for x in returns), "returns should not contain NaN"
-    assert any(abs(equity[i] - equity[i - 1]) > 1e-8 for i in range(1, len(equity))), "equity should move"
+    assert any(
+        abs(equity[i] - equity[i - 1]) > 1e-8 for i in range(1, len(equity))
+    ), "equity should move"
     assert "Sharpe:" in text and "Max Drawdown:" in text

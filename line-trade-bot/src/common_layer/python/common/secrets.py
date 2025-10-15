@@ -44,4 +44,3 @@ def get_secret(secret_id: str) -> Optional[str]:
         return val
     except Exception:
         return None
-

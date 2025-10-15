@@ -22,11 +22,15 @@ def main() -> int:
     identifier = os.getenv("CAPITAL_IDENTIFIER", "").strip()
     password = os.getenv("CAPITAL_API_PASSWORD", "").strip()
 
-    missing = [name for name, val in (
-        ("CAPITAL_API_KEY", api_key),
-        ("CAPITAL_IDENTIFIER", identifier),
-        ("CAPITAL_API_PASSWORD", password),
-    ) if not val]
+    missing = [
+        name
+        for name, val in (
+            ("CAPITAL_API_KEY", api_key),
+            ("CAPITAL_IDENTIFIER", identifier),
+            ("CAPITAL_API_PASSWORD", password),
+        )
+        if not val
+    ]
     if missing:
         print(f"MISSING_CREDENTIALS: {', '.join(missing)}")
         return 2
@@ -66,4 +70,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

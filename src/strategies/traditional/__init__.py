@@ -18,13 +18,13 @@ except ImportError:
     pass
 
 __all__ = [
-    'MovingAverageCrossoverStrategy',
-    'MomentumStrategy',
-    'create_momentum_strategy',
-    'MeanReversionStrategy', 
-    'create_mean_reversion_strategy',
-    'BreakoutStrategy',
-    'create_breakout_strategy',
-    'TrendFollowingStrategy',
-    'create_trend_following_strategy'
+    "MovingAverageCrossoverStrategy",
+    "MomentumStrategy",
+    "create_momentum_strategy",
+    "MeanReversionStrategy",
+    "create_mean_reversion_strategy",
+    "BreakoutStrategy",
+    "create_breakout_strategy",
+    "TrendFollowingStrategy",
+    "create_trend_following_strategy",
 ]

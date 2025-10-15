@@ -13,30 +13,33 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.express as px
 
+
 class HTMLReportGenerator:
     """Generate comprehensive HTML analysis reports"""
-    
+
     def __init__(self):
-        self.db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                                    'data', 'quant_trading.db')
-        self.output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                                       'analysis_reports')
-        self.html_dir = os.path.join(self.output_dir, 'html_reports')
-        self.data_dir = os.path.join(self.output_dir, 'data_exports')
-        self.viz_dir = os.path.join(self.output_dir, 'visualizations')
-        
+        self.db_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+        )
+        self.output_dir = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "analysis_reports"
+        )
+        self.html_dir = os.path.join(self.output_dir, "html_reports")
+        self.data_dir = os.path.join(self.output_dir, "data_exports")
+        self.viz_dir = os.path.join(self.output_dir, "visualizations")
+
         # Create directories
         for d in [self.html_dir, self.data_dir, self.viz_dir]:
             os.makedirs(d, exist_ok=True)
-    
+
     def generate_main_report(self):
         """Generate main HTML dashboard"""
-        
+
         conn = sqlite3.connect(self.db_path)
-        
+
         # Get overview statistics
         stats = self._get_overview_stats(conn)
-        
+
         # Generate HTML content
         html_content = f"""
 <!DOCTYPE html>
@@ -382,41 +385,41 @@ class HTMLReportGenerator:
 </body>
 </html>
 """
-        
+
         # Save HTML report
-        report_path = os.path.join(self.html_dir, 'index.html')
-        with open(report_path, 'w', encoding='utf-8') as f:
+        report_path = os.path.join(self.html_dir, "index.html")
+        with open(report_path, "w", encoding="utf-8") as f:
             f.write(html_content)
-        
+
         conn.close()
         print(f"HTML report generated: {report_path}")
         return report_path
-    
+
     def _get_overview_stats(self, conn):
         """Get overview statistics"""
         cursor = conn.cursor()
-        
+
         stats = {}
-        
+
         # Basic stats
         cursor.execute("SELECT COUNT(*) FROM daily_data")
-        stats['total_records'] = cursor.fetchone()[0]
-        
+        stats["total_records"] = cursor.fetchone()[0]
+
         cursor.execute("SELECT COUNT(DISTINCT symbol) FROM daily_data")
-        stats['unique_stocks'] = cursor.fetchone()[0]
-        
+        stats["unique_stocks"] = cursor.fetchone()[0]
+
         cursor.execute("SELECT AVG(close_price), AVG(volume) FROM daily_data")
         result = cursor.fetchone()
-        stats['avg_price'] = result[0] if result[0] else 0
-        stats['avg_volume'] = int(result[1]) if result[1] else 0
-        
+        stats["avg_price"] = result[0] if result[0] else 0
+        stats["avg_volume"] = int(result[1]) if result[1] else 0
+
         # Data quality score
         cursor.execute("SELECT COUNT(*) FROM daily_data WHERE volume = 0")
         zero_volume = cursor.fetchone()[0]
-        stats['quality_score'] = (1 - zero_volume/stats['total_records']) * 100
-        
+        stats["quality_score"] = (1 - zero_volume / stats["total_records"]) * 100
+
         return stats
-    
+
     def _generate_stock_table(self, conn):
         """Generate stock analysis table"""
         query = """
@@ -432,9 +435,9 @@ class HTMLReportGenerator:
             ORDER BY avg_price DESC
             LIMIT 50
         """
-        
+
         df = pd.read_sql_query(query, conn)
-        
+
         html = """
         <table class="data-table">
             <thead>
@@ -451,9 +454,13 @@ class HTMLReportGenerator:
             </thead>
             <tbody>
         """
-        
+
         for idx, row in df.iterrows():
-            status_badge = '<span class="badge badge-success">正常</span>' if row['records'] > 3900 else '<span class="badge badge-warning">數據不完整</span>'
+            status_badge = (
+                '<span class="badge badge-success">正常</span>'
+                if row["records"] > 3900
+                else '<span class="badge badge-warning">數據不完整</span>'
+            )
             html += f"""
                 <tr>
                     <td>{idx + 1}</td>
@@ -466,14 +473,14 @@ class HTMLReportGenerator:
                     <td>{status_badge}</td>
                 </tr>
             """
-        
+
         html += """
             </tbody>
         </table>
         """
-        
+
         return html
-    
+
     def _generate_transaction_table(self, conn):
         """Generate transaction details table"""
         query = """
@@ -491,14 +498,16 @@ class HTMLReportGenerator:
             ORDER BY date DESC
             LIMIT 100
         """
-        
+
         df = pd.read_sql_query(query, conn)
-        
+
         # Also export full data to CSV
         full_query = query.replace("LIMIT 100", "")
         full_df = pd.read_sql_query(full_query, conn)
-        full_df.to_csv(os.path.join(self.data_dir, 'all_transactions.csv'), index=False, encoding='utf-8-sig')
-        
+        full_df.to_csv(
+            os.path.join(self.data_dir, "all_transactions.csv"), index=False, encoding="utf-8-sig"
+        )
+
         html = """
         <table class="data-table">
             <thead>
@@ -516,11 +525,11 @@ class HTMLReportGenerator:
             </thead>
             <tbody>
         """
-        
+
         for _, row in df.iterrows():
-            change_color = 'green' if row['change'] >= 0 else 'red'
-            change_symbol = '▲' if row['change'] >= 0 else '▼'
-            
+            change_color = "green" if row["change"] >= 0 else "red"
+            change_symbol = "▲" if row["change"] >= 0 else "▼"
+
             html += f"""
                 <tr>
                     <td>{row['date']}</td>
@@ -534,41 +543,41 @@ class HTMLReportGenerator:
                     <td style="color: {change_color};">{row['change_pct']:.2f}%</td>
                 </tr>
             """
-        
+
         html += """
             </tbody>
         </table>
         """
-        
+
         return html
-    
+
     def _generate_quality_report(self, conn):
         """Generate data quality report"""
         cursor = conn.cursor()
-        
+
         # Quality checks
         checks = []
-        
+
         # Check nulls
         cursor.execute("SELECT COUNT(*) FROM daily_data WHERE close_price IS NULL")
         null_count = cursor.fetchone()[0]
-        checks.append(('空值檢查', null_count == 0, f'{null_count} 個空值'))
-        
+        checks.append(("空值檢查", null_count == 0, f"{null_count} 個空值"))
+
         # Check negative prices
         cursor.execute("SELECT COUNT(*) FROM daily_data WHERE close_price < 0")
         neg_count = cursor.fetchone()[0]
-        checks.append(('負值價格', neg_count == 0, f'{neg_count} 個負值'))
-        
+        checks.append(("負值價格", neg_count == 0, f"{neg_count} 個負值"))
+
         # Check data consistency
         cursor.execute("SELECT COUNT(*) FROM daily_data WHERE high_price < low_price")
         inconsistent = cursor.fetchone()[0]
-        checks.append(('價格一致性', inconsistent == 0, f'{inconsistent} 個異常'))
-        
+        checks.append(("價格一致性", inconsistent == 0, f"{inconsistent} 個異常"))
+
         # Check completeness
         cursor.execute("SELECT COUNT(DISTINCT symbol) FROM daily_data")
         stocks = cursor.fetchone()[0]
-        checks.append(('股票完整性', stocks == 4215, f'{stocks}/4215 支股票'))
-        
+        checks.append(("股票完整性", stocks == 4215, f"{stocks}/4215 支股票"))
+
         html = """
         <table class="data-table">
             <thead>
@@ -580,9 +589,13 @@ class HTMLReportGenerator:
             </thead>
             <tbody>
         """
-        
+
         for check_name, passed, details in checks:
-            status = '<span class="badge badge-success">✓ 通過</span>' if passed else '<span class="badge badge-danger">✗ 失敗</span>'
+            status = (
+                '<span class="badge badge-success">✓ 通過</span>'
+                if passed
+                else '<span class="badge badge-danger">✗ 失敗</span>'
+            )
             html += f"""
                 <tr>
                     <td>{check_name}</td>
@@ -590,28 +603,32 @@ class HTMLReportGenerator:
                     <td>{details}</td>
                 </tr>
             """
-        
+
         html += """
             </tbody>
         </table>
         """
-        
+
         return html
-    
+
     def _generate_charts_js(self, conn):
         """Generate JavaScript for charts"""
-        
+
         # Get data for charts
-        yearly_data = pd.read_sql_query("""
+        yearly_data = pd.read_sql_query(
+            """
             SELECT 
                 SUBSTR(date, 1, 4) as year,
                 COUNT(*) as records
             FROM daily_data
             GROUP BY year
             ORDER BY year
-        """, conn)
-        
-        top_stocks = pd.read_sql_query("""
+        """,
+            conn,
+        )
+
+        top_stocks = pd.read_sql_query(
+            """
             SELECT 
                 symbol,
                 AVG(close_price) as avg_price
@@ -619,9 +636,12 @@ class HTMLReportGenerator:
             GROUP BY symbol
             ORDER BY avg_price DESC
             LIMIT 20
-        """, conn)
-        
-        volume_stocks = pd.read_sql_query("""
+        """,
+            conn,
+        )
+
+        volume_stocks = pd.read_sql_query(
+            """
             SELECT 
                 symbol,
                 AVG(volume) as avg_volume
@@ -629,8 +649,10 @@ class HTMLReportGenerator:
             GROUP BY symbol
             ORDER BY avg_volume DESC
             LIMIT 20
-        """, conn)
-        
+        """,
+            conn,
+        )
+
         js_code = f"""
         // Yearly distribution chart
         var yearlyTrace = {{
@@ -691,18 +713,19 @@ class HTMLReportGenerator:
         
         Plotly.newPlot('volume-chart', [volumeTrace], volumeLayout);
         """
-        
+
         return js_code
+
 
 def main():
     """Generate HTML reports"""
-    print("="*60)
+    print("=" * 60)
     print("Generating HTML Visualization Report")
-    print("="*60)
-    
+    print("=" * 60)
+
     generator = HTMLReportGenerator()
     report_path = generator.generate_main_report()
-    
+
     print("\nReport Generated Successfully!")
     print(f"Report Location: {report_path}")
     print("\nReport Includes:")
@@ -711,10 +734,12 @@ def main():
     print("  - Transaction Details")
     print("  - Visualizations")
     print("  - Data Quality Report")
-    
+
     # Open report in browser
     import webbrowser
-    webbrowser.open(f'file:///{os.path.abspath(report_path)}')
+
+    webbrowser.open(f"file:///{os.path.abspath(report_path)}")
+
 
 if __name__ == "__main__":
     main()

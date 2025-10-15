@@ -5,15 +5,17 @@ Cloud DE - Task DE-501
 
 import sys
 import os
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 print("Testing Data Pipeline Components...")
-print("="*50)
+print("=" * 50)
 
 # Test 1: Feature Pipeline
 print("\n1. Testing Feature Pipeline...")
 try:
     from src.data.feature_pipeline import FeaturePipeline
+
     pipeline = FeaturePipeline()
     print("   [OK] Feature Pipeline loaded successfully")
     print("   - Can extract 50+ feature types")
@@ -26,6 +28,7 @@ except Exception as e:
 print("\n2. Testing Model Updater...")
 try:
     from src.data.model_updater import ModelUpdater, UpdateConfig
+
     config = UpdateConfig()
     updater = ModelUpdater(config)
     print("   [OK] Model Updater loaded successfully")
@@ -39,6 +42,7 @@ except Exception as e:
 print("\n3. Testing Data Quality Monitor...")
 try:
     from src.data.data_quality_monitor import DataQualityMonitor
+
     monitor = DataQualityMonitor()
     print("   [OK] Data Quality Monitor loaded successfully")
     print("   - 6 quality dimensions checked")
@@ -47,9 +51,9 @@ try:
 except Exception as e:
     print(f"   [ERROR] Error: {e}")
 
-print("\n" + "="*50)
+print("\n" + "=" * 50)
 print("Task DE-501 Implementation Summary:")
-print("="*50)
+print("=" * 50)
 
 print("\n1. Feature Engineering Pipeline: COMPLETE")
 print("   - Price, volume, technical, microstructure features")

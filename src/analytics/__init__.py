@@ -18,10 +18,6 @@ from .trade_analyzer import TradeAnalyzer
 from .performance_dashboard import PerformanceDashboard
 from .report_generator import ReportGenerator
 
-__all__ = [
-    'TradeAnalyzer',
-    'PerformanceDashboard', 
-    'ReportGenerator'
-]
+__all__ = ["TradeAnalyzer", "PerformanceDashboard", "ReportGenerator"]
 
 __version__ = "1.0.0"

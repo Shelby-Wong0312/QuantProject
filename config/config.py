@@ -23,7 +23,7 @@ print("--- Starting to load .env file ---")
 env_file_path = find_dotenv()
 
 if env_file_path:
-    logger.info("✓" +  Found .env file at: {env_file_path}")
+    logger.info(f"✓ Found .env file at: {env_file_path}")
     # verbose=True will print detailed loading process
     load_dotenv(dotenv_path=env_file_path, verbose=True)
 else:

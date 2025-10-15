@@ -14,54 +14,55 @@ from plotly.subplots import make_subplots
 from datetime import datetime
 import json
 
+
 class PPOIterationAnalyzer:
     def __init__(self):
-        self.model_path = 'models/ppo_3488_stocks.pt'
-        self.simple_model_path = 'ultra_simple_ppo_model.pt'
-        
+        self.model_path = "models/ppo_3488_stocks.pt"
+        self.simple_model_path = "ultra_simple_ppo_model.pt"
+
     def analyze_training_details(self):
         """分析訓練細節"""
-        print("="*60)
+        print("=" * 60)
         print("PPO TRAINING ITERATION ANALYSIS")
-        print("="*60)
-        
+        print("=" * 60)
+
         # 1. 分析主模型
         if os.path.exists(self.model_path):
             print("\n[1] Main PPO Model Analysis (ppo_3488_stocks.pt):")
-            print("-"*40)
-            
-            checkpoint = torch.load(self.model_path, map_location='cpu', weights_only=False)
-            
+            print("-" * 40)
+
+            checkpoint = torch.load(self.model_path, map_location="cpu", weights_only=False)
+
             # 提取訓練信息
-            episode_rewards = checkpoint.get('episode_rewards', [])
-            losses = checkpoint.get('losses', [])
-            
+            episode_rewards = checkpoint.get("episode_rewards", [])
+            losses = checkpoint.get("losses", [])
+
             print(f"Training Episodes: {len(episode_rewards)}")
             print(f"Loss Records: {len(losses)}")
-            
+
             # PPO parameters from our training code
             print("\nPPO Training Parameters:")
             print("  - Learning Rate: 3e-4")
-            print("  - Batch Size: 64")  
+            print("  - Batch Size: 64")
             print("  - Training Epochs: 10")
             print("  - Clip Range: 0.2")
             print("  - Gamma: 0.99")
-            
+
             # Calculate actual iterations
             total_episodes = len(episode_rewards)
             batch_size = 64
             n_epochs = 10
-            
+
             # Gradient updates per episode
             updates_per_episode = n_epochs  # Simplified calculation
             total_iterations = total_episodes * updates_per_episode
-            
+
             print(f"\nIteration Statistics:")
             print(f"  - Total Episodes: {total_episodes}")
             print(f"  - Updates per Episode: {updates_per_episode}")
             print(f"  - Total Iterations: {total_iterations:,}")
             print(f"  - Total Gradient Updates: {total_iterations:,}")
-            
+
             # Analyze reward changes
             rewards_array = np.array(episode_rewards)
             print(f"\nReward Statistics:")
@@ -69,19 +70,21 @@ class PPOIterationAnalyzer:
             print(f"  - Max Reward: {np.max(rewards_array):.4f}")
             print(f"  - Mean Reward: {np.mean(rewards_array):.4f}")
             print(f"  - Std Dev: {np.std(rewards_array):.4f}")
-            
+
             # 分析收斂情況
             window = 100
             if len(episode_rewards) >= window:
                 early_avg = np.mean(episode_rewards[:window])
                 late_avg = np.mean(episode_rewards[-window:])
-                improvement = ((late_avg - early_avg) / abs(early_avg)) * 100 if early_avg != 0 else 0
-                
+                improvement = (
+                    ((late_avg - early_avg) / abs(early_avg)) * 100 if early_avg != 0 else 0
+                )
+
                 print(f"\nConvergence Analysis:")
                 print(f"  - First {window} avg: {early_avg:.4f}")
                 print(f"  - Last {window} avg: {late_avg:.4f}")
                 print(f"  - Improvement: {improvement:.2f}%")
-                
+
                 # Check convergence
                 recent_std = np.std(episode_rewards[-window:])
                 print(f"  - Recent {window} std: {recent_std:.4f}")
@@ -89,161 +92,168 @@ class PPOIterationAnalyzer:
                     print("  - Status: Converged")
                 else:
                     print("  - Status: Still Learning")
-            
+
             # 保存詳細數據
             self.main_model_data = {
-                'episode_rewards': episode_rewards,
-                'losses': losses,
-                'total_iterations': total_iterations
+                "episode_rewards": episode_rewards,
+                "losses": losses,
+                "total_iterations": total_iterations,
             }
         else:
             print("\n[1] Main PPO model not found")
             self.main_model_data = None
-        
+
         # 2. 分析簡單模型
         if os.path.exists(self.simple_model_path):
             print("\n[2] Simple PPO Model Analysis (ultra_simple_ppo_model.pt):")
-            print("-"*40)
-            
-            model_state = torch.load(self.simple_model_path, map_location='cpu', weights_only=False)
-            
+            print("-" * 40)
+
+            model_state = torch.load(self.simple_model_path, map_location="cpu", weights_only=False)
+
             print(f"Model Layers: {len(model_state)}")
-            total_params = sum(p.numel() for p in model_state.values() if isinstance(p, torch.Tensor))
+            total_params = sum(
+                p.numel() for p in model_state.values() if isinstance(p, torch.Tensor)
+            )
             print(f"Total Parameters: {total_params:,}")
             print(f"Training Episodes: 100 (fixed)")
             print(f"Total Iterations: 100")
-        
+
         # 3. Iteration difference analysis
         print("\n[3] Iteration Result Differences:")
-        print("-"*40)
+        print("-" * 40)
         print("Why each training is different:")
         print("  1. Random Initialization: Neural network weights")
         print("  2. Random Sampling: Different stocks and time points")
         print("  3. Exploration vs Exploitation: PPO has random exploration")
         print("  4. Batch Order: Data batch order affects gradient updates")
         print("  5. Market Data: Different time periods have different features")
-        
+
         return self.main_model_data
-    
+
     def simulate_multiple_trainings(self, n_simulations=10):
         """Simulate multiple trainings to show differences"""
         print("\n[4] Multiple Training Simulation Results:")
-        print("-"*40)
-        
+        print("-" * 40)
+
         np.random.seed(None)  # 使用不同的隨機種子
         results = []
-        
+
         for i in range(n_simulations):
             # Simulate different training results
             # Different random seeds produce different results
             np.random.seed(i * 42)
-            
+
             # Simulate 2000 episodes of training
             episode_rewards = []
             current_performance = 0
-            
+
             for episode in range(2000):
                 # Simulate learning curve: random start, gradual improvement
                 learning_progress = episode / 2000
-                
+
                 # Base performance + learning improvement + random fluctuation
                 base_performance = -0.5 + learning_progress * 1.0
                 random_factor = np.random.randn() * (0.5 - learning_progress * 0.3)
-                
+
                 reward = base_performance + random_factor
                 episode_rewards.append(reward)
                 current_performance = 0.9 * current_performance + 0.1 * reward
-            
+
             # Calculate final performance
             final_performance = np.mean(episode_rewards[-100:])
             total_return = np.sum(episode_rewards) / 100  # Simplified return calculation
-            
-            results.append({
-                'run': i + 1,
-                'final_performance': final_performance,
-                'total_return': total_return,
-                'max_reward': np.max(episode_rewards),
-                'min_reward': np.min(episode_rewards),
-                'convergence_episode': self.find_convergence_point(episode_rewards)
-            })
-        
+
+            results.append(
+                {
+                    "run": i + 1,
+                    "final_performance": final_performance,
+                    "total_return": total_return,
+                    "max_reward": np.max(episode_rewards),
+                    "min_reward": np.min(episode_rewards),
+                    "convergence_episode": self.find_convergence_point(episode_rewards),
+                }
+            )
+
         # Display results
         df_results = pd.DataFrame(results)
-        
+
         print(f"\n{n_simulations} Training Results Comparison:")
         print(df_results.to_string())
-        
+
         print(f"\nStatistical Analysis:")
         print(f"  - Avg Final Performance: {df_results['final_performance'].mean():.4f}")
         print(f"  - Performance Std Dev: {df_results['final_performance'].std():.4f}")
         print(f"  - Best Performance: {df_results['final_performance'].max():.4f}")
         print(f"  - Worst Performance: {df_results['final_performance'].min():.4f}")
         print(f"  - Avg Convergence Episode: {df_results['convergence_episode'].mean():.0f}")
-        
+
         return df_results
-    
+
     def find_convergence_point(self, rewards, window=100, threshold=0.1):
         """Find convergence point"""
         if len(rewards) < window * 2:
             return len(rewards)
-        
+
         for i in range(window, len(rewards) - window):
-            recent_std = np.std(rewards[i:i+window])
+            recent_std = np.std(rewards[i : i + window])
             if recent_std < threshold:
                 return i
-        
+
         return len(rewards)
-    
+
     def create_iteration_visualization(self):
         """創建迭代過程可視化"""
         if not self.main_model_data:
             print("No data to visualize")
             return None
-        
-        episode_rewards = self.main_model_data['episode_rewards']
-        losses = self.main_model_data['losses']
-        
+
+        episode_rewards = self.main_model_data["episode_rewards"]
+        losses = self.main_model_data["losses"]
+
         # 創建圖表
         fig = make_subplots(
-            rows=3, cols=2,
+            rows=3,
+            cols=2,
             subplot_titles=(
-                '1. Episode獎勵變化',
-                '2. 損失函數收斂',
-                '3. 滾動平均獎勵(100 episodes)',
-                '4. 獎勵分布直方圖',
-                '5. 學習率效果',
-                '6. 累積收益'
-            )
+                "1. Episode獎勵變化",
+                "2. 損失函數收斂",
+                "3. 滾動平均獎勵(100 episodes)",
+                "4. 獎勵分布直方圖",
+                "5. 學習率效果",
+                "6. 累積收益",
+            ),
         )
-        
+
         episodes = list(range(len(episode_rewards)))
-        
+
         # 1. Episode獎勵
         fig.add_trace(
             go.Scatter(
                 x=episodes,
                 y=episode_rewards,
-                mode='lines',
-                name='獎勵',
-                line=dict(color='blue', width=1),
-                opacity=0.6
+                mode="lines",
+                name="獎勵",
+                line=dict(color="blue", width=1),
+                opacity=0.6,
             ),
-            row=1, col=1
+            row=1,
+            col=1,
         )
-        
+
         # 2. 損失函數
         if losses:
             fig.add_trace(
                 go.Scatter(
                     x=list(range(len(losses))),
                     y=losses,
-                    mode='lines',
-                    name='損失',
-                    line=dict(color='red', width=1)
+                    mode="lines",
+                    name="損失",
+                    line=dict(color="red", width=1),
                 ),
-                row=1, col=2
+                row=1,
+                col=2,
             )
-        
+
         # 3. 滾動平均
         window = 100
         rolling_mean = pd.Series(episode_rewards).rolling(window).mean()
@@ -251,71 +261,68 @@ class PPOIterationAnalyzer:
             go.Scatter(
                 x=episodes,
                 y=rolling_mean,
-                mode='lines',
-                name='100-Episode平均',
-                line=dict(color='green', width=2)
+                mode="lines",
+                name="100-Episode平均",
+                line=dict(color="green", width=2),
             ),
-            row=2, col=1
+            row=2,
+            col=1,
         )
-        
+
         # 4. 獎勵分布
         fig.add_trace(
-            go.Histogram(
-                x=episode_rewards,
-                nbinsx=50,
-                name='獎勵分布',
-                marker_color='purple'
-            ),
-            row=2, col=2
+            go.Histogram(x=episode_rewards, nbinsx=50, name="獎勵分布", marker_color="purple"),
+            row=2,
+            col=2,
         )
-        
+
         # 5. 學習進度（模擬學習率衰減效果）
-        learning_progress = [abs(episode_rewards[i] - episode_rewards[i-1]) if i > 0 else 0 
-                           for i in range(len(episode_rewards))]
+        learning_progress = [
+            abs(episode_rewards[i] - episode_rewards[i - 1]) if i > 0 else 0
+            for i in range(len(episode_rewards))
+        ]
         fig.add_trace(
             go.Scatter(
                 x=episodes,
                 y=learning_progress,
-                mode='lines',
-                name='學習變化率',
-                line=dict(color='orange', width=1)
+                mode="lines",
+                name="學習變化率",
+                line=dict(color="orange", width=1),
             ),
-            row=3, col=1
+            row=3,
+            col=1,
         )
-        
+
         # 6. 累積收益
         cumulative_rewards = np.cumsum(episode_rewards)
         fig.add_trace(
             go.Scatter(
                 x=episodes,
                 y=cumulative_rewards,
-                mode='lines',
-                name='累積收益',
-                line=dict(color='teal', width=2),
-                fill='tozeroy'
+                mode="lines",
+                name="累積收益",
+                line=dict(color="teal", width=2),
+                fill="tozeroy",
             ),
-            row=3, col=2
+            row=3,
+            col=2,
         )
-        
-        fig.update_layout(
-            height=1200,
-            title_text="PPO訓練迭代過程分析",
-            showlegend=False
-        )
-        
+
+        fig.update_layout(height=1200, title_text="PPO訓練迭代過程分析", showlegend=False)
+
         return fig
-    
+
     def generate_iteration_report(self):
         """生成迭代分析報告"""
         # 分析訓練
         model_data = self.analyze_training_details()
-        
+
         # 模擬多次訓練
         simulation_results = self.simulate_multiple_trainings()
-        
+
         # 創建可視化
         fig = self.create_iteration_visualization() if model_data else None
-        
+
         # 生成HTML報告
         html_content = f"""
 <!DOCTYPE html>
@@ -450,7 +457,7 @@ class PPOIterationAnalyzer:
             </thead>
             <tbody>
 """
-        
+
         # 添加模擬結果表格
         if simulation_results is not None:
             for _, row in simulation_results.iterrows():
@@ -464,7 +471,7 @@ class PPOIterationAnalyzer:
                     <td>{row['convergence_episode']:.0f}</td>
                 </tr>
 """
-        
+
         html_content += f"""
             </tbody>
         </table>
@@ -533,30 +540,33 @@ class PPOIterationAnalyzer:
 </body>
 </html>
 """
-        
+
         # 保存報告
-        report_path = 'ppo_iteration_analysis.html'
-        with open(report_path, 'w', encoding='utf-8') as f:
+        report_path = "ppo_iteration_analysis.html"
+        with open(report_path, "w", encoding="utf-8") as f:
             f.write(html_content)
-        
+
         print(f"\n[SUCCESS] Iteration analysis report saved: {report_path}")
         return report_path
+
 
 def main():
     analyzer = PPOIterationAnalyzer()
     report_path = analyzer.generate_iteration_report()
-    
-    print("\n" + "="*60)
+
+    print("\n" + "=" * 60)
     print("ITERATION ANALYSIS COMPLETE")
-    print("="*60)
-    
+    print("=" * 60)
+
     # 打開報告
     try:
         import webbrowser
-        webbrowser.open(f'file://{os.path.abspath(report_path)}')
+
+        webbrowser.open(f"file://{os.path.abspath(report_path)}")
         print("Report opened in browser")
     except:
         print("Please open the HTML file manually")
+
 
 if __name__ == "__main__":
     main()

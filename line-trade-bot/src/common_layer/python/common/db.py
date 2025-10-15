@@ -18,7 +18,9 @@ _line_groups_table_name = (
 )
 _line_groups_table = _dynamodb.Table(_line_groups_table_name) if _line_groups_table_name else None
 _system_state_table_name = os.environ.get("SYSTEM_STATE_TABLE") or os.environ.get("STATE_TABLE", "")
-_system_state_table = _dynamodb.Table(_system_state_table_name) if _system_state_table_name else None
+_system_state_table = (
+    _dynamodb.Table(_system_state_table_name) if _system_state_table_name else None
+)
 
 
 def _now_ms() -> int:
@@ -93,8 +95,12 @@ def put_status(account_id: str, status: Dict[str, Any]) -> None:
     s = {
         "equity": status.get("equity"),
         "cash": status.get("cash"),
-        "unrealizedPnL": status.get("unrealizedPnL") or status.get("unrealized_pnl") or status.get("upnl"),
-        "realizedPnL": status.get("realizedPnL") or status.get("realized_pnl") or status.get("rpnl"),
+        "unrealizedPnL": status.get("unrealizedPnL")
+        or status.get("unrealized_pnl")
+        or status.get("upnl"),
+        "realizedPnL": status.get("realizedPnL")
+        or status.get("realized_pnl")
+        or status.get("rpnl"),
         "accountId": account_id,
     }
     put_system_summary(s)
@@ -163,7 +169,19 @@ def append_trade_event_recent(event_item: Dict[str, Any], *, max_items: int = 20
     if not _system_state_table:
         return
     # project minimal fields to store
-    fields = ("symbol", "ticker", "side", "action", "qty", "quantity", "price", "source", "note", "message", "ts")
+    fields = (
+        "symbol",
+        "ticker",
+        "side",
+        "action",
+        "qty",
+        "quantity",
+        "price",
+        "source",
+        "note",
+        "message",
+        "ts",
+    )
     e = {k: event_item.get(k) for k in fields if k in event_item}
     e = _to_decimal(e)
     try:

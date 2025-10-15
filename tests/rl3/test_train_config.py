@@ -1,6 +1,7 @@
 from pathlib import Path
 import yaml
 
+
 def test_train_yaml_loads():
     p = Path("configs/train/ppo_baseline.yaml")
     cfg = yaml.safe_load(p.read_text(encoding="utf-8"))

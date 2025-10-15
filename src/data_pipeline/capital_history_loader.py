@@ -15,10 +15,12 @@ import config
 
 logger = logging.getLogger(__name__)
 
+
 class CapitalHistoryLoader:
     """
     使用 Capital.com API 獲取歷史K線數據。
     """
+
     def __init__(self):
         self.api_key = config.CAPITAL_API_KEY
         self.identifier = config.CAPITAL_IDENTIFIER
@@ -28,19 +30,13 @@ class CapitalHistoryLoader:
         self.x_security_token = None
         self.session = requests.Session()
         self._login()
-        
+
     def _login(self):
         """登錄Capital.com API"""
         login_url = f"{self.base_url}/session"
-        headers = {
-            "X-CAP-API-KEY": self.api_key,
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "identifier": self.identifier,
-            "password": self.password
-        }
-        
+        headers = {"X-CAP-API-KEY": self.api_key, "Content-Type": "application/json"}
+        payload = {"identifier": self.identifier, "password": self.password}
+
         try:
             response = self.session.post(login_url, headers=headers, json=payload, timeout=15)
             if response.status_code == 200:
@@ -53,11 +49,13 @@ class CapitalHistoryLoader:
         except requests.exceptions.RequestException as e:
             logger.error(f"登錄時發生網路錯誤: {e}")
             raise
-    
-    def get_bars(self, symbol: str, resolution: str, start_date: str, end_date: str, max_results: int = 1000) -> pd.DataFrame:
+
+    def get_bars(
+        self, symbol: str, resolution: str, start_date: str, end_date: str, max_results: int = 1000
+    ) -> pd.DataFrame:
         """
         獲取指定時間範圍內的歷史K線數據。
-        
+
         :param symbol: 股票代碼，例如 "AAPL"
         :param resolution: 時間週期 - "MINUTE", "MINUTE_5", "MINUTE_15", "MINUTE_30", "HOUR", "HOUR_4", "DAY", "WEEK"
         :param start_date: 開始日期，格式 "YYYY-MM-DD" 或 "YYYY-MM-DDTHH:MM:SS"
@@ -67,79 +65,70 @@ class CapitalHistoryLoader:
         """
         if not self.cst or not self.x_security_token:
             self._login()
-            
+
         # 格式化日期時間
-        if 'T' not in start_date:
+        if "T" not in start_date:
             start_date = f"{start_date}T00:00:00"
-        if 'T' not in end_date:
+        if "T" not in end_date:
             end_date = f"{end_date}T23:59:59"
-            
+
         url = f"{self.base_url}/prices/{symbol}"
-        headers = {
-            "CST": self.cst,
-            "X-SECURITY-TOKEN": self.x_security_token
-        }
-        params = {
-            "resolution": resolution,
-            "from": start_date,
-            "to": end_date,
-            "max": max_results
-        }
-        
+        headers = {"CST": self.cst, "X-SECURITY-TOKEN": self.x_security_token}
+        params = {"resolution": resolution, "from": start_date, "to": end_date, "max": max_results}
+
         try:
             response = self.session.get(url, headers=headers, params=params, timeout=30)
             if response.status_code == 200:
                 data = response.json()
-                prices = data.get('prices', [])
-                
+                prices = data.get("prices", [])
+
                 if not prices:
                     logger.warning(f"沒有找到 {symbol} 在指定時間範圍內的數據")
                     return pd.DataFrame()
-                
+
                 # 轉換為DataFrame
                 df_data = []
                 for price in prices:
-                    df_data.append({
-                        'Date': pd.to_datetime(price['snapshotTime']),
-                        'Open': price['openPrice']['ask'],
-                        'High': price['highPrice']['ask'],
-                        'Low': price['lowPrice']['ask'],
-                        'Close': price['closePrice']['ask'],
-                        'Volume': 0  # Capital.com API不提供成交量數據
-                    })
-                
+                    df_data.append(
+                        {
+                            "Date": pd.to_datetime(price["snapshotTime"]),
+                            "Open": price["openPrice"]["ask"],
+                            "High": price["highPrice"]["ask"],
+                            "Low": price["lowPrice"]["ask"],
+                            "Close": price["closePrice"]["ask"],
+                            "Volume": 0,  # Capital.com API不提供成交量數據
+                        }
+                    )
+
                 df = pd.DataFrame(df_data)
-                df.set_index('Date', inplace=True)
+                df.set_index("Date", inplace=True)
                 df.sort_index(inplace=True)
-                
+
                 logger.info(f"成功獲取 {symbol} 從 {start_date} 到 {end_date} 的 {len(df)} 筆數據")
                 return df
-                
+
             else:
                 logger.error(f"獲取歷史數據失敗: {response.status_code} - {response.text}")
                 return pd.DataFrame()
-                
+
         except requests.exceptions.RequestException as e:
             logger.error(f"獲取 {symbol} 歷史數據時出錯: {e}")
             return pd.DataFrame()
-    
+
     def get_available_symbols(self) -> list:
         """獲取所有可用的交易品種"""
         if not self.cst or not self.x_security_token:
             self._login()
-            
+
         url = f"{self.base_url}/markets"
-        headers = {
-            "CST": self.cst,
-            "X-SECURITY-TOKEN": self.x_security_token
-        }
-        
+        headers = {"CST": self.cst, "X-SECURITY-TOKEN": self.x_security_token}
+
         try:
             response = self.session.get(url, headers=headers, timeout=30)
             if response.status_code == 200:
                 data = response.json()
-                markets = data.get('markets', [])
-                symbols = [market['epic'] for market in markets]
+                markets = data.get("markets", [])
+                symbols = [market["epic"] for market in markets]
                 logger.info(f"獲取到 {len(symbols)} 個可用交易品種")
                 return symbols
             else:
@@ -148,18 +137,15 @@ class CapitalHistoryLoader:
         except requests.exceptions.RequestException as e:
             logger.error(f"獲取市場列表時出錯: {e}")
             return []
-    
+
     def get_market_info(self, symbol: str) -> Dict[str, Any]:
         """獲取特定市場的詳細信息"""
         if not self.cst or not self.x_security_token:
             self._login()
-            
+
         url = f"{self.base_url}/markets/{symbol}"
-        headers = {
-            "CST": self.cst,
-            "X-SECURITY-TOKEN": self.x_security_token
-        }
-        
+        headers = {"CST": self.cst, "X-SECURITY-TOKEN": self.x_security_token}
+
         try:
             response = self.session.get(url, headers=headers, timeout=15)
             if response.status_code == 200:
@@ -170,7 +156,7 @@ class CapitalHistoryLoader:
         except requests.exceptions.RequestException as e:
             logger.error(f"獲取市場信息時出錯: {e}")
             return {}
-    
+
     def close(self):
         """關閉session"""
         if self.session:

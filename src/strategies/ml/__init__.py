@@ -7,8 +7,8 @@ from .random_forest_strategy import RandomForestStrategy, create_random_forest_s
 from .lstm_predictor import LSTMPredictor, create_lstm_strategy
 
 __all__ = [
-    'RandomForestStrategy',
-    'create_random_forest_strategy',
-    'LSTMPredictor', 
-    'create_lstm_strategy'
+    "RandomForestStrategy",
+    "create_random_forest_strategy",
+    "LSTMPredictor",
+    "create_lstm_strategy",
 ]

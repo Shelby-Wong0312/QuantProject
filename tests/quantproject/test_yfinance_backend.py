@@ -44,23 +44,92 @@ def test_get_bars_ok(mock_download, tmp_path):
     assert kwargs["auto_adjust"] is False
     assert kwargs["progress"] is False
     assert kwargs["threads"] is False
+    assert "start" in kwargs and "end" in kwargs
+    assert "period" not in kwargs
 
 
+@patch(
+    "src.quantproject.data_pipeline.backends.yfinance.YFinanceBackend._download_via_api",
+    return_value=None,
+)
+@patch("src.quantproject.data_pipeline.backends.yfinance.time.sleep")
 @patch("src.quantproject.data_pipeline.backends.yfinance.yf.download")
-def test_get_bars_exception_returns_empty(mock_download, tmp_path):
-    mock_download.side_effect = RuntimeError("network error")
+def test_get_bars_exception_returns_empty(mock_download, sleep_mock, mock_api, tmp_path):
+    mock_download.side_effect = [RuntimeError("network error")] * 6
 
     backend = YFinanceBackend(cache_dir=tmp_path)
     df = backend.get_bars("SPY", "2025-08-01", "2025-09-01", "5min")
 
     assert df.empty
     assert list(df.columns) == ["open", "high", "low", "close", "volume"]
+    assert mock_api.call_count == 1
 
     cache_file = backend._cache_path("SPY", "5min")
     assert not cache_file.exists()
 
-    cache_file = backend._cache_path("SPY", "5min")
-    assert not cache_file.exists()
+    assert mock_download.call_count == 6
+    first_kwargs = mock_download.call_args_list[0][1]
+    last_kwargs = mock_download.call_args_list[-1][1]
+    assert "start" in first_kwargs and "end" in first_kwargs
+    assert last_kwargs.get("period") == "60d"
+
+    sleep_calls = [call.args[0] for call in sleep_mock.call_args_list]
+    assert len(sleep_calls) == 4
+    for got, base in zip(sleep_calls, (2.0, 5.0, 2.0, 5.0)):
+        assert base <= got < base + 1.0
+
+
+@patch(
+    "src.quantproject.data_pipeline.backends.yfinance.YFinanceBackend._download_via_api",
+    return_value=None,
+)
+@patch("src.quantproject.data_pipeline.backends.yfinance.time.sleep")
+@patch("src.quantproject.data_pipeline.backends.yfinance.yf.download")
+def test_get_bars_retry_then_success(mock_download, sleep_mock, mock_api, tmp_path):
+    mock_download.side_effect = [RuntimeError("network error"), _mock_download()]
+
+    backend = YFinanceBackend(cache_dir=tmp_path)
+    df = backend.get_bars("SPY", "2025-08-01", "2025-09-01", "5min")
+
+    assert not df.empty
+    assert mock_download.call_count == 2
+    assert mock_api.call_count == 0
+    kwargs_first = mock_download.call_args_list[0][1]
+    kwargs_second = mock_download.call_args_list[1][1]
+    assert "start" in kwargs_first and "end" in kwargs_first
+    assert "period" not in kwargs_first
+    assert "start" in kwargs_second and "end" in kwargs_second
+
+    sleep_calls = [call.args[0] for call in sleep_mock.call_args_list]
+    assert len(sleep_calls) == 1
+    assert 2.0 <= sleep_calls[0] < 3.0
+
+
+@patch(
+    "src.quantproject.data_pipeline.backends.yfinance.YFinanceBackend._download_via_api",
+    return_value=None,
+)
+@patch("src.quantproject.data_pipeline.backends.yfinance.time.sleep")
+@patch("src.quantproject.data_pipeline.backends.yfinance.yf.download")
+def test_get_bars_period_fallback(mock_download, sleep_mock, mock_api, tmp_path):
+    empty_df = pd.DataFrame(columns=_COLS)
+    mock_download.side_effect = [empty_df, empty_df, empty_df, _mock_download()]
+
+    backend = YFinanceBackend(cache_dir=tmp_path)
+    df = backend.get_bars("SPY", "2025-08-01", "2025-09-01", "5min")
+
+    assert not df.empty
+    assert mock_download.call_count == 4
+    assert mock_api.call_count == 1
+    first_kwargs = mock_download.call_args_list[0][1]
+    last_kwargs = mock_download.call_args_list[-1][1]
+    assert "start" in first_kwargs and "end" in first_kwargs
+    assert last_kwargs.get("period") == "60d"
+
+    sleep_calls = [call.args[0] for call in sleep_mock.call_args_list]
+    assert len(sleep_calls) == 2
+    for got, base in zip(sleep_calls, (2.0, 5.0)):
+        assert base <= got < base + 1.0
 
 
 @patch("src.quantproject.data_pipeline.backends.yfinance.yf.download")
@@ -106,3 +175,17 @@ def test_get_bars_missing_column_returns_empty(mock_download, tmp_path):
 
     assert df.empty
     assert list(df.columns) == ["open", "high", "low", "close", "volume"]
+
+
+@patch("src.quantproject.data_pipeline.backends.yfinance.YFinanceBackend._download_via_api")
+@patch("src.quantproject.data_pipeline.backends.yfinance.yf.download", return_value=pd.DataFrame())
+def test_get_bars_api_fallback_success(mock_download, mock_api, tmp_path):
+    api_df = _mock_download()
+    mock_api.return_value = api_df
+
+    backend = YFinanceBackend(cache_dir=tmp_path)
+    df = backend.get_bars("SPY", "2025-08-01", "2025-09-01", "5min")
+
+    assert not df.empty
+    assert mock_download.call_count == 3
+    mock_api.assert_called_once()

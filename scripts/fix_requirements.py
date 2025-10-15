@@ -6,25 +6,25 @@ import subprocess
 import sys
 from pathlib import Path
 
+
 def get_installed_version(package_name):
     """Get installed version of a package"""
     try:
         result = subprocess.run(
-            [sys.executable, "-m", "pip", "show", package_name],
-            capture_output=True,
-            text=True
+            [sys.executable, "-m", "pip", "show", package_name], capture_output=True, text=True
         )
         if result.returncode == 0:
-            for line in result.stdout.split('\n'):
-                if line.startswith('Version:'):
-                    return line.split(':')[1].strip()
+            for line in result.stdout.split("\n"):
+                if line.startswith("Version:"):
+                    return line.split(":")[1].strip()
     except:
         pass
     return None
 
+
 def fix_requirements():
     """Fix requirements.txt with pinned versions"""
-    
+
     # Essential packages with specific versions for stability
     requirements = """# requirements.txt
 # Python 3.9+
@@ -87,14 +87,14 @@ loguru==0.7.2
 # networkx==3.1
 # torch-geometric==2.3.1
 """
-    
+
     # Write the fixed requirements
-    req_path = Path(__file__).parent.parent / 'requirements.txt'
-    with open(req_path, 'w', encoding='utf-8') as f:
+    req_path = Path(__file__).parent.parent / "requirements.txt"
+    with open(req_path, "w", encoding="utf-8") as f:
         f.write(requirements)
-    
+
     print(f"[OK] Fixed requirements.txt with pinned versions")
-    
+
     # Create requirements-dev.txt for development dependencies
     requirements_dev = """# requirements-dev.txt
 # Development dependencies
@@ -124,13 +124,13 @@ nbconvert==7.8.0
 # Debugging
 ipdb==0.13.13
 """
-    
-    req_dev_path = Path(__file__).parent.parent / 'requirements-dev.txt'
-    with open(req_dev_path, 'w', encoding='utf-8') as f:
+
+    req_dev_path = Path(__file__).parent.parent / "requirements-dev.txt"
+    with open(req_dev_path, "w", encoding="utf-8") as f:
         f.write(requirements_dev)
-    
+
     print(f"[OK] Created requirements-dev.txt")
-    
+
     # Create requirements-minimal.txt for minimal installation
     requirements_minimal = """# requirements-minimal.txt
 # Minimal requirements for basic functionality
@@ -143,22 +143,23 @@ python-dotenv==1.0.0
 plotly==5.17.0
 loguru==0.7.2
 """
-    
-    req_minimal_path = Path(__file__).parent.parent / 'requirements-minimal.txt'
-    with open(req_minimal_path, 'w', encoding='utf-8') as f:
+
+    req_minimal_path = Path(__file__).parent.parent / "requirements-minimal.txt"
+    with open(req_minimal_path, "w", encoding="utf-8") as f:
         f.write(requirements_minimal)
-    
+
     print(f"[OK] Created requirements-minimal.txt")
-    
+
     return True
 
+
 def main():
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("FIXING REQUIREMENTS.TXT")
-    print("="*60)
-    
+    print("=" * 60)
+
     success = fix_requirements()
-    
+
     if success:
         print("\n[SUCCESS] Requirements fixed!")
         print("\nNext steps:")
@@ -168,8 +169,9 @@ def main():
         print("   pip install -r requirements.txt")
         print("\n3. For development:")
         print("   pip install -r requirements-dev.txt")
-    
+
     return success
+
 
 if __name__ == "__main__":
     success = main()

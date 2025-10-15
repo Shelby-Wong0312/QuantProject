@@ -25,4 +25,3 @@ def main(symbol: str = "AAPL") -> int:
 if __name__ == "__main__":
     sym = sys.argv[1] if len(sys.argv) > 1 else "AAPL"
     raise SystemExit(main(sym))
-

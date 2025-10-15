@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from unittest.mock import patch
 import pandas as pd
@@ -21,13 +21,14 @@ def _fake_df(n: int, start: str = "2025-08-01") -> pd.DataFrame:
     )
 
 
-@patch("src.quantproject.data_pipeline.loaders.bars.YFinanceBackend")
-def test_align_intersection(MockBE):
-    be = MockBE.return_value
-    be.get_bars.side_effect = [_fake_df(110), _fake_df(120)]
+@patch("src.quantproject.data_pipeline.loaders.bars.DataRouter")
+def test_align_intersection(MockRouter):
+    router = MockRouter.return_value
+    router.get_bars.side_effect = [_fake_df(110), _fake_df(120)]
 
     data = load_and_align(["A", "B"], "2025-08-01", "2025-09-01", "5min")
 
+    assert router.get_bars.call_count == 2
     assert set(data.keys()) == {"A", "B"}
     lens = {symbol: df.shape[0] for symbol, df in data.items()}
     L = next(iter(lens.values()))
@@ -38,12 +39,30 @@ def test_align_intersection(MockBE):
         assert df.index.equals(ref_index)
 
 
-@patch("src.quantproject.data_pipeline.loaders.bars.YFinanceBackend")
-def test_skips_empty_symbols(MockBE):
-    be = MockBE.return_value
-    be.get_bars.side_effect = [_fake_df(50), pd.DataFrame()]
+@patch("src.quantproject.data_pipeline.loaders.bars.DataRouter")
+def test_skips_empty_symbols(MockRouter):
+    router = MockRouter.return_value
+    router.get_bars.side_effect = [
+        _fake_df(50),
+        pd.DataFrame(columns=["open", "high", "low", "close", "volume"]),
+    ]
 
     data = load_and_align(["A", "B"], "2025-08-01", "2025-09-01", "5min")
 
     assert set(data.keys()) == {"A"}
     assert data["A"].shape[0] == 50
+
+
+@patch("src.quantproject.data_pipeline.loaders.bars.DataRouter")
+def test_loader_drops_na_after_alignment(MockRouter):
+    router = MockRouter.return_value
+    a = _fake_df(10)
+    b = _fake_df(12)
+    b.iloc[-1, 0] = np.nan
+    router.get_bars.side_effect = [a, b]
+
+    data = load_and_align(["A", "B"], "2025-08-01", "2025-08-02", "5min")
+
+    assert set(data.keys()) == {"A", "B"}
+    for df in data.values():
+        assert df.notna().all().all()

@@ -193,7 +193,9 @@ def _get_positions() -> Optional[Dict[str, Any]]:
         return None
 
 
-def _handle_text(client: "LineBotApi", text: str, reply_token: str, recipient_id: str, recipient_type: str) -> None:
+def _handle_text(
+    client: "LineBotApi", text: str, reply_token: str, recipient_id: str, recipient_type: str
+) -> None:
     raw = text.strip()
     if raw.startswith("/"):
         raw = raw[1:]
@@ -214,10 +216,22 @@ def _handle_text(client: "LineBotApi", text: str, reply_token: str, recipient_id
             _reply_with_retry(client, reply_token, "無法取得聊天室 ID，請在正式對話中使用。")
             return
         subs_tbl = _ddb_table("SUBSCRIBERS_TABLE")
-        subs_tbl.put_item(Item={"recipientId": recipient_id, "type": recipient_type, "createdAt": int(__import__("time").time() * 1000)})
+        subs_tbl.put_item(
+            Item={
+                "recipientId": recipient_id,
+                "type": recipient_type,
+                "createdAt": int(__import__("time").time() * 1000),
+            }
+        )
         try:
             groups_tbl = _ddb_table("GROUPS_TABLE", "LINE_GROUPS_TABLE")
-            groups_tbl.put_item(Item={"targetId": recipient_id, "type": recipient_type, "createdAt": int(__import__("time").time() * 1000)})
+            groups_tbl.put_item(
+                Item={
+                    "targetId": recipient_id,
+                    "type": recipient_type,
+                    "createdAt": int(__import__("time").time() * 1000),
+                }
+            )
         except Exception:
             pass
         _reply_with_retry(client, reply_token, "✅ 已訂閱交易推播")
@@ -260,6 +274,7 @@ def _handle_text(client: "LineBotApi", text: str, reply_token: str, recipient_id
         if not st:
             _reply_with_retry(client, reply_token, "尚無帳戶狀態（summary）")
             return
+
         def _fmt2(v):
             try:
                 return f"{float(v):.2f}"
@@ -268,10 +283,18 @@ def _handle_text(client: "LineBotApi", text: str, reply_token: str, recipient_id
 
         parts = [
             f"帳戶：{st.get('accountId') or 'default'}",
-            f"Equity：{_fmt2(st.get('equity'))}" if st.get('equity') is not None else None,
-            f"Cash：{_fmt2(st.get('cash'))}" if st.get('cash') is not None else None,
-            f"未實現PnL：{_fmt2(st.get('unrealizedPnL'))}" if st.get('unrealizedPnL') is not None else None,
-            f"已實現PnL：{_fmt2(st.get('realizedPnL'))}" if st.get('realizedPnL') is not None else None,
+            f"Equity：{_fmt2(st.get('equity'))}" if st.get("equity") is not None else None,
+            f"Cash：{_fmt2(st.get('cash'))}" if st.get("cash") is not None else None,
+            (
+                f"未實現PnL：{_fmt2(st.get('unrealizedPnL'))}"
+                if st.get("unrealizedPnL") is not None
+                else None
+            ),
+            (
+                f"已實現PnL：{_fmt2(st.get('realizedPnL'))}"
+                if st.get("realizedPnL") is not None
+                else None
+            ),
         ]
         body = "狀態摘要\n" + "\n".join([p for p in parts if p])
         _reply_with_retry(client, reply_token, body)
@@ -329,13 +352,21 @@ def lambda_handler(event, context):
     _TRACE_ID = str(uuid.uuid4())
     _log("lambda_start", "ok")
     if not secret or not _verify_signature(secret, headers, raw):
-        return {"statusCode": 403, "headers": {"Content-Type": "application/json"}, "body": json.dumps({"ok": False, "error": "Invalid signature"})}
+        return {
+            "statusCode": 403,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({"ok": False, "error": "Invalid signature"}),
+        }
 
     try:
         payload = json.loads(raw.decode("utf-8"))
     except Exception as e:
         _log("webhook", "error", reason="invalid_json", error=str(e))
-        return {"statusCode": 400, "headers": {"Content-Type": "application/json"}, "body": json.dumps({"ok": False, "error": "Invalid JSON"})}
+        return {
+            "statusCode": 400,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({"ok": False, "error": "Invalid JSON"}),
+        }
 
     client = _get_line_client()
     for ev in payload.get("events", []):
@@ -343,17 +374,29 @@ def lambda_handler(event, context):
         if etype == "join":
             src = ev.get("source") or {}
             gid = src.get("groupId") or src.get("roomId")
-            gtype = "group" if src.get("groupId") else ("room" if src.get("roomId") else src.get("type", ""))
+            gtype = (
+                "group"
+                if src.get("groupId")
+                else ("room" if src.get("roomId") else src.get("type", ""))
+            )
             if gid:
                 try:
                     groups_tbl = _ddb_table("GROUPS_TABLE", "LINE_GROUPS_TABLE")
-                    groups_tbl.put_item(Item={"targetId": gid, "type": gtype, "createdAt": int(__import__("time").time() * 1000)})
+                    groups_tbl.put_item(
+                        Item={
+                            "targetId": gid,
+                            "type": gtype,
+                            "createdAt": int(__import__("time").time() * 1000),
+                        }
+                    )
                     _log("join", "ok", target_id=gid, group_type=gtype)
                 except Exception as e:
                     _log("join", "error", target_id=gid, error=str(e))
             rt = ev.get("replyToken")
             if rt:
-                client.reply_message(rt, TextSendMessage(text="已加入群組，若要接收推播請輸入 /subscribe"))
+                client.reply_message(
+                    rt, TextSendMessage(text="已加入群組，若要接收推播請輸入 /subscribe")
+                )
             continue
 
         if etype == "leave":
@@ -376,4 +419,8 @@ def lambda_handler(event, context):
                 _handle_text(client, text, reply_token, recipient_id, recipient_type)
 
     _log("lambda_end", "ok")
-    return {"statusCode": 200, "headers": {"Content-Type": "application/json"}, "body": json.dumps({"ok": True})}
+    return {
+        "statusCode": 200,
+        "headers": {"Content-Type": "application/json"},
+        "body": json.dumps({"ok": True}),
+    }

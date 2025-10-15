@@ -6,8 +6,8 @@ from dataclasses import dataclass
 @dataclass
 class BrokerParams:
     commission_bps: float = 1.0
-    slippage_alpha: float = 0.10   # volatility-linked component (bps)
-    slippage_beta: float = 0.20    # participation-linked component (bps per unit turnover)
+    slippage_alpha: float = 0.10  # volatility-linked component (bps)
+    slippage_beta: float = 0.20  # participation-linked component (bps per unit turnover)
     participation_cap: float = 0.10  # max notional per step as % of NAV
 
 
@@ -24,7 +24,9 @@ class BrokerSim:
 
         notional = abs(dweight) * nav
         cap_notional = max(self.p.participation_cap, 0.0) * nav
-        trade_notional = min(notional, cap_notional) if cap_notional > 0 else notional  # excess notional is deferred to future steps
+        trade_notional = (
+            min(notional, cap_notional) if cap_notional > 0 else notional
+        )  # excess notional is deferred to future steps
 
         if trade_notional <= 0.0:
             return 0.0

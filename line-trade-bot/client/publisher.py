@@ -40,4 +40,3 @@ def publish_trade_event(
 
     sns = boto3.client("sns")
     return sns.publish(TopicArn=topic_arn, Message=json.dumps(payload))
-

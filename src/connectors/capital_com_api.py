@@ -512,7 +512,7 @@ def test_connection():
         return False
     
     print(f"\n[INFO] API Key: {api.api_key[:8]}...")
-    logger.info( Identifier: {api.identifier}")
+    logger.info("Identifier: %s", api.identifier)
     
     # Test authentication
     print("\n[TEST] Authenticating...")

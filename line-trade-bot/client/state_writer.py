@@ -159,11 +159,26 @@ def append_trade_event(
     try:
         minimal_fields = {
             k: event_item.get(k)
-            for k in ("symbol", "ticker", "side", "action", "qty", "quantity", "price", "source", "note", "message", "ts")
+            for k in (
+                "symbol",
+                "ticker",
+                "side",
+                "action",
+                "qty",
+                "quantity",
+                "price",
+                "source",
+                "note",
+                "message",
+                "ts",
+            )
             if k in event_item
         }
         minimal_fields = _to_decimal(minimal_fields)
-        cur = state_tbl.get_item(Key={"pk": "tradeEvents"}).get("Item") or {"pk": "tradeEvents", "events": []}
+        cur = state_tbl.get_item(Key={"pk": "tradeEvents"}).get("Item") or {
+            "pk": "tradeEvents",
+            "events": [],
+        }
         events = cur.get("events") or []
         events = [minimal_fields] + events
         if len(events) > 200:

@@ -75,7 +75,18 @@ def format_event_zh(evt: Dict[str, Any]) -> str:
 
 def normalize_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
     item: Dict[str, Any] = {"ts": _now_iso(), "bucket": "ALL"}
-    for k in ("symbol", "ticker", "side", "action", "qty", "quantity", "price", "source", "note", "message"):
+    for k in (
+        "symbol",
+        "ticker",
+        "side",
+        "action",
+        "qty",
+        "quantity",
+        "price",
+        "source",
+        "note",
+        "message",
+    ):
         if k in payload:
             v = payload[k]
             if isinstance(v, float):

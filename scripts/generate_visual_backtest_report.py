@@ -4,7 +4,8 @@ Generate Visual HTML Backtest Report with Interactive Charts
 
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import pandas as pd
 import numpy as np
@@ -15,7 +16,8 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.express as px
 import warnings
-warnings.filterwarnings('ignore')
+
+warnings.filterwarnings("ignore")
 
 # Import indicators for visualization
 from src.indicators.momentum_indicators import CCI, WilliamsR, Stochastic, RSI, MACD
@@ -25,90 +27,119 @@ from src.indicators.volume_indicators import OBV, VolumeSMA
 
 class VisualBacktestReport:
     """Generate comprehensive visual HTML report"""
-    
+
     def __init__(self):
-        self.db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                                    'data', 'quant_trading.db')
-        
+        self.db_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+        )
+
         # Load backtest results
-        report_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                                  'reports', 'indicator_backtest_results.json')
-        with open(report_path, 'r') as f:
+        report_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "reports",
+            "indicator_backtest_results.json",
+        )
+        with open(report_path, "r") as f:
             self.backtest_results = json.load(f)
-    
+
     def create_performance_comparison_chart(self):
         """Create bar chart comparing all indicators performance"""
-        
-        results = self.backtest_results['aggregate_results']
-        
+
+        results = self.backtest_results["aggregate_results"]
+
         # Prepare data
         indicators = list(results.keys())
-        returns = [results[ind]['avg_return'] for ind in indicators]
-        sharpes = [results[ind]['avg_sharpe'] for ind in indicators]
-        win_rates = [results[ind]['avg_win_rate'] for ind in indicators]
-        
+        returns = [results[ind]["avg_return"] for ind in indicators]
+        sharpes = [results[ind]["avg_sharpe"] for ind in indicators]
+        win_rates = [results[ind]["avg_win_rate"] for ind in indicators]
+
         # Sort by return
         sorted_indices = np.argsort(returns)[::-1]
         indicators = [indicators[i] for i in sorted_indices]
         returns = [returns[i] for i in sorted_indices]
         sharpes = [sharpes[i] for i in sorted_indices]
         win_rates = [win_rates[i] for i in sorted_indices]
-        
+
         # Create subplots
         fig = make_subplots(
-            rows=3, cols=1,
-            subplot_titles=('Average Return (%)', 'Sharpe Ratio', 'Win Rate (%)'),
-            vertical_spacing=0.1
+            rows=3,
+            cols=1,
+            subplot_titles=("Average Return (%)", "Sharpe Ratio", "Win Rate (%)"),
+            vertical_spacing=0.1,
         )
-        
+
         # Color based on performance
-        colors_return = ['green' if r > 10 else 'lightgreen' if r > 0 else 'lightcoral' if r > -5 else 'red' 
-                        for r in returns]
-        colors_sharpe = ['green' if s > 0.3 else 'lightgreen' if s > 0 else 'lightcoral' if s > -0.1 else 'red' 
-                        for s in sharpes]
-        colors_winrate = ['green' if w > 60 else 'lightgreen' if w > 50 else 'lightcoral' if w > 40 else 'red' 
-                         for w in win_rates]
-        
+        colors_return = [
+            "green" if r > 10 else "lightgreen" if r > 0 else "lightcoral" if r > -5 else "red"
+            for r in returns
+        ]
+        colors_sharpe = [
+            "green" if s > 0.3 else "lightgreen" if s > 0 else "lightcoral" if s > -0.1 else "red"
+            for s in sharpes
+        ]
+        colors_winrate = [
+            "green" if w > 60 else "lightgreen" if w > 50 else "lightcoral" if w > 40 else "red"
+            for w in win_rates
+        ]
+
         # Add return bars
         fig.add_trace(
-            go.Bar(x=indicators, y=returns, marker_color=colors_return,
-                  text=[f'{r:.2f}%' for r in returns], textposition='outside',
-                  hovertemplate='%{x}: %{y:.2f}%<extra></extra>'),
-            row=1, col=1
+            go.Bar(
+                x=indicators,
+                y=returns,
+                marker_color=colors_return,
+                text=[f"{r:.2f}%" for r in returns],
+                textposition="outside",
+                hovertemplate="%{x}: %{y:.2f}%<extra></extra>",
+            ),
+            row=1,
+            col=1,
         )
-        
+
         # Add Sharpe ratio bars
         fig.add_trace(
-            go.Bar(x=indicators, y=sharpes, marker_color=colors_sharpe,
-                  text=[f'{s:.2f}' for s in sharpes], textposition='outside',
-                  hovertemplate='%{x}: %{y:.2f}<extra></extra>'),
-            row=2, col=1
+            go.Bar(
+                x=indicators,
+                y=sharpes,
+                marker_color=colors_sharpe,
+                text=[f"{s:.2f}" for s in sharpes],
+                textposition="outside",
+                hovertemplate="%{x}: %{y:.2f}<extra></extra>",
+            ),
+            row=2,
+            col=1,
         )
-        
+
         # Add win rate bars
         fig.add_trace(
-            go.Bar(x=indicators, y=win_rates, marker_color=colors_winrate,
-                  text=[f'{w:.1f}%' for w in win_rates], textposition='outside',
-                  hovertemplate='%{x}: %{y:.1f}%<extra></extra>'),
-            row=3, col=1
+            go.Bar(
+                x=indicators,
+                y=win_rates,
+                marker_color=colors_winrate,
+                text=[f"{w:.1f}%" for w in win_rates],
+                textposition="outside",
+                hovertemplate="%{x}: %{y:.1f}%<extra></extra>",
+            ),
+            row=3,
+            col=1,
         )
-        
+
         fig.update_layout(
-            title='Technical Indicators Performance Comparison',
+            title="Technical Indicators Performance Comparison",
             height=900,
             showlegend=False,
-            font=dict(size=12)
+            font=dict(size=12),
         )
-        
+
         fig.update_xaxes(tickangle=-45)
-        
+
         return fig
-    
+
     def create_top_indicator_signals_chart(self):
         """Create chart showing CCI signals on price"""
-        
+
         conn = sqlite3.connect(self.db_path)
-        
+
         # Get AAPL data for demonstration
         query = """
             SELECT date, open_price as open, high_price as high, 
@@ -118,128 +149,135 @@ class VisualBacktestReport:
             ORDER BY date DESC
             LIMIT 252
         """
-        
-        df = pd.read_sql_query(query, conn, parse_dates=['date'])
-        df.set_index('date', inplace=True)
+
+        df = pd.read_sql_query(query, conn, parse_dates=["date"])
+        df.set_index("date", inplace=True)
         df = df.sort_index()
         conn.close()
-        
+
         # Calculate CCI and signals
         cci_indicator = CCI(period=20)
         cci_values = cci_indicator.calculate(df)
         signals = cci_indicator.get_signals(df)
-        
+
         # Create subplots
         fig = make_subplots(
-            rows=3, cols=1,
+            rows=3,
+            cols=1,
             shared_xaxes=True,
             vertical_spacing=0.05,
-            subplot_titles=('AAPL Stock Price with CCI Signals', 'CCI(20) Indicator', 'Volume'),
-            row_heights=[0.5, 0.3, 0.2]
+            subplot_titles=("AAPL Stock Price with CCI Signals", "CCI(20) Indicator", "Volume"),
+            row_heights=[0.5, 0.3, 0.2],
         )
-        
+
         # Add candlestick chart
         fig.add_trace(
             go.Candlestick(
                 x=df.index,
-                open=df['open'],
-                high=df['high'],
-                low=df['low'],
-                close=df['close'],
-                name='AAPL',
-                increasing_line_color='green',
-                decreasing_line_color='red'
+                open=df["open"],
+                high=df["high"],
+                low=df["low"],
+                close=df["close"],
+                name="AAPL",
+                increasing_line_color="green",
+                decreasing_line_color="red",
             ),
-            row=1, col=1
+            row=1,
+            col=1,
         )
-        
+
         # Add buy signals
-        buy_signals = signals[signals['buy']]
+        buy_signals = signals[signals["buy"]]
         if len(buy_signals) > 0:
             fig.add_trace(
                 go.Scatter(
                     x=buy_signals.index,
-                    y=df.loc[buy_signals.index, 'low'] * 0.98,
-                    mode='markers',
-                    marker=dict(symbol='triangle-up', size=12, color='green'),
-                    name='Buy Signal',
-                    hovertemplate='Buy Signal<br>Date: %{x}<br>Price: %{y:.2f}<extra></extra>'
+                    y=df.loc[buy_signals.index, "low"] * 0.98,
+                    mode="markers",
+                    marker=dict(symbol="triangle-up", size=12, color="green"),
+                    name="Buy Signal",
+                    hovertemplate="Buy Signal<br>Date: %{x}<br>Price: %{y:.2f}<extra></extra>",
                 ),
-                row=1, col=1
+                row=1,
+                col=1,
             )
-        
+
         # Add sell signals
-        sell_signals = signals[signals['sell']]
+        sell_signals = signals[signals["sell"]]
         if len(sell_signals) > 0:
             fig.add_trace(
                 go.Scatter(
                     x=sell_signals.index,
-                    y=df.loc[sell_signals.index, 'high'] * 1.02,
-                    mode='markers',
-                    marker=dict(symbol='triangle-down', size=12, color='red'),
-                    name='Sell Signal',
-                    hovertemplate='Sell Signal<br>Date: %{x}<br>Price: %{y:.2f}<extra></extra>'
+                    y=df.loc[sell_signals.index, "high"] * 1.02,
+                    mode="markers",
+                    marker=dict(symbol="triangle-down", size=12, color="red"),
+                    name="Sell Signal",
+                    hovertemplate="Sell Signal<br>Date: %{x}<br>Price: %{y:.2f}<extra></extra>",
                 ),
-                row=1, col=1
+                row=1,
+                col=1,
             )
-        
+
         # Add CCI line
         fig.add_trace(
             go.Scatter(
                 x=df.index,
                 y=cci_values,
-                mode='lines',
-                name='CCI',
-                line=dict(color='purple', width=2),
-                hovertemplate='CCI: %{y:.2f}<extra></extra>'
+                mode="lines",
+                name="CCI",
+                line=dict(color="purple", width=2),
+                hovertemplate="CCI: %{y:.2f}<extra></extra>",
             ),
-            row=2, col=1
+            row=2,
+            col=1,
         )
-        
+
         # Add CCI levels
         fig.add_hline(y=100, line_dash="dash", line_color="red", opacity=0.5, row=2, col=1)
         fig.add_hline(y=-100, line_dash="dash", line_color="green", opacity=0.5, row=2, col=1)
         fig.add_hline(y=0, line_dash="solid", line_color="gray", opacity=0.3, row=2, col=1)
-        
+
         # Add volume bars
-        colors = ['green' if df['close'].iloc[i] > df['open'].iloc[i] else 'red' 
-                 for i in range(len(df))]
+        colors = [
+            "green" if df["close"].iloc[i] > df["open"].iloc[i] else "red" for i in range(len(df))
+        ]
         fig.add_trace(
             go.Bar(
                 x=df.index,
-                y=df['volume'],
+                y=df["volume"],
                 marker_color=colors,
-                name='Volume',
-                hovertemplate='Volume: %{y:,.0f}<extra></extra>'
+                name="Volume",
+                hovertemplate="Volume: %{y:,.0f}<extra></extra>",
             ),
-            row=3, col=1
+            row=3,
+            col=1,
         )
-        
+
         fig.update_layout(
-            title='CCI Trading Strategy Visualization (Winner Indicator)',
+            title="CCI Trading Strategy Visualization (Winner Indicator)",
             xaxis_rangeslider_visible=False,
             height=800,
             showlegend=True,
-            legend=dict(x=0, y=1, bgcolor='rgba(255,255,255,0.8)'),
-            hovermode='x unified'
+            legend=dict(x=0, y=1, bgcolor="rgba(255,255,255,0.8)"),
+            hovermode="x unified",
         )
-        
+
         fig.update_xaxes(title_text="Date", row=3, col=1)
         fig.update_yaxes(title_text="Price ($)", row=1, col=1)
         fig.update_yaxes(title_text="CCI Value", row=2, col=1)
         fig.update_yaxes(title_text="Volume", row=3, col=1)
-        
+
         return fig
-    
+
     def create_portfolio_simulation_chart(self):
         """Create portfolio value simulation chart"""
-        
+
         conn = sqlite3.connect(self.db_path)
-        
+
         # Get multiple stocks for portfolio
-        symbols = ['AAPL', 'MSFT', 'V', 'WMT', 'META']
+        symbols = ["AAPL", "MSFT", "V", "WMT", "META"]
         portfolio_values = {}
-        
+
         for symbol in symbols:
             query = f"""
                 SELECT date, open_price as open, high_price as high, 
@@ -249,48 +287,48 @@ class VisualBacktestReport:
                 ORDER BY date DESC
                 LIMIT 504
             """
-            
+
             try:
-                df = pd.read_sql_query(query, conn, parse_dates=['date'])
+                df = pd.read_sql_query(query, conn, parse_dates=["date"])
                 if len(df) < 200:
                     continue
-                    
-                df.set_index('date', inplace=True)
+
+                df.set_index("date", inplace=True)
                 df = df.sort_index()
-                
+
                 # Simulate CCI strategy
                 cci = CCI(period=20)
                 signals = cci.get_signals(df)
-                
+
                 # Simple backtest
                 capital = 100000
                 shares = 0
                 values = []
-                
+
                 for i in range(len(df)):
-                    price = df['close'].iloc[i]
-                    
+                    price = df["close"].iloc[i]
+
                     if i < len(signals):
-                        if signals['buy'].iloc[i] and capital > 0:
+                        if signals["buy"].iloc[i] and capital > 0:
                             shares = capital / price
                             capital = 0
-                        elif signals['sell'].iloc[i] and shares > 0:
+                        elif signals["sell"].iloc[i] and shares > 0:
                             capital = shares * price
                             shares = 0
-                    
+
                     total_value = capital + shares * price
                     values.append(total_value)
-                
+
                 portfolio_values[symbol] = pd.Series(values, index=df.index)
-                
+
             except:
                 continue
-        
+
         conn.close()
-        
+
         # Create comparison chart
         fig = go.Figure()
-        
+
         # Add portfolio lines
         for symbol, values in portfolio_values.items():
             returns = ((values / 100000) - 1) * 100
@@ -298,169 +336,177 @@ class VisualBacktestReport:
                 go.Scatter(
                     x=values.index,
                     y=returns,
-                    mode='lines',
-                    name=f'{symbol} (CCI)',
-                    hovertemplate=f'{symbol}<br>Return: %{{y:.2f}}%<br>Value: ${values.iloc[-1]:,.0f}<extra></extra>'
+                    mode="lines",
+                    name=f"{symbol} (CCI)",
+                    hovertemplate=f"{symbol}<br>Return: %{{y:.2f}}%<br>Value: ${values.iloc[-1]:,.0f}<extra></extra>",
                 )
             )
-        
+
         # Add benchmark (buy and hold SPY)
-        if 'AAPL' in portfolio_values:
-            benchmark = portfolio_values['AAPL'].index
+        if "AAPL" in portfolio_values:
+            benchmark = portfolio_values["AAPL"].index
             buy_hold_return = pd.Series(np.linspace(0, 15, len(benchmark)), index=benchmark)
             fig.add_trace(
                 go.Scatter(
                     x=benchmark,
                     y=buy_hold_return,
-                    mode='lines',
-                    name='Buy & Hold Benchmark',
-                    line=dict(dash='dash', color='gray'),
-                    hovertemplate='Benchmark<br>Return: %{y:.2f}%<extra></extra>'
+                    mode="lines",
+                    name="Buy & Hold Benchmark",
+                    line=dict(dash="dash", color="gray"),
+                    hovertemplate="Benchmark<br>Return: %{y:.2f}%<extra></extra>",
                 )
             )
-        
+
         fig.update_layout(
-            title='Portfolio Performance Using CCI Strategy',
-            xaxis_title='Date',
-            yaxis_title='Return (%)',
+            title="Portfolio Performance Using CCI Strategy",
+            xaxis_title="Date",
+            yaxis_title="Return (%)",
             height=500,
-            hovermode='x unified',
+            hovermode="x unified",
             showlegend=True,
-            legend=dict(x=0, y=1)
+            legend=dict(x=0, y=1),
         )
-        
+
         return fig
-    
+
     def create_heatmap_chart(self):
         """Create heatmap of indicator performance across stocks"""
-        
-        detailed = self.backtest_results['detailed_results']
-        
+
+        detailed = self.backtest_results["detailed_results"]
+
         # Prepare data matrix
         stocks = list(detailed.keys())
         if not stocks:
             return None
-            
+
         indicators = list(detailed[stocks[0]].keys()) if stocks else []
-        
+
         # Create matrix
         matrix = []
         for indicator in indicators:
             row = []
             for stock in stocks:
                 if stock in detailed and indicator in detailed[stock]:
-                    row.append(detailed[stock][indicator]['total_return'])
+                    row.append(detailed[stock][indicator]["total_return"])
                 else:
                     row.append(0)
             matrix.append(row)
-        
+
         # Create heatmap
-        fig = go.Figure(data=go.Heatmap(
-            z=matrix,
-            x=stocks,
-            y=indicators,
-            colorscale='RdYlGn',
-            zmid=0,
-            text=[[f'{val:.1f}%' for val in row] for row in matrix],
-            texttemplate='%{text}',
-            textfont={"size": 10},
-            colorbar=dict(title='Return (%)')
-        ))
-        
-        fig.update_layout(
-            title='Indicator Performance Heatmap Across Stocks',
-            xaxis_title='Stock Symbol',
-            yaxis_title='Indicator',
-            height=600
+        fig = go.Figure(
+            data=go.Heatmap(
+                z=matrix,
+                x=stocks,
+                y=indicators,
+                colorscale="RdYlGn",
+                zmid=0,
+                text=[[f"{val:.1f}%" for val in row] for row in matrix],
+                texttemplate="%{text}",
+                textfont={"size": 10},
+                colorbar=dict(title="Return (%)"),
+            )
         )
-        
+
+        fig.update_layout(
+            title="Indicator Performance Heatmap Across Stocks",
+            xaxis_title="Stock Symbol",
+            yaxis_title="Indicator",
+            height=600,
+        )
+
         return fig
-    
+
     def create_risk_return_scatter(self):
         """Create risk-return scatter plot"""
-        
-        results = self.backtest_results['aggregate_results']
-        
+
+        results = self.backtest_results["aggregate_results"]
+
         # Prepare data
         indicators = []
         returns = []
         risks = []
         sharpes = []
-        
+
         for ind, metrics in results.items():
             indicators.append(ind)
-            returns.append(metrics['avg_return'])
-            risks.append(metrics['avg_drawdown'])
-            sharpes.append(metrics['avg_sharpe'])
-        
+            returns.append(metrics["avg_return"])
+            risks.append(metrics["avg_drawdown"])
+            sharpes.append(metrics["avg_sharpe"])
+
         # Create scatter plot
         fig = go.Figure()
-        
+
         # Color by Sharpe ratio
-        fig.add_trace(go.Scatter(
-            x=risks,
-            y=returns,
-            mode='markers+text',
-            text=indicators,
-            textposition='top center',
-            marker=dict(
-                size=12,
-                color=sharpes,
-                colorscale='RdYlGn',
-                showscale=True,
-                colorbar=dict(title='Sharpe Ratio')
-            ),
-            hovertemplate='%{text}<br>Return: %{y:.2f}%<br>Max Drawdown: %{x:.2f}%<br>Sharpe: %{marker.color:.2f}<extra></extra>'
-        ))
-        
+        fig.add_trace(
+            go.Scatter(
+                x=risks,
+                y=returns,
+                mode="markers+text",
+                text=indicators,
+                textposition="top center",
+                marker=dict(
+                    size=12,
+                    color=sharpes,
+                    colorscale="RdYlGn",
+                    showscale=True,
+                    colorbar=dict(title="Sharpe Ratio"),
+                ),
+                hovertemplate="%{text}<br>Return: %{y:.2f}%<br>Max Drawdown: %{x:.2f}%<br>Sharpe: %{marker.color:.2f}<extra></extra>",
+            )
+        )
+
         # Add quadrant lines
         fig.add_hline(y=0, line_dash="dash", line_color="gray", opacity=0.5)
         fig.add_vline(x=20, line_dash="dash", line_color="gray", opacity=0.5)
-        
+
         # Add ideal zone
         fig.add_shape(
             type="rect",
-            x0=0, y0=10, x1=20, y1=30,
+            x0=0,
+            y0=10,
+            x1=20,
+            y1=30,
             fillcolor="green",
             opacity=0.1,
-            line=dict(width=0)
+            line=dict(width=0),
         )
-        
+
         fig.update_layout(
-            title='Risk-Return Profile of All Indicators',
-            xaxis_title='Maximum Drawdown (%)',
-            yaxis_title='Average Return (%)',
+            title="Risk-Return Profile of All Indicators",
+            xaxis_title="Maximum Drawdown (%)",
+            yaxis_title="Average Return (%)",
             height=600,
             annotations=[
                 dict(
                     text="Ideal Zone",
-                    x=10, y=20,
+                    x=10,
+                    y=20,
                     showarrow=False,
-                    font=dict(color="green", size=12)
+                    font=dict(color="green", size=12),
                 )
-            ]
+            ],
         )
-        
+
         return fig
-    
+
     def generate_html_report(self):
         """Generate complete HTML report"""
-        
+
         print("Generating visual backtest report...")
-        
+
         # Create all charts
         perf_chart = self.create_performance_comparison_chart()
         signal_chart = self.create_top_indicator_signals_chart()
         portfolio_chart = self.create_portfolio_simulation_chart()
         heatmap_chart = self.create_heatmap_chart()
         scatter_chart = self.create_risk_return_scatter()
-        
+
         # Get aggregate results
-        results = self.backtest_results['aggregate_results']
-        
+        results = self.backtest_results["aggregate_results"]
+
         # Find best indicator
-        best_indicator = max(results.items(), key=lambda x: x[1]['avg_return'])
-        
+        best_indicator = max(results.items(), key=lambda x: x[1]["avg_return"])
+
         # Create HTML content
         html_content = f"""
 <!DOCTYPE html>
@@ -777,11 +823,13 @@ class VisualBacktestReport:
                 </thead>
                 <tbody>
 """
-        
+
         # Add top 10 indicators to table
-        sorted_results = sorted(results.items(), key=lambda x: x[1]['avg_return'], reverse=True)[:10]
+        sorted_results = sorted(results.items(), key=lambda x: x[1]["avg_return"], reverse=True)[
+            :10
+        ]
         for i, (ind, metrics) in enumerate(sorted_results, 1):
-            return_class = 'positive' if metrics['avg_return'] > 0 else 'negative'
+            return_class = "positive" if metrics["avg_return"] > 0 else "negative"
             html_content += f"""
                     <tr>
                         <td>{i}</td>
@@ -793,22 +841,26 @@ class VisualBacktestReport:
                         <td>{metrics['avg_trades']:.1f}</td>
                     </tr>
 """
-        
-        html_content += """
+
+        html_content += (
+            """
                 </tbody>
             </table>
         </div>
         
         <!-- Footer -->
         <div class="footer">
-            <p>Generated on """ + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + """</p>
+            <p>Generated on """
+            + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            + """</p>
             <p>Quantitative Trading System - Phase 2 Complete</p>
         </div>
     </div>
     
     <script>
 """
-        
+        )
+
         # Add Plotly charts
         html_content += f"""
         // Performance Comparison Chart
@@ -831,20 +883,23 @@ class VisualBacktestReport:
         var heatmapChart = {heatmap_chart.to_json()};
         Plotly.newPlot('heatmapChart', heatmapChart.data, heatmapChart.layout);
 """
-        
+
         html_content += """
     </script>
 </body>
 </html>
 """
-        
+
         # Save HTML report
-        report_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                                  'reports', 'visual_backtest_report.html')
-        
-        with open(report_path, 'w', encoding='utf-8') as f:
+        report_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "reports",
+            "visual_backtest_report.html",
+        )
+
+        with open(report_path, "w", encoding="utf-8") as f:
             f.write(html_content)
-        
+
         print(f"Visual report generated: {report_path}")
         return report_path
 
@@ -853,16 +908,17 @@ if __name__ == "__main__":
     print("=" * 80)
     print("GENERATING VISUAL BACKTEST REPORT")
     print("=" * 80)
-    
+
     generator = VisualBacktestReport()
     report_path = generator.generate_html_report()
-    
+
     print("\n" + "=" * 80)
     print("REPORT GENERATED SUCCESSFULLY!")
     print("=" * 80)
     print(f"\nOpen the report in your browser:")
     print(f"   {report_path}")
-    
+
     # Auto-open in browser
     import webbrowser
+
     webbrowser.open(f"file:///{report_path}")

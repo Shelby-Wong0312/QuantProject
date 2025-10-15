@@ -1,8 +1,10 @@
 """
 Quick test of ML integration
 """
+
 import sys
 import os
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 print("Testing ML Integration Components...")
@@ -11,6 +13,7 @@ print("Testing ML Integration Components...")
 print("\n1. Testing ML Strategy Integration...")
 try:
     from src.strategies.ml_strategy_integration import MLStrategyIntegration
+
     strategy = MLStrategyIntegration(initial_capital=100000)
     print("   [OK] ML Strategy Integration loaded successfully")
 except Exception as e:
@@ -20,6 +23,7 @@ except Exception as e:
 print("\n2. Testing Backtesting System...")
 try:
     from src.backtesting.ml_backtest import MLBacktester, BacktestConfig
+
     config = BacktestConfig()
     backtester = MLBacktester(config)
     print("   [OK] Backtesting System loaded successfully")
@@ -30,6 +34,7 @@ except Exception as e:
 print("\n3. Testing Hyperparameter Tuning...")
 try:
     from src.optimization.hyperparameter_tuning import HyperparameterTuner, OptimizationConfig
+
     opt_config = OptimizationConfig()
     tuner = HyperparameterTuner(opt_config)
     print("   [OK] Hyperparameter Tuning loaded successfully")
@@ -38,7 +43,7 @@ except Exception as e:
 
 print("\n[OK] All components loaded successfully!")
 print("\nTask Q-701 Implementation Summary:")
-print("="*50)
+print("=" * 50)
 print("1. ML Strategy Integration: COMPLETE")
 print("   - LSTM model integration")
 print("   - XGBoost model integration")

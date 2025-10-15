@@ -10,10 +10,10 @@ Main Components:
 
 Example Usage:
     from src.backtesting import run_backtest, BacktestEngine, BacktestConfig
-    
+
     # Quick backtest
     results = run_backtest(strategy, data, initial_capital=100000)
-    
+
     # Advanced backtest
     config = BacktestConfig(initial_capital=100000, commission=0.001)
     engine = BacktestEngine(config)
@@ -26,14 +26,14 @@ from .portfolio import Portfolio, Position, Trade
 from .performance import PerformanceAnalyzer, calculate_performance_metrics
 
 __all__ = [
-    'BacktestEngine',
-    'BacktestConfig', 
-    'Portfolio',
-    'Position',
-    'Trade',
-    'PerformanceAnalyzer',
-    'run_backtest',
-    'calculate_performance_metrics'
+    "BacktestEngine",
+    "BacktestConfig",
+    "Portfolio",
+    "Position",
+    "Trade",
+    "PerformanceAnalyzer",
+    "run_backtest",
+    "calculate_performance_metrics",
 ]
 
-__version__ = '1.0.0'
+__version__ = "1.0.0"

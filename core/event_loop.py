@@ -6,6 +6,7 @@ from .event import EventType
 
 logger = logging.getLogger(__name__)
 
+
 class EventLoop:
     def __init__(self):
         self._event_queue = asyncio.Queue()

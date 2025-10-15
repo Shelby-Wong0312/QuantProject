@@ -20,4 +20,3 @@ def test_write_markdown(tmp_path):
     assert "Annualized Return" in text
     for symbol in symbols:
         assert symbol in text
-

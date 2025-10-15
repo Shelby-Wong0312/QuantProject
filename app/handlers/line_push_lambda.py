@@ -65,7 +65,17 @@ def _ddb_table(name_env: str, fallback_env: Optional[str] = None):
 def _format_event_zh(evt: Dict[str, Any]) -> str:
     sym = evt.get("symbol") or evt.get("ticker") or "?"
     side_raw = (evt.get("side") or evt.get("action") or "").upper()
-    side_map = {"BUY": "買入", "SELL": "賣出", "LONG": "做多", "SHORT": "做空", "OPEN": "開倉", "CLOSE": "平倉", "EXIT": "平倉", "ADD": "加碼", "REDUCE": "減碼"}
+    side_map = {
+        "BUY": "買入",
+        "SELL": "賣出",
+        "LONG": "做多",
+        "SHORT": "做空",
+        "OPEN": "開倉",
+        "CLOSE": "平倉",
+        "EXIT": "平倉",
+        "ADD": "加碼",
+        "REDUCE": "減碼",
+    }
     side = side_map.get(side_raw, side_raw or "事件")
     qty = evt.get("qty") or evt.get("quantity")
     price = evt.get("price")
@@ -126,7 +136,7 @@ def _list_targets() -> List[str]:
         start_key = resp.get("LastEvaluatedKey")
         if not start_key:
             break
-        
+
     return ids
 
 
@@ -159,7 +169,10 @@ def _put_trade_event(evt: Dict[str, Any]) -> None:
     # Ensure required fields
     if "ts" not in evt:
         from datetime import datetime, timezone
-        evt["ts"] = datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
+
+        evt["ts"] = (
+            datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
+        )
     if "bucket" not in evt:
         evt["bucket"] = "ALL"
     events_tbl.put_item(Item=evt)
@@ -168,7 +181,11 @@ def _put_trade_event(evt: Dict[str, Any]) -> None:
 def lambda_handler(event, context):
     global _TRACE_ID
     _TRACE_ID = str(uuid.uuid4())
-    _log("lambda_start", "ok", records=len(event.get("Records", [])) if isinstance(event, dict) else 0)
+    _log(
+        "lambda_start",
+        "ok",
+        records=len(event.get("Records", [])) if isinstance(event, dict) else 0,
+    )
     client = _get_line_client()
     delivered = 0
     subs_total = 0
@@ -192,13 +209,29 @@ def lambda_handler(event, context):
             continue
 
         ptype = str(payload.get("type") or "event").lower()
-        if ptype == "status" or any(k in payload for k in ("equity", "cash", "unrealizedPnL", "unrealized_pnl", "upnl", "realizedPnL", "realized_pnl", "rpnl")):
+        if ptype == "status" or any(
+            k in payload
+            for k in (
+                "equity",
+                "cash",
+                "unrealizedPnL",
+                "unrealized_pnl",
+                "upnl",
+                "realizedPnL",
+                "realized_pnl",
+                "rpnl",
+            )
+        ):
             acct = str(payload.get("accountId") or payload.get("account") or "default")
             status = {
                 "equity": payload.get("equity"),
                 "cash": payload.get("cash"),
-                "unrealizedPnL": payload.get("unrealizedPnL") or payload.get("unrealized_pnl") or payload.get("upnl"),
-                "realizedPnL": payload.get("realizedPnL") or payload.get("realized_pnl") or payload.get("rpnl"),
+                "unrealizedPnL": payload.get("unrealizedPnL")
+                or payload.get("unrealized_pnl")
+                or payload.get("upnl"),
+                "realizedPnL": payload.get("realizedPnL")
+                or payload.get("realized_pnl")
+                or payload.get("rpnl"),
                 "accountId": acct,
             }
             try:
@@ -256,9 +289,21 @@ def lambda_handler(event, context):
                             try:
                                 client.push_message(rid, msgs)
                                 ok_once = True
-                                _log("push_retry", "ok", target_id=rid, count=len(chunk), status=status)
+                                _log(
+                                    "push_retry",
+                                    "ok",
+                                    target_id=rid,
+                                    count=len(chunk),
+                                    status=status,
+                                )
                             except Exception as e2:
-                                _log("push_retry", "error", target_id=rid, error=str(e2), status=status)
+                                _log(
+                                    "push_retry",
+                                    "error",
+                                    target_id=rid,
+                                    error=str(e2),
+                                    status=status,
+                                )
                         else:
                             _log("push", "error", target_id=rid, error=str(e))
                     except Exception as e:

@@ -3,6 +3,4 @@
 
 from .base_strategy import BaseStrategy
 
-__all__ = [
-    'BaseStrategy'
-]
+__all__ = ["BaseStrategy"]

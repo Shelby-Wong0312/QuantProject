@@ -4,46 +4,53 @@ Technical Indicators Library for Quantitative Trading System
 """
 
 from .base_indicator import BaseIndicator
-from .trend_indicators import (
-    SMA, EMA, WMA, VWAP,
-    GoldenCross, DeathCross,
-    MovingAverageCrossover
-)
-from .momentum_indicators import (
-    RSI, MACD, Stochastic,
-    WilliamsR, CCI
-)
-from .volatility_indicators import (
-    BollingerBands, ATR,
-    KeltnerChannel, DonchianChannel
-)
-from .volume_indicators import (
-    OBV, VolumeSMA, MFI, ADLine
-)
+from .trend_indicators import SMA, EMA, WMA, VWAP, GoldenCross, DeathCross, MovingAverageCrossover
+from .momentum_indicators import RSI, MACD, Stochastic, WilliamsR, CCI
+from .volatility_indicators import BollingerBands, ATR, KeltnerChannel, DonchianChannel
+from .volume_indicators import OBV, VolumeSMA, MFI, ADLine
 from .indicator_calculator import IndicatorCalculator, CalculationConfig
 from .signal_generator import IndicatorSignalGenerator, TradingSignal, SignalType
 
 __all__ = [
-    'BaseIndicator',
+    "BaseIndicator",
     # Trend Indicators
-    'SMA', 'EMA', 'WMA', 'VWAP',
-    'GoldenCross', 'DeathCross', 'MovingAverageCrossover',
+    "SMA",
+    "EMA",
+    "WMA",
+    "VWAP",
+    "GoldenCross",
+    "DeathCross",
+    "MovingAverageCrossover",
     # Momentum Indicators
-    'RSI', 'MACD', 'Stochastic', 'WilliamsR', 'CCI',
+    "RSI",
+    "MACD",
+    "Stochastic",
+    "WilliamsR",
+    "CCI",
     # Volatility Indicators
-    'BollingerBands', 'ATR', 'KeltnerChannel', 'DonchianChannel',
+    "BollingerBands",
+    "ATR",
+    "KeltnerChannel",
+    "DonchianChannel",
     # Volume Indicators
-    'OBV', 'VolumeSMA', 'MFI', 'ADLine',
+    "OBV",
+    "VolumeSMA",
+    "MFI",
+    "ADLine",
     # Calculation Engine
-    'IndicatorCalculator', 'CalculationConfig',
+    "IndicatorCalculator",
+    "CalculationConfig",
     # Signal Generation
-    'IndicatorSignalGenerator', 'TradingSignal', 'SignalType'
+    "IndicatorSignalGenerator",
+    "TradingSignal",
+    "SignalType",
 ]
 
 # 版本信息
 __version__ = "1.0.0"
 __stage__ = "Stage 3 - Technical Indicators Development"
 __status__ = "Production Ready"
+
 
 # 快速使用指南
 def get_quick_start_guide():
@@ -81,22 +88,24 @@ def get_quick_start_guide():
         - 支援4000+股票批量處理
     """
 
+
 # 檢查依賴
 def check_dependencies():
     """檢查必要的依賴包"""
-    required_packages = ['pandas', 'numpy', 'multiprocessing']
+    required_packages = ["pandas", "numpy", "multiprocessing"]
     missing_packages = []
-    
+
     for package in required_packages:
         try:
             __import__(package)
         except ImportError:
             missing_packages.append(package)
-    
+
     if missing_packages:
         raise ImportError(f"Missing required packages: {missing_packages}")
-    
+
     return True
+
 
 # 自動檢查依賴
 try:

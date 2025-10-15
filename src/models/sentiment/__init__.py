@@ -13,9 +13,4 @@ from .news_collector import NewsCollector
 from .sentiment_scorer import SentimentScorer
 from .data_pipeline import SentimentDataPipeline
 
-__all__ = [
-    'FinBERTAnalyzer',
-    'NewsCollector',
-    'SentimentScorer',
-    'SentimentDataPipeline'
-]
+__all__ = ["FinBERTAnalyzer", "NewsCollector", "SentimentScorer", "SentimentDataPipeline"]

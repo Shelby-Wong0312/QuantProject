@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from pathlib import Path
 from typing import Any, Dict, List
@@ -46,19 +46,24 @@ class MetricsCallback(BaseCallback):
         equity_path = self.log_dir / "equity.json"
         weights_path = self.log_dir / "weights.json"
 
-        returns_path.write_text(json.dumps(list(artifacts.get("returns", []))), encoding="utf-8")
-        equity_path.write_text(json.dumps(list(artifacts.get("equity", []))), encoding="utf-8")
-        weights_path.write_text(json.dumps(list(artifacts.get("weights", []))), encoding="utf-8")
+        arts = artifacts or {}
+        returns = list(arts.get("returns", []))
+        equity = list(arts.get("equity", []))
+        weights = list(arts.get("weights", []))
 
-        metrics = compute(list(artifacts.get("returns", [])), list(artifacts.get("equity", [])))
+        returns_path.write_text(json.dumps(returns), encoding="utf-8")
+        equity_path.write_text(json.dumps(equity), encoding="utf-8")
+        weights_path.write_text(json.dumps(weights), encoding="utf-8")
 
-        symbols: List[str] = []
         cfg_path = self.log_dir / "config.json"
+        symbols, timeframe = [], "5min"
         if cfg_path.exists():
             try:
-                cfg_data = json.loads(cfg_path.read_text(encoding="utf-8"))
-                symbols = list(cfg_data.get("symbols", []))
+                cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
+                symbols = cfg.get("symbols", [])
+                timeframe = cfg.get("timeframe", timeframe)
             except Exception:
-                symbols = []
+                pass
 
-        write_markdown(self.log_dir / "report.md", metrics, symbols or [])
+        metrics = compute(returns, equity, timeframe=timeframe, symbols=symbols)
+        write_markdown(self.log_dir / "report.md", metrics, symbols)

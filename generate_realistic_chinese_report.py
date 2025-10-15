@@ -14,27 +14,29 @@ from datetime import datetime, timedelta
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import warnings
-warnings.filterwarnings('ignore')
+
+warnings.filterwarnings("ignore")
+
 
 class RealisticChineseReport:
     def __init__(self):
         self.initial_balance = 100000  # 10萬美金初始資金
-        self.model_path = 'models/ppo_3488_stocks.pt'
+        self.model_path = "models/ppo_3488_stocks.pt"
         self.trades_history = []
-        
+
     def load_and_validate_data(self):
         """載入並驗證訓練數據"""
         print("Loading training data...")
-        
+
         # 載入模型檢查點
         if os.path.exists(self.model_path):
-            checkpoint = torch.load(self.model_path, map_location='cpu', weights_only=False)
-            raw_rewards = checkpoint.get('episode_rewards', [])
-            self.losses = checkpoint.get('losses', [])
-            
+            checkpoint = torch.load(self.model_path, map_location="cpu", weights_only=False)
+            raw_rewards = checkpoint.get("episode_rewards", [])
+            self.losses = checkpoint.get("losses", [])
+
             # 修正不合理的獎勵值
             print(f"Original reward range: {min(raw_rewards):.2f} to {max(raw_rewards):.2f}")
-            
+
             # 將獎勵縮放到合理範圍 (-2% 到 +2% 每次交易)
             self.episode_rewards = []
             for reward in raw_rewards:
@@ -43,8 +45,10 @@ class RealisticChineseReport:
                 else:
                     scaled_reward = reward / 100  # 轉換為百分比
                 self.episode_rewards.append(scaled_reward)
-            
-            print(f"Adjusted reward range: {min(self.episode_rewards):.2f}% to {max(self.episode_rewards):.2f}%")
+
+            print(
+                f"Adjusted reward range: {min(self.episode_rewards):.2f}% to {max(self.episode_rewards):.2f}%"
+            )
         else:
             # 生成模擬數據
             print("Using simulated data...")
@@ -55,35 +59,35 @@ class RealisticChineseReport:
                 idx = np.random.randint(0, len(self.episode_rewards))
                 self.episode_rewards[idx] = np.random.choice([-0.05, 0.05])  # 5%的大波動
             self.losses = np.abs(np.random.randn(2000)) * 0.5
-    
+
     def simulate_realistic_trading(self):
         """模擬真實的交易過程"""
         print("Simulating realistic trading...")
-        
+
         # 初始化
         balance = self.initial_balance
         portfolio_values = [balance]
         position_size = 0  # 當前持倉
-        entry_price = 0    # 入場價格
-        
+        entry_price = 0  # 入場價格
+
         # 假設的股票價格序列
         base_price = 100
         prices = [base_price]
-        
+
         # 詳細交易記錄
         detailed_trades = []
         trade_id = 0
-        
+
         # 交易費用
         commission_rate = 0.001  # 0.1% 手續費
-        slippage = 0.0005       # 0.05% 滑點
-        
+        slippage = 0.0005  # 0.05% 滑點
+
         for i, reward_pct in enumerate(self.episode_rewards):
             # 更新價格（基於獎勵模擬價格變動）
             price_change = 1 + reward_pct / 100
             current_price = prices[-1] * price_change
             prices.append(current_price)
-            
+
             # 決定交易動作（基於獎勵）
             if reward_pct > 0.5:  # 買入信號
                 action = "買入"
@@ -91,217 +95,233 @@ class RealisticChineseReport:
                     # 計算買入數量（最多使用30%資金）
                     invest_amount = min(balance * 0.3, balance - 10000)
                     shares = int(invest_amount / (current_price * (1 + commission_rate + slippage)))
-                    
+
                     if shares > 0:
                         # 執行買入
                         actual_cost = shares * current_price * (1 + commission_rate + slippage)
                         balance -= actual_cost
                         position_size = shares
                         entry_price = current_price
-                        
+
                         trade_id += 1
-                        detailed_trades.append({
-                            'id': trade_id,
-                            'episode': i,
-                            'action': '買入',
-                            'price': current_price,
-                            'shares': shares,
-                            'amount': actual_cost,
-                            'balance_after': balance,
-                            'position': position_size,
-                            'pnl': 0,
-                            'pnl_pct': 0,
-                            'commission': shares * current_price * commission_rate,
-                            'time': datetime.now() + timedelta(hours=i)
-                        })
-            
+                        detailed_trades.append(
+                            {
+                                "id": trade_id,
+                                "episode": i,
+                                "action": "買入",
+                                "price": current_price,
+                                "shares": shares,
+                                "amount": actual_cost,
+                                "balance_after": balance,
+                                "position": position_size,
+                                "pnl": 0,
+                                "pnl_pct": 0,
+                                "commission": shares * current_price * commission_rate,
+                                "time": datetime.now() + timedelta(hours=i),
+                            }
+                        )
+
             elif reward_pct < -0.5:  # 賣出信號
                 action = "賣出"
                 if position_size > 0:
                     # 執行賣出
                     gross_amount = position_size * current_price
                     net_amount = gross_amount * (1 - commission_rate - slippage)
-                    
+
                     # 計算盈虧
-                    pnl = net_amount - (position_size * entry_price * (1 + commission_rate + slippage))
+                    pnl = net_amount - (
+                        position_size * entry_price * (1 + commission_rate + slippage)
+                    )
                     pnl_pct = (pnl / (position_size * entry_price)) * 100
-                    
+
                     balance += net_amount
-                    
+
                     trade_id += 1
-                    detailed_trades.append({
-                        'id': trade_id,
-                        'episode': i,
-                        'action': '賣出',
-                        'price': current_price,
-                        'shares': position_size,
-                        'amount': net_amount,
-                        'balance_after': balance,
-                        'position': 0,
-                        'pnl': pnl,
-                        'pnl_pct': pnl_pct,
-                        'commission': position_size * current_price * commission_rate,
-                        'time': datetime.now() + timedelta(hours=i)
-                    })
-                    
+                    detailed_trades.append(
+                        {
+                            "id": trade_id,
+                            "episode": i,
+                            "action": "賣出",
+                            "price": current_price,
+                            "shares": position_size,
+                            "amount": net_amount,
+                            "balance_after": balance,
+                            "position": 0,
+                            "pnl": pnl,
+                            "pnl_pct": pnl_pct,
+                            "commission": position_size * current_price * commission_rate,
+                            "time": datetime.now() + timedelta(hours=i),
+                        }
+                    )
+
                     position_size = 0
                     entry_price = 0
             else:
                 action = "持有"
-            
+
             # 計算總資產價值（現金 + 持倉市值）
             total_value = balance + (position_size * current_price if position_size > 0 else 0)
             portfolio_values.append(total_value)
-        
+
         # 如果還有持倉，按最後價格平倉
         if position_size > 0:
             final_price = prices[-1]
             net_amount = position_size * final_price * (1 - commission_rate - slippage)
             pnl = net_amount - (position_size * entry_price * (1 + commission_rate + slippage))
             balance += net_amount
-            
+
             trade_id += 1
-            detailed_trades.append({
-                'id': trade_id,
-                'episode': len(self.episode_rewards),
-                'action': '平倉',
-                'price': final_price,
-                'shares': position_size,
-                'amount': net_amount,
-                'balance_after': balance,
-                'position': 0,
-                'pnl': pnl,
-                'pnl_pct': (pnl / (position_size * entry_price)) * 100,
-                'commission': position_size * final_price * commission_rate,
-                'time': datetime.now() + timedelta(hours=len(self.episode_rewards))
-            })
-        
+            detailed_trades.append(
+                {
+                    "id": trade_id,
+                    "episode": len(self.episode_rewards),
+                    "action": "平倉",
+                    "price": final_price,
+                    "shares": position_size,
+                    "amount": net_amount,
+                    "balance_after": balance,
+                    "position": 0,
+                    "pnl": pnl,
+                    "pnl_pct": (pnl / (position_size * entry_price)) * 100,
+                    "commission": position_size * final_price * commission_rate,
+                    "time": datetime.now() + timedelta(hours=len(self.episode_rewards)),
+                }
+            )
+
         # 保存結果
-        self.portfolio_values = portfolio_values[:len(self.episode_rewards)+1]
+        self.portfolio_values = portfolio_values[: len(self.episode_rewards) + 1]
         self.final_balance = balance
         self.total_return = ((balance - self.initial_balance) / self.initial_balance) * 100
         self.detailed_trades = detailed_trades
-        self.prices = prices[:len(self.episode_rewards)+1]
-        
+        self.prices = prices[: len(self.episode_rewards) + 1]
+
         print(f"Final Balance: ${balance:,.2f}")
         print(f"Total Return: {self.total_return:.2f}%")
         print(f"Total Trades: {len(detailed_trades)}")
-    
+
     def create_detailed_charts(self):
         """創建詳細的圖表"""
         # 創建子圖
         fig = make_subplots(
-            rows=4, cols=2,
+            rows=4,
+            cols=2,
             subplot_titles=(
-                '1. 資產價值變化曲線',
-                '2. 每次交易收益分布',
-                '3. 累積收益率',
-                '4. 交易勝率分析',
-                '5. 持倉變化',
-                '6. 風險指標',
-                '7. 月度收益統計',
-                '8. 最大回撤分析'
+                "1. 資產價值變化曲線",
+                "2. 每次交易收益分布",
+                "3. 累積收益率",
+                "4. 交易勝率分析",
+                "5. 持倉變化",
+                "6. 風險指標",
+                "7. 月度收益統計",
+                "8. 最大回撤分析",
             ),
             specs=[
-                [{'type': 'scatter'}, {'type': 'histogram'}],
-                [{'type': 'scatter'}, {'type': 'bar'}],
-                [{'type': 'scatter'}, {'type': 'scatter'}],
-                [{'type': 'bar'}, {'type': 'scatter'}]
+                [{"type": "scatter"}, {"type": "histogram"}],
+                [{"type": "scatter"}, {"type": "bar"}],
+                [{"type": "scatter"}, {"type": "scatter"}],
+                [{"type": "bar"}, {"type": "scatter"}],
             ],
             vertical_spacing=0.12,
-            horizontal_spacing=0.15
+            horizontal_spacing=0.15,
         )
-        
+
         episodes = list(range(len(self.portfolio_values)))
-        
+
         # 1. 資產價值變化
         fig.add_trace(
             go.Scatter(
                 x=episodes,
                 y=self.portfolio_values,
-                mode='lines',
-                name='資產價值',
-                line=dict(color='blue', width=2),
-                hovertemplate='回合: %{x}<br>資產: $%{y:,.2f}<extra></extra>'
+                mode="lines",
+                name="資產價值",
+                line=dict(color="blue", width=2),
+                hovertemplate="回合: %{x}<br>資產: $%{y:,.2f}<extra></extra>",
             ),
-            row=1, col=1
+            row=1,
+            col=1,
         )
-        
+
         # 加入初始資金線
         fig.add_hline(
             y=self.initial_balance,
             line_dash="dash",
             line_color="gray",
             annotation_text=f"初始資金: ${self.initial_balance:,}",
-            row=1, col=1
+            row=1,
+            col=1,
         )
-        
+
         # 2. 收益分布
-        trade_returns = [t['pnl_pct'] for t in self.detailed_trades if t['pnl_pct'] != 0]
+        trade_returns = [t["pnl_pct"] for t in self.detailed_trades if t["pnl_pct"] != 0]
         if trade_returns:
             fig.add_trace(
                 go.Histogram(
                     x=trade_returns,
                     nbinsx=30,
-                    name='收益分布',
-                    marker_color='green',
-                    hovertemplate='收益率: %{x:.2f}%<br>次數: %{y}<extra></extra>'
+                    name="收益分布",
+                    marker_color="green",
+                    hovertemplate="收益率: %{x:.2f}%<br>次數: %{y}<extra></extra>",
                 ),
-                row=1, col=2
+                row=1,
+                col=2,
             )
-        
+
         # 3. 累積收益率
-        cumulative_returns = [(v - self.initial_balance) / self.initial_balance * 100 
-                             for v in self.portfolio_values]
+        cumulative_returns = [
+            (v - self.initial_balance) / self.initial_balance * 100 for v in self.portfolio_values
+        ]
         fig.add_trace(
             go.Scatter(
                 x=episodes,
                 y=cumulative_returns,
-                mode='lines',
-                name='累積收益率',
-                line=dict(color='purple', width=2),
-                fill='tozeroy',
-                hovertemplate='回合: %{x}<br>累積收益: %{y:.2f}%<extra></extra>'
+                mode="lines",
+                name="累積收益率",
+                line=dict(color="purple", width=2),
+                fill="tozeroy",
+                hovertemplate="回合: %{x}<br>累積收益: %{y:.2f}%<extra></extra>",
             ),
-            row=2, col=1
+            row=2,
+            col=1,
         )
-        
+
         # 4. 勝率分析
         if self.detailed_trades:
-            wins = len([t for t in self.detailed_trades if t['pnl'] > 0])
-            losses = len([t for t in self.detailed_trades if t['pnl'] < 0])
-            breakeven = len([t for t in self.detailed_trades if t['pnl'] == 0])
-            
+            wins = len([t for t in self.detailed_trades if t["pnl"] > 0])
+            losses = len([t for t in self.detailed_trades if t["pnl"] < 0])
+            breakeven = len([t for t in self.detailed_trades if t["pnl"] == 0])
+
             fig.add_trace(
                 go.Bar(
-                    x=['盈利交易', '虧損交易', '平手'],
+                    x=["盈利交易", "虧損交易", "平手"],
                     y=[wins, losses, breakeven],
-                    marker_color=['green', 'red', 'gray'],
-                    text=[f'{wins}筆', f'{losses}筆', f'{breakeven}筆'],
-                    textposition='auto',
-                    hovertemplate='%{x}: %{y}筆<extra></extra>'
+                    marker_color=["green", "red", "gray"],
+                    text=[f"{wins}筆", f"{losses}筆", f"{breakeven}筆"],
+                    textposition="auto",
+                    hovertemplate="%{x}: %{y}筆<extra></extra>",
                 ),
-                row=2, col=2
+                row=2,
+                col=2,
             )
-        
+
         # 5. 持倉變化
         positions = []
         for t in self.detailed_trades:
-            positions.extend([t['position']] * 10)  # 擴展數據點
+            positions.extend([t["position"]] * 10)  # 擴展數據點
         if positions:
             fig.add_trace(
                 go.Scatter(
                     x=list(range(len(positions))),
                     y=positions,
-                    mode='lines',
-                    name='持倉數量',
-                    line=dict(color='orange', width=1),
-                    fill='tozeroy',
-                    hovertemplate='持倉: %{y}股<extra></extra>'
+                    mode="lines",
+                    name="持倉數量",
+                    line=dict(color="orange", width=1),
+                    fill="tozeroy",
+                    hovertemplate="持倉: %{y}股<extra></extra>",
                 ),
-                row=3, col=1
+                row=3,
+                col=1,
             )
-        
+
         # 6. 風險指標 - 滾動波動率
         if len(self.episode_rewards) > 20:
             volatility = pd.Series(self.episode_rewards).rolling(20).std() * np.sqrt(252)
@@ -309,14 +329,15 @@ class RealisticChineseReport:
                 go.Scatter(
                     x=list(range(len(volatility))),
                     y=volatility,
-                    mode='lines',
-                    name='波動率',
-                    line=dict(color='red', width=1),
-                    hovertemplate='波動率: %{y:.2%}<extra></extra>'
+                    mode="lines",
+                    name="波動率",
+                    line=dict(color="red", width=1),
+                    hovertemplate="波動率: %{y:.2%}<extra></extra>",
                 ),
-                row=3, col=2
+                row=3,
+                col=2,
             )
-        
+
         # 7. 月度收益
         monthly_returns = self.calculate_monthly_returns()
         if monthly_returns:
@@ -324,114 +345,117 @@ class RealisticChineseReport:
                 go.Bar(
                     x=list(range(len(monthly_returns))),
                     y=monthly_returns,
-                    marker_color=['green' if r > 0 else 'red' for r in monthly_returns],
-                    name='月度收益',
-                    hovertemplate='月份: %{x}<br>收益: %{y:.2f}%<extra></extra>'
+                    marker_color=["green" if r > 0 else "red" for r in monthly_returns],
+                    name="月度收益",
+                    hovertemplate="月份: %{x}<br>收益: %{y:.2f}%<extra></extra>",
                 ),
-                row=4, col=1
+                row=4,
+                col=1,
             )
-        
+
         # 8. 回撤分析
         drawdowns = self.calculate_drawdowns()
         fig.add_trace(
             go.Scatter(
                 x=list(range(len(drawdowns))),
                 y=drawdowns,
-                mode='lines',
-                name='回撤',
-                line=dict(color='darkred', width=1),
-                fill='tozeroy',
-                fillcolor='rgba(255,0,0,0.2)',
-                hovertemplate='回撤: %{y:.2f}%<extra></extra>'
+                mode="lines",
+                name="回撤",
+                line=dict(color="darkred", width=1),
+                fill="tozeroy",
+                fillcolor="rgba(255,0,0,0.2)",
+                hovertemplate="回撤: %{y:.2f}%<extra></extra>",
             ),
-            row=4, col=2
+            row=4,
+            col=2,
         )
-        
+
         # 更新布局
         fig.update_layout(
             height=1600,
             showlegend=False,
-            title=dict(
-                text='<b>PPO模型訓練結果 - 詳細分析報告</b>',
-                font=dict(size=20)
-            ),
-            template='plotly_white'
+            title=dict(text="<b>PPO模型訓練結果 - 詳細分析報告</b>", font=dict(size=20)),
+            template="plotly_white",
         )
-        
+
         # 更新坐標軸標籤
         fig.update_xaxes(title_text="訓練回合", row=1, col=1)
         fig.update_yaxes(title_text="資產價值 ($)", row=1, col=1)
-        
+
         fig.update_xaxes(title_text="收益率 (%)", row=1, col=2)
         fig.update_yaxes(title_text="頻率", row=1, col=2)
-        
+
         fig.update_xaxes(title_text="訓練回合", row=2, col=1)
         fig.update_yaxes(title_text="累積收益率 (%)", row=2, col=1)
-        
+
         fig.update_xaxes(title_text="交易結果", row=2, col=2)
         fig.update_yaxes(title_text="交易次數", row=2, col=2)
-        
+
         return fig
-    
+
     def calculate_monthly_returns(self):
         """計算月度收益"""
         if len(self.portfolio_values) < 30:
             return []
-        
+
         monthly_returns = []
         for i in range(30, len(self.portfolio_values), 30):
-            start_value = self.portfolio_values[i-30]
+            start_value = self.portfolio_values[i - 30]
             end_value = self.portfolio_values[i]
             monthly_return = ((end_value - start_value) / start_value) * 100
             monthly_returns.append(monthly_return)
-        
+
         return monthly_returns
-    
+
     def calculate_drawdowns(self):
         """計算回撤"""
         drawdowns = []
         peak = self.portfolio_values[0]
-        
+
         for value in self.portfolio_values:
             if value > peak:
                 peak = value
             drawdown = ((peak - value) / peak) * 100
             drawdowns.append(-drawdown)  # 負值表示回撤
-        
+
         return drawdowns
-    
+
     def generate_chinese_html_report(self):
         """生成中文HTML報告"""
         print("Generating Chinese HTML report...")
-        
+
         # 載入數據
         self.load_and_validate_data()
         self.simulate_realistic_trading()
-        
+
         # 創建圖表
         main_chart = self.create_detailed_charts()
-        
+
         # 計算統計數據
         if self.detailed_trades:
-            winning_trades = [t for t in self.detailed_trades if t['pnl'] > 0]
-            losing_trades = [t for t in self.detailed_trades if t['pnl'] < 0]
-            
-            total_profit = sum(t['pnl'] for t in winning_trades)
-            total_loss = sum(abs(t['pnl']) for t in losing_trades)
-            
-            win_rate = (len(winning_trades) / len(self.detailed_trades)) * 100 if self.detailed_trades else 0
-            avg_win = np.mean([t['pnl'] for t in winning_trades]) if winning_trades else 0
-            avg_loss = np.mean([abs(t['pnl']) for t in losing_trades]) if losing_trades else 0
+            winning_trades = [t for t in self.detailed_trades if t["pnl"] > 0]
+            losing_trades = [t for t in self.detailed_trades if t["pnl"] < 0]
+
+            total_profit = sum(t["pnl"] for t in winning_trades)
+            total_loss = sum(abs(t["pnl"]) for t in losing_trades)
+
+            win_rate = (
+                (len(winning_trades) / len(self.detailed_trades)) * 100
+                if self.detailed_trades
+                else 0
+            )
+            avg_win = np.mean([t["pnl"] for t in winning_trades]) if winning_trades else 0
+            avg_loss = np.mean([abs(t["pnl"]) for t in losing_trades]) if losing_trades else 0
             profit_factor = total_profit / total_loss if total_loss > 0 else 0
-            
-            max_win = max([t['pnl'] for t in winning_trades]) if winning_trades else 0
-            max_loss = min([t['pnl'] for t in losing_trades]) if losing_trades else 0
+
+            max_win = max([t["pnl"] for t in winning_trades]) if winning_trades else 0
+            max_loss = min([t["pnl"] for t in losing_trades]) if losing_trades else 0
         else:
             win_rate = avg_win = avg_loss = profit_factor = max_win = max_loss = 0
-        
+
         # 生成交易明細表格
         trades_table = self.generate_trades_table()
-        
+
         # 生成HTML
         html_content = f"""
 <!DOCTYPE html>
@@ -821,23 +845,25 @@ class RealisticChineseReport:
 </body>
 </html>
 """
-        
+
         # 保存報告
-        report_path = 'ppo_chinese_detailed_report.html'
-        with open(report_path, 'w', encoding='utf-8') as f:
+        report_path = "ppo_chinese_detailed_report.html"
+        with open(report_path, "w", encoding="utf-8") as f:
             f.write(html_content)
-        
+
         print(f"[SUCCESS] Chinese report generated: {report_path}")
         return report_path
-    
+
     def generate_trades_table(self):
         """生成交易明細表格"""
         if not self.detailed_trades:
             return "<p>暫無交易記錄</p>"
-        
+
         # 只顯示最近20筆交易
-        recent_trades = self.detailed_trades[-20:] if len(self.detailed_trades) > 20 else self.detailed_trades
-        
+        recent_trades = (
+            self.detailed_trades[-20:] if len(self.detailed_trades) > 20 else self.detailed_trades
+        )
+
         table_html = """
         <table>
             <thead>
@@ -856,11 +882,11 @@ class RealisticChineseReport:
             </thead>
             <tbody>
         """
-        
+
         for trade in reversed(recent_trades):
-            action_class = 'buy' if trade['action'] == '買入' else 'sell'
-            pnl_class = 'positive' if trade['pnl'] > 0 else 'negative' if trade['pnl'] < 0 else ''
-            
+            action_class = "buy" if trade["action"] == "買入" else "sell"
+            pnl_class = "positive" if trade["pnl"] > 0 else "negative" if trade["pnl"] < 0 else ""
+
             table_html += f"""
                 <tr>
                     <td>{trade['id']}</td>
@@ -875,35 +901,38 @@ class RealisticChineseReport:
                     <td>${trade['balance_after']:,.2f}</td>
                 </tr>
             """
-        
+
         table_html += """
             </tbody>
         </table>
         """
-        
+
         return table_html
 
+
 def main():
-    print("="*60)
+    print("=" * 60)
     print("Generating Realistic Chinese PPO Training Report")
-    print("="*60)
-    
+    print("=" * 60)
+
     generator = RealisticChineseReport()
     report_path = generator.generate_chinese_html_report()
-    
-    print("\n" + "="*60)
+
+    print("\n" + "=" * 60)
     print("[COMPLETE] Report Generated Successfully!")
-    print("="*60)
+    print("=" * 60)
     print(f"Report Path: {os.path.abspath(report_path)}")
-    print("="*60)
-    
+    print("=" * 60)
+
     # Try to open in browser
     try:
         import webbrowser
-        webbrowser.open(f'file://{os.path.abspath(report_path)}')
+
+        webbrowser.open(f"file://{os.path.abspath(report_path)}")
         print("Report opened in browser")
     except:
         print("Please open the HTML file manually")
+
 
 if __name__ == "__main__":
     main()

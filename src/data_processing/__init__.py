@@ -13,9 +13,4 @@ from .feature_engineering import FeatureEngineer
 from .indicators import TechnicalIndicators
 from .data_validator import DataValidator
 
-__all__ = [
-    'DataCleaner',
-    'FeatureEngineer', 
-    'TechnicalIndicators',
-    'DataValidator'
-]
+__all__ = ["DataCleaner", "FeatureEngineer", "TechnicalIndicators", "DataValidator"]

@@ -22,8 +22,10 @@ def _verify_line_signature(headers: Dict[str, str], raw_body: bytes) -> bool:
     secret = None
     try:
         from common.secrets import get_param, get_secret
-        secret = get_param(os.environ.get("LINE_CHANNEL_SECRET_PARAM", "")) or \
-                 get_secret(os.environ.get("LINE_CHANNEL_SECRET_SECRET_ID", ""))
+
+        secret = get_param(os.environ.get("LINE_CHANNEL_SECRET_PARAM", "")) or get_secret(
+            os.environ.get("LINE_CHANNEL_SECRET_SECRET_ID", "")
+        )
     except Exception:
         secret = None
     if not secret:
@@ -213,7 +215,11 @@ def lambda_handler(event, context):
         if etype == "join":
             src = ev.get("source") or {}
             gid = src.get("groupId") or src.get("roomId")
-            gtype = "group" if src.get("groupId") else ("room" if src.get("roomId") else src.get("type", ""))
+            gtype = (
+                "group"
+                if src.get("groupId")
+                else ("room" if src.get("roomId") else src.get("type", ""))
+            )
             if gid:
                 try:
                     db.add_group_to_whitelist(gid, gtype)
