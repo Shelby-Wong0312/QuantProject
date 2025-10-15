@@ -19,7 +19,7 @@ def load_capital_stocks():
     # 從capital_real_stocks.json載入
     if os.path.exists("capital_real_stocks.json"):
         with open("capital_real_stocks.json", "r", encoding="utf-8") as f:
-            json.load(f)
+            data = json.load(f)
             for item in data:
                 ticker = item.get("ticker", "")
                 epic = item.get("epic", "")
@@ -35,17 +35,33 @@ def load_capital_stocks():
                 # 2. Epic可能包含更完整的符號
                 if epic and epic != ticker:
                     # 移除特殊後綴
-                    clean_epic = epic.replace("USD", "").replace("GBP", "").replace("EUR", "")
+                    clean_epic = (
+                        epic.replace("USD", "").replace("GBP", "").replace("EUR", "")
+                    )
                     if clean_epic and clean_epic != ticker:
                         symbols_to_try.append(clean_epic)
 
                 # 3. 如果是加密貨幣，加上-USD後綴
-                crypto_keywords = ["BTC", "ETH", "DOGE", "ADA", "DOT", "LINK", "UNI", "MATIC"]
+                crypto_keywords = [
+                    "BTC",
+                    "ETH",
+                    "DOGE",
+                    "ADA",
+                    "DOT",
+                    "LINK",
+                    "UNI",
+                    "MATIC",
+                ]
                 if any(keyword in ticker.upper() for keyword in crypto_keywords):
                     symbols_to_try.append(f"{ticker}-USD")
 
                 stocks.append(
-                    {"ticker": ticker, "epic": epic, "name": name, "symbols_to_try": symbols_to_try}
+                    {
+                        "ticker": ticker,
+                        "epic": epic,
+                        "name": name,
+                        "symbols_to_try": symbols_to_try,
+                    }
                 )
 
     print(f"Loaded {len(stocks)} stocks from Capital.com")
@@ -66,11 +82,16 @@ def validate_yahoo_finance(symbol):
         )
 
         # 檢查是否有數據
-        if not data.empty and len(data) > 5:
+        cond_ok = False
+        if "data" in locals():
+            cond_ok = (
+                hasattr(data, "empty") and (not data.empty) and len(data) > 5
+            ) or (isinstance(data, (list, tuple)) and len(data) > 5)
+        if cond_ok:
             return True, len(data)
         return False, 0
 
-    except Exception as e:
+    except Exception:
         return False, 0
 
 
@@ -152,39 +173,104 @@ def add_reliable_stocks():
     # 這些是已知在兩個平台都有效的主要股票
     reliable_stocks = [
         # 科技股
-        {"symbol": "AAPL", "capital_ticker": "AAPL", "capital_epic": "AAPL", "name": "Apple Inc"},
-        {"symbol": "MSFT", "capital_ticker": "MSFT", "capital_epic": "MSFT", "name": "Microsoft"},
+        {
+            "symbol": "AAPL",
+            "capital_ticker": "AAPL",
+            "capital_epic": "AAPL",
+            "name": "Apple Inc",
+        },
+        {
+            "symbol": "MSFT",
+            "capital_ticker": "MSFT",
+            "capital_epic": "MSFT",
+            "name": "Microsoft",
+        },
         {
             "symbol": "GOOGL",
             "capital_ticker": "GOOGL",
             "capital_epic": "GOOGL",
             "name": "Alphabet Inc",
         },
-        {"symbol": "AMZN", "capital_ticker": "AMZN", "capital_epic": "AMZN", "name": "Amazon"},
+        {
+            "symbol": "AMZN",
+            "capital_ticker": "AMZN",
+            "capital_epic": "AMZN",
+            "name": "Amazon",
+        },
         {
             "symbol": "META",
             "capital_ticker": "META",
             "capital_epic": "META",
             "name": "Meta Platforms",
         },
-        {"symbol": "NVDA", "capital_ticker": "NVDA", "capital_epic": "NVDA", "name": "NVIDIA"},
-        {"symbol": "TSLA", "capital_ticker": "TSLA", "capital_epic": "TSLA", "name": "Tesla"},
-        {"symbol": "AMD", "capital_ticker": "AMD", "capital_epic": "AMD", "name": "AMD"},
-        {"symbol": "INTC", "capital_ticker": "INTC", "capital_epic": "INTC", "name": "Intel"},
-        {"symbol": "NFLX", "capital_ticker": "NFLX", "capital_epic": "NFLX", "name": "Netflix"},
+        {
+            "symbol": "NVDA",
+            "capital_ticker": "NVDA",
+            "capital_epic": "NVDA",
+            "name": "NVIDIA",
+        },
+        {
+            "symbol": "TSLA",
+            "capital_ticker": "TSLA",
+            "capital_epic": "TSLA",
+            "name": "Tesla",
+        },
+        {
+            "symbol": "AMD",
+            "capital_ticker": "AMD",
+            "capital_epic": "AMD",
+            "name": "AMD",
+        },
+        {
+            "symbol": "INTC",
+            "capital_ticker": "INTC",
+            "capital_epic": "INTC",
+            "name": "Intel",
+        },
+        {
+            "symbol": "NFLX",
+            "capital_ticker": "NFLX",
+            "capital_epic": "NFLX",
+            "name": "Netflix",
+        },
         # 金融股
-        {"symbol": "JPM", "capital_ticker": "JPM", "capital_epic": "JPM", "name": "JPMorgan Chase"},
+        {
+            "symbol": "JPM",
+            "capital_ticker": "JPM",
+            "capital_epic": "JPM",
+            "name": "JPMorgan Chase",
+        },
         {
             "symbol": "BAC",
             "capital_ticker": "BAC",
             "capital_epic": "BAC",
             "name": "Bank of America",
         },
-        {"symbol": "WFC", "capital_ticker": "WFC", "capital_epic": "WFC", "name": "Wells Fargo"},
-        {"symbol": "GS", "capital_ticker": "GS", "capital_epic": "GS", "name": "Goldman Sachs"},
-        {"symbol": "MS", "capital_ticker": "MS", "capital_epic": "MS", "name": "Morgan Stanley"},
+        {
+            "symbol": "WFC",
+            "capital_ticker": "WFC",
+            "capital_epic": "WFC",
+            "name": "Wells Fargo",
+        },
+        {
+            "symbol": "GS",
+            "capital_ticker": "GS",
+            "capital_epic": "GS",
+            "name": "Goldman Sachs",
+        },
+        {
+            "symbol": "MS",
+            "capital_ticker": "MS",
+            "capital_epic": "MS",
+            "name": "Morgan Stanley",
+        },
         {"symbol": "V", "capital_ticker": "V", "capital_epic": "V", "name": "Visa"},
-        {"symbol": "MA", "capital_ticker": "MA", "capital_epic": "MA", "name": "Mastercard"},
+        {
+            "symbol": "MA",
+            "capital_ticker": "MA",
+            "capital_epic": "MA",
+            "name": "Mastercard",
+        },
         {
             "symbol": "AXP",
             "capital_ticker": "AXP",
@@ -198,54 +284,209 @@ def add_reliable_stocks():
             "capital_epic": "JNJ",
             "name": "Johnson & Johnson",
         },
-        {"symbol": "UNH", "capital_ticker": "UNH", "capital_epic": "UNH", "name": "UnitedHealth"},
-        {"symbol": "PFE", "capital_ticker": "PFE", "capital_epic": "PFE", "name": "Pfizer"},
-        {"symbol": "ABBV", "capital_ticker": "ABBV", "capital_epic": "ABBV", "name": "AbbVie"},
-        {"symbol": "MRK", "capital_ticker": "MRK", "capital_epic": "MRK", "name": "Merck"},
-        {"symbol": "CVS", "capital_ticker": "CVS", "capital_epic": "CVS", "name": "CVS Health"},
+        {
+            "symbol": "UNH",
+            "capital_ticker": "UNH",
+            "capital_epic": "UNH",
+            "name": "UnitedHealth",
+        },
+        {
+            "symbol": "PFE",
+            "capital_ticker": "PFE",
+            "capital_epic": "PFE",
+            "name": "Pfizer",
+        },
+        {
+            "symbol": "ABBV",
+            "capital_ticker": "ABBV",
+            "capital_epic": "ABBV",
+            "name": "AbbVie",
+        },
+        {
+            "symbol": "MRK",
+            "capital_ticker": "MRK",
+            "capital_epic": "MRK",
+            "name": "Merck",
+        },
+        {
+            "symbol": "CVS",
+            "capital_ticker": "CVS",
+            "capital_epic": "CVS",
+            "name": "CVS Health",
+        },
         # 消費品
-        {"symbol": "WMT", "capital_ticker": "WMT", "capital_epic": "WMT", "name": "Walmart"},
-        {"symbol": "HD", "capital_ticker": "HD", "capital_epic": "HD", "name": "Home Depot"},
-        {"symbol": "PG", "capital_ticker": "PG", "capital_epic": "PG", "name": "Procter & Gamble"},
-        {"symbol": "KO", "capital_ticker": "KO", "capital_epic": "KO", "name": "Coca-Cola"},
-        {"symbol": "PEP", "capital_ticker": "PEP", "capital_epic": "PEP", "name": "PepsiCo"},
-        {"symbol": "COST", "capital_ticker": "COST", "capital_epic": "COST", "name": "Costco"},
-        {"symbol": "NKE", "capital_ticker": "NKE", "capital_epic": "NKE", "name": "Nike"},
-        {"symbol": "MCD", "capital_ticker": "MCD", "capital_epic": "MCD", "name": "McDonalds"},
-        {"symbol": "SBUX", "capital_ticker": "SBUX", "capital_epic": "SBUX", "name": "Starbucks"},
+        {
+            "symbol": "WMT",
+            "capital_ticker": "WMT",
+            "capital_epic": "WMT",
+            "name": "Walmart",
+        },
+        {
+            "symbol": "HD",
+            "capital_ticker": "HD",
+            "capital_epic": "HD",
+            "name": "Home Depot",
+        },
+        {
+            "symbol": "PG",
+            "capital_ticker": "PG",
+            "capital_epic": "PG",
+            "name": "Procter & Gamble",
+        },
+        {
+            "symbol": "KO",
+            "capital_ticker": "KO",
+            "capital_epic": "KO",
+            "name": "Coca-Cola",
+        },
+        {
+            "symbol": "PEP",
+            "capital_ticker": "PEP",
+            "capital_epic": "PEP",
+            "name": "PepsiCo",
+        },
+        {
+            "symbol": "COST",
+            "capital_ticker": "COST",
+            "capital_epic": "COST",
+            "name": "Costco",
+        },
+        {
+            "symbol": "NKE",
+            "capital_ticker": "NKE",
+            "capital_epic": "NKE",
+            "name": "Nike",
+        },
+        {
+            "symbol": "MCD",
+            "capital_ticker": "MCD",
+            "capital_epic": "MCD",
+            "name": "McDonalds",
+        },
+        {
+            "symbol": "SBUX",
+            "capital_ticker": "SBUX",
+            "capital_epic": "SBUX",
+            "name": "Starbucks",
+        },
         # 能源
-        {"symbol": "XOM", "capital_ticker": "XOM", "capital_epic": "XOM", "name": "Exxon Mobil"},
-        {"symbol": "CVX", "capital_ticker": "CVX", "capital_epic": "CVX", "name": "Chevron"},
-        {"symbol": "COP", "capital_ticker": "COP", "capital_epic": "COP", "name": "ConocoPhillips"},
+        {
+            "symbol": "XOM",
+            "capital_ticker": "XOM",
+            "capital_epic": "XOM",
+            "name": "Exxon Mobil",
+        },
+        {
+            "symbol": "CVX",
+            "capital_ticker": "CVX",
+            "capital_epic": "CVX",
+            "name": "Chevron",
+        },
+        {
+            "symbol": "COP",
+            "capital_ticker": "COP",
+            "capital_epic": "COP",
+            "name": "ConocoPhillips",
+        },
         # 工業
-        {"symbol": "BA", "capital_ticker": "BA", "capital_epic": "BA", "name": "Boeing"},
-        {"symbol": "CAT", "capital_ticker": "CAT", "capital_epic": "CAT", "name": "Caterpillar"},
+        {
+            "symbol": "BA",
+            "capital_ticker": "BA",
+            "capital_epic": "BA",
+            "name": "Boeing",
+        },
+        {
+            "symbol": "CAT",
+            "capital_ticker": "CAT",
+            "capital_epic": "CAT",
+            "name": "Caterpillar",
+        },
         {
             "symbol": "LMT",
             "capital_ticker": "LMT",
             "capital_epic": "LMT",
             "name": "Lockheed Martin",
         },
-        {"symbol": "UPS", "capital_ticker": "UPS", "capital_epic": "UPS", "name": "UPS"},
-        {"symbol": "FDX", "capital_ticker": "FDX", "capital_epic": "FDX", "name": "FedEx"},
+        {
+            "symbol": "UPS",
+            "capital_ticker": "UPS",
+            "capital_epic": "UPS",
+            "name": "UPS",
+        },
+        {
+            "symbol": "FDX",
+            "capital_ticker": "FDX",
+            "capital_epic": "FDX",
+            "name": "FedEx",
+        },
         # 中概股
-        {"symbol": "BABA", "capital_ticker": "BABA", "capital_epic": "BABA", "name": "Alibaba"},
-        {"symbol": "JD", "capital_ticker": "JD", "capital_epic": "JD", "name": "JD.com"},
-        {"symbol": "PDD", "capital_ticker": "PDD", "capital_epic": "PDD", "name": "PDD Holdings"},
-        {"symbol": "BIDU", "capital_ticker": "BIDU", "capital_epic": "BIDU", "name": "Baidu"},
-        {"symbol": "NIO", "capital_ticker": "NIO", "capital_epic": "NIO", "name": "NIO Inc"},
-        {"symbol": "XPEV", "capital_ticker": "XPEV", "capital_epic": "XPEV", "name": "XPeng"},
-        {"symbol": "LI", "capital_ticker": "LI", "capital_epic": "LI", "name": "Li Auto"},
+        {
+            "symbol": "BABA",
+            "capital_ticker": "BABA",
+            "capital_epic": "BABA",
+            "name": "Alibaba",
+        },
+        {
+            "symbol": "JD",
+            "capital_ticker": "JD",
+            "capital_epic": "JD",
+            "name": "JD.com",
+        },
+        {
+            "symbol": "PDD",
+            "capital_ticker": "PDD",
+            "capital_epic": "PDD",
+            "name": "PDD Holdings",
+        },
+        {
+            "symbol": "BIDU",
+            "capital_ticker": "BIDU",
+            "capital_epic": "BIDU",
+            "name": "Baidu",
+        },
+        {
+            "symbol": "NIO",
+            "capital_ticker": "NIO",
+            "capital_epic": "NIO",
+            "name": "NIO Inc",
+        },
+        {
+            "symbol": "XPEV",
+            "capital_ticker": "XPEV",
+            "capital_epic": "XPEV",
+            "name": "XPeng",
+        },
+        {
+            "symbol": "LI",
+            "capital_ticker": "LI",
+            "capital_epic": "LI",
+            "name": "Li Auto",
+        },
         # ETFs
-        {"symbol": "SPY", "capital_ticker": "SPY", "capital_epic": "SPY", "name": "SPDR S&P 500"},
-        {"symbol": "QQQ", "capital_ticker": "QQQ", "capital_epic": "QQQ", "name": "Invesco QQQ"},
+        {
+            "symbol": "SPY",
+            "capital_ticker": "SPY",
+            "capital_epic": "SPY",
+            "name": "SPDR S&P 500",
+        },
+        {
+            "symbol": "QQQ",
+            "capital_ticker": "QQQ",
+            "capital_epic": "QQQ",
+            "name": "Invesco QQQ",
+        },
         {
             "symbol": "IWM",
             "capital_ticker": "IWM",
             "capital_epic": "IWM",
             "name": "iShares Russell 2000",
         },
-        {"symbol": "DIA", "capital_ticker": "DIA", "capital_epic": "DIA", "name": "SPDR Dow Jones"},
+        {
+            "symbol": "DIA",
+            "capital_ticker": "DIA",
+            "capital_epic": "DIA",
+            "name": "SPDR Dow Jones",
+        },
         {
             "symbol": "VOO",
             "capital_ticker": "VOO",

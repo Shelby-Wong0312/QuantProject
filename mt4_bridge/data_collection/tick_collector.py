@@ -6,7 +6,6 @@ MT4 Tick 數據收集器
 
 import asyncio
 import logging
-import json
 import time
 import pandas as pd
 from datetime import datetime, timezone
@@ -91,7 +90,9 @@ class TickCollector:
         (self.storage_path / "parquet").mkdir(exist_ok=True)
 
         # 數據緩存 - 每個品種一個 deque
-        self.tick_cache: Dict[str, deque] = {symbol: deque(maxlen=cache_size) for symbol in symbols}
+        self.tick_cache: Dict[str, deque] = {
+            symbol: deque(maxlen=cache_size) for symbol in symbols
+        }
 
         # 回調函數列表
         self.callbacks: List[Callable[[TickData], None]] = []
@@ -109,7 +110,9 @@ class TickCollector:
         }
 
         # 線程池用於異步保存
-        self.executor = ThreadPoolExecutor(max_workers=2, thread_name_prefix="TickSaver")
+        self.executor = ThreadPoolExecutor(
+            max_workers=2, thread_name_prefix="TickSaver"
+        )
 
         # 數據隊列用於異步處理
         self.save_queue = queue.Queue()
@@ -131,7 +134,11 @@ class TickCollector:
     def _process_tick_data(self, raw_data: Dict[str, Any]) -> Optional[TickData]:
         """處理原始 Tick 數據"""
         try:
-            if "symbol" not in raw_data or "bid" not in raw_data or "ask" not in raw_data:
+            if (
+                "symbol" not in raw_data
+                or "bid" not in raw_data
+                or "ask" not in raw_data
+            ):
                 logger.warning(f"收到不完整的 Tick 數據: {raw_data}")
                 return None
 
@@ -184,7 +191,9 @@ class TickCollector:
     def get_tick_dataframe(self, symbol: str, count: int = None) -> pd.DataFrame:
         """獲取 Tick 數據的 DataFrame"""
         ticks = (
-            self.get_recent_ticks(symbol, count) if count else list(self.tick_cache.get(symbol, []))
+            self.get_recent_ticks(symbol, count)
+            if count
+            else list(self.tick_cache.get(symbol, []))
         )
 
         if not ticks:
@@ -213,7 +222,9 @@ class TickCollector:
                 writer = csv.writer(f)
 
                 if not file_exists:
-                    writer.writerow(["timestamp", "symbol", "bid", "ask", "last", "volume"])
+                    writer.writerow(
+                        ["timestamp", "symbol", "bid", "ask", "last", "volume"]
+                    )
 
                 for tick in ticks:
                     writer.writerow(
@@ -242,7 +253,9 @@ class TickCollector:
             df["timestamp"] = pd.to_datetime(df["timestamp"])
 
             date_str = datetime.now().strftime("%Y%m%d")
-            filename = self.storage_path / "parquet" / f"{symbol}_ticks_{date_str}.parquet"
+            filename = (
+                self.storage_path / "parquet" / f"{symbol}_ticks_{date_str}.parquet"
+            )
 
             # 如果文件存在，追加數據
             if filename.exists():
@@ -371,15 +384,23 @@ class TickCollector:
     def get_statistics(self) -> Dict[str, Any]:
         """獲取收集統計信息"""
         current_time = time.time()
-        runtime = current_time - self.stats["start_time"] if self.stats["start_time"] else 0
+        runtime = (
+            current_time - self.stats["start_time"] if self.stats["start_time"] else 0
+        )
 
         return {
             "total_ticks": self.stats["total_ticks"],
             "ticks_per_symbol": dict(self.stats["ticks_per_symbol"]),
             "runtime_seconds": runtime,
-            "average_ticks_per_second": self.stats["total_ticks"] / runtime if runtime > 0 else 0,
-            "last_save_time": datetime.fromtimestamp(self.stats["last_save_time"]).isoformat(),
-            "cache_sizes": {symbol: len(cache) for symbol, cache in self.tick_cache.items()},
+            "average_ticks_per_second": (
+                self.stats["total_ticks"] / runtime if runtime > 0 else 0
+            ),
+            "last_save_time": datetime.fromtimestamp(
+                self.stats["last_save_time"]
+            ).isoformat(),
+            "cache_sizes": {
+                symbol: len(cache) for symbol, cache in self.tick_cache.items()
+            },
             "is_collecting": self._collecting,
         }
 
@@ -414,7 +435,8 @@ async def example_usage():
 
     # 設置日誌
     logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
     # 定義要收集的品種
@@ -430,7 +452,9 @@ async def example_usage():
 
     # 添加回調函數
     def on_tick_received(tick: TickData):
-        print(f"收到 Tick: {tick.symbol} Bid:{tick.bid} Ask:{tick.ask} @{tick.timestamp}")
+        print(
+            f"收到 Tick: {tick.symbol} Bid:{tick.bid} Ask:{tick.ask} @{tick.timestamp}"
+        )
 
     collector.add_callback(on_tick_received)
 

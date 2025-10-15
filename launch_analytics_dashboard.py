@@ -8,7 +8,6 @@ import os
 import sys
 import subprocess
 import sqlite3
-from datetime import datetime
 
 
 def check_dependencies():
@@ -103,7 +102,13 @@ def launch_dashboard(db_path=None):
 
     # Launch Streamlit
     try:
-        cmd = [sys.executable, "-m", "streamlit", "run", "src/analytics/streamlit_app.py"]
+        cmd = [
+            sys.executable,
+            "-m",
+            "streamlit",
+            "run",
+            "src/analytics/streamlit_app.py",
+        ]
 
         print("\\n" + "=" * 60)
         print("📊 QUANTTRADING ANALYTICS DASHBOARD")
@@ -139,7 +144,9 @@ def main():
 
     # Step 3: Create demo data if needed
     if not db_path:
-        response = input("\\n❓ No trading data found. Create demo data? (y/n): ").lower()
+        response = input(
+            "\\n❓ No trading data found. Create demo data? (y/n): "
+        ).lower()
         if response == "y":
             db_path = create_demo_data()
         else:

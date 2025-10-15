@@ -2,9 +2,7 @@
 # Portfolio management for live trading
 
 import logging
-from datetime import datetime
-from typing import Dict, Optional
-from core.event import SignalEvent, FillEvent, OrderEvent, EventType
+from core.event import SignalEvent, FillEvent, OrderEvent
 from core.event_loop import EventLoop
 
 logger = logging.getLogger(__name__)
@@ -35,7 +33,9 @@ class Portfolio:
                 quantity=signal.quantity,
             )
             await self.event_queue.put_event(order)
-            logger.info(f"Order generated: {order.symbol} {order.direction} {order.quantity}")
+            logger.info(
+                f"Order generated: {order.symbol} {order.direction} {order.quantity}"
+            )
 
     async def on_fill(self, fill: FillEvent):
         """Handle fill event and update positions"""

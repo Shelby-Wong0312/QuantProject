@@ -56,7 +56,9 @@ class YFinanceBackend(IDataBackend):
 
     def __init__(self, cache_dir: Path | str | None = None) -> None:
         self.cache_dir = (
-            Path(cache_dir) if cache_dir is not None else Path("data_cache") / "yfinance"
+            Path(cache_dir)
+            if cache_dir is not None
+            else Path("data_cache") / "yfinance"
         )
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
@@ -80,7 +82,9 @@ class YFinanceBackend(IDataBackend):
             params["period1"] = int(start_ts.timestamp())
             params["period2"] = int(end_ts.timestamp())
             try:
-                resp = requests.get(base_url, params=params, headers=headers, timeout=15)
+                resp = requests.get(
+                    base_url, params=params, headers=headers, timeout=15
+                )
             except Exception:
                 continue
             if resp.status_code == 429:
@@ -136,7 +140,9 @@ class YFinanceBackend(IDataBackend):
         cached["volume"] = cached["volume"].astype(float)
         return cached
 
-    def get_bars(self, symbol: str, start: str, end: str, timeframe: str = "5min") -> pd.DataFrame:
+    def get_bars(
+        self, symbol: str, start: str, end: str, timeframe: str = "5min"
+    ) -> pd.DataFrame:
         tf_map = {
             "1min": "1m",
             "1m": "1m",
@@ -147,7 +153,9 @@ class YFinanceBackend(IDataBackend):
             "1d": "1d",
         }
         interval = tf_map.get(timeframe, "5m")
-        parquet_tag = {"1m": "1min", "5m": "5min", "60m": "60m", "1d": "1d"}.get(interval, interval)
+        parquet_tag = {"1m": "1min", "5m": "5min", "60m": "60m", "1d": "1d"}.get(
+            interval, interval
+        )
         cache_path = self._cache_path(symbol, parquet_tag)
 
         end_ts = _prepare_timestamp(pd.Timestamp(end, tz="UTC"))
@@ -246,7 +254,9 @@ class YFinanceBackend(IDataBackend):
         end: str,
         timeframe: str = "5min",
     ) -> Dict[str, pd.DataFrame]:
-        return {symbol: self.get_bars(symbol, start, end, timeframe) for symbol in symbols}
+        return {
+            symbol: self.get_bars(symbol, start, end, timeframe) for symbol in symbols
+        }
 
 
 __all__ = ["YFinanceBackend"]

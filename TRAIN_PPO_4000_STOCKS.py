@@ -12,12 +12,12 @@ from torch.distributions import Categorical
 import numpy as np
 import pandas as pd
 import yfinance as yf
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
 import json
 from tqdm import tqdm
 import logging
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List
 import warnings
 import concurrent.futures
 import random
@@ -300,7 +300,9 @@ def get_all_stock_symbols():
 
     # 如果還不夠4000個，生成一些測試符號
     if len(symbols) < 4000:
-        print(f"[DATA] Current symbols: {len(symbols)}, generating additional test symbols...")
+        print(
+            f"[DATA] Current symbols: {len(symbols)}, generating additional test symbols..."
+        )
         # 添加一些國際股票代碼格式
         for i in range(4000 - len(symbols)):
             # 生成一些測試代碼（實際訓練時會被過濾）
@@ -346,7 +348,8 @@ class DataLoader:
         # 分批並行下載
         batch_size = 10
         batches = [
-            self.symbols[i : i + batch_size] for i in range(0, len(self.symbols), batch_size)
+            self.symbols[i : i + batch_size]
+            for i in range(0, len(self.symbols), batch_size)
         ]
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
@@ -357,7 +360,9 @@ class DataLoader:
 
             # 收集結果
             for future in tqdm(
-                concurrent.futures.as_completed(futures), total=len(futures), desc="Downloading"
+                concurrent.futures.as_completed(futures),
+                total=len(futures),
+                desc="Downloading",
             ):
                 batch_data = future.result()
                 self.data_cache.update(batch_data)
@@ -450,7 +455,7 @@ class DataLoader:
             if len(features) < 220:
                 features = np.pad(features, (0, 220 - len(features)))
 
-        except Exception as e:
+        except Exception:
             # 出錯時返回零向量
             features = np.zeros(220)
 
@@ -524,7 +529,9 @@ class TradingEnvironment:
             elif action == 2:  # Sell
                 if self.current_symbol in self.positions:
                     shares = self.positions[self.current_symbol]
-                    revenue = shares * current_price * (1 - self.config.transaction_cost)
+                    revenue = (
+                        shares * current_price * (1 - self.config.transaction_cost)
+                    )
                     self.cash += revenue
                     del self.positions[self.current_symbol]
 
@@ -534,20 +541,26 @@ class TradingEnvironment:
             # 計算新的投資組合價值
             new_portfolio_value = self.cash
             for symbol, shares in self.positions.items():
-                if symbol == self.current_symbol and self.current_step < len(self.symbol_data):
+                if symbol == self.current_symbol and self.current_step < len(
+                    self.symbol_data
+                ):
                     price = float(self.symbol_data.iloc[self.current_step]["Close"])
                     new_portfolio_value += shares * price
 
             # 計算獎勵
-            reward = (new_portfolio_value - self.portfolio_value) / (self.portfolio_value + 1e-8)
+            reward = (new_portfolio_value - self.portfolio_value) / (
+                self.portfolio_value + 1e-8
+            )
             self.portfolio_value = new_portfolio_value
 
             # 檢查是否結束
-            done = self.current_step >= min(len(self.symbol_data) - 1, self.current_step + 100)
+            done = self.current_step >= min(
+                len(self.symbol_data) - 1, self.current_step + 100
+            )
 
             return self._get_observation(), reward, done
 
-        except Exception as e:
+        except Exception:
             # 錯誤處理
             return np.zeros(self.config.obs_dim), 0, True
 
@@ -617,7 +630,9 @@ class PPOTrainer:
         rewards_tensor = torch.FloatTensor(rewards).to(self.config.device)
 
         # 正規化獎勵
-        rewards_tensor = (rewards_tensor - rewards_tensor.mean()) / (rewards_tensor.std() + 1e-8)
+        rewards_tensor = (rewards_tensor - rewards_tensor.mean()) / (
+            rewards_tensor.std() + 1e-8
+        )
 
         # 計算損失並更新
         action_logits, values = self.model(obs_tensor)
@@ -701,7 +716,9 @@ def main():
         "stocks_count": len(stock_data),
         "total_iterations": 200,
         "final_reward": (
-            trainer.training_history["rewards"][-1] if trainer.training_history["rewards"] else 0
+            trainer.training_history["rewards"][-1]
+            if trainer.training_history["rewards"]
+            else 0
         ),
         "device": str(config.device),
     }

@@ -18,18 +18,18 @@ MT4 資料夾準備腳本 (prepare_mt4_folders.py)
 import os
 import sys
 import argparse
-import shutil
 import platform
 import json
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Optional
 import time
 
 
 class MT4FolderPreparer:
     """MT4 資料夾準備器"""
 
-    def __init__(self, mt4_path: str = None, verbose: bool = False, force: bool = False):
+    def __init__(
+        self, mt4_path: str = None, verbose: bool = False, force: bool = False
+    ):
         self.mt4_path = mt4_path
         self.verbose = verbose
         self.force = force
@@ -130,7 +130,9 @@ class MT4FolderPreparer:
         if self.system == "Windows":
             return os.path.exists(os.path.join(path, "terminal.exe"))
         elif self.system == "Darwin":
-            return os.path.exists(os.path.join(path, "Contents", "MacOS", "MetaTrader 4"))
+            return os.path.exists(
+                os.path.join(path, "Contents", "MacOS", "MetaTrader 4")
+            )
         return False
 
     def create_directory(self, dir_path: str, description: str = "") -> bool:
@@ -147,7 +149,9 @@ class MT4FolderPreparer:
                 self.created_folders.append(dir_path)
 
                 desc_text = f" ({description})" if description else ""
-                self.log(f"已建立目錄: {os.path.basename(dir_path)}{desc_text}", "success")
+                self.log(
+                    f"已建立目錄: {os.path.basename(dir_path)}{desc_text}", "success"
+                )
 
             return True
 
@@ -184,7 +188,10 @@ class MT4FolderPreparer:
             if self.create_directory(full_path, description):
                 success_count += 1
 
-        self.log(f"基本目錄建立完成: {success_count}/{len(self.basic_directories)}", "success")
+        self.log(
+            f"基本目錄建立完成: {success_count}/{len(self.basic_directories)}",
+            "success",
+        )
         return success_count == len(self.basic_directories)
 
     def create_bridge_directories(self) -> bool:
@@ -210,7 +217,10 @@ class MT4FolderPreparer:
             if self.create_directory(full_path, description):
                 success_count += 1
 
-        self.log(f"橋接目錄建立完成: {success_count}/{len(self.bridge_directories)}", "success")
+        self.log(
+            f"橋接目錄建立完成: {success_count}/{len(self.bridge_directories)}",
+            "success",
+        )
         return success_count == len(self.bridge_directories)
 
     def create_zeromq_directories(self) -> bool:
@@ -231,7 +241,10 @@ class MT4FolderPreparer:
             if self.create_directory(full_path, description):
                 success_count += 1
 
-        self.log(f"ZeroMQ 目錄建立完成: {success_count}/{len(self.zeromq_directories)}", "success")
+        self.log(
+            f"ZeroMQ 目錄建立完成: {success_count}/{len(self.zeromq_directories)}",
+            "success",
+        )
         return success_count == len(self.zeromq_directories)
 
     def create_python_bridge_directories(self) -> bool:
@@ -510,7 +523,8 @@ ZeroMQ 提供高效能的訊息傳遞功能，適合即時交易應用。
                 for directory in key_directories:
                     if os.path.exists(directory):
                         os.chmod(
-                            directory, stat.S_IRWXU | stat.S_IRWXG | stat.S_IROTH | stat.S_IXOTH
+                            directory,
+                            stat.S_IRWXU | stat.S_IRWXG | stat.S_IROTH | stat.S_IXOTH,
                         )
                         self.log(f"已設置權限: {directory}", "success")
 
@@ -548,7 +562,9 @@ ZeroMQ 提供高效能的訊息傳遞功能，適合即時交易應用。
     def save_report(self, report: Dict, filepath: str = None):
         """儲存報告"""
         if filepath is None:
-            filepath = os.path.join(os.path.dirname(__file__), "mt4_folder_preparation_report.json")
+            filepath = os.path.join(
+                os.path.dirname(__file__), "mt4_folder_preparation_report.json"
+            )
 
         try:
             with open(filepath, "w", encoding="utf-8") as f:
@@ -658,13 +674,17 @@ def main():
     """主函數"""
     parser = argparse.ArgumentParser(description="MT4 資料夾準備腳本")
     parser.add_argument("--mt4-path", type=str, help="指定 MT4 安裝路徑")
-    parser.add_argument("--force", "-", action="store_true", help="強制重新建立已存在的目錄和檔案")
+    parser.add_argument(
+        "--force", "-", action="store_true", help="強制重新建立已存在的目錄和檔案"
+    )
     parser.add_argument("--verbose", "-v", action="store_true", help="顯示詳細資訊")
 
     args = parser.parse_args()
 
     # 建立準備器實例
-    preparer = MT4FolderPreparer(mt4_path=args.mt4_path, verbose=args.verbose, force=args.force)
+    preparer = MT4FolderPreparer(
+        mt4_path=args.mt4_path, verbose=args.verbose, force=args.force
+    )
 
     try:
         # 執行完整準備

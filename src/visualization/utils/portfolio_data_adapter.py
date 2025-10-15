@@ -5,11 +5,10 @@ Portfolio Data Adapter
 
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any
 from datetime import datetime, timedelta
 import logging
 from pathlib import Path
-import json
 
 # Add parent directory to path
 import sys
@@ -329,8 +328,12 @@ class PortfolioDataAdapter:
 
         # Sortino ratio (downside deviation)
         downside_returns = returns[returns < 0]
-        downside_std = np.std(downside_returns) if len(downside_returns) > 0 else std_return
-        sortino_ratio = (mean_return - risk_free_rate / 252) / downside_std * np.sqrt(252)
+        downside_std = (
+            np.std(downside_returns) if len(downside_returns) > 0 else std_return
+        )
+        sortino_ratio = (
+            (mean_return - risk_free_rate / 252) / downside_std * np.sqrt(252)
+        )
 
         # Max drawdown
         cumulative = np.cumprod(1 + returns)

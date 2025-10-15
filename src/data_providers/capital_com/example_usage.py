@@ -51,14 +51,19 @@ def example_historical_data():
         markets = client.search_markets("EUR/USD")
         if markets and len(markets) > 0:
             epic = markets[0].get("epic")
-            print(f"Fetching historical data for {markets[0].get('instrumentName')} ({epic})")
+            print(
+                f"Fetching historical data for {markets[0].get('instrumentName')} ({epic})"
+            )
 
             # Get historical prices for last 7 days
             end_date = datetime.now()
             start_date = end_date - timedelta(days=7)
 
             prices = client.get_historical_prices(
-                epic=epic, resolution=Resolution.HOUR, from_date=start_date, to_date=end_date
+                epic=epic,
+                resolution=Resolution.HOUR,
+                from_date=start_date,
+                to_date=end_date,
             )
 
             if prices:

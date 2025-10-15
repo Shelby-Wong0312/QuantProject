@@ -53,7 +53,6 @@ def test_system():
 
     # 3. Test Core Modules
     print("\n[3] Testing Core Modules...")
-    modules_ok = True
     try:
         import yfinance
         import torch
@@ -66,7 +65,6 @@ def test_system():
     except ImportError as e:
         print(f"  [WARN] Some modules missing: {e}")
         results["tests"]["modules"] = "PARTIAL"
-        modules_ok = False
 
     # 4. Test Data Access
     print("\n[4] Testing Market Data Access...")
@@ -92,7 +90,6 @@ def test_system():
         # Test indicator calculation
         prices = pd.Series(np.random.randn(100).cumsum() + 100)
         sma20 = prices.rolling(20).mean()
-        rsi = 50  # Simplified RSI
         print(f"  [OK] Indicators calculated - SMA20: {sma20.iloc[-1]:.2f}")
         results["tests"]["strategies"] = "PASS"
     except Exception as e:
@@ -125,7 +122,6 @@ def test_system():
     # 8. Test ML Models
     print("\n[8] Testing ML Models...")
     try:
-        import torch
 
         if os.path.exists("ppo_trader_iter_150.pt"):
             print("  [OK] Trained ML models found")

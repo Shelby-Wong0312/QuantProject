@@ -79,8 +79,14 @@ if cfg.exists():
     replace_line_contains(
         cfg,
         [
-            ("logger.warning(", '    logger.warning(".env file not found in project directory!")'),
-            ('logger.info("" +', '    logger.info(" Found .env file at: %s", env_file_path)'),
+            (
+                "logger.warning(",
+                '    logger.warning(".env file not found in project directory!")',
+            ),
+            (
+                'logger.info("" +',
+                '    logger.info(" Found .env file at: %s", env_file_path)',
+            ),
         ],
     )
 
@@ -93,7 +99,10 @@ if cap.exists():
                 'logger.info(" Authentication successful!")',
                 '        logger.info(" Authentication successful!")',
             ),
-            ("logger.info( Identifier:", '        logger.info("Identifier: %s", api.identifier)'),
+            (
+                "logger.info( Identifier:",
+                '        logger.info("Identifier: %s", api.identifier)',
+            ),
         ],
     )
 

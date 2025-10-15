@@ -7,11 +7,7 @@
 import asyncio
 import logging
 import pandas as pd
-import numpy as np
 import sqlite3
-import json
-import gzip
-import pickle
 import threading
 import queue
 from datetime import datetime, timezone, timedelta
@@ -82,7 +78,9 @@ class DataStorage:
         self._last_flush = time.time()
 
         # 線程池
-        self.executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="DataStorage")
+        self.executor = ThreadPoolExecutor(
+            max_workers=4, thread_name_prefix="DataStorage"
+        )
 
         # 線程鎖
         self._lock = threading.RLock()
@@ -355,7 +353,10 @@ class DataStorage:
 
             date_str = datetime.now().strftime("%Y%m%d")
             filename = (
-                self.storage_path / "parquet" / "ticks" / f"{symbol}_ticks_{date_str}.parquet"
+                self.storage_path
+                / "parquet"
+                / "ticks"
+                / f"{symbol}_ticks_{date_str}.parquet"
             )
 
             # 如果文件存在，追加數據
@@ -375,7 +376,9 @@ class DataStorage:
         """寫入Tick數據到CSV"""
         try:
             date_str = datetime.now().strftime("%Y%m%d")
-            filename = self.storage_path / "csv" / "ticks" / f"{symbol}_ticks_{date_str}.csv"
+            filename = (
+                self.storage_path / "csv" / "ticks" / f"{symbol}_ticks_{date_str}.csv"
+            )
 
             # 創建DataFrame
             df_data = [asdict(tick) for tick in ticks]
@@ -485,7 +488,9 @@ class DataStorage:
             df_data = [asdict(bar) for bar in bars]
             df = pd.DataFrame(df_data)
             df["timestamp"] = pd.to_datetime(df["timestamp"])
-            df["timeframe"] = df["timeframe"].apply(lambda x: x.value if hasattr(x, "value") else x)
+            df["timeframe"] = df["timeframe"].apply(
+                lambda x: x.value if hasattr(x, "value") else x
+            )
 
             date_str = datetime.now().strftime("%Y%m%d")
             filename = (
@@ -513,13 +518,18 @@ class DataStorage:
         try:
             date_str = datetime.now().strftime("%Y%m%d")
             filename = (
-                self.storage_path / "csv" / "ohlc" / f"{symbol}_{timeframe}_ohlc_{date_str}.csv"
+                self.storage_path
+                / "csv"
+                / "ohlc"
+                / f"{symbol}_{timeframe}_ohlc_{date_str}.csv"
             )
 
             # 創建DataFrame
             df_data = [asdict(bar) for bar in bars]
             df = pd.DataFrame(df_data)
-            df["timeframe"] = df["timeframe"].apply(lambda x: x.value if hasattr(x, "value") else x)
+            df["timeframe"] = df["timeframe"].apply(
+                lambda x: x.value if hasattr(x, "value") else x
+            )
 
             # 寫入或追加到CSV
             mode = "a" if filename.exists() else "w"
@@ -544,7 +554,9 @@ class DataStorage:
             self.stats["total_queries"] += 1
 
             # 先檢查緩存
-            cached_data = self._query_tick_from_cache(symbol, start_time, end_time, limit)
+            cached_data = self._query_tick_from_cache(
+                symbol, start_time, end_time, limit
+            )
             if cached_data:
                 self.stats["cache_hits"] += 1
                 return cached_data
@@ -555,7 +567,9 @@ class DataStorage:
             if self.enable_sqlite:
                 return self._query_tick_from_sqlite(symbol, start_time, end_time, limit)
             elif self.enable_parquet:
-                return self._query_tick_from_parquet(symbol, start_time, end_time, limit)
+                return self._query_tick_from_parquet(
+                    symbol, start_time, end_time, limit
+                )
             else:
                 return []
 
@@ -678,9 +692,13 @@ class DataStorage:
             self.stats["cache_misses"] += 1
 
             if self.enable_sqlite:
-                return self._query_ohlc_from_sqlite(symbol, timeframe, start_time, end_time, limit)
+                return self._query_ohlc_from_sqlite(
+                    symbol, timeframe, start_time, end_time, limit
+                )
             elif self.enable_parquet:
-                return self._query_ohlc_from_parquet(symbol, timeframe, start_time, end_time, limit)
+                return self._query_ohlc_from_parquet(
+                    symbol, timeframe, start_time, end_time, limit
+                )
             else:
                 return []
 
@@ -764,7 +782,9 @@ class DataStorage:
                 for symbol, timeframes in self.ohlc_cache.items():
                     for timeframe, bars in timeframes.items():
                         if bars:
-                            self.write_queue.put(("ohlc", (symbol, timeframe, bars.copy())))
+                            self.write_queue.put(
+                                ("ohlc", (symbol, timeframe, bars.copy()))
+                            )
                             bars.clear()
 
                 logger.info("已刷新所有緩存數據到寫入隊列")
@@ -810,19 +830,23 @@ class DataStorage:
 
                 # 清理舊Tick數據
                 cursor.execute(
-                    "DELETE FROM tick_data WHERE timestamp < ?", (cutoff_date.isoformat(),)
+                    "DELETE FROM tick_data WHERE timestamp < ?",
+                    (cutoff_date.isoformat(),),
                 )
                 tick_deleted = cursor.rowcount
 
                 # 清理舊OHLC數據
                 cursor.execute(
-                    "DELETE FROM ohlc_data WHERE timestamp < ?", (cutoff_date.isoformat(),)
+                    "DELETE FROM ohlc_data WHERE timestamp < ?",
+                    (cutoff_date.isoformat(),),
                 )
                 ohlc_deleted = cursor.rowcount
 
                 conn.commit()
 
-                logger.info(f"已從SQLite刪除 {tick_deleted} 筆Tick和 {ohlc_deleted} 筆OHLC舊記錄")
+                logger.info(
+                    f"已從SQLite刪除 {tick_deleted} 筆Tick和 {ohlc_deleted} 筆OHLC舊記錄"
+                )
 
         except Exception as e:
             logger.error(f"清理SQLite舊數據時出錯: {e}")
@@ -842,7 +866,9 @@ class DataStorage:
 
             # 緩存統計
             cache_stats = {
-                "tick_cache_size": sum(len(cache) for cache in self.tick_cache.values()),
+                "tick_cache_size": sum(
+                    len(cache) for cache in self.tick_cache.values()
+                ),
                 "ohlc_cache_size": sum(
                     sum(len(bars) for bars in timeframes.values())
                     for timeframes in self.ohlc_cache.values()
@@ -873,7 +899,8 @@ async def example_usage():
 
     # 設置日誌
     logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
     # 創建存儲系統

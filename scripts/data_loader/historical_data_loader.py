@@ -5,14 +5,13 @@ Loads and validates real historical data for 4,215 stocks
 """
 
 import asyncio
-import aiohttp
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime
 import json
 import sqlite3
 import os
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional
 import yfinance as yf
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
@@ -98,7 +97,18 @@ class HistoricalDataLoader:
         except Exception as e:
             logger.error(f"Error loading symbols: {e}")
             # Fallback to a default list
-            return ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA", "JPM", "V", "JNJ"]
+            return [
+                "AAPL",
+                "MSFT",
+                "GOOGL",
+                "AMZN",
+                "META",
+                "TSLA",
+                "NVDA",
+                "JPM",
+                "V",
+                "JNJ",
+            ]
 
     def download_symbol_data(self, symbol: str) -> Optional[pd.DataFrame]:
         """Download historical data for a single symbol"""
@@ -157,11 +167,14 @@ class HistoricalDataLoader:
         # Process in batches
         for i in range(0, len(self.symbols), self.batch_size):
             batch = self.symbols[i : i + self.batch_size]
-            logger.info(f"Processing batch {i//self.batch_size + 1}: {len(batch)} symbols")
+            logger.info(
+                f"Processing batch {i//self.batch_size + 1}: {len(batch)} symbols"
+            )
 
             with ThreadPoolExecutor(max_workers=10) as executor:
                 futures = {
-                    executor.submit(self.download_symbol_data, symbol): symbol for symbol in batch
+                    executor.submit(self.download_symbol_data, symbol): symbol
+                    for symbol in batch
                 }
 
                 for future in as_completed(futures):
@@ -174,11 +187,15 @@ class HistoricalDataLoader:
 
         elapsed = time.time() - start_time
         logger.info(f"Download completed in {elapsed:.2f} seconds")
-        logger.info(f"Successfully downloaded: {len(all_data)}/{len(self.symbols)} symbols")
+        logger.info(
+            f"Successfully downloaded: {len(all_data)}/{len(self.symbols)} symbols"
+        )
 
         return all_data
 
-    def validate_data_quality(self, df: pd.DataFrame, symbol: str) -> DataQualityMetrics:
+    def validate_data_quality(
+        self, df: pd.DataFrame, symbol: str
+    ) -> DataQualityMetrics:
         """Validate data quality for a symbol"""
         metrics = DataQualityMetrics(
             symbol=symbol,
@@ -197,7 +214,9 @@ class HistoricalDataLoader:
 
         # 2. Accuracy - Check if High >= Low and Close within High-Low range
         valid_prices = (
-            (df["High"] >= df["Low"]) & (df["Close"] >= df["Low"]) & (df["Close"] <= df["High"])
+            (df["High"] >= df["Low"])
+            & (df["Close"] >= df["Low"])
+            & (df["Close"] <= df["High"])
         ).sum()
         metrics.accuracy = valid_prices / len(df) if len(df) > 0 else 0
 
@@ -208,7 +227,9 @@ class HistoricalDataLoader:
             if last_date.tz is not None:
                 last_date = last_date.tz_localize(None)
             days_old = (datetime.now() - last_date).days
-            metrics.timeliness = max(0, 1 - (days_old / 30))  # Penalize if > 30 days old
+            metrics.timeliness = max(
+                0, 1 - (days_old / 30)
+            )  # Penalize if > 30 days old
         else:
             metrics.timeliness = 0
 
@@ -266,7 +287,9 @@ class HistoricalDataLoader:
             # Create indexes for performance
             conn.execute("CREATE INDEX IF NOT EXISTS idx_symbol ON market_data(symbol)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_date ON market_data(date)")
-            conn.execute("CREATE INDEX IF NOT EXISTS idx_symbol_date ON market_data(symbol, date)")
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_symbol_date ON market_data(symbol, date)"
+            )
 
             # Store data
             for df in data_frames:
@@ -382,7 +405,9 @@ class HistoricalDataLoader:
 
             # Find best and worst
             sorted_symbols = sorted(
-                self.quality_reports.items(), key=lambda x: x[1]["overall_score"], reverse=True
+                self.quality_reports.items(),
+                key=lambda x: x[1]["overall_score"],
+                reverse=True,
             )
             if sorted_symbols:
                 report["quality_metrics"]["best_quality_symbol"] = {
@@ -429,7 +454,7 @@ class HistoricalDataLoader:
 
             # Step 4: Create data catalog
             logger.info("\nStep 4: Creating data catalog...")
-            catalog = self.create_data_catalog()
+            self.create_data_catalog()
 
             # Step 5: Generate validation report
             logger.info("\nStep 5: Generating validation report...")
@@ -439,7 +464,9 @@ class HistoricalDataLoader:
             logger.info("\n" + "=" * 80)
             logger.info("DATA LOADING COMPLETE")
             logger.info("=" * 80)
-            logger.info(f"Successfully loaded: {report['summary']['successful_downloads']} symbols")
+            logger.info(
+                f"Successfully loaded: {report['summary']['successful_downloads']} symbols"
+            )
             logger.info(f"Failed: {len(self.failed_symbols)} symbols")
             logger.info(f"Success rate: {report['summary']['success_rate']}")
             logger.info(

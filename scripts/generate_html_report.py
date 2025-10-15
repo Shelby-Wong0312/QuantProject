@@ -4,14 +4,8 @@ Creates interactive visualizations and detailed transaction tables
 """
 
 import pandas as pd
-import numpy as np
 import sqlite3
 import os
-import json
-from datetime import datetime
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import plotly.express as px
 
 
 class HTMLReportGenerator:
@@ -19,10 +13,13 @@ class HTMLReportGenerator:
 
     def __init__(self):
         self.db_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "data",
+            "quant_trading.db",
         )
         self.output_dir = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "analysis_reports"
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "analysis_reports",
         )
         self.html_dir = os.path.join(self.output_dir, "html_reports")
         self.data_dir = os.path.join(self.output_dir, "data_exports")
@@ -38,7 +35,7 @@ class HTMLReportGenerator:
         conn = sqlite3.connect(self.db_path)
 
         # Get overview statistics
-        stats = self._get_overview_stats(conn)
+        self._get_overview_stats(conn)
 
         # Generate HTML content
         html_content = """
@@ -456,7 +453,7 @@ class HTMLReportGenerator:
         """
 
         for idx, row in df.iterrows():
-            status_badge = (
+            (
                 '<span class="badge badge-success">正常</span>'
                 if row["records"] > 3900
                 else '<span class="badge badge-warning">數據不完整</span>'
@@ -505,7 +502,9 @@ class HTMLReportGenerator:
         full_query = query.replace("LIMIT 100", "")
         full_df = pd.read_sql_query(full_query, conn)
         full_df.to_csv(
-            os.path.join(self.data_dir, "all_transactions.csv"), index=False, encoding="utf-8-sig"
+            os.path.join(self.data_dir, "all_transactions.csv"),
+            index=False,
+            encoding="utf-8-sig",
         )
 
         html = """
@@ -527,8 +526,8 @@ class HTMLReportGenerator:
         """
 
         for _, row in df.iterrows():
-            change_color = "green" if row["change"] >= 0 else "red"
-            change_symbol = "▲" if row["change"] >= 0 else "▼"
+            "green" if row["change"] >= 0 else "red"
+            "▲" if row["change"] >= 0 else "▼"
 
             html += """
                 <tr>
@@ -591,11 +590,6 @@ class HTMLReportGenerator:
         """
 
         for check_name, passed, details in checks:
-            status = (
-                '<span class="badge badge-success">✓ 通過</span>'
-                if passed
-                else '<span class="badge badge-danger">✗ 失敗</span>'
-            )
             html += """
                 <tr>
                     <td>{check_name}</td>
@@ -615,7 +609,7 @@ class HTMLReportGenerator:
         """Generate JavaScript for charts"""
 
         # Get data for charts
-        yearly_data = pd.read_sql_query(
+        pd.read_sql_query(
             """
             SELECT 
                 SUBSTR(date, 1, 4) as year,
@@ -627,7 +621,7 @@ class HTMLReportGenerator:
             conn,
         )
 
-        top_stocks = pd.read_sql_query(
+        pd.read_sql_query(
             """
             SELECT 
                 symbol,
@@ -640,7 +634,7 @@ class HTMLReportGenerator:
             conn,
         )
 
-        volume_stocks = pd.read_sql_query(
+        pd.read_sql_query(
             """
             SELECT 
                 symbol,

@@ -9,7 +9,6 @@ import sys
 import os
 import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta
 import logging
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -130,7 +129,11 @@ class MLTradingSystem:
             # LSTM prediction
             try:
                 lstm_pred = self.lstm_model.predict(features)
-                lstm_signal = "BUY" if lstm_pred > 0.02 else "SELL" if lstm_pred < -0.02 else "HOLD"
+                lstm_signal = (
+                    "BUY"
+                    if lstm_pred > 0.02
+                    else "SELL" if lstm_pred < -0.02 else "HOLD"
+                )
                 lstm_confidence = abs(lstm_pred) * 10  # Scale to 0-1
             except Exception:
                 lstm_signal = "HOLD"
@@ -139,7 +142,9 @@ class MLTradingSystem:
             # XGBoost prediction
             try:
                 xgb_pred = self.xgboost.predict(features)
-                xgb_signal = "BUY" if xgb_pred > 0.5 else "SELL" if xgb_pred < -0.5 else "HOLD"
+                xgb_signal = (
+                    "BUY" if xgb_pred > 0.5 else "SELL" if xgb_pred < -0.5 else "HOLD"
+                )
                 xgb_confidence = abs(xgb_pred)
             except Exception:
                 xgb_signal = "HOLD"
@@ -157,7 +162,12 @@ class MLTradingSystem:
 
             # Combine signals (ensemble)
             combined_signal, combined_confidence = self.combine_signals(
-                lstm_signal, lstm_confidence, xgb_signal, xgb_confidence, ppo_signal, ppo_confidence
+                lstm_signal,
+                lstm_confidence,
+                xgb_signal,
+                xgb_confidence,
+                ppo_signal,
+                ppo_confidence,
             )
 
             signals[symbol] = {
@@ -183,7 +193,9 @@ class MLTradingSystem:
         if "rsi" in data.columns:
             features.append(data["rsi"].iloc[-1] / 100)  # Normalize RSI
         if "macd" in data.columns:
-            features.append(data["macd"].iloc[-1] / data["close"].iloc[-1])  # Normalize MACD
+            features.append(
+                data["macd"].iloc[-1] / data["close"].iloc[-1]
+            )  # Normalize MACD
 
         # Moving averages
         if "sma_20" in data.columns and "sma_50" in data.columns:
@@ -195,7 +207,9 @@ class MLTradingSystem:
 
         return np.array(features)
 
-    def combine_signals(self, lstm_signal, lstm_conf, xgb_signal, xgb_conf, ppo_signal, ppo_conf):
+    def combine_signals(
+        self, lstm_signal, lstm_conf, xgb_signal, xgb_conf, ppo_signal, ppo_conf
+    ):
         """Combine signals from multiple models"""
 
         # Weight signals by confidence
@@ -235,7 +249,9 @@ class MLTradingSystem:
         print(f"   Generated {len(market_data)} symbols x 100 periods")
 
         # Update simulator with current prices
-        current_prices = {symbol: data["close"].iloc[-1] for symbol, data in market_data.items()}
+        current_prices = {
+            symbol: data["close"].iloc[-1] for symbol, data in market_data.items()
+        }
         self.simulator.update_market_prices(current_prices)
 
         # Generate ML signals
@@ -282,7 +298,10 @@ class MLTradingSystem:
 
                 if quantity > 0:
                     await self.simulator.place_order(
-                        symbol=symbol, side="BUY", quantity=quantity, order_type="MARKET"
+                        symbol=symbol,
+                        side="BUY",
+                        quantity=quantity,
+                        order_type="MARKET",
                     )
 
                     if order_id:
@@ -292,7 +311,9 @@ class MLTradingSystem:
 
                     # Set stop loss
                     stop_price = self.stop_loss.calculate_atr_stop(
-                        symbol, signal_data["price"], market_data[symbol]["close"].iloc[-20:]
+                        symbol,
+                        signal_data["price"],
+                        market_data[symbol]["close"].iloc[-20:],
                     )
                     print(f"      Stop Loss set at ${stop_price:.2f}")
 
@@ -311,7 +332,9 @@ class MLTradingSystem:
                 new_prices[symbol] = new_price
 
                 direction = "↑" if predicted_return > 0 else "↓"
-                print(f"   {symbol}: ${new_price:.2f} {direction} ({predicted_return:.2%})")
+                print(
+                    f"   {symbol}: ${new_price:.2f} {direction} ({predicted_return:.2%})"
+                )
 
             self.simulator.update_market_prices(new_prices)
             current_prices = new_prices
@@ -322,7 +345,10 @@ class MLTradingSystem:
                 if new_prices[symbol] < position.avg_price * 0.95:  # 5% stop loss
                     # Execute stop loss
                     await self.simulator.place_order(
-                        symbol=symbol, side="SELL", quantity=position.quantity, order_type="MARKET"
+                        symbol=symbol,
+                        side="SELL",
+                        quantity=position.quantity,
+                        order_type="MARKET",
                     )
                     print(f"   [STOP LOSS] Sold {symbol}")
 

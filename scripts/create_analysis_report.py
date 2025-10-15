@@ -5,7 +5,6 @@ Create comprehensive analysis report with HTML visualization
 import pandas as pd
 import sqlite3
 import os
-from datetime import datetime
 
 
 def create_html_report():
@@ -13,7 +12,9 @@ def create_html_report():
 
     # Database path
     db_path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "data",
+        "quant_trading.db",
     )
 
     # Output directories
@@ -41,7 +42,9 @@ def create_html_report():
     cursor.execute("SELECT MIN(date), MAX(date) FROM daily_data")
     date_range = cursor.fetchone()
 
-    cursor.execute("SELECT AVG(close_price), MIN(close_price), MAX(close_price) FROM daily_data")
+    cursor.execute(
+        "SELECT AVG(close_price), MIN(close_price), MAX(close_price) FROM daily_data"
+    )
     price_stats = cursor.fetchone()
 
     # Get top stocks by price

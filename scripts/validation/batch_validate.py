@@ -80,7 +80,13 @@ def main():
         print("-" * 60)
 
     # Statistics
-    stats = {"start_time": time.time(), "valid": 0, "tradable": 0, "invalid": 0, "errors": 0}
+    stats = {
+        "start_time": time.time(),
+        "valid": 0,
+        "tradable": 0,
+        "invalid": 0,
+        "errors": 0,
+    }
 
     # Process each ticker
     for idx, ticker in enumerate(pending):
@@ -106,7 +112,10 @@ def main():
                     # Get details
                     details = service.get_market_details(epic)
                     if details:
-                        is_tradable = details.get("snapshot", {}).get("marketStatus") == "TRADEABLE"
+                        is_tradable = (
+                            details.get("snapshot", {}).get("marketStatus")
+                            == "TRADEABLE"
+                        )
 
                         validated[ticker] = {
                             "valid": True,

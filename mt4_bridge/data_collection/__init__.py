@@ -45,7 +45,6 @@ from .mt4_data_feed import MT4DataFeed
 from .data_storage import DataStorage
 
 # 導入常用的枚舉值，方便使用
-from .ohlc_aggregator import TimeFrame
 
 # 公開的 API
 __all__ = [
@@ -124,9 +123,9 @@ def create_mt4_data_collection_system(symbols, event_queue, config=None):
         config = get_default_config()
 
     # 合併配置
-    tick_config = config.get("tick_collection", {})
+    config.get("tick_collection", {})
     ohlc_config = config.get("ohlc_aggregation", {})
-    storage_config = config.get("data_storage", {})
+    config.get("data_storage", {})
     feed_config = config.get("data_feed", {})
 
     # 創建數據饋送器
@@ -134,7 +133,8 @@ def create_mt4_data_collection_system(symbols, event_queue, config=None):
         symbols,
         event_queue=event_queue,
         timeframes=ohlc_config.get(
-            "default_timeframes", DEFAULT_CONFIG["ohlc_aggregation"]["default_timeframes"]
+            "default_timeframes",
+            DEFAULT_CONFIG["ohlc_aggregation"]["default_timeframes"],
         ),
         enable_tick_collection=True,
         enable_indicators=ohlc_config.get("enable_indicators", True),
@@ -190,7 +190,11 @@ def check_dependencies():
         except ImportError:
             missing.append(dep)
 
-    return {"available": available, "missing": missing, "all_available": len(missing) == 0}
+    return {
+        "available": available,
+        "missing": missing,
+        "all_available": len(missing) == 0,
+    }
 
 
 # 模組初始化時檢查依賴

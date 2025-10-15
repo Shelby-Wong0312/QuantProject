@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from eval.reports import write_markdown
 
 

@@ -12,14 +12,10 @@ Comprehensive chart library including:
 """
 
 import plotly.graph_objects as go
-import plotly.express as px
 from plotly.subplots import make_subplots
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
-import seaborn as sns
-import matplotlib.pyplot as plt
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -50,7 +46,9 @@ class VisualizationCharts:
             paper_bgcolor=self.colors["background"],
             margin=dict(l=60, r=60, t=80, b=60),
             showlegend=True,
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            legend=dict(
+                orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+            ),
         )
 
     def create_equity_curve(
@@ -82,10 +80,14 @@ class VisualizationCharts:
             for idx, trade in trades_df.iterrows():
                 if trade["side"] == "buy":
                     exit_price = trade.get("exit_price", trade["price"])
-                    trades_df.at[idx, "pnl"] = (exit_price - trade["price"]) * trade["quantity"]
+                    trades_df.at[idx, "pnl"] = (exit_price - trade["price"]) * trade[
+                        "quantity"
+                    ]
                 else:
                     exit_price = trade.get("exit_price", trade["price"])
-                    trades_df.at[idx, "pnl"] = (trade["price"] - exit_price) * trade["quantity"]
+                    trades_df.at[idx, "pnl"] = (trade["price"] - exit_price) * trade[
+                        "quantity"
+                    ]
 
         trades_df["cumulative_pnl"] = trades_df["pnl"].cumsum()
         trades_df["equity"] = initial_capital + trades_df["cumulative_pnl"]
@@ -98,7 +100,11 @@ class VisualizationCharts:
         fig = make_subplots(
             rows=3,
             cols=1,
-            subplot_titles=("Portfolio Equity Curve", "Drawdown Analysis (%)", "Daily Returns"),
+            subplot_titles=(
+                "Portfolio Equity Curve",
+                "Drawdown Analysis (%)",
+                "Daily Returns",
+            ),
             vertical_spacing=0.08,
             row_heights=[0.5, 0.25, 0.25],
             specs=[[{"secondary_y": True}], [{}], [{}]],
@@ -154,7 +160,8 @@ class VisualizationCharts:
         # Daily returns
         daily_returns = trades_df["equity"].pct_change().fillna(0) * 100
         colors = [
-            self.colors["success"] if x >= 0 else self.colors["danger"] for x in daily_returns
+            self.colors["success"] if x >= 0 else self.colors["danger"]
+            for x in daily_returns
         ]
 
         fig.add_trace(
@@ -181,10 +188,20 @@ class VisualizationCharts:
 
         # Add horizontal lines
         fig.add_hline(
-            y=0, line_dash="dash", line_color=self.colors["grid"], opacity=0.5, row=2, col=1
+            y=0,
+            line_dash="dash",
+            line_color=self.colors["grid"],
+            opacity=0.5,
+            row=2,
+            col=1,
         )
         fig.add_hline(
-            y=0, line_dash="dash", line_color=self.colors["grid"], opacity=0.5, row=3, col=1
+            y=0,
+            line_dash="dash",
+            line_color=self.colors["grid"],
+            opacity=0.5,
+            row=3,
+            col=1,
         )
 
         return fig
@@ -329,11 +346,15 @@ class VisualizationCharts:
             col=2,
         )
 
-        fig.update_layout(**self.default_layout, title="Returns Distribution Analysis", height=700)
+        fig.update_layout(
+            **self.default_layout, title="Returns Distribution Analysis", height=700
+        )
 
         return fig
 
-    def create_correlation_heatmap(self, returns_data: Dict[str, pd.Series]) -> go.Figure:
+    def create_correlation_heatmap(
+        self, returns_data: Dict[str, pd.Series]
+    ) -> go.Figure:
         """Create correlation heatmap for multiple assets/strategies"""
 
         if not returns_data or len(returns_data) < 2:
@@ -527,16 +548,33 @@ class VisualizationCharts:
 
         # Add reference lines
         fig.add_hline(
-            y=0, line_dash="dash", line_color=self.colors["grid"], opacity=0.5, row=1, col=1
+            y=0,
+            line_dash="dash",
+            line_color=self.colors["grid"],
+            opacity=0.5,
+            row=1,
+            col=1,
         )
         fig.add_hline(
-            y=0, line_dash="dash", line_color=self.colors["grid"], opacity=0.5, row=1, col=2
+            y=0,
+            line_dash="dash",
+            line_color=self.colors["grid"],
+            opacity=0.5,
+            row=1,
+            col=2,
         )
         fig.add_hline(
-            y=0, line_dash="dash", line_color=self.colors["grid"], opacity=0.5, row=2, col=2
+            y=0,
+            line_dash="dash",
+            line_color=self.colors["grid"],
+            opacity=0.5,
+            row=2,
+            col=2,
         )
 
-        fig.update_layout(**self.default_layout, title="Advanced Trade Analysis", height=700)
+        fig.update_layout(
+            **self.default_layout, title="Advanced Trade Analysis", height=700
+        )
 
         return fig
 
@@ -567,7 +605,9 @@ class VisualizationCharts:
             if "total_return" in metrics and "annual_volatility" in metrics:
                 strategies.append(strategy)
                 returns.append(metrics["total_return"])
-                volatilities.append(metrics["annual_volatility"] * 100)  # Convert to percentage
+                volatilities.append(
+                    metrics["annual_volatility"] * 100
+                )  # Convert to percentage
                 sharpe_ratios.append(metrics.get("sharpe_ratio", 0))
 
         if not strategies:
@@ -595,7 +635,9 @@ class VisualizationCharts:
                 text=strategies,
                 textposition="top center",
                 marker=dict(
-                    size=[abs(sr) * 20 + 10 for sr in sharpe_ratios],  # Size by Sharpe ratio
+                    size=[
+                        abs(sr) * 20 + 10 for sr in sharpe_ratios
+                    ],  # Size by Sharpe ratio
                     color=sharpe_ratios,
                     colorscale="Viridis",
                     opacity=0.7,
@@ -612,12 +654,16 @@ class VisualizationCharts:
         avg_vol = np.mean(volatilities)
         avg_ret = np.mean(returns)
 
-        fig.add_vline(x=avg_vol, line_dash="dash", line_color=self.colors["grid"], opacity=0.5)
-        fig.add_hline(y=avg_ret, line_dash="dash", line_color=self.colors["grid"], opacity=0.5)
+        fig.add_vline(
+            x=avg_vol, line_dash="dash", line_color=self.colors["grid"], opacity=0.5
+        )
+        fig.add_hline(
+            y=avg_ret, line_dash="dash", line_color=self.colors["grid"], opacity=0.5
+        )
 
         # Add quadrant annotations
         max_vol, max_ret = max(volatilities), max(returns)
-        min_vol, min_ret = min(volatilities), min(returns)
+        min_vol, _min_ret = min(volatilities), min(returns)
 
         fig.add_annotation(
             x=avg_vol + (max_vol - avg_vol) * 0.7,
@@ -648,7 +694,9 @@ class VisualizationCharts:
 
         return fig
 
-    def create_performance_comparison(self, strategies_data: Dict[str, Dict]) -> go.Figure:
+    def create_performance_comparison(
+        self, strategies_data: Dict[str, Dict]
+    ) -> go.Figure:
         """Create comprehensive performance comparison chart"""
 
         if not strategies_data:
@@ -689,7 +737,9 @@ class VisualizationCharts:
                 elif metric == "sharpe_ratio":
                     values.append(max(0, min(3, value)) * 33.33)  # Scale to 0-100
                 elif metric == "max_drawdown":
-                    values.append(max(0, 100 + value))  # Convert negative to positive scale
+                    values.append(
+                        max(0, 100 + value)
+                    )  # Convert negative to positive scale
                 elif metric == "win_rate":
                     values.append(value)  # Already 0-100
                 elif metric == "profit_factor":

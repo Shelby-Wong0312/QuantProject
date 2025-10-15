@@ -11,7 +11,6 @@ import sys
 from pathlib import Path
 from datetime import datetime, timedelta
 import pandas as pd
-import numpy as np
 
 # 添加項目路徑
 project_root = Path(__file__).parent.parent
@@ -24,9 +23,6 @@ from src.data_pipeline.mt4_data_collector import (
     DataCache,
     get_pipeline,
     create_pipeline,
-    start_data_collection,
-    get_realtime_data,
-    get_historical_data,
 )
 from mt4_bridge.data_collector import TickData, OHLCData, TimeFrame
 
@@ -40,7 +36,12 @@ class TestDataQualityChecker(unittest.TestCase):
     def test_valid_tick(self):
         """測試有效的Tick數據"""
         tick = TickData(
-            symbol="EURUSD", timestamp=datetime.now(), bid=1.0800, ask=1.0802, spread=2, volume=100
+            symbol="EURUSD",
+            timestamp=datetime.now(),
+            bid=1.0800,
+            ask=1.0802,
+            spread=2,
+            volume=100,
         )
         is_valid, error = self.checker.check_tick(tick)
         self.assertTrue(is_valid)
@@ -64,7 +65,12 @@ class TestDataQualityChecker(unittest.TestCase):
         """測試價格跳動檢查"""
         # 第一個tick
         tick1 = TickData(
-            symbol="EURUSD", timestamp=datetime.now(), bid=1.0800, ask=1.0802, spread=2, volume=100
+            symbol="EURUSD",
+            timestamp=datetime.now(),
+            bid=1.0800,
+            ask=1.0802,
+            spread=2,
+            volume=100,
         )
         self.checker.check_tick(tick1)
 
@@ -202,7 +208,12 @@ class TestMT4DataPipeline(unittest.TestCase):
     def test_market_data_creation(self):
         """測試市場數據創建"""
         tick = TickData(
-            symbol="EURUSD", timestamp=datetime.now(), bid=1.0800, ask=1.0802, spread=2, volume=100
+            symbol="EURUSD",
+            timestamp=datetime.now(),
+            bid=1.0800,
+            ask=1.0802,
+            spread=2,
+            volume=100,
         )
 
         market_data = self.pipeline._create_market_data(tick)
@@ -238,7 +249,12 @@ class TestMT4DataPipeline(unittest.TestCase):
 
         # 模擬tick數據
         tick = TickData(
-            symbol="EURUSD", timestamp=datetime.now(), bid=1.0800, ask=1.0802, spread=2, volume=100
+            symbol="EURUSD",
+            timestamp=datetime.now(),
+            bid=1.0800,
+            ask=1.0802,
+            spread=2,
+            volume=100,
         )
 
         # 處理tick（會觸發回調）

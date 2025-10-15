@@ -3,7 +3,7 @@ Action space definition for RL trading environment
 """
 
 import numpy as np
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Union
 from enum import Enum
 import logging
 
@@ -61,7 +61,9 @@ class ActionSpace:
 
         self.n_actions = len(self.discrete_actions) if action_type == "discrete" else 1
 
-        logger.info(f"Initialized {action_type} action space with {self.n_actions} actions")
+        logger.info(
+            f"Initialized {action_type} action space with {self.n_actions} actions"
+        )
 
     def sample(self) -> Union[int, float]:
         """Sample a random action"""
@@ -163,7 +165,8 @@ class ActionSpace:
             if new_position_value > portfolio_value * self.max_position_size:
                 # Adjust to stay within limit
                 max_additional_value = (
-                    portfolio_value * self.max_position_size - current_position * current_price
+                    portfolio_value * self.max_position_size
+                    - current_position * current_price
                 )
                 shares_to_buy = max(0, int(max_additional_value / current_price))
 
@@ -193,7 +196,10 @@ class ActionSpace:
                 shares_to_sell = int(current_position * fraction)
 
                 # Check minimum trade size
-                if shares_to_sell * current_price < portfolio_value * self.min_trade_size:
+                if (
+                    shares_to_sell * current_price
+                    < portfolio_value * self.min_trade_size
+                ):
                     # If selling all, ignore minimum
                     if action != ActionType.SELL_100:
                         shares_to_sell = 0
@@ -225,7 +231,7 @@ class ActionSpace:
 
         # Calculate target position value
         target_position_value = portfolio_value * action * self.max_position_size
-        target_shares = target_position_value / current_price
+        target_position_value / current_price
 
         # Calculate change needed
         current_position_value = current_position * current_price
@@ -234,7 +240,9 @@ class ActionSpace:
 
         # Initialize trade details
         trade = {
-            "action": "BUY" if shares_change > 0 else "SELL" if shares_change < 0 else "HOLD",
+            "action": (
+                "BUY" if shares_change > 0 else "SELL" if shares_change < 0 else "HOLD"
+            ),
             "shares": shares_change,
             "value": abs(shares_change * current_price),
             "new_position": current_position + shares_change,

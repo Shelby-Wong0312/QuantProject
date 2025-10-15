@@ -1,7 +1,6 @@
 from typing import Iterable
 from __future__ import annotations
 
-import math
 import time
 from pathlib import Path
 from typing import Dict
@@ -62,7 +61,9 @@ class BinanceBackend(IDataBackend):
         safe_symbol = symbol.replace("/", "_").replace(" ", "_")
         return self.cache_dir / f"BINANCE_{safe_symbol}_{interval_tag}.parquet"
 
-    def get_bars(self, symbol: str, start: str, end: str, timeframe: str = "5min") -> pd.DataFrame:
+    def get_bars(
+        self, symbol: str, start: str, end: str, timeframe: str = "5min"
+    ) -> pd.DataFrame:
         mapped_symbol = self._map_symbol(symbol)
         interval, step_ms = self._interval(timeframe)
 
@@ -145,14 +146,18 @@ class BinanceBackend(IDataBackend):
         if df.empty:
             return pd.DataFrame(columns=_OHLCV)
 
-        parquet_tag = {"1m": "1min", "5m": "5min", "1h": "60m", "1d": "1d"}.get(interval, interval)
+        parquet_tag = {"1m": "1min", "5m": "5min", "1h": "60m", "1d": "1d"}.get(
+            interval, interval
+        )
         df.to_parquet(self._cache_path(symbol, parquet_tag))
         return df
 
     def fetch_ohlcv(
         self, symbols: Iterable[str], start: str, end: str, timeframe: str = "5min"
     ) -> Dict[str, pd.DataFrame]:
-        return {symbol: self.get_bars(symbol, start, end, timeframe) for symbol in symbols}
+        return {
+            symbol: self.get_bars(symbol, start, end, timeframe) for symbol in symbols
+        }
 
 
 __all__ = ["BinanceBackend"]

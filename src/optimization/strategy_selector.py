@@ -6,16 +6,14 @@ Stage 8 - Strategy Optimization Framework
 
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Tuple, Any, Optional, Callable
+from typing import Dict, List, Tuple, Any, Optional
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from dataclasses import dataclass, field
-from abc import ABC, abstractmethod
 import json
 from pathlib import Path
-from sklearn.ensemble import RandomForestClassifier, VotingClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score, TimeSeriesSplit
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -124,7 +122,9 @@ class StrategySelector:
         self.current_selection: List[str] = []
         self.strategy_weights: Dict[str, float] = {}
 
-        logger.info(f"Strategy selector initialized with max {max_strategies} strategies")
+        logger.info(
+            f"Strategy selector initialized with max {max_strategies} strategies"
+        )
 
     def add_strategy_metrics(self, metrics: StrategyMetrics) -> None:
         """
@@ -207,7 +207,9 @@ class StrategySelector:
 
         return sorted(strategies, key=lambda x: x[1], reverse=True)
 
-    def select_strategies_by_diversification(self, correlation_matrix: pd.DataFrame) -> List[str]:
+    def select_strategies_by_diversification(
+        self, correlation_matrix: pd.DataFrame
+    ) -> List[str]:
         """
         Select strategies based on diversification (low correlation)
 
@@ -236,7 +238,9 @@ class StrategySelector:
                     strategy_name in correlation_matrix.index
                     and selected_strategy in correlation_matrix.columns
                 ):
-                    correlation = abs(correlation_matrix.loc[strategy_name, selected_strategy])
+                    correlation = abs(
+                        correlation_matrix.loc[strategy_name, selected_strategy]
+                    )
                     max_correlation = max(max_correlation, correlation)
 
             # Add strategy if correlation is below threshold
@@ -265,7 +269,9 @@ class StrategySelector:
         feature_matrix = self._prepare_ml_features(features)
 
         # Train random forest classifier
-        rf_classifier = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
+        rf_classifier = RandomForestClassifier(
+            n_estimators=100, max_depth=10, random_state=42
+        )
 
         # Use time series split for validation
         tscv = TimeSeriesSplit(n_splits=5)
@@ -292,7 +298,9 @@ class StrategySelector:
 
         # Select top strategies based on predictions
         strategy_predictions = pd.Series(predictions, index=features.index)
-        top_strategies = strategy_predictions.nlargest(self.max_strategies).index.tolist()
+        top_strategies = strategy_predictions.nlargest(
+            self.max_strategies
+        ).index.tolist()
 
         return top_strategies
 
@@ -311,7 +319,8 @@ class StrategySelector:
         """
         if method == "equal_weight":
             weights = {
-                strategy: 1.0 / len(self.current_selection) for strategy in self.current_selection
+                strategy: 1.0 / len(self.current_selection)
+                for strategy in self.current_selection
             }
 
         elif method == "inverse_volatility":
@@ -324,18 +333,25 @@ class StrategySelector:
                 weights[strategy] = inv_vol[strategy] / total_inv_vol
 
         elif method == "risk_parity":
-            weights = self._calculate_risk_parity_weights(returns_matrix[self.current_selection])
+            weights = self._calculate_risk_parity_weights(
+                returns_matrix[self.current_selection]
+            )
 
         elif method == "mean_variance":
-            weights = self._calculate_mean_variance_weights(returns_matrix[self.current_selection])
+            weights = self._calculate_mean_variance_weights(
+                returns_matrix[self.current_selection]
+            )
 
         elif method == "kelly_criterion":
-            weights = self._calculate_kelly_weights(returns_matrix[self.current_selection])
+            weights = self._calculate_kelly_weights(
+                returns_matrix[self.current_selection]
+            )
 
         else:
             # Default to equal weight
             weights = {
-                strategy: 1.0 / len(self.current_selection) for strategy in self.current_selection
+                strategy: 1.0 / len(self.current_selection)
+                for strategy in self.current_selection
             }
 
         # Ensure weights sum to 1
@@ -434,7 +450,7 @@ class StrategySelector:
         sharpe_values = [m.sharpe_ratio for m in all_metrics]
         return_values = [m.annual_return for m in all_metrics]
         calmar_values = [m.calmar_ratio for m in all_metrics]
-        win_rate_values = [m.win_rate for m in all_metrics]
+        [m.win_rate for m in all_metrics]
         profit_factor_values = [m.profit_factor for m in all_metrics]
 
         normalized = {}
@@ -471,12 +487,16 @@ class StrategySelector:
         if profit_factor_values:
             min_pf, max_pf = min(profit_factor_values), max(profit_factor_values)
             if max_pf > min_pf:
-                normalized["profit_factor"] = (metrics.profit_factor - min_pf) / (max_pf - min_pf)
+                normalized["profit_factor"] = (metrics.profit_factor - min_pf) / (
+                    max_pf - min_pf
+                )
             else:
                 normalized["profit_factor"] = 1.0
 
         # Consistency score (simplified)
-        normalized["consistency"] = min(metrics.win_rate * metrics.profit_factor / 2, 1.0)
+        normalized["consistency"] = min(
+            metrics.win_rate * metrics.profit_factor / 2, 1.0
+        )
 
         return normalized
 
@@ -493,11 +513,15 @@ class StrategySelector:
 
         # Profit per trade
         if "total_return" in features.columns and "total_trades" in features.columns:
-            feature_matrix["profit_per_trade"] = features["total_return"] / features["total_trades"]
+            feature_matrix["profit_per_trade"] = (
+                features["total_return"] / features["total_trades"]
+            )
 
         # Consistency metrics
         if "win_rate" in features.columns and "profit_factor" in features.columns:
-            feature_matrix["consistency_score"] = features["win_rate"] * features["profit_factor"]
+            feature_matrix["consistency_score"] = (
+                features["win_rate"] * features["profit_factor"]
+            )
 
         return feature_matrix.fillna(0)
 
@@ -510,7 +534,9 @@ class StrategySelector:
 
         return weights.to_dict()
 
-    def _calculate_mean_variance_weights(self, returns: pd.DataFrame) -> Dict[str, float]:
+    def _calculate_mean_variance_weights(
+        self, returns: pd.DataFrame
+    ) -> Dict[str, float]:
         """Calculate mean-variance optimal weights"""
         # Simplified mean-variance optimization
         mean_returns = returns.mean()
@@ -521,7 +547,7 @@ class StrategySelector:
 
         try:
             inv_cov = np.linalg.inv(cov_matrix.values)
-            ones = np.ones((len(mean_returns), 1))
+            np.ones((len(mean_returns), 1))
 
             # Calculate optimal weights
             weights = inv_cov @ mean_returns.values
@@ -624,7 +650,9 @@ class StrategySelector:
             ),
         }
 
-    def save_selection_results(self, filepath: str = "reports/strategy_selection_results.json"):
+    def save_selection_results(
+        self, filepath: str = "reports/strategy_selection_results.json"
+    ):
         """
         Save strategy selection results
 
@@ -636,7 +664,8 @@ class StrategySelector:
             "current_selection": self.current_selection,
             "strategy_weights": self.strategy_weights,
             "strategy_metrics": {
-                name: metrics.to_dict() for name, metrics in self.strategy_metrics.items()
+                name: metrics.to_dict()
+                for name, metrics in self.strategy_metrics.items()
             },
             "selection_history": self.selection_history[-10:],  # Last 10 selections
             "timestamp": datetime.now().isoformat(),
@@ -659,7 +688,9 @@ class StrategySelector:
             "strategy_weights": self.strategy_weights,
             "selection_criteria": self.criteria.__dict__,
             "last_selection_date": (
-                self.selection_history[-1]["timestamp"] if self.selection_history else None
+                self.selection_history[-1]["timestamp"]
+                if self.selection_history
+                else None
             ),
         }
 

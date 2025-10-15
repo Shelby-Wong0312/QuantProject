@@ -13,12 +13,10 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import plotly.graph_objects as go
-import plotly.express as px
 from plotly.subplots import make_subplots
 import plotly.io as pio
 import sqlite3
-import base64
-from typing import Dict, List, Optional, Tuple
+from typing import Dict
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -206,7 +204,9 @@ class ReportGenerator:
         </html>
         """
 
-    def load_trade_data(self, start_date: str = None, end_date: str = None) -> pd.DataFrame:
+    def load_trade_data(
+        self, start_date: str = None, end_date: str = None
+    ) -> pd.DataFrame:
         """Load trade data from database"""
         try:
             conn = sqlite3.connect(self.db_path)
@@ -269,8 +269,16 @@ class ReportGenerator:
             win_rate = (winning_trades / total_trades * 100) if total_trades > 0 else 0
 
             # Profit metrics
-            avg_win = trades_df[trades_df["pnl"] > 0]["pnl"].mean() if winning_trades > 0 else 0
-            avg_loss = trades_df[trades_df["pnl"] < 0]["pnl"].mean() if losing_trades > 0 else 0
+            avg_win = (
+                trades_df[trades_df["pnl"] > 0]["pnl"].mean()
+                if winning_trades > 0
+                else 0
+            )
+            avg_loss = (
+                trades_df[trades_df["pnl"] < 0]["pnl"].mean()
+                if losing_trades > 0
+                else 0
+            )
             profit_factor = abs(avg_win / avg_loss) if avg_loss != 0 else float("inf")
 
             # Risk metrics
@@ -285,7 +293,9 @@ class ReportGenerator:
 
             # Sharpe ratio (assuming 0% risk-free rate)
             sharpe_ratio = (
-                returns.mean() / returns.std() * np.sqrt(252) if returns.std() != 0 else 0
+                returns.mean() / returns.std() * np.sqrt(252)
+                if returns.std() != 0
+                else 0
             )
 
             metrics = {
@@ -302,7 +312,9 @@ class ReportGenerator:
                 "Volatility": f"{volatility:.2f}%",
                 "Sharpe Ratio": f"{sharpe_ratio:.2f}",
                 "Final Equity": (
-                    f"${equity.iloc[-1]:,.2f}" if not equity.empty else f"${initial_capital:,.2f}"
+                    f"${equity.iloc[-1]:,.2f}"
+                    if not equity.empty
+                    else f"${initial_capital:,.2f}"
                 ),
             }
 
@@ -377,7 +389,9 @@ class ReportGenerator:
                 col=1,
             )
 
-            fig1.update_layout(title="Portfolio Performance Over Time", height=500, showlegend=True)
+            fig1.update_layout(
+                title="Portfolio Performance Over Time", height=500, showlegend=True
+            )
 
             # Returns distribution
             returns = trades_df["pnl"] / initial_capital * 100
@@ -385,7 +399,11 @@ class ReportGenerator:
             fig2 = go.Figure()
             fig2.add_trace(
                 go.Histogram(
-                    x=returns, nbinsx=20, name="Returns", marker_color="#2E86AB", opacity=0.7
+                    x=returns,
+                    nbinsx=20,
+                    name="Returns",
+                    marker_color="#2E86AB",
+                    opacity=0.7,
                 )
             )
 
@@ -527,13 +545,17 @@ class ReportGenerator:
 
         # Select columns for display
         display_columns = ["timestamp", "symbol", "side", "quantity", "price", "pnl"]
-        available_columns = [col for col in display_columns if col in trades_display.columns]
-        trades_display = trades_display[available_columns].tail(20)  # Show last 20 trades
+        available_columns = [
+            col for col in display_columns if col in trades_display.columns
+        ]
+        trades_display = trades_display[available_columns].tail(
+            20
+        )  # Show last 20 trades
 
         # Format data
-        trades_display["timestamp"] = pd.to_datetime(trades_display["timestamp"]).dt.strftime(
-            "%Y-%m-%d %H:%M"
-        )
+        trades_display["timestamp"] = pd.to_datetime(
+            trades_display["timestamp"]
+        ).dt.strftime("%Y-%m-%d %H:%M")
         trades_display["price"] = trades_display["price"].round(2)
         trades_display["pnl"] = trades_display["pnl"].round(2)
 
@@ -642,7 +664,9 @@ class ReportGenerator:
 
         except ImportError:
             print("PDF export requires weasyprint: pip install weasyprint")
-            print("Alternatively, you can print the HTML report to PDF from your browser")
+            print(
+                "Alternatively, you can print the HTML report to PDF from your browser"
+            )
         except Exception as e:
             print(f"Error exporting to PDF: {e}")
 
@@ -652,7 +676,7 @@ def main():
     generator = ReportGenerator()
 
     # Generate report for last 30 days
-    html_report = generator.generate_report(output_file="reports/performance_report.html")
+    generator.generate_report(output_file="reports/performance_report.html")
 
     print("Report generation completed!")
     print("Open reports/performance_report.html in your browser to view the report")

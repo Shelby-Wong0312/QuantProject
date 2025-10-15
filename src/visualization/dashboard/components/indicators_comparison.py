@@ -41,7 +41,10 @@ def create_indicators_comparison(symbol, timeframe):
         # RSI subplot
         fig.add_trace(
             go.Scatter(
-                x=df["datetime"], y=df["rsi"], name="RSI", line=dict(color="purple", width=2)
+                x=df["datetime"],
+                y=df["rsi"],
+                name="RSI",
+                line=dict(color="purple", width=2),
             ),
             row=1,
             col=1,
@@ -66,7 +69,10 @@ def create_indicators_comparison(symbol, timeframe):
         # MACD subplot
         fig.add_trace(
             go.Scatter(
-                x=df["datetime"], y=df["macd"], name="MACD", line=dict(color="blue", width=2)
+                x=df["datetime"],
+                y=df["macd"],
+                name="MACD",
+                line=dict(color="blue", width=2),
             ),
             row=2,
             col=1,
@@ -137,7 +143,10 @@ def create_indicators_comparison(symbol, timeframe):
 
         fig.add_trace(
             go.Scatter(
-                x=df["datetime"], y=df["price"], name="價格", line=dict(color="black", width=2)
+                x=df["datetime"],
+                y=df["price"],
+                name="價格",
+                line=dict(color="black", width=2),
             ),
             row=3,
             col=1,
@@ -161,7 +170,9 @@ def create_indicators_comparison(symbol, timeframe):
             height=300,
             margin=dict(l=50, r=50, t=80, b=50),
             showlegend=True,
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            legend=dict(
+                orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+            ),
             hovermode="x unified",
         )
 

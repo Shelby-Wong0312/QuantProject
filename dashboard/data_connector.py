@@ -4,17 +4,15 @@ Dashboard Data Connector
 Cloud DE - Task DE-403
 """
 
-import asyncio
 import json
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 from pathlib import Path
 import logging
-from typing import Dict, List, Optional, Any
+from typing import Dict, List
 import websocket
 import threading
-import time
 import sys
 
 # Add project root to path
@@ -46,7 +44,10 @@ class DashboardDataConnector:
     """
 
     def __init__(
-        self, data_dir: str = "data", reports_dir: str = "reports", use_websocket: bool = False
+        self,
+        data_dir: str = "data",
+        reports_dir: str = "reports",
+        use_websocket: bool = False,
     ):
         """
         Initialize data connector
@@ -139,7 +140,11 @@ class DashboardDataConnector:
 
         try:
             self.ws = websocket.WebSocketApp(
-                url, on_message=on_message, on_error=on_error, on_close=on_close, on_open=on_open
+                url,
+                on_message=on_message,
+                on_error=on_error,
+                on_close=on_close,
+                on_open=on_open,
             )
 
             # Run WebSocket in separate thread
@@ -227,7 +232,9 @@ class DashboardDataConnector:
         # Return default data
         return self._get_default_portfolio_data()
 
-    def get_historical_performance(self, period: str = "1M", interval: str = "1D") -> pd.DataFrame:
+    def get_historical_performance(
+        self, period: str = "1M", interval: str = "1D"
+    ) -> pd.DataFrame:
         """
         Get historical performance data
 
@@ -378,7 +385,9 @@ class DashboardDataConnector:
 
         return alerts
 
-    def _aggregate_performance_data(self, df: pd.DataFrame, interval: str) -> pd.DataFrame:
+    def _aggregate_performance_data(
+        self, df: pd.DataFrame, interval: str
+    ) -> pd.DataFrame:
         """Aggregate performance data to specified interval"""
         # Resample based on interval
         resample_map = {"1m": "1T", "5m": "5T", "15m": "15T", "1H": "1H", "1D": "1D"}
@@ -386,7 +395,13 @@ class DashboardDataConnector:
         rule = resample_map.get(interval, "1D")
 
         aggregated = df.resample(rule).agg(
-            {"open": "first", "high": "max", "low": "min", "close": "last", "volume": "sum"}
+            {
+                "open": "first",
+                "high": "max",
+                "low": "min",
+                "close": "last",
+                "volume": "sum",
+            }
         )
 
         return aggregated

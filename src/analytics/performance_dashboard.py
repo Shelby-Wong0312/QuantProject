@@ -10,13 +10,12 @@ Provides real-time visualization of trading performance with:
 
 import streamlit as st
 import plotly.graph_objects as go
-import plotly.express as px
 from plotly.subplots import make_subplots
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import sqlite3
-from typing import Dict, List, Optional, Tuple
+from typing import Dict
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -37,7 +36,9 @@ class PerformanceDashboard:
             "text": "#2C3E50",
         }
 
-    def load_trade_data(self, start_date: str = None, end_date: str = None) -> pd.DataFrame:
+    def load_trade_data(
+        self, start_date: str = None, end_date: str = None
+    ) -> pd.DataFrame:
         """Load trade data from database with date filtering"""
         try:
             conn = sqlite3.connect(self.db_path)
@@ -207,7 +208,9 @@ class PerformanceDashboard:
                 name="Daily Returns",
                 marker=dict(
                     color=np.where(
-                        equity_data["returns"] > 0, self.colors["success"], self.colors["danger"]
+                        equity_data["returns"] > 0,
+                        self.colors["success"],
+                        self.colors["danger"],
                     ),
                     size=6,
                 ),
@@ -227,7 +230,9 @@ class PerformanceDashboard:
 
         return fig
 
-    def create_correlation_heatmap(self, symbols_data: Dict[str, pd.DataFrame]) -> go.Figure:
+    def create_correlation_heatmap(
+        self, symbols_data: Dict[str, pd.DataFrame]
+    ) -> go.Figure:
         """Create correlation heatmap for multiple symbols"""
         if not symbols_data:
             fig = go.Figure()
@@ -277,7 +282,9 @@ class PerformanceDashboard:
         )
 
         fig.update_layout(
-            title="Strategy Correlation Matrix", height=500, paper_bgcolor=self.colors["background"]
+            title="Strategy Correlation Matrix",
+            height=500,
+            paper_bgcolor=self.colors["background"],
         )
 
         return fig
@@ -304,7 +311,9 @@ class PerformanceDashboard:
 
         # Create trade duration if not exists
         if "duration" not in trades_df.columns:
-            trades_df["duration"] = np.random.uniform(1, 100, len(trades_df))  # Mock duration
+            trades_df["duration"] = np.random.uniform(
+                1, 100, len(trades_df)
+            )  # Mock duration
 
         fig = go.Figure()
 
@@ -365,7 +374,9 @@ class PerformanceDashboard:
             equity = equity_data["equity"]
 
             # Basic metrics
-            metrics["Total Return"] = f"{(equity.iloc[-1] / equity.iloc[0] - 1) * 100:.2f}%"
+            metrics["Total Return"] = (
+                f"{(equity.iloc[-1] / equity.iloc[0] - 1) * 100:.2f}%"
+            )
             metrics["Total Trades"] = len(equity_data)
             metrics["Winning Trades"] = len(equity_data[equity_data["pnl"] > 0])
             metrics["Win Rate"] = (
@@ -382,7 +393,9 @@ class PerformanceDashboard:
 
             # Sharpe ratio (assuming 0% risk-free rate)
             if returns.std() != 0:
-                metrics["Sharpe Ratio"] = f"{returns.mean() / returns.std() * np.sqrt(252):.2f}"
+                metrics["Sharpe Ratio"] = (
+                    f"{returns.mean() / returns.std() * np.sqrt(252):.2f}"
+                )
             else:
                 metrics["Sharpe Ratio"] = "N/A"
 
@@ -390,8 +403,12 @@ class PerformanceDashboard:
             if "pnl" in equity_data.columns:
                 avg_win = equity_data[equity_data["pnl"] > 0]["pnl"].mean()
                 avg_loss = equity_data[equity_data["pnl"] < 0]["pnl"].mean()
-                metrics["Avg Win"] = f"${avg_win:.2f}" if not pd.isna(avg_win) else "N/A"
-                metrics["Avg Loss"] = f"${avg_loss:.2f}" if not pd.isna(avg_loss) else "N/A"
+                metrics["Avg Win"] = (
+                    f"${avg_win:.2f}" if not pd.isna(avg_win) else "N/A"
+                )
+                metrics["Avg Loss"] = (
+                    f"${avg_loss:.2f}" if not pd.isna(avg_loss) else "N/A"
+                )
 
                 if not pd.isna(avg_loss) and avg_loss != 0:
                     metrics["Profit Factor"] = f"{abs(avg_win / avg_loss):.2f}"
@@ -417,7 +434,9 @@ class PerformanceDashboard:
 
         # Date range selector
         col1, col2 = st.sidebar.columns(2)
-        start_date = col1.date_input("Start Date", value=datetime.now() - timedelta(days=30))
+        start_date = col1.date_input(
+            "Start Date", value=datetime.now() - timedelta(days=30)
+        )
         end_date = col2.date_input("End Date", value=datetime.now())
 
         # Refresh button
@@ -427,7 +446,8 @@ class PerformanceDashboard:
         # Load and process data
         with st.spinner("Loading trade data..."):
             trades_df = self.load_trade_data(
-                start_date=start_date.strftime("%Y-%m-%d"), end_date=end_date.strftime("%Y-%m-%d")
+                start_date=start_date.strftime("%Y-%m-%d"),
+                end_date=end_date.strftime("%Y-%m-%d"),
             )
 
             if not trades_df.empty:
@@ -469,7 +489,9 @@ class PerformanceDashboard:
             # Data table
             st.subheader("📋 Recent Trades")
             st.dataframe(
-                trades_df.tail(10)[["timestamp", "symbol", "side", "quantity", "price", "pnl"]],
+                trades_df.tail(10)[
+                    ["timestamp", "symbol", "side", "quantity", "price", "pnl"]
+                ],
                 use_container_width=True,
             )
 

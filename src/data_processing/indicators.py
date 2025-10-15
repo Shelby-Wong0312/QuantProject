@@ -3,8 +3,7 @@ Technical Indicators Calculation Module
 """
 
 import pandas as pd
-import numpy as np
-from typing import Optional, Union, Tuple
+from typing import Optional, Tuple
 import logging
 
 
@@ -78,7 +77,10 @@ class TechnicalIndicators:
 
     @staticmethod
     def macd(
-        data: pd.Series, fast_period: int = 12, slow_period: int = 26, signal_period: int = 9
+        data: pd.Series,
+        fast_period: int = 12,
+        slow_period: int = 26,
+        signal_period: int = 9,
     ) -> Tuple[pd.Series, pd.Series, pd.Series]:
         """
         Moving Average Convergence Divergence
@@ -135,7 +137,9 @@ class TechnicalIndicators:
         return upper, middle, lower
 
     @staticmethod
-    def atr(high: pd.Series, low: pd.Series, close: pd.Series, period: int = 14) -> pd.Series:
+    def atr(
+        high: pd.Series, low: pd.Series, close: pd.Series, period: int = 14
+    ) -> pd.Series:
         """
         Average True Range
 
@@ -200,7 +204,9 @@ class TechnicalIndicators:
         return k_percent, d_percent
 
     @staticmethod
-    def adx(high: pd.Series, low: pd.Series, close: pd.Series, period: int = 14) -> pd.Series:
+    def adx(
+        high: pd.Series, low: pd.Series, close: pd.Series, period: int = 14
+    ) -> pd.Series:
         """
         Average Directional Index
 
@@ -229,8 +235,12 @@ class TechnicalIndicators:
         neg_dm[(down_move > up_move) & (down_move > 0)] = down_move
 
         # Smooth the directional movements
-        pos_di = 100 * (pos_dm.rolling(window=period).sum() / atr.rolling(window=period).sum())
-        neg_di = 100 * (neg_dm.rolling(window=period).sum() / atr.rolling(window=period).sum())
+        pos_di = 100 * (
+            pos_dm.rolling(window=period).sum() / atr.rolling(window=period).sum()
+        )
+        neg_di = 100 * (
+            neg_dm.rolling(window=period).sum() / atr.rolling(window=period).sum()
+        )
 
         # Calculate DX
         dx = 100 * ((pos_di - neg_di).abs() / (pos_di + neg_di))
@@ -266,7 +276,9 @@ class TechnicalIndicators:
         return obv
 
     @staticmethod
-    def vwap(high: pd.Series, low: pd.Series, close: pd.Series, volume: pd.Series) -> pd.Series:
+    def vwap(
+        high: pd.Series, low: pd.Series, close: pd.Series, volume: pd.Series
+    ) -> pd.Series:
         """
         Volume Weighted Average Price
 
@@ -356,15 +368,21 @@ class TechnicalIndicators:
             result["bb_lower"] = lower
 
         if "atr" in indicators:
-            result["atr"] = TechnicalIndicators.atr(result["high"], result["low"], result["close"])
+            result["atr"] = TechnicalIndicators.atr(
+                result["high"], result["low"], result["close"]
+            )
 
         if "stochastic" in indicators:
-            k, d = TechnicalIndicators.stochastic(result["high"], result["low"], result["close"])
+            k, d = TechnicalIndicators.stochastic(
+                result["high"], result["low"], result["close"]
+            )
             result["stoch_k"] = k
             result["stoch_d"] = d
 
         if "adx" in indicators:
-            result["adx"] = TechnicalIndicators.adx(result["high"], result["low"], result["close"])
+            result["adx"] = TechnicalIndicators.adx(
+                result["high"], result["low"], result["close"]
+            )
 
         if "obv" in indicators:
             result["obv"] = TechnicalIndicators.obv(result["close"], result["volume"])

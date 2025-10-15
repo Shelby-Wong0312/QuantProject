@@ -147,9 +147,13 @@ def create_news_list(news_items):
                     [
                         html.H6(news["title"], className="mb-1"),
                         html.Small(news["time"], className="text-muted"),
-                        dbc.Badge(news["sentiment"], color=badge_color, className="ms-2"),
                         dbc.Badge(
-                            f"信心度: {news['confidence']:.1%}", color="info", className="ms-1"
+                            news["sentiment"], color=badge_color, className="ms-2"
+                        ),
+                        dbc.Badge(
+                            f"信心度: {news['confidence']:.1%}",
+                            color="info",
+                            className="ms-1",
                         ),
                     ]
                 )
@@ -242,4 +246,8 @@ def generate_mock_sentiment_data(symbol):
 
     historical = pd.DataFrame({"time": times, "score": scores})
 
-    return {"current_score": current_score, "recent_news": recent_news, "historical": historical}
+    return {
+        "current_score": current_score,
+        "recent_news": recent_news,
+        "historical": historical,
+    }

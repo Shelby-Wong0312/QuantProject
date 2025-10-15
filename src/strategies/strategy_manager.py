@@ -8,7 +8,6 @@ import pandas as pd
 import numpy as np
 import logging
 import threading
-from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 
@@ -16,10 +15,7 @@ from .base_strategy import BaseStrategy
 from .strategy_interface import (
     TradingSignal,
     SignalType,
-    StrategyConfig,
     StrategyStatus,
-    StrategyPerformance,
-    Position,
 )
 
 logger = logging.getLogger(__name__)
@@ -83,7 +79,9 @@ class StrategyManager:
                     raise ValueError("Strategy must inherit from BaseStrategy")
 
                 if strategy.name in self.strategies:
-                    logger.warning(f"Strategy {strategy.name} already registered, updating...")
+                    logger.warning(
+                        f"Strategy {strategy.name} already registered, updating..."
+                    )
 
                 self.strategies[strategy.name] = strategy
                 self.execution_times[strategy.name] = 0.0
@@ -135,7 +133,9 @@ class StrategyManager:
 
             except Exception as e:
                 logger.error(f"Error unregistering strategy {strategy_name}: {e}")
-                self._trigger_callbacks("error_occurred", error=e, strategy=strategy_name)
+                self._trigger_callbacks(
+                    "error_occurred", error=e, strategy=strategy_name
+                )
                 return False
 
     def activate_strategy(self, strategy_name: str) -> bool:
@@ -166,13 +166,17 @@ class StrategyManager:
                 logger.info(f"Activated strategy: {strategy_name}")
 
                 # Trigger callbacks
-                self._trigger_callbacks("strategy_activated", strategy_name=strategy_name)
+                self._trigger_callbacks(
+                    "strategy_activated", strategy_name=strategy_name
+                )
 
                 return True
 
             except Exception as e:
                 logger.error(f"Error activating strategy {strategy_name}: {e}")
-                self._trigger_callbacks("error_occurred", error=e, strategy=strategy_name)
+                self._trigger_callbacks(
+                    "error_occurred", error=e, strategy=strategy_name
+                )
                 return False
 
     def deactivate_strategy(self, strategy_name: str) -> bool:
@@ -196,13 +200,17 @@ class StrategyManager:
                 logger.info(f"Deactivated strategy: {strategy_name}")
 
                 # Trigger callbacks
-                self._trigger_callbacks("strategy_deactivated", strategy_name=strategy_name)
+                self._trigger_callbacks(
+                    "strategy_deactivated", strategy_name=strategy_name
+                )
 
                 return True
 
             except Exception as e:
                 logger.error(f"Error deactivating strategy {strategy_name}: {e}")
-                self._trigger_callbacks("error_occurred", error=e, strategy=strategy_name)
+                self._trigger_callbacks(
+                    "error_occurred", error=e, strategy=strategy_name
+                )
                 return False
 
     def execute_all_strategies(
@@ -233,7 +241,9 @@ class StrategyManager:
         try:
             # Submit tasks to thread pool
             future_to_strategy = {
-                self.executor.submit(self._execute_single_strategy, name, market_data): name
+                self.executor.submit(
+                    self._execute_single_strategy, name, market_data
+                ): name
                 for name in active_strategies_list
                 if name in self.strategies
             }
@@ -251,21 +261,29 @@ class StrategyManager:
                             self.signal_history.append(signal)
                             self.strategies[strategy_name].add_signal_to_history(signal)
 
-                        logger.debug(f"Strategy {strategy_name} generated {len(signals)} signals")
+                        logger.debug(
+                            f"Strategy {strategy_name} generated {len(signals)} signals"
+                        )
 
                 except Exception as e:
                     logger.error(f"Strategy {strategy_name} execution failed: {e}")
-                    self._trigger_callbacks("error_occurred", error=e, strategy=strategy_name)
+                    self._trigger_callbacks(
+                        "error_occurred", error=e, strategy=strategy_name
+                    )
                     # Set strategy to error status
                     if strategy_name in self.strategies:
                         self.strategies[strategy_name].set_status(StrategyStatus.ERROR)
 
         except Exception as e:
             logger.error(f"Error in parallel strategy execution: {e}")
-            self._trigger_callbacks("error_occurred", error=e, strategy="StrategyManager")
+            self._trigger_callbacks(
+                "error_occurred", error=e, strategy="StrategyManager"
+            )
 
         execution_time = time.time() - start_time
-        logger.debug(f"Executed {len(active_strategies_list)} strategies in {execution_time:.3f}s")
+        logger.debug(
+            f"Executed {len(active_strategies_list)} strategies in {execution_time:.3f}s"
+        )
 
         # Keep signal history manageable
         if len(self.signal_history) > 10000:
@@ -521,7 +539,9 @@ class StrategyManager:
             "active_strategy_list": list(self.active_strategies),
             "signal_history_count": len(self.signal_history),
             "avg_execution_time": (
-                np.mean(list(self.execution_times.values())) if self.execution_times else 0.0
+                np.mean(list(self.execution_times.values()))
+                if self.execution_times
+                else 0.0
             ),
             "max_workers": self.max_workers,
             "last_execution": pd.Timestamp.now(),

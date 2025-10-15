@@ -4,7 +4,6 @@ Trend Indicators - Moving averages and trend following indicators
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Tuple
 from .base_indicator import BaseIndicator
 import logging
 
@@ -40,10 +39,14 @@ class SMA(BaseIndicator):
         signals["price"] = data["close"]
 
         # Buy when price crosses above SMA
-        signals["buy"] = (data["close"] > sma) & (data["close"].shift(1) <= sma.shift(1))
+        signals["buy"] = (data["close"] > sma) & (
+            data["close"].shift(1) <= sma.shift(1)
+        )
 
         # Sell when price crosses below SMA
-        signals["sell"] = (data["close"] < sma) & (data["close"].shift(1) >= sma.shift(1))
+        signals["sell"] = (data["close"] < sma) & (
+            data["close"].shift(1) >= sma.shift(1)
+        )
 
         signals["hold"] = ~(signals["buy"] | signals["sell"])
 
@@ -78,9 +81,13 @@ class EMA(BaseIndicator):
         signals["ema"] = ema
         signals["price"] = data["close"]
 
-        signals["buy"] = (data["close"] > ema) & (data["close"].shift(1) <= ema.shift(1))
+        signals["buy"] = (data["close"] > ema) & (
+            data["close"].shift(1) <= ema.shift(1)
+        )
 
-        signals["sell"] = (data["close"] < ema) & (data["close"].shift(1) >= ema.shift(1))
+        signals["sell"] = (data["close"] < ema) & (
+            data["close"].shift(1) >= ema.shift(1)
+        )
 
         signals["hold"] = ~(signals["buy"] | signals["sell"])
 
@@ -120,9 +127,13 @@ class WMA(BaseIndicator):
         signals["wma"] = wma
         signals["price"] = data["close"]
 
-        signals["buy"] = (data["close"] > wma) & (data["close"].shift(1) <= wma.shift(1))
+        signals["buy"] = (data["close"] > wma) & (
+            data["close"].shift(1) <= wma.shift(1)
+        )
 
-        signals["sell"] = (data["close"] < wma) & (data["close"].shift(1) >= wma.shift(1))
+        signals["sell"] = (data["close"] < wma) & (
+            data["close"].shift(1) >= wma.shift(1)
+        )
 
         signals["hold"] = ~(signals["buy"] | signals["sell"])
 
@@ -164,10 +175,14 @@ class VWAP(BaseIndicator):
         signals["price"] = data["close"]
 
         # Buy when price is above VWAP (bullish)
-        signals["buy"] = (data["close"] > vwap) & (data["close"].shift(1) <= vwap.shift(1))
+        signals["buy"] = (data["close"] > vwap) & (
+            data["close"].shift(1) <= vwap.shift(1)
+        )
 
         # Sell when price is below VWAP (bearish)
-        signals["sell"] = (data["close"] < vwap) & (data["close"].shift(1) >= vwap.shift(1))
+        signals["sell"] = (data["close"] < vwap) & (
+            data["close"].shift(1) >= vwap.shift(1)
+        )
 
         signals["hold"] = ~(signals["buy"] | signals["sell"])
 
@@ -200,8 +215,12 @@ class MovingAverageCrossover(BaseIndicator):
             result["fast_ma"] = data["close"].rolling(window=self.fast_period).mean()
             result["slow_ma"] = data["close"].rolling(window=self.slow_period).mean()
         elif self.ma_type == "EMA":
-            result["fast_ma"] = data["close"].ewm(span=self.fast_period, adjust=False).mean()
-            result["slow_ma"] = data["close"].ewm(span=self.slow_period, adjust=False).mean()
+            result["fast_ma"] = (
+                data["close"].ewm(span=self.fast_period, adjust=False).mean()
+            )
+            result["slow_ma"] = (
+                data["close"].ewm(span=self.slow_period, adjust=False).mean()
+            )
         elif self.ma_type == "WMA":
             # Fast WMA
             weights_fast = np.arange(1, self.fast_period + 1)
@@ -246,7 +265,9 @@ class MovingAverageCrossover(BaseIndicator):
         signals["hold"] = ~(signals["buy"] | signals["sell"])
 
         # Trend direction
-        signals["trend"] = np.where(ma_data["fast_ma"] > ma_data["slow_ma"], "bullish", "bearish")
+        signals["trend"] = np.where(
+            ma_data["fast_ma"] > ma_data["slow_ma"], "bullish", "bearish"
+        )
 
         return signals
 

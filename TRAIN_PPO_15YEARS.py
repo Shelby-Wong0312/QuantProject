@@ -12,13 +12,13 @@ from torch.distributions import Categorical
 import numpy as np
 import pandas as pd
 import yfinance as yf
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
 import json
 import pickle
 from tqdm import tqdm
 import logging
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Optional
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -156,7 +156,9 @@ class SmartDataLoader:
         if os.path.exists(cache_file):
             try:
                 # 檢查緩存是否過期（超過7天）
-                file_age = datetime.now() - datetime.fromtimestamp(os.path.getmtime(cache_file))
+                file_age = datetime.now() - datetime.fromtimestamp(
+                    os.path.getmtime(cache_file)
+                )
                 if file_age.days < 7:
                     with open(cache_file, "rb") as f:
                         pickle.load(f)
@@ -177,7 +179,9 @@ class SmartDataLoader:
     def download_stock_data(self, tickers: List[str]):
         """智能下載股票數據（使用緩存）"""
         print(f"[DATA] Processing {len(tickers)} stocks...")
-        print(f"[DATA] Date range: {self.start_date} to {datetime.now().date()} (15 YEARS!)")
+        print(
+            f"[DATA] Date range: {self.start_date} to {datetime.now().date()} (15 YEARS!)"
+        )
         print("[CACHE] Checking cache for existing data...")
 
         cached_count = 0
@@ -227,7 +231,7 @@ class SmartDataLoader:
                         else:
                             failed_tickers.append(ticker)
 
-                    except Exception as e:
+                    except Exception:
                         failed_tickers.append(ticker)
 
                 # 每批次後顯示進度
@@ -332,7 +336,7 @@ class SmartDataLoader:
             if len(features) < 220:
                 features = np.pad(features, (0, 220 - len(features)))
 
-        except Exception as e:
+        except Exception:
             features = np.zeros(220)
 
         return features.astype(np.float32)
@@ -402,7 +406,9 @@ class TradingEnvironment:
             elif action == 2:  # Sell
                 if self.current_symbol in self.positions:
                     shares = self.positions[self.current_symbol]
-                    revenue = shares * current_price * (1 - self.config.transaction_cost)
+                    revenue = (
+                        shares * current_price * (1 - self.config.transaction_cost)
+                    )
                     self.cash += revenue
                     del self.positions[self.current_symbol]
 
@@ -411,12 +417,16 @@ class TradingEnvironment:
             # 計算新價值
             new_portfolio_value = self.cash
             for symbol, shares in self.positions.items():
-                if symbol == self.current_symbol and self.current_step < len(self.symbol_data):
+                if symbol == self.current_symbol and self.current_step < len(
+                    self.symbol_data
+                ):
                     price = float(self.symbol_data.iloc[self.current_step]["Close"])
                     new_portfolio_value += shares * price
 
             # 計算獎勵
-            reward = (new_portfolio_value - self.portfolio_value) / (self.portfolio_value + 1e-8)
+            reward = (new_portfolio_value - self.portfolio_value) / (
+                self.portfolio_value + 1e-8
+            )
             self.portfolio_value = new_portfolio_value
 
             # 檢查結束
@@ -461,7 +471,9 @@ class PPOTrainer:
                     obs_tensor = obs_tensor.unsqueeze(0)
 
                 with torch.no_grad():
-                    action, log_prob, value, _ = self.model.get_action_and_value(obs_tensor)
+                    action, log_prob, value, _ = self.model.get_action_and_value(
+                        obs_tensor
+                    )
 
                 batch_obs.append(obs)
                 batch_acts.append(action.cpu().numpy())
@@ -479,7 +491,9 @@ class PPOTrainer:
             returns = advantages + np.array(batch_values).squeeze()
 
             # PPO更新
-            loss = self._ppo_update(batch_obs, batch_acts, batch_log_probs, advantages, returns)
+            loss = self._ppo_update(
+                batch_obs, batch_acts, batch_log_probs, advantages, returns
+            )
 
             # 記錄
             avg_reward = np.mean(batch_rewards)
@@ -488,7 +502,9 @@ class PPOTrainer:
             self.training_history["losses"].append(loss)
 
             if iteration % 10 == 0:
-                print(f"[Iter {iteration:4d}] Reward: {avg_reward:.6f}, Loss: {loss:.4f}")
+                print(
+                    f"[Iter {iteration:4d}] Reward: {avg_reward:.6f}, Loss: {loss:.4f}"
+                )
 
             if iteration % 50 == 0 and iteration > 0:
                 self.save_checkpoint(iteration)
@@ -514,7 +530,9 @@ class PPOTrainer:
         """PPO策略更新"""
         obs_tensor = torch.FloatTensor(observations).to(self.config.device)
         action_tensor = torch.LongTensor(actions).squeeze().to(self.config.device)
-        old_log_probs_tensor = torch.FloatTensor(old_log_probs).squeeze().to(self.config.device)
+        old_log_probs_tensor = (
+            torch.FloatTensor(old_log_probs).squeeze().to(self.config.device)
+        )
         advantages_tensor = torch.FloatTensor(advantages).to(self.config.device)
         returns_tensor = torch.FloatTensor(returns).to(self.config.device)
 
@@ -534,7 +552,9 @@ class PPOTrainer:
             # 策略損失
             surr1 = ratio * advantages_tensor
             surr2 = (
-                torch.clamp(ratio, 1 - self.config.clip_ratio, 1 + self.config.clip_ratio)
+                torch.clamp(
+                    ratio, 1 - self.config.clip_ratio, 1 + self.config.clip_ratio
+                )
                 * advantages_tensor
             )
             policy_loss = -torch.min(surr1, surr2).mean()
@@ -625,7 +645,9 @@ def main():
         "total_iterations": 500,
         "data_years": 15,
         "final_reward": (
-            trainer.training_history["rewards"][-1] if trainer.training_history["rewards"] else 0
+            trainer.training_history["rewards"][-1]
+            if trainer.training_history["rewards"]
+            else 0
         ),
         "avg_reward_last_50": (
             np.mean(trainer.training_history["rewards"][-50:])

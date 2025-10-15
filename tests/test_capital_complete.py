@@ -18,7 +18,6 @@ logging.basicConfig(
 # 關閉config的調試輸出
 os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
 sys.stdout = open(os.devnull, "w")
-import config
 
 sys.stdout = sys.__stdout__
 
@@ -259,7 +258,9 @@ def test_batch_data_fetch():
         # 統計結果
         success_count = sum(1 for df in results.values() if not df.empty)
         print(f"\n✅ 批量獲取完成，耗時: {elapsed_time:.2f}秒")
-        print(f"成功率: {success_count}/{len(symbols)} ({success_count/len(symbols)*100:.1f}%)")
+        print(
+            f"成功率: {success_count}/{len(symbols)} ({success_count/len(symbols)*100:.1f}%)"
+        )
 
         # 顯示各股票數據情況
         summary = []

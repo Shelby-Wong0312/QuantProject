@@ -2,12 +2,10 @@
 Main Dashboard Application using Plotly Dash
 """
 
-import dash
-from dash import Dash, html, dcc, Input, Output, State
+from dash import Dash, html, Input, Output
 import dash_bootstrap_components as dbc
 from datetime import datetime
 import logging
-from pathlib import Path
 
 # Import pages
 from pages.alpha_generation import create_alpha_page
@@ -27,7 +25,9 @@ class TradingDashboard:
         """Initialize the dashboard"""
         # Create Dash app with Bootstrap theme
         self.app = Dash(
-            __name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True
+            __name__,
+            external_stylesheets=[dbc.themes.BOOTSTRAP],
+            suppress_callback_exceptions=True,
         )
 
         # Set app title
@@ -47,7 +47,12 @@ class TradingDashboard:
                 dbc.Row(
                     [
                         dbc.Col(
-                            [html.H1("量化交易智能儀表板", className="text-center mb-4"), html.Hr()]
+                            [
+                                html.H1(
+                                    "量化交易智能儀表板", className="text-center mb-4"
+                                ),
+                                html.Hr(),
+                            ]
                         )
                     ]
                 ),
@@ -58,11 +63,22 @@ class TradingDashboard:
                             [
                                 dbc.Tabs(
                                     [
-                                        dbc.Tab(label="Alpha生成", tab_id="alpha-generation"),
-                                        dbc.Tab(label="投資組合分析", tab_id="portfolio-analysis"),
-                                        dbc.Tab(label="回測分析", tab_id="backtest-analysis"),
-                                        dbc.Tab(label="風險管理", tab_id="risk-management"),
-                                        dbc.Tab(label="系統監控", tab_id="system-monitoring"),
+                                        dbc.Tab(
+                                            label="Alpha生成", tab_id="alpha-generation"
+                                        ),
+                                        dbc.Tab(
+                                            label="投資組合分析",
+                                            tab_id="portfolio-analysis",
+                                        ),
+                                        dbc.Tab(
+                                            label="回測分析", tab_id="backtest-analysis"
+                                        ),
+                                        dbc.Tab(
+                                            label="風險管理", tab_id="risk-management"
+                                        ),
+                                        dbc.Tab(
+                                            label="系統監控", tab_id="system-monitoring"
+                                        ),
                                     ],
                                     id="tabs",
                                     active_tab="alpha-generation",
@@ -95,7 +111,9 @@ class TradingDashboard:
     def _register_callbacks(self):
         """Register all callbacks"""
 
-        @self.app.callback(Output("page-content", "children"), Input("tabs", "active_tab"))
+        @self.app.callback(
+            Output("page-content", "children"), Input("tabs", "active_tab")
+        )
         def render_page(active_tab):
             """Render page based on selected tab"""
             if active_tab == "alpha-generation":

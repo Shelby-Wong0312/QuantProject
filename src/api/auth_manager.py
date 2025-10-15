@@ -72,7 +72,9 @@ class AuthManager:
             salt = os.urandom(16)
 
         # Use hashlib for key derivation
-        key_material = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 100000, dklen=32)
+        key_material = hashlib.pbkdf2_hmac(
+            "sha256", password.encode(), salt, 100000, dklen=32
+        )
 
         key = base64.urlsafe_b64encode(key_material)
         return key
@@ -231,7 +233,8 @@ class AuthManager:
                     "environment": os.getenv("CAPITAL_ENV", "demo"),
                     "account_id": os.getenv("CAPITAL_ACCOUNT_ID", ""),
                     "base_url": os.getenv(
-                        "CAPITAL_BASE_URL", "https://demo-api-capital.backend-capital.com/api/v1"
+                        "CAPITAL_BASE_URL",
+                        "https://demo-api-capital.backend-capital.com/api/v1",
                     ),
                 }
             }
@@ -262,7 +265,9 @@ class AuthManager:
 
         # Re-encrypt credentials with new key
         if old_credentials:
-            self.save_encrypted_credentials("config/api_credentials.enc", old_credentials)
+            self.save_encrypted_credentials(
+                "config/api_credentials.enc", old_credentials
+            )
 
         logger.info("Encryption key rotated successfully")
 
@@ -324,7 +329,9 @@ class TokenManager:
 
         return self.access_token
 
-    def save_tokens(self, access_token: str, refresh_token: str = None, expiry: int = 3600):
+    def save_tokens(
+        self, access_token: str, refresh_token: str = None, expiry: int = 3600
+    ):
         """
         Save tokens to secure storage
 

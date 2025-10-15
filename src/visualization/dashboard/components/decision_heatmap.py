@@ -3,10 +3,9 @@ Decision distribution heatmap component
 """
 
 import plotly.graph_objects as go
-import plotly.express as px
 import numpy as np
 import pandas as pd
-from typing import Dict, Optional, List
+from typing import Dict, Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -76,7 +75,10 @@ def create_decision_heatmap(agent_data: Optional[Dict] = None) -> go.Figure:
 
         # Pivot for heatmap
         pivot_df = df.pivot_table(
-            index="Feature", columns=["Action", "State Bin"], values="Probability", fill_value=0
+            index="Feature",
+            columns=["Action", "State Bin"],
+            values="Probability",
+            fill_value=0,
         )
 
         # Create heatmap
@@ -97,7 +99,8 @@ def create_decision_heatmap(agent_data: Optional[Dict] = None) -> go.Figure:
                         showscale=True,
                         hovertemplate="%{y}<br>%{x}<br>%{text}<br>概率: %{z:.2%}<extra></extra>",
                         text=[
-                            [action for _ in range(z_data.shape[1])] for _ in range(z_data.shape[0])
+                            [action for _ in range(z_data.shape[1])]
+                            for _ in range(z_data.shape[0])
                         ],
                         visible=True if action == "持有" else "legendonly",
                     )
@@ -114,7 +117,9 @@ def create_decision_heatmap(agent_data: Optional[Dict] = None) -> go.Figure:
             yaxis_title="狀態特徵",
             height=350,
             showlegend=True,
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            legend=dict(
+                orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+            ),
             hovermode="closest",
         )
 
@@ -145,7 +150,9 @@ def generate_mock_decision_data() -> Dict:
     states[:, 2] = np.random.lognormal(0, 1, n_samples)  # Volume
 
     # Position
-    states[:, 3] = np.random.choice([-1, 0, 1], n_samples, p=[0.3, 0.4, 0.3])  # Position
+    states[:, 3] = np.random.choice(
+        [-1, 0, 1], n_samples, p=[0.3, 0.4, 0.3]
+    )  # Position
 
     # P&L
     states[:, 4] = np.random.randn(n_samples) * 100  # P&L
@@ -235,7 +242,10 @@ def create_empty_heatmap() -> go.Figure:
     )
 
     fig.update_layout(
-        title="決策分佈熱力圖", height=350, xaxis=dict(visible=False), yaxis=dict(visible=False)
+        title="決策分佈熱力圖",
+        height=350,
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False),
     )
 
     return fig

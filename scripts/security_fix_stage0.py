@@ -3,7 +3,6 @@ Stage 0: Security Fix Script
 Fix all hardcoded credentials and security issues
 """
 
-import os
 import sys
 import re
 from pathlib import Path

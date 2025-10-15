@@ -2,16 +2,12 @@
 Example usage of the RL trading environment
 """
 
-import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
-from typing import Dict, List
 import logging
 
 from environments import TradingEnvironment
-from environments.state_processor import StateConfig
 from environments.reward_calculator import RewardConfig
-from configs.env_config import get_config, TradingEnvConfig
+from configs.env_config import get_config
 from utils.portfolio_tracker import PortfolioTracker
 from utils.risk_manager import RiskManager, RiskLimits
 
@@ -61,7 +57,9 @@ def test_environment_basic():
     summary = env.get_episode_summary()
     print("\nEpisode Summary:")
     for key, value in summary.items():
-        print(f"  {key}: {value:.4f}" if isinstance(value, float) else f"  {key}: {value}")
+        print(
+            f"  {key}: {value:.4f}" if isinstance(value, float) else f"  {key}: {value}"
+        )
 
 
 def test_environment_with_strategy():
@@ -126,7 +124,9 @@ def test_environment_with_strategy():
     summary = env.get_episode_summary()
     print("\nStrategy Performance:")
     for key, value in summary.items():
-        print(f"  {key}: {value:.4f}" if isinstance(value, float) else f"  {key}: {value}")
+        print(
+            f"  {key}: {value:.4f}" if isinstance(value, float) else f"  {key}: {value}"
+        )
 
 
 def test_risk_management():
@@ -137,7 +137,10 @@ def test_risk_management():
 
     # Create risk manager
     risk_limits = RiskLimits(
-        max_position_size=0.25, max_daily_loss=0.02, max_drawdown=0.05, max_trades_per_day=5
+        max_position_size=0.25,
+        max_daily_loss=0.02,
+        max_drawdown=0.05,
+        max_trades_per_day=5,
     )
     risk_manager = RiskManager(risk_limits)
 
@@ -161,9 +164,16 @@ def test_risk_management():
         prices["AAPL"] = price
 
         # Check if trade allowed
-        current_positions = {"AAPL": portfolio_tracker.positions.get("AAPL", 0).shares * price}
+        current_positions = {
+            "AAPL": portfolio_tracker.positions.get("AAPL", 0).shares * price
+        }
         allowed, reason = risk_manager.check_trade_allowed(
-            action, shares, price, portfolio_value, current_positions, portfolio_tracker.cash
+            action,
+            shares,
+            price,
+            portfolio_value,
+            current_positions,
+            portfolio_tracker.cash,
         )
 
         print(f"\nTrade: {action} {shares} @ ${price}")
@@ -189,7 +199,9 @@ def test_risk_management():
     print("\nRisk Metrics:")
     risk_metrics = risk_manager.get_risk_metrics(portfolio_value)
     for key, value in risk_metrics.items():
-        print(f"  {key}: {value:.4f}" if isinstance(value, float) else f"  {key}: {value}")
+        print(
+            f"  {key}: {value:.4f}" if isinstance(value, float) else f"  {key}: {value}"
+        )
 
 
 def test_different_configs():

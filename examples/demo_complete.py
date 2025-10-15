@@ -3,9 +3,6 @@ Complete Trading System Demo
 Demonstrates all integrated components
 """
 
-import asyncio
-import pandas as pd
-import numpy as np
 from datetime import datetime
 import json
 
@@ -63,7 +60,13 @@ for stock, pred in lstm_predictions.items():
     )
 
 print("\nXGBoost return predictions:")
-xgb_predictions = {"AAPL": 0.023, "GOOGL": 0.018, "MSFT": -0.005, "AMZN": 0.031, "TSLA": 0.042}
+xgb_predictions = {
+    "AAPL": 0.023,
+    "GOOGL": 0.018,
+    "MSFT": -0.005,
+    "AMZN": 0.031,
+    "TSLA": 0.042,
+}
 
 for stock, ret in xgb_predictions.items():
     print(f"  {stock}: {ret:+.2%}")
@@ -73,10 +76,34 @@ print("-" * 50)
 
 print("PPO Agent Trading Decisions:")
 rl_actions = [
-    {"time": "09:30", "action": "BUY", "symbol": "AAPL", "quantity": 100, "confidence": 0.85},
-    {"time": "10:15", "action": "SELL", "symbol": "TSLA", "quantity": 50, "confidence": 0.72},
-    {"time": "11:00", "action": "HOLD", "symbol": "GOOGL", "quantity": 0, "confidence": 0.90},
-    {"time": "14:30", "action": "BUY", "symbol": "MSFT", "quantity": 75, "confidence": 0.68},
+    {
+        "time": "09:30",
+        "action": "BUY",
+        "symbol": "AAPL",
+        "quantity": 100,
+        "confidence": 0.85,
+    },
+    {
+        "time": "10:15",
+        "action": "SELL",
+        "symbol": "TSLA",
+        "quantity": 50,
+        "confidence": 0.72,
+    },
+    {
+        "time": "11:00",
+        "action": "HOLD",
+        "symbol": "GOOGL",
+        "quantity": 0,
+        "confidence": 0.90,
+    },
+    {
+        "time": "14:30",
+        "action": "BUY",
+        "symbol": "MSFT",
+        "quantity": 75,
+        "confidence": 0.68,
+    },
 ]
 
 for action in rl_actions:
@@ -111,9 +138,27 @@ print("-" * 50)
 
 print("Executing paper trades...")
 trades_executed = [
-    {"symbol": "AAPL", "side": "BUY", "quantity": 100, "price": 180.50, "status": "FILLED"},
-    {"symbol": "GOOGL", "side": "BUY", "quantity": 50, "price": 140.25, "status": "FILLED"},
-    {"symbol": "TSLA", "side": "SELL", "quantity": 25, "price": 252.10, "status": "FILLED"},
+    {
+        "symbol": "AAPL",
+        "side": "BUY",
+        "quantity": 100,
+        "price": 180.50,
+        "status": "FILLED",
+    },
+    {
+        "symbol": "GOOGL",
+        "side": "BUY",
+        "quantity": 50,
+        "price": 140.25,
+        "status": "FILLED",
+    },
+    {
+        "symbol": "TSLA",
+        "side": "SELL",
+        "quantity": 25,
+        "price": 252.10,
+        "status": "FILLED",
+    },
 ]
 
 for trade in trades_executed:
@@ -182,7 +227,11 @@ print("10. Multi-Strategy Portfolio Management")
 {
     "timestamp": datetime.now().isoformat(),
     "system_status": "OPERATIONAL",
-    "strategies": {"mpt_portfolio": "ACTIVE", "day_trading_ppo": "ACTIVE", "hybrid": "ACTIVE"},
+    "strategies": {
+        "mpt_portfolio": "ACTIVE",
+        "day_trading_ppo": "ACTIVE",
+        "hybrid": "ACTIVE",
+    },
     "performance": performance,
     "risk_metrics": risk_metrics,
     "active_positions": len(trades_executed),

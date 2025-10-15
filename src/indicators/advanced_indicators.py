@@ -5,7 +5,7 @@ Advanced Technical Indicators
 
 import pandas as pd
 import numpy as np
-from typing import Dict, Optional
+from typing import Dict
 
 
 class AdvancedIndicators:
@@ -100,14 +100,19 @@ class AdvancedIndicators:
             "lower": lower.iloc[-1] if len(lower) > 0 else 0,
         }
 
-    def calculate_stochastic(self, df: pd.DataFrame, k_period: int = 14, d_period: int = 3) -> Dict:
+    def calculate_stochastic(
+        self, df: pd.DataFrame, k_period: int = 14, d_period: int = 3
+    ) -> Dict:
         """計算隨機指標"""
         low_min = df["low"].rolling(k_period).min()
         high_max = df["high"].rolling(k_period).max()
         k = 100 * ((df["close"] - low_min) / (high_max - low_min + 1e-10))
         d = k.rolling(d_period).mean()
 
-        return {"k": k.iloc[-1] if len(k) > 0 else 50, "d": d.iloc[-1] if len(d) > 0 else 50}
+        return {
+            "k": k.iloc[-1] if len(k) > 0 else 50,
+            "d": d.iloc[-1] if len(d) > 0 else 50,
+        }
 
     def calculate_obv(self, df: pd.DataFrame) -> float:
         """計算 OBV"""

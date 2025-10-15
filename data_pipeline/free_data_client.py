@@ -13,7 +13,7 @@ import sqlite3
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Union, Tuple
+from typing import Dict, List, Optional, Tuple
 from dotenv import load_dotenv
 import logging
 from tqdm import tqdm
@@ -340,7 +340,8 @@ class FreeDataClient:
 
         # 分批處理
         batches = [
-            symbols[i : i + self.batch_size] for i in range(0, len(symbols), self.batch_size)
+            symbols[i : i + self.batch_size]
+            for i in range(0, len(symbols), self.batch_size)
         ]
 
         logger.info(f"Processing {len(symbols)} symbols in {len(batches)} batches")
@@ -394,7 +395,9 @@ class FreeDataClient:
             time.sleep(self.request_delay * batch_id)  # 避免過載
 
             # Method 1: Yahoo Finance batch download
-            yf.download(symbols, period="1d", interval="1m", progress=False, threads=True)
+            yf.download(
+                symbols, period="1d", interval="1m", progress=False, threads=True
+            )
 
             if not data.empty:
                 current_time = datetime.now()
@@ -419,12 +422,18 @@ class FreeDataClient:
                         try:
                             if symbol in data["Close"].columns:
                                 price = data["Close"][symbol].iloc[-1]
-                                volume = data["Volume"][symbol].iloc[-1] if "Volume" in data else 0
+                                volume = (
+                                    data["Volume"][symbol].iloc[-1]
+                                    if "Volume" in data
+                                    else 0
+                                )
 
                                 if pd.notna(price):
                                     quotes[symbol] = {
                                         "price": float(price),
-                                        "volume": int(volume) if pd.notna(volume) else 0,
+                                        "volume": (
+                                            int(volume) if pd.notna(volume) else 0
+                                        ),
                                         "timestamp": current_time,
                                         "change_percent": 0.0,
                                     }
@@ -451,7 +460,7 @@ class FreeDataClient:
 
         try:
             with sqlite3.connect(self.db_path) as conn:
-                placeholders = ",".join("?" * len(symbols))
+                ",".join("?" * len(symbols))
                 cursor = conn.execute(
                     """SELECT symbol, price, volume, change_percent, timestamp 
                         FROM real_time_quotes 
@@ -647,7 +656,18 @@ if __name__ == "__main__":
 
     # Test large batch quotes
     print("\n3. Large Scale Batch Quotes Test:")
-    test_symbols = ["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA", "AMZN", "META", "NFLX", "AMD", "INTC"]
+    test_symbols = [
+        "AAPL",
+        "MSFT",
+        "GOOGL",
+        "TSLA",
+        "NVDA",
+        "AMZN",
+        "META",
+        "NFLX",
+        "AMD",
+        "INTC",
+    ]
     batch_quotes = client.get_batch_quotes(test_symbols)
     for symbol, data in list(batch_quotes.items())[:5]:  # Show first 5
         print(f"   {symbol}: ${data['price']:.2f} (Vol: {data['volume']:,})")

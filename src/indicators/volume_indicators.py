@@ -3,8 +3,6 @@ Volume Indicators - OBV, Volume SMA, MFI, A/D Line
 """
 
 import pandas as pd
-import numpy as np
-from typing import Dict, List, Optional, Tuple
 from .base_indicator import BaseIndicator
 import logging
 

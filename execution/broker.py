@@ -36,7 +36,9 @@ class Broker:
         self.session_lock = asyncio.Lock()
         self.session = requests.Session()
 
-        logger.info(f"Broker initialized in {'DEMO' if self.demo_mode else 'LIVE'} mode")
+        logger.info(
+            f"Broker initialized in {'DEMO' if self.demo_mode else 'LIVE'} mode"
+        )
 
     async def _login_sync(self):
         """Synchronous login function"""
@@ -45,11 +47,16 @@ class Broker:
                 return True
 
             login_url = f"{self.base_url}/session"
-            headers = {"X-CAP-API-KEY": self.api_key, "Content-Type": "application/json"}
+            headers = {
+                "X-CAP-API-KEY": self.api_key,
+                "Content-Type": "application/json",
+            }
             payload = {"identifier": self.identifier, "password": self.password}
 
             try:
-                response = self.session.post(login_url, headers=headers, json=payload, timeout=15)
+                response = self.session.post(
+                    login_url, headers=headers, json=payload, timeout=15
+                )
                 if response.status_code == 200:
                     self.cst = response.headers.get("CST")
                     self.x_security_token = response.headers.get("X-SECURITY-TOKEN")
@@ -66,7 +73,9 @@ class Broker:
 
     async def on_order(self, order: OrderEvent):
         """Handle order event"""
-        logger.info(f"[Broker] Received order: {order.symbol} {order.direction} {order.quantity}")
+        logger.info(
+            f"[Broker] Received order: {order.symbol} {order.direction} {order.quantity}"
+        )
 
         # In demo mode, simulate immediate fill
         if self.demo_mode:

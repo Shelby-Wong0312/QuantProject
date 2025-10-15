@@ -4,7 +4,6 @@ Momentum Indicators - RSI, MACD, Stochastic and other momentum indicators
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Tuple
 from .base_indicator import BaseIndicator
 import logging
 
@@ -103,7 +102,8 @@ class MACD(BaseIndicator):
         histogram = macd_line - signal_line
 
         result = pd.DataFrame(
-            {"macd": macd_line, "signal": signal_line, "histogram": histogram}, index=data.index
+            {"macd": macd_line, "signal": signal_line, "histogram": histogram},
+            index=data.index,
         )
 
         return result
@@ -210,7 +210,9 @@ class WilliamsR(BaseIndicator):
         highest_high = data["high"].rolling(window=self.period).max()
         lowest_low = data["low"].rolling(window=self.period).min()
 
-        williams_r = -100 * ((highest_high - data["close"]) / (highest_high - lowest_low))
+        williams_r = -100 * (
+            (highest_high - data["close"]) / (highest_high - lowest_low)
+        )
 
         return williams_r
 

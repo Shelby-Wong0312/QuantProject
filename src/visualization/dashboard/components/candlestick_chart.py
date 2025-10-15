@@ -61,13 +61,20 @@ def create_candlestick_chart(symbol, timeframe):
         ma50 = df["close"].rolling(window=50).mean()
 
         fig.add_trace(
-            go.Scatter(x=df["datetime"], y=ma20, name="MA20", line=dict(color="orange", width=1)),
+            go.Scatter(
+                x=df["datetime"],
+                y=ma20,
+                name="MA20",
+                line=dict(color="orange", width=1),
+            ),
             row=1,
             col=1,
         )
 
         fig.add_trace(
-            go.Scatter(x=df["datetime"], y=ma50, name="MA50", line=dict(color="blue", width=1)),
+            go.Scatter(
+                x=df["datetime"], y=ma50, name="MA50", line=dict(color="blue", width=1)
+            ),
             row=1,
             col=1,
         )
@@ -102,7 +109,8 @@ def create_candlestick_chart(symbol, timeframe):
 
         # Add volume bars
         colors = [
-            "red" if close < open else "green" for close, open in zip(df["close"], df["open"])
+            "red" if close < open else "green"
+            for close, open in zip(df["close"], df["open"])
         ]
 
         fig.add_trace(
@@ -123,7 +131,9 @@ def create_candlestick_chart(symbol, timeframe):
             xaxis_rangeslider_visible=False,
             height=400,
             margin=dict(l=50, r=50, t=80, b=50),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            legend=dict(
+                orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+            ),
             hovermode="x unified",
         )
 

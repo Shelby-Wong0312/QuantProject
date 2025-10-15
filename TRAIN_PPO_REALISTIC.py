@@ -12,12 +12,11 @@ from torch.distributions import Categorical
 import numpy as np
 import pandas as pd
 import yfinance as yf
-from datetime import datetime, timedelta
-import os
+from datetime import datetime
 import json
 from tqdm import tqdm
 import logging
-from typing import Dict, List, Tuple, Optional
+from typing import Dict
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -26,7 +25,10 @@ warnings.filterwarnings("ignore")
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("ppo_training_realistic.log"), logging.StreamHandler()],
+    handlers=[
+        logging.FileHandler("ppo_training_realistic.log"),
+        logging.StreamHandler(),
+    ],
 )
 logger = logging.getLogger(__name__)
 
@@ -276,7 +278,9 @@ class DataLoader:
                     logger.debug(f"Failed to download {symbol}: {e}")
                     failed_symbols.append(symbol)
 
-        print(f"\n[DATA] Successfully downloaded: {success_count}/{len(self.symbols)} stocks")
+        print(
+            f"\n[DATA] Successfully downloaded: {success_count}/{len(self.symbols)} stocks"
+        )
         if failed_symbols:
             print(f"[DATA] Failed symbols: {failed_symbols[:10]}...")
 
@@ -293,7 +297,9 @@ class DataLoader:
         # 2. 成交量特徵 (20維)
         volume_ma = data["Volume"].rolling(20).mean()
         volume_ratio = (data["Volume"] / volume_ma).fillna(1).values[-20:]
-        features.append(volume_ratio.flatten() if len(volume_ratio.shape) > 1 else volume_ratio)
+        features.append(
+            volume_ratio.flatten() if len(volume_ratio.shape) > 1 else volume_ratio
+        )
 
         # 3. RSI (30維)
         delta = data["Close"].diff()
@@ -302,7 +308,9 @@ class DataLoader:
         rs = gain / loss
         rsi = 100 - (100 / (1 + rs))
         rsi_values = rsi.fillna(50).values[-30:]
-        features.append(rsi_values.flatten() if len(rsi_values.shape) > 1 else rsi_values)
+        features.append(
+            rsi_values.flatten() if len(rsi_values.shape) > 1 else rsi_values
+        )
 
         # 4. MACD (60維)
         exp1 = data["Close"].ewm(span=12, adjust=False).mean()
@@ -311,8 +319,12 @@ class DataLoader:
         signal = macd.ewm(span=9, adjust=False).mean()
         macd_values = macd.fillna(0).values[-30:]
         signal_values = signal.fillna(0).values[-30:]
-        features.append(macd_values.flatten() if len(macd_values.shape) > 1 else macd_values)
-        features.append(signal_values.flatten() if len(signal_values.shape) > 1 else signal_values)
+        features.append(
+            macd_values.flatten() if len(macd_values.shape) > 1 else macd_values
+        )
+        features.append(
+            signal_values.flatten() if len(signal_values.shape) > 1 else signal_values
+        )
 
         # 5. 布林通道 (30維)
         bb_ma = data["Close"].rolling(20).mean()
@@ -328,7 +340,9 @@ class DataLoader:
             ma = data["Close"].rolling(period).mean()
             ma_ratio = (data["Close"] / ma).fillna(1)
             ma_values = ma_ratio.values[-10:]
-            features.append(ma_values.flatten() if len(ma_values.shape) > 1 else ma_values)
+            features.append(
+                ma_values.flatten() if len(ma_values.shape) > 1 else ma_values
+            )
 
         # 展平所有特徵
         all_features = np.concatenate(features)
@@ -468,7 +482,9 @@ class PPOTrainer:
                     obs_tensor = obs_tensor.unsqueeze(0)
 
                 with torch.no_grad():
-                    action, log_prob, value, _ = self.model.get_action_and_value(obs_tensor)
+                    action, log_prob, value, _ = self.model.get_action_and_value(
+                        obs_tensor
+                    )
 
                 observations.append(obs)
                 actions.append(action.cpu().numpy())
@@ -486,7 +502,9 @@ class PPOTrainer:
             advantages, returns = self._compute_gae(rewards, values, dones)
 
             # PPO更新
-            total_loss = self._ppo_update(observations, actions, log_probs, advantages, returns)
+            total_loss = self._ppo_update(
+                observations, actions, log_probs, advantages, returns
+            )
 
             # 記錄訓練歷史
             self.training_history["iterations"].append(iteration)
@@ -514,8 +532,13 @@ class PPOTrainer:
             else:
                 next_value = values[t + 1]
 
-            delta = rewards[t] + self.config.gamma * next_value * (1 - dones[t]) - values[t]
-            gae = delta + self.config.gamma * self.config.gae_lambda * (1 - dones[t]) * gae
+            delta = (
+                rewards[t] + self.config.gamma * next_value * (1 - dones[t]) - values[t]
+            )
+            gae = (
+                delta
+                + self.config.gamma * self.config.gae_lambda * (1 - dones[t]) * gae
+            )
             advantages.insert(0, gae)
 
         advantages = np.array(advantages)
@@ -528,7 +551,9 @@ class PPOTrainer:
         # 轉換為張量
         obs_tensor = torch.FloatTensor(observations).to(self.config.device)
         action_tensor = torch.LongTensor(actions).squeeze().to(self.config.device)
-        old_log_probs_tensor = torch.FloatTensor(old_log_probs).squeeze().to(self.config.device)
+        old_log_probs_tensor = (
+            torch.FloatTensor(old_log_probs).squeeze().to(self.config.device)
+        )
         advantages_tensor = torch.FloatTensor(advantages).to(self.config.device)
         returns_tensor = torch.FloatTensor(returns).to(self.config.device)
 
@@ -550,7 +575,9 @@ class PPOTrainer:
             # 策略損失
             surr1 = ratio * advantages_tensor
             surr2 = (
-                torch.clamp(ratio, 1 - self.config.clip_ratio, 1 + self.config.clip_ratio)
+                torch.clamp(
+                    ratio, 1 - self.config.clip_ratio, 1 + self.config.clip_ratio
+                )
                 * advantages_tensor
             )
             policy_loss = -torch.min(surr1, surr2).mean()
@@ -641,7 +668,9 @@ def main():
         "data_range": f"2010-01-01 to {datetime.now().date()}",
         "total_iterations": 500,
         "final_reward": (
-            trainer.training_history["rewards"][-1] if trainer.training_history["rewards"] else 0
+            trainer.training_history["rewards"][-1]
+            if trainer.training_history["rewards"]
+            else 0
         ),
         "average_reward": (
             np.mean(trainer.training_history["rewards"][-50:])

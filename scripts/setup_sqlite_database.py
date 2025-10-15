@@ -6,13 +6,14 @@ SQLite Database Setup for Capital.com Trading System
 import os
 import json
 import sqlite3
-from datetime import datetime, timedelta
+from datetime import datetime
 import logging
-from typing import Optional, Dict, Any
-import pandas as pd
+from typing import Dict
 
 # 設置日誌
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -421,7 +422,11 @@ class SQLiteSetup:
         """保存數據庫配置到文件"""
         config_file = "db_config.json"
         config_data = {
-            "database": {"type": "SQLite", "path": self.db_path, "backup_path": self.backup_path},
+            "database": {
+                "type": "SQLite",
+                "path": self.db_path,
+                "backup_path": self.backup_path,
+            },
             "tables": {
                 "stocks": "Stock information and validation status",
                 "daily_data": "15+ years of daily OHLC data",

@@ -5,7 +5,6 @@
 
 import asyncio
 import sys
-import os
 from pathlib import Path
 import logging
 from datetime import datetime
@@ -33,14 +32,13 @@ async def main():
         print("\n[1/6] 載入系統模組...")
         from monitoring.tiered_monitor import TieredMonitor
         from data_pipeline.free_data_client import FreeDataClient
-        from src.indicators.indicator_calculator import IndicatorCalculator
         from monitoring.signal_scanner import SignalScanner
 
         print("   ✓ 核心模組載入成功")
 
         # 2. 初始化數據客戶端
         print("\n[2/6] 初始化數據管道...")
-        data_client = FreeDataClient()
+        FreeDataClient()
         print("   ✓ 數據管道就緒 (Yahoo Finance + Alpha Vantage)")
 
         # 3. 獲取股票列表
@@ -186,7 +184,7 @@ async def main():
 
         # 5. 初始化信號掃描器
         print("\n[5/6] 初始化信號掃描系統...")
-        signal_scanner = SignalScanner(str(config_path))
+        SignalScanner(str(config_path))
         print("   ✓ 信號掃描器就緒")
 
         # 6. 啟動監控循環
@@ -229,12 +227,16 @@ async def main():
                 # 獲取各層詳細信息
                 tier_details = monitor.get_tier_details()
                 if "S_tier" in tier_details and tier_details["S_tier"]["stocks"]:
-                    print(f"\n  S層熱門股票: {', '.join(tier_details['S_tier']['stocks'][:5])}")
+                    print(
+                        f"\n  S層熱門股票: {', '.join(tier_details['S_tier']['stocks'][:5])}"
+                    )
 
                 # 顯示最新信號（如果有）
                 for tier_level in [TierLevel.S_TIER, TierLevel.A_TIER]:
                     tier_info = monitor.get_tier_details(tier_level)
-                    if tier_info and tier_info.get(tier_level.value, {}).get("recent_signals"):
+                    if tier_info and tier_info.get(tier_level.value, {}).get(
+                        "recent_signals"
+                    ):
                         for signal in tier_info[tier_level.value]["recent_signals"][:3]:
                             print(
                                 f"  💎 {signal['symbol']}: {signal['type']} (強度: {signal.get('strength', 0):.2f})"
@@ -260,9 +262,6 @@ def create_full_stock_list():
     """創建完整的股票列表文件（可選）"""
     # 這裡可以從各種來源獲取股票列表
     # 例如：從Yahoo Finance獲取所有美股
-
-    import yfinance as yf
-    import pandas as pd
 
     print("獲取股票列表...")
 
@@ -335,7 +334,9 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="4000+股票監控系統")
-    parser.add_argument("--create-list", action="store_true", help="創建4000股票列表文件")
+    parser.add_argument(
+        "--create-list", action="store_true", help="創建4000股票列表文件"
+    )
     args = parser.parse_args()
 
     if args.create_list:

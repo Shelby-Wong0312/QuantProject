@@ -10,9 +10,8 @@ import sys
 import torch
 import torch.nn as nn
 import numpy as np
-import pandas as pd
 import yfinance as yf
-from datetime import datetime, timedelta
+from datetime import datetime
 import json
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -58,7 +57,9 @@ class LiveMonitor:
         model_path = "models/ppo_3488_stocks.pt"
         if os.path.exists(model_path):
             try:
-                checkpoint = torch.load(model_path, map_location="cpu", weights_only=False)
+                checkpoint = torch.load(
+                    model_path, map_location="cpu", weights_only=False
+                )
                 if "model_state_dict" in checkpoint:
                     # 嘗試載入權重
                     pass
@@ -191,7 +192,9 @@ class LiveMonitor:
                 "symbol": symbol,
                 "price": float(data["Close"].iloc[-1]),
                 "change": float(
-                    (data["Close"].iloc[-1] - data["Close"].iloc[-2]) / data["Close"].iloc[-2] * 100
+                    (data["Close"].iloc[-1] - data["Close"].iloc[-2])
+                    / data["Close"].iloc[-2]
+                    * 100
                 ),
                 "signal": signals[signal_idx],
                 "confidence": float(probs[signal_idx] * 100),
@@ -217,7 +220,8 @@ class LiveMonitor:
                 results = []
                 with ThreadPoolExecutor(max_workers=10) as executor:
                     futures = [
-                        executor.submit(self.analyze_stock, symbol) for symbol in self.symbols
+                        executor.submit(self.analyze_stock, symbol)
+                        for symbol in self.symbols
                     ]
                     for future in futures:
                         result = future.result()
@@ -237,7 +241,11 @@ class LiveMonitor:
 
                 # 顯示結果
                 print("\n" + "=" * 80)
-                print(f"PPO MONITORING - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(80))
+                print(
+                    f"PPO MONITORING - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(
+                        80
+                    )
+                )
                 print("=" * 80)
 
                 if buy_signals:

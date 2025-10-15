@@ -54,7 +54,9 @@ def test_get_bars_ok(mock_download, tmp_path):
 )
 @patch("src.quantproject.data_pipeline.backends.yfinance.time.sleep")
 @patch("src.quantproject.data_pipeline.backends.yfinance.yf.download")
-def test_get_bars_exception_returns_empty(mock_download, sleep_mock, mock_api, tmp_path):
+def test_get_bars_exception_returns_empty(
+    mock_download, sleep_mock, mock_api, tmp_path
+):
     mock_download.side_effect = [RuntimeError("network error")] * 6
 
     backend = YFinanceBackend(cache_dir=tmp_path)
@@ -177,8 +179,13 @@ def test_get_bars_missing_column_returns_empty(mock_download, tmp_path):
     assert list(df.columns) == ["open", "high", "low", "close", "volume"]
 
 
-@patch("src.quantproject.data_pipeline.backends.yfinance.YFinanceBackend._download_via_api")
-@patch("src.quantproject.data_pipeline.backends.yfinance.yf.download", return_value=pd.DataFrame())
+@patch(
+    "src.quantproject.data_pipeline.backends.yfinance.YFinanceBackend._download_via_api"
+)
+@patch(
+    "src.quantproject.data_pipeline.backends.yfinance.yf.download",
+    return_value=pd.DataFrame(),
+)
 def test_get_bars_api_fallback_success(mock_download, mock_api, tmp_path):
     api_df = _mock_download()
     mock_api.return_value = api_df

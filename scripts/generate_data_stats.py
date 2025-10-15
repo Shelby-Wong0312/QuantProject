@@ -4,7 +4,6 @@ DE Agent Task: Data Statistics Analysis
 """
 
 import pandas as pd
-import numpy as np
 import sqlite3
 import os
 from datetime import datetime
@@ -16,7 +15,9 @@ def generate_statistics():
 
     # Connect to database
     db_path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "data",
+        "quant_trading.db",
     )
     conn = sqlite3.connect(db_path)
 
@@ -113,7 +114,9 @@ def generate_statistics():
     report.append("YEARLY DATA DISTRIBUTION")
     report.append("-" * 30)
     for year in stats["yearly_data"]:
-        report.append(f"{year['year']}: {year['stocks']} stocks, {year['records']:,} records")
+        report.append(
+            f"{year['year']}: {year['stocks']} stocks, {year['records']:,} records"
+        )
 
     # Save report
     report_text = "\n".join(report)

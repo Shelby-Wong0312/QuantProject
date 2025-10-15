@@ -12,7 +12,6 @@ import pandas as pd
 import numpy as np
 import sqlite3
 from datetime import datetime
-import json
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -26,7 +25,9 @@ print(f"Start Time: {datetime.now()}")
 
 # Database connection
 db_path = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "data",
+    "quant_trading.db",
 )
 conn = sqlite3.connect(db_path)
 
@@ -125,7 +126,7 @@ for idx, row in enumerate(stocks_df.itertuples()):
                 avg_return = np.mean([r["total_return"] for r in results])
                 print(f"  Current avg return: {avg_return:.2f}%")
 
-    except Exception as e:
+    except Exception:
         continue
 
 conn.close()
@@ -184,7 +185,9 @@ else:
     if len(high_performers) > 0:
         print("\nHIGH PERFORMERS (>100% total return):")
         for row in high_performers.head(10).itertuples():
-            print(f"  {row.symbol}: {row.total_return:.2f}% total, {row.annual_return:.2f}% annual")
+            print(
+                f"  {row.symbol}: {row.total_return:.2f}% total, {row.annual_return:.2f}% annual"
+            )
 
     print(f"\nResults saved to: {csv_path}")
 

@@ -4,8 +4,7 @@
 import logging
 import pandas as pd
 import requests
-from datetime import datetime, timedelta
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 import sys
 import os
 
@@ -38,7 +37,9 @@ class CapitalHistoryLoader:
         payload = {"identifier": self.identifier, "password": self.password}
 
         try:
-            response = self.session.post(login_url, headers=headers, json=payload, timeout=15)
+            response = self.session.post(
+                login_url, headers=headers, json=payload, timeout=15
+            )
             if response.status_code == 200:
                 self.cst = response.headers.get("CST")
                 self.x_security_token = response.headers.get("X-SECURITY-TOKEN")
@@ -51,7 +52,12 @@ class CapitalHistoryLoader:
             raise
 
     def get_bars(
-        self, symbol: str, resolution: str, start_date: str, end_date: str, max_results: int = 1000
+        self,
+        symbol: str,
+        resolution: str,
+        start_date: str,
+        end_date: str,
+        max_results: int = 1000,
     ) -> pd.DataFrame:
         """
         獲取指定時間範圍內的歷史K線數據。
@@ -74,7 +80,12 @@ class CapitalHistoryLoader:
 
         url = f"{self.base_url}/prices/{symbol}"
         headers = {"CST": self.cst, "X-SECURITY-TOKEN": self.x_security_token}
-        params = {"resolution": resolution, "from": start_date, "to": end_date, "max": max_results}
+        params = {
+            "resolution": resolution,
+            "from": start_date,
+            "to": end_date,
+            "max": max_results,
+        }
 
         try:
             response = self.session.get(url, headers=headers, params=params, timeout=30)
@@ -104,11 +115,15 @@ class CapitalHistoryLoader:
                 df.set_index("Date", inplace=True)
                 df.sort_index(inplace=True)
 
-                logger.info(f"成功獲取 {symbol} 從 {start_date} 到 {end_date} 的 {len(df)} 筆數據")
+                logger.info(
+                    f"成功獲取 {symbol} 從 {start_date} 到 {end_date} 的 {len(df)} 筆數據"
+                )
                 return df
 
             else:
-                logger.error(f"獲取歷史數據失敗: {response.status_code} - {response.text}")
+                logger.error(
+                    f"獲取歷史數據失敗: {response.status_code} - {response.text}"
+                )
                 return pd.DataFrame()
 
         except requests.exceptions.RequestException as e:
@@ -132,7 +147,9 @@ class CapitalHistoryLoader:
                 logger.info(f"獲取到 {len(symbols)} 個可用交易品種")
                 return symbols
             else:
-                logger.error(f"獲取市場列表失敗: {response.status_code} - {response.text}")
+                logger.error(
+                    f"獲取市場列表失敗: {response.status_code} - {response.text}"
+                )
                 return []
         except requests.exceptions.RequestException as e:
             logger.error(f"獲取市場列表時出錯: {e}")
@@ -151,7 +168,9 @@ class CapitalHistoryLoader:
             if response.status_code == 200:
                 return response.json()
             else:
-                logger.error(f"獲取市場信息失敗: {response.status_code} - {response.text}")
+                logger.error(
+                    f"獲取市場信息失敗: {response.status_code} - {response.text}"
+                )
                 return {}
         except requests.exceptions.RequestException as e:
             logger.error(f"獲取市場信息時出錯: {e}")

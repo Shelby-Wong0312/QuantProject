@@ -6,8 +6,7 @@ Tests core functionality and compatibility
 
 import asyncio
 import sys
-import os
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from pathlib import Path
 
 # Add project root to path
@@ -55,7 +54,10 @@ def test_tick_data_basic():
 
         # Create a test tick
         tick = TickData(
-            symbol="EURUSD", timestamp=datetime.now(timezone.utc), bid=1.1000, ask=1.1002
+            symbol="EURUSD",
+            timestamp=datetime.now(timezone.utc),
+            bid=1.1000,
+            ask=1.1002,
         )
 
         # Test basic properties

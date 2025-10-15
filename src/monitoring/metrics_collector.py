@@ -6,7 +6,14 @@ Cloud DevOps Agent - Monitoring Module
 import time
 import psutil
 import sqlite3
-from prometheus_client import Counter, Gauge, Histogram, Summary, CollectorRegistry, generate_latest
+from prometheus_client import (
+    Counter,
+    Gauge,
+    Histogram,
+    Summary,
+    CollectorRegistry,
+    generate_latest,
+)
 from prometheus_client import start_http_server
 import logging
 from typing import Dict, Any
@@ -19,15 +26,23 @@ registry = CollectorRegistry()
 
 # System metrics
 cpu_usage = Gauge("system_cpu_usage_percent", "CPU usage percentage", registry=registry)
-memory_usage = Gauge("system_memory_usage_percent", "Memory usage percentage", registry=registry)
-disk_usage = Gauge("system_disk_usage_percent", "Disk usage percentage", registry=registry)
+memory_usage = Gauge(
+    "system_memory_usage_percent", "Memory usage percentage", registry=registry
+)
+disk_usage = Gauge(
+    "system_disk_usage_percent", "Disk usage percentage", registry=registry
+)
 
 # Trading metrics
-total_trades = Counter("trading_trades_total", "Total number of trades executed", registry=registry)
+total_trades = Counter(
+    "trading_trades_total", "Total number of trades executed", registry=registry
+)
 successful_trades = Counter(
     "trading_trades_successful", "Number of successful trades", registry=registry
 )
-failed_trades = Counter("trading_trades_failed", "Number of failed trades", registry=registry)
+failed_trades = Counter(
+    "trading_trades_failed", "Number of failed trades", registry=registry
+)
 
 # Performance metrics
 order_latency = Histogram(
@@ -44,26 +59,38 @@ strategy_performance = Gauge(
 )
 
 # Portfolio metrics
-portfolio_value = Gauge("trading_portfolio_value", "Current portfolio value", registry=registry)
+portfolio_value = Gauge(
+    "trading_portfolio_value", "Current portfolio value", registry=registry
+)
 portfolio_pnl = Gauge("trading_portfolio_pnl", "Portfolio P&L", registry=registry)
-open_positions = Gauge("trading_open_positions", "Number of open positions", registry=registry)
+open_positions = Gauge(
+    "trading_open_positions", "Number of open positions", registry=registry
+)
 
 # API metrics
 api_requests = Counter(
     "capital_api_requests_total", "Total API requests", ["endpoint"], registry=registry
 )
 api_errors = Counter(
-    "capital_api_errors_total", "API request errors", ["endpoint", "error_type"], registry=registry
+    "capital_api_errors_total",
+    "API request errors",
+    ["endpoint", "error_type"],
+    registry=registry,
 )
 api_latency = Summary(
-    "capital_api_latency_seconds", "API request latency", ["endpoint"], registry=registry
+    "capital_api_latency_seconds",
+    "API request latency",
+    ["endpoint"],
+    registry=registry,
 )
 api_connected = Gauge(
     "capital_api_connected", "Capital.com API connection status", registry=registry
 )
 
 # Data metrics
-data_quality = Gauge("data_quality_score", "Data quality score", ["symbol"], registry=registry)
+data_quality = Gauge(
+    "data_quality_score", "Data quality score", ["symbol"], registry=registry
+)
 data_latency = Histogram(
     "data_processing_latency_seconds",
     "Data processing latency",
@@ -146,7 +173,9 @@ class MetricsCollector:
             cursor = conn.cursor()
 
             # Get trade counts
-            cursor.execute("SELECT COUNT(*) FROM trades WHERE date >= date('now', '-1 day')")
+            cursor.execute(
+                "SELECT COUNT(*) FROM trades WHERE date >= date('now', '-1 day')"
+            )
             daily_trades = cursor.fetchone()[0]
             total_trades.inc(daily_trades)
 
@@ -257,7 +286,11 @@ class HealthCheck:
     @staticmethod
     def check() -> Dict[str, Any]:
         """Perform health check"""
-        health = {"status": "healthy", "timestamp": datetime.now().isoformat(), "checks": {}}
+        health = {
+            "status": "healthy",
+            "timestamp": datetime.now().isoformat(),
+            "checks": {},
+        }
 
         try:
             # Check database

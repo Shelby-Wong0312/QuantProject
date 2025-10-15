@@ -157,12 +157,18 @@ class SimpleTradingSystem:
             if shares > 0 and shares * price <= self.cash:
                 cost = shares * price
                 self.cash -= cost
-                self.positions[symbol] = {"shares": shares, "price": price, "time": datetime.now()}
+                self.positions[symbol] = {
+                    "shares": shares,
+                    "price": price,
+                    "time": datetime.now(),
+                }
 
                 # Save to database
                 self.save_trade(symbol, "BUY", shares, price)
 
-                print(f"[BUY] {shares} shares of {symbol} at ${price:.2f} (Total: ${cost:.2f})")
+                print(
+                    f"[BUY] {shares} shares of {symbol} at ${price:.2f} (Total: ${cost:.2f})"
+                )
                 return True
 
         elif action == "SELL" and symbol in self.positions:
@@ -195,7 +201,14 @@ class SimpleTradingSystem:
             INSERT INTO trades (timestamp, symbol, action, quantity, price, total)
             VALUES (?, ?, ?, ?, ?, ?)
         """,
-            (datetime.now().isoformat(), symbol, action, quantity, price, quantity * price),
+            (
+                datetime.now().isoformat(),
+                symbol,
+                action,
+                quantity,
+                price,
+                quantity * price,
+            ),
         )
         conn.commit()
         conn.close()
@@ -237,7 +250,9 @@ class SimpleTradingSystem:
         while True:
             try:
                 cycle += 1
-                print(f"\n[SCAN] Cycle {cycle} - Scanning {len(self.symbols)} stocks...")
+                print(
+                    f"\n[SCAN] Cycle {cycle} - Scanning {len(self.symbols)} stocks..."
+                )
 
                 trades_executed = 0
                 signals_generated = 0

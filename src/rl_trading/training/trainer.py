@@ -4,15 +4,13 @@ Main trainer for RL trading agents
 
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Optional, Tuple, Any, Union
+from typing import Dict, List, Optional, Any, Union
 from pathlib import Path
 import logging
 import json
 from datetime import datetime
 import matplotlib.pyplot as plt
-import seaborn as sns
 
-from stable_baselines3.common.vec_env import DummyVecEnv, VecMonitor
 from stable_baselines3.common.utils import set_random_seed
 
 import sys
@@ -112,15 +110,21 @@ class Trainer:
         logger.info("Setting up environments...")
 
         # Create training environment
-        self.train_env = self._create_environment(data_path=train_data_path, is_training=True)
+        self.train_env = self._create_environment(
+            data_path=train_data_path, is_training=True
+        )
 
         # Create validation environment
         if val_data_path:
-            self.val_env = self._create_environment(data_path=val_data_path, is_training=False)
+            self.val_env = self._create_environment(
+                data_path=val_data_path, is_training=False
+            )
 
         # Create test environment
         if test_data_path:
-            self.test_env = self._create_environment(data_path=test_data_path, is_training=False)
+            self.test_env = self._create_environment(
+                data_path=test_data_path, is_training=False
+            )
 
         logger.info("Environments setup completed")
 
@@ -156,7 +160,9 @@ class Trainer:
         # Create agent based on type
         if self.agent_type == "PPO":
             self.agent = PPOAgent(
-                env=self.train_env, config=self.agent_config, name=f"PPO_{self.experiment_name}"
+                env=self.train_env,
+                config=self.agent_config,
+                name=f"PPO_{self.experiment_name}",
             )
         else:
             raise ValueError(f"Unknown agent type: {self.agent_type}")
@@ -193,7 +199,9 @@ class Trainer:
         callbacks = []
 
         # Trading metrics callback
-        metrics_callback = TradingMetricsCallback(log_dir=self.logs_dir, verbose=verbose)
+        metrics_callback = TradingMetricsCallback(
+            log_dir=self.logs_dir, verbose=verbose
+        )
         callbacks.append(metrics_callback)
 
         # Portfolio tracking callback
@@ -218,7 +226,9 @@ class Trainer:
         end_time = datetime.now()
         self.training_history["training_time"] = (end_time - start_time).total_seconds()
 
-        logger.info(f"Training completed in {self.training_history['training_time']:.2f} seconds")
+        logger.info(
+            f"Training completed in {self.training_history['training_time']:.2f} seconds"
+        )
 
         # Save final model
         self.save_model("final_model")
@@ -256,7 +266,9 @@ class Trainer:
         )
 
         # Run evaluation
-        results = evaluator.evaluate(env=eval_env, n_episodes=n_episodes, save_results=save_results)
+        results = evaluator.evaluate(
+            env=eval_env, n_episodes=n_episodes, save_results=save_results
+        )
 
         return results
 
@@ -317,7 +329,9 @@ class Trainer:
             f.write(f"  Initial Capital: ${self.env_config.initial_capital:,}\n")
             f.write(f"  Episode Length: {self.env_config.max_steps_per_episode}\n")
             f.write(f"  Random Seed: {self.seed}\n")
-            f.write(f"  Training Time: {self.training_history['training_time']:.2f} seconds\n")
+            f.write(
+                f"  Training Time: {self.training_history['training_time']:.2f} seconds\n"
+            )
 
             # Training metrics
             if self.agent:
@@ -327,7 +341,9 @@ class Trainer:
                     f.write(f"  {key}: {value}\n")
 
             # Best validation score
-            f.write(f"\nBest Validation Score: {self.training_history['best_val_score']:.4f}\n")
+            f.write(
+                f"\nBest Validation Score: {self.training_history['best_val_score']:.4f}\n"
+            )
 
             # Model details
             if self.agent:

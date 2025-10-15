@@ -10,7 +10,9 @@ for i, line in enumerate(lines):
 else:
     raise SystemExit("function not found")
 for j in range(start, len(lines)):
-    if lines[j].startswith("    return train_start, extended_end.date().isoformat(), True"):
+    if lines[j].startswith(
+        "    return train_start, extended_end.date().isoformat(), True"
+    ):
         end = j + 1
         break
 else:

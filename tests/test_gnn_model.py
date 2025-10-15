@@ -6,7 +6,6 @@ import unittest
 import numpy as np
 import pandas as pd
 import torch
-import networkx as nx
 from pathlib import Path
 import sys
 
@@ -18,9 +17,11 @@ from src.sensory_models.gnn_model import (
     StockCorrelationGNN,
     TemporalStockGNN,
     StockGATLayer,
-    GNNFeatureExtractor,
 )
-from src.sensory_models.relation_analyzer import StockRelationAnalyzer, RelationFeatureExtractor
+from src.sensory_models.relation_analyzer import (
+    StockRelationAnalyzer,
+    RelationFeatureExtractor,
+)
 
 
 class TestGraphConstructor(unittest.TestCase):
@@ -29,7 +30,9 @@ class TestGraphConstructor(unittest.TestCase):
     def setUp(self):
         """Set up test data"""
         self.symbols = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
-        self.constructor = StockGraphConstructor(correlation_threshold=0.3, lookback_window=60)
+        self.constructor = StockGraphConstructor(
+            correlation_threshold=0.3, lookback_window=60
+        )
 
         # Generate synthetic price data
         self.price_data = {}
@@ -201,7 +204,9 @@ class TestTemporalGNN(unittest.TestCase):
         )
 
         # Create temporal data
-        self.x_sequence = torch.randn(self.sequence_length, self.num_nodes, self.node_feature_dim)
+        self.x_sequence = torch.randn(
+            self.sequence_length, self.num_nodes, self.node_feature_dim
+        )
 
         # Create edge sequences
         self.edge_index_sequence = []
@@ -238,7 +243,8 @@ class TestRelationAnalyzer(unittest.TestCase):
         """Set up analyzer"""
         self.symbols = ["AAPL", "GOOGL", "MSFT"]
         self.analyzer = StockRelationAnalyzer(
-            model_config={"hidden_dim": 64, "num_layers": 2}, device="cpu"  # Use CPU for tests
+            model_config={"hidden_dim": 64, "num_layers": 2},
+            device="cpu",  # Use CPU for tests
         )
 
         # Generate test data
@@ -278,7 +284,9 @@ class TestRelationAnalyzer(unittest.TestCase):
         self.assertEqual(corr_matrix.shape, (len(self.symbols), len(self.symbols)))
 
         # Check diagonal is 1
-        np.testing.assert_array_almost_equal(np.diag(corr_matrix), np.ones(len(self.symbols)))
+        np.testing.assert_array_almost_equal(
+            np.diag(corr_matrix), np.ones(len(self.symbols))
+        )
 
     def test_clustering(self):
         """Test stock clustering"""
@@ -335,7 +343,9 @@ class TestFeatureExtractor(unittest.TestCase):
         """Test relation feature extraction"""
         current_prices = {s: 100.0 for s in self.symbols}
 
-        features = self.extractor.extract_relation_features(self.symbols, current_prices)
+        features = self.extractor.extract_relation_features(
+            self.symbols, current_prices
+        )
 
         # Check feature shape (5 features per symbol)
         expected_length = len(self.symbols) * 5

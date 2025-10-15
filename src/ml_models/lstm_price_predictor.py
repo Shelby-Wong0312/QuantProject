@@ -9,9 +9,8 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import MinMaxScaler
-from typing import Tuple, Dict, List, Optional
+from typing import Tuple, Dict
 import logging
-from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +20,9 @@ class StockPriceDataset(Dataset):
     股票價格數據集
     """
 
-    def __init__(self, data: np.ndarray, seq_length: int = 60, prediction_horizon: int = 5):
+    def __init__(
+        self, data: np.ndarray, seq_length: int = 60, prediction_horizon: int = 5
+    ):
         """
         Args:
             data: 價格數據
@@ -37,7 +38,9 @@ class StockPriceDataset(Dataset):
 
     def __getitem__(self, idx):
         x = self.data[idx : idx + self.seq_length]
-        y = self.data[idx + self.seq_length : idx + self.seq_length + self.prediction_horizon]
+        y = self.data[
+            idx + self.seq_length : idx + self.seq_length + self.prediction_horizon
+        ]
         return torch.FloatTensor(x), torch.FloatTensor(y)
 
 
@@ -77,7 +80,9 @@ class LSTMModel(nn.Module):
         )
 
         # 注意力機制
-        self.attention = nn.MultiheadAttention(embed_dim=hidden_size, num_heads=8, dropout=dropout)
+        self.attention = nn.MultiheadAttention(
+            embed_dim=hidden_size, num_heads=8, dropout=dropout
+        )
 
         # 全連接層
         self.fc_layers = nn.Sequential(
@@ -188,11 +193,17 @@ class LSTMPricePredictor:
         val_data = scaled_data[train_size:]
 
         # 創建數據集
-        train_dataset = StockPriceDataset(train_data, self.seq_length, self.prediction_horizon)
-        val_dataset = StockPriceDataset(val_data, self.seq_length, self.prediction_horizon)
+        train_dataset = StockPriceDataset(
+            train_data, self.seq_length, self.prediction_horizon
+        )
+        val_dataset = StockPriceDataset(
+            val_data, self.seq_length, self.prediction_horizon
+        )
 
         # 創建數據載入器
-        train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
+        train_loader = DataLoader(
+            train_dataset, batch_size=self.batch_size, shuffle=True
+        )
         val_loader = DataLoader(val_dataset, batch_size=self.batch_size, shuffle=False)
 
         logger.info(
@@ -216,7 +227,9 @@ class LSTMPricePredictor:
             dropout=0.2,
         ).to(self.device)
 
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
+        self.optimizer = torch.optim.Adam(
+            self.model.parameters(), lr=self.learning_rate
+        )
 
         # 學習率調度器
         self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
@@ -369,7 +382,9 @@ class LSTMPricePredictor:
 
         return result
 
-    def predict_multiple_stocks(self, stock_prices: Dict[str, pd.DataFrame]) -> pd.DataFrame:
+    def predict_multiple_stocks(
+        self, stock_prices: Dict[str, pd.DataFrame]
+    ) -> pd.DataFrame:
         """
         預測多支股票的預期收益
 

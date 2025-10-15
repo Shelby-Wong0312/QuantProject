@@ -16,7 +16,7 @@ import sys
 sys.path.append(str(Path(__file__).parent.parent))
 
 from rl_trading.environments.portfolio_env import PortfolioTradingEnvironment
-from rl_trading.agents.portfolio_agent import PortfolioAgent, PortfolioAgentFactory
+from rl_trading.agents.portfolio_agent import PortfolioAgentFactory
 from rl_trading.training.callbacks import TradingMetricsCallback
 
 # Setup logging
@@ -114,11 +114,17 @@ def main(args):
     logger.info(f"Creating {args.strategy} agent")
 
     if args.strategy == "conservative":
-        agent = PortfolioAgentFactory.create_conservative_agent(train_env, len(args.symbols))
+        agent = PortfolioAgentFactory.create_conservative_agent(
+            train_env, len(args.symbols)
+        )
     elif args.strategy == "aggressive":
-        agent = PortfolioAgentFactory.create_aggressive_agent(train_env, len(args.symbols))
+        agent = PortfolioAgentFactory.create_aggressive_agent(
+            train_env, len(args.symbols)
+        )
     else:
-        agent = PortfolioAgentFactory.create_balanced_agent(train_env, len(args.symbols))
+        agent = PortfolioAgentFactory.create_balanced_agent(
+            train_env, len(args.symbols)
+        )
 
     # Override with command line parameters if provided
     if args.learning_rate:
@@ -130,7 +136,9 @@ def main(args):
     callbacks = []
 
     # Trading metrics callback
-    metrics_callback = TradingMetricsCallback(log_dir=Path(args.output_dir) / "logs", log_freq=1000)
+    metrics_callback = TradingMetricsCallback(
+        log_dir=Path(args.output_dir) / "logs", log_freq=1000
+    )
     callbacks.append(metrics_callback)
 
     # Train agent
@@ -190,12 +198,16 @@ if __name__ == "__main__":
         default=["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"],
         help="Stock symbols to trade",
     )
-    parser.add_argument("--initial-capital", type=float, default=100000, help="Initial capital")
+    parser.add_argument(
+        "--initial-capital", type=float, default=100000, help="Initial capital"
+    )
     parser.add_argument(
         "--transaction-cost", type=float, default=0.001, help="Transaction cost rate"
     )
     parser.add_argument("--slippage", type=float, default=0.0005, help="Slippage rate")
-    parser.add_argument("--episode-length", type=int, default=252, help="Trading days per episode")
+    parser.add_argument(
+        "--episode-length", type=int, default=252, help="Trading days per episode"
+    )
     parser.add_argument(
         "--rebalance-freq", type=int, default=5, help="Rebalancing frequency (days)"
     )
@@ -208,14 +220,20 @@ if __name__ == "__main__":
         default="balanced",
         help="Trading strategy type",
     )
-    parser.add_argument("--learning-rate", type=float, default=None, help="Override learning rate")
-    parser.add_argument("--batch-size", type=int, default=None, help="Override batch size")
+    parser.add_argument(
+        "--learning-rate", type=float, default=None, help="Override learning rate"
+    )
+    parser.add_argument(
+        "--batch-size", type=int, default=None, help="Override batch size"
+    )
 
     # Training settings
     parser.add_argument(
         "--total-timesteps", type=int, default=500000, help="Total training timesteps"
     )
-    parser.add_argument("--eval-freq", type=int, default=10000, help="Evaluation frequency")
+    parser.add_argument(
+        "--eval-freq", type=int, default=10000, help="Evaluation frequency"
+    )
     parser.add_argument(
         "--output-dir", type=str, default="./models/portfolio", help="Output directory"
     )

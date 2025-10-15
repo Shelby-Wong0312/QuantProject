@@ -2,7 +2,6 @@
 Example of proper logging usage
 """
 
-import logging
 from src.utils.logger_config import setup_logger
 
 # Setup logger for this module
@@ -25,7 +24,7 @@ def example_function():
 
     # Exception logging
     try:
-        result = 10 / 0
+        pass
     except ZeroDivisionError as e:
         logger.error(f"Division error occurred: {e}", exc_info=True)
 

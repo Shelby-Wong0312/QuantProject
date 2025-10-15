@@ -4,13 +4,12 @@ Cloud Security - TASK SEC-001
 Comprehensive security audit for the quantitative trading system
 """
 
-import os
 import sys
 import json
 import subprocess
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List
 import ast
 import re
 
@@ -48,19 +47,19 @@ class SecurityAuditor:
 
         # Step 1: Code Security Scan
         print("\n[STEP 1/5] Code Security Scanning...")
-        code_results = self.scan_code_security()
+        self.scan_code_security()
 
         # Step 2: Dependency Check
         print("\n[STEP 2/5] Dependency Vulnerability Check...")
-        dep_results = self.check_dependencies()
+        self.check_dependencies()
 
         # Step 3: Configuration Audit
         print("\n[STEP 3/5] Configuration Security Audit...")
-        config_results = self.audit_configurations()
+        self.audit_configurations()
 
         # Step 4: API Security Check
         print("\n[STEP 4/5] API Security Verification...")
-        api_results = self.check_api_security()
+        self.check_api_security()
 
         # Step 5: Generate Report
         print("\n[STEP 5/5] Generating Security Report...")
@@ -159,7 +158,10 @@ class SecurityAuditor:
             # Try to use safety if available
             try:
                 result = subprocess.run(
-                    ["pip", "list", "--format=json"], capture_output=True, text=True, timeout=30
+                    ["pip", "list", "--format=json"],
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
                 )
 
                 if result.returncode == 0:
@@ -228,7 +230,9 @@ class SecurityAuditor:
                         if re.search(pattern, content, re.IGNORECASE):
                             config_issues.append(
                                 {
-                                    "file": str(config_file.relative_to(self.project_root)),
+                                    "file": str(
+                                        config_file.relative_to(self.project_root)
+                                    ),
                                     "type": file_type,
                                     "severity": "HIGH",
                                     "issue": "Potential exposed secret in configuration",
@@ -236,7 +240,7 @@ class SecurityAuditor:
                             )
                             break
 
-                except Exception as e:
+                except Exception:
                     pass
 
         print(f"  Found {len(config_issues)} configuration issues")
@@ -281,14 +285,18 @@ class SecurityAuditor:
 
     def calculate_security_score(self) -> int:
         """Calculate overall security score"""
-        total_issues = len(self.results["vulnerabilities"])
+        len(self.results["vulnerabilities"])
 
         # Scoring system
-        high_issues = sum(1 for v in self.results["vulnerabilities"] if v.get("severity") == "HIGH")
+        high_issues = sum(
+            1 for v in self.results["vulnerabilities"] if v.get("severity") == "HIGH"
+        )
         medium_issues = sum(
             1 for v in self.results["vulnerabilities"] if v.get("severity") == "MEDIUM"
         )
-        low_issues = sum(1 for v in self.results["vulnerabilities"] if v.get("severity") == "LOW")
+        low_issues = sum(
+            1 for v in self.results["vulnerabilities"] if v.get("severity") == "LOW"
+        )
 
         # Calculate score (out of 100)
         score = 100
@@ -349,14 +357,18 @@ class SecurityAuditor:
             report.append("## High Severity Issues 🔴")
             report.append("")
             for vuln in severity_groups["HIGH"][:10]:  # Limit to 10
-                report.append(f"- **{vuln.get('file', 'N/A')}**: {vuln.get('issue', 'N/A')}")
+                report.append(
+                    f"- **{vuln.get('file', 'N/A')}**: {vuln.get('issue', 'N/A')}"
+                )
             report.append("")
 
         if severity_groups["MEDIUM"]:
             report.append("## Medium Severity Issues 🟡")
             report.append("")
             for vuln in severity_groups["MEDIUM"][:10]:
-                report.append(f"- **{vuln.get('file', 'N/A')}**: {vuln.get('issue', 'N/A')}")
+                report.append(
+                    f"- **{vuln.get('file', 'N/A')}**: {vuln.get('issue', 'N/A')}"
+                )
             report.append("")
 
         # Add recommendations
@@ -423,7 +435,9 @@ class SecurityAuditor:
         print("  [OK] security_audit_report.md")
 
         if self.results["summary"]["high_severity"] > 0:
-            print("\n[WARNING] CRITICAL: High severity issues require immediate attention!")
+            print(
+                "\n[WARNING] CRITICAL: High severity issues require immediate attention!"
+            )
 
         print("\n" + "=" * 80)
 

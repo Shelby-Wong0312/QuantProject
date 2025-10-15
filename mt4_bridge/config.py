@@ -8,10 +8,9 @@ MT4橋接系統配置模組
 import json
 import logging
 import os
-from typing import Dict, Any, List, Optional, Union
+from typing import Dict, Any, List, Optional
 from dataclasses import dataclass, asdict, field
 from enum import Enum
-import configparser
 
 logger = logging.getLogger(__name__)
 
@@ -230,7 +229,9 @@ class MT4BridgeConfig:
                     for symbol_name, symbol_data in data["symbols"].items():
                         symbol_data = symbol_data.copy()
                         if "symbol_type" in symbol_data:
-                            symbol_data["symbol_type"] = SymbolType(symbol_data["symbol_type"])
+                            symbol_data["symbol_type"] = SymbolType(
+                                symbol_data["symbol_type"]
+                            )
                         self.symbols[symbol_name] = SymbolConfig(**symbol_data)
 
                 logger.info(f"配置已載入: {self.config_file}")
@@ -283,13 +284,27 @@ class MT4BridgeConfig:
         if not self.symbols:  # 如果沒有配置品種，添加默認品種
             default_symbols = [
                 # 主要外匯對
-                SymbolConfig("EURUSD", "EUR/USD", SymbolType.FOREX, digits=5, pip_value=10.0),
-                SymbolConfig("GBPUSD", "GBP/USD", SymbolType.FOREX, digits=5, pip_value=10.0),
-                SymbolConfig("USDJPY", "USD/JPY", SymbolType.FOREX, digits=3, pip_value=10.0),
-                SymbolConfig("USDCHF", "USD/CHF", SymbolType.FOREX, digits=5, pip_value=10.0),
-                SymbolConfig("AUDUSD", "AUD/USD", SymbolType.FOREX, digits=5, pip_value=10.0),
-                SymbolConfig("USDCAD", "USD/CAD", SymbolType.FOREX, digits=5, pip_value=10.0),
-                SymbolConfig("NZDUSD", "NZD/USD", SymbolType.FOREX, digits=5, pip_value=10.0),
+                SymbolConfig(
+                    "EURUSD", "EUR/USD", SymbolType.FOREX, digits=5, pip_value=10.0
+                ),
+                SymbolConfig(
+                    "GBPUSD", "GBP/USD", SymbolType.FOREX, digits=5, pip_value=10.0
+                ),
+                SymbolConfig(
+                    "USDJPY", "USD/JPY", SymbolType.FOREX, digits=3, pip_value=10.0
+                ),
+                SymbolConfig(
+                    "USDCHF", "USD/CHF", SymbolType.FOREX, digits=5, pip_value=10.0
+                ),
+                SymbolConfig(
+                    "AUDUSD", "AUD/USD", SymbolType.FOREX, digits=5, pip_value=10.0
+                ),
+                SymbolConfig(
+                    "USDCAD", "USD/CAD", SymbolType.FOREX, digits=5, pip_value=10.0
+                ),
+                SymbolConfig(
+                    "NZDUSD", "NZD/USD", SymbolType.FOREX, digits=5, pip_value=10.0
+                ),
                 # 貴金屬
                 SymbolConfig(
                     "XAUUSD",
@@ -385,11 +400,18 @@ class MT4BridgeConfig:
 
     def get_mt4_symbol_mapping(self) -> Dict[str, str]:
         """獲取MT4品種名稱映射表"""
-        return {config.standard_symbol: config.mt4_symbol for config in self.symbols.values()}
+        return {
+            config.standard_symbol: config.mt4_symbol
+            for config in self.symbols.values()
+        }
 
     def get_symbols_by_type(self, symbol_type: SymbolType) -> List[SymbolConfig]:
         """根據類型獲取品種列表"""
-        return [config for config in self.symbols.values() if config.symbol_type == symbol_type]
+        return [
+            config
+            for config in self.symbols.values()
+            if config.symbol_type == symbol_type
+        ]
 
     def validate_config(self) -> List[str]:
         """

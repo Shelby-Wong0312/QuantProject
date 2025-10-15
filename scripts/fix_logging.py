@@ -2,11 +2,9 @@
 Stage 0: Fix logging - Replace print statements with proper logging
 """
 
-import os
 import sys
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
@@ -133,7 +131,6 @@ def fix_file_logging(file_path: Path) -> bool:
         # Replace print statements
         final_lines = []
         for line in new_lines:
-            original_line = line
 
             # Skip comments and strings
             if line.strip().startswith("#"):
@@ -198,7 +195,9 @@ def main():
                 print(f"  [FIXED] {file_path}")
                 fixed_count += 1
             else:
-                print(f"  [SKIP] {file_path} - already has logging or no changes needed")
+                print(
+                    f"  [SKIP] {file_path} - already has logging or no changes needed"
+                )
 
     print(f"\n[OK] Fixed logging in {fixed_count} files")
 

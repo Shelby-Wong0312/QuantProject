@@ -5,7 +5,7 @@ Capital.com API Client
 import requests
 import json
 from typing import Dict, Any, List, Optional, Union
-from datetime import datetime, timedelta
+from datetime import datetime
 import logging
 from enum import Enum
 
@@ -61,7 +61,9 @@ class CapitalComClient:
         """
         return self.auth.logout()
 
-    def _make_request(self, method: str, endpoint: str, **kwargs) -> Optional[Dict[str, Any]]:
+    def _make_request(
+        self, method: str, endpoint: str, **kwargs
+    ) -> Optional[Dict[str, Any]]:
         """
         Make authenticated request to API
 
@@ -115,7 +117,9 @@ class CapitalComClient:
         result = self._make_request("GET", "/api/v1/accounts")
         return result.get("accounts") if result else None
 
-    def search_markets(self, search_term: str, limit: int = 50) -> Optional[List[Dict[str, Any]]]:
+    def search_markets(
+        self, search_term: str, limit: int = 50
+    ) -> Optional[List[Dict[str, Any]]]:
         """
         Search for markets
 

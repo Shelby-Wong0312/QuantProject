@@ -8,10 +8,7 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import pandas as pd
-import numpy as np
 import sqlite3
-from datetime import datetime
-import json
 
 
 def generate_html_report():
@@ -46,7 +43,7 @@ def generate_html_report():
         ORDER BY t.date DESC
         LIMIT 20
     """
-    golden_crosses = pd.read_sql_query(golden_query, conn)
+    pd.read_sql_query(golden_query, conn)
 
     # 當天趨勢分佈
     trend_query = """
@@ -71,7 +68,7 @@ def generate_html_report():
         ORDER BY pct_above_sma200 DESC
         LIMIT 15
     """
-    top_trending = pd.read_sql_query(trending_query, conn)
+    pd.read_sql_query(trending_query, conn)
 
     conn.close()
 
@@ -81,8 +78,8 @@ def generate_html_report():
             return ""
         rows = []
         for _, row in df.iterrows():
-            ema50 = f"${row['ema_50']:.2f}" if pd.notna(row["ema_50"]) else "N/A"
-            ema200 = f"${row['ema_200']:.2f}" if pd.notna(row["ema_200"]) else "N/A"
+            f"${row['ema_50']:.2f}" if pd.notna(row["ema_50"]) else "N/A"
+            f"${row['ema_200']:.2f}" if pd.notna(row["ema_200"]) else "N/A"
             rows.append(
                 """
                 <tr>
@@ -102,9 +99,9 @@ def generate_html_report():
             return ""
         rows = []
         for _, row in df.iterrows():
-            sma20 = f"${row['sma_20']:.2f}" if pd.notna(row["sma_20"]) else "N/A"
-            sma50 = f"${row['sma_50']:.2f}" if pd.notna(row["sma_50"]) else "N/A"
-            sma200 = f"${row['sma_200']:.2f}" if pd.notna(row["sma_200"]) else "N/A"
+            f"${row['sma_20']:.2f}" if pd.notna(row["sma_20"]) else "N/A"
+            f"${row['sma_50']:.2f}" if pd.notna(row["sma_50"]) else "N/A"
+            f"${row['sma_200']:.2f}" if pd.notna(row["sma_200"]) else "N/A"
             rows.append(
                 """
                 <tr>
@@ -147,8 +144,8 @@ def generate_html_report():
         """
 
     # numbers for header cards
-    total_stocks = int(stats["total_stocks"].iloc[0]) if not stats.empty else 0
-    total_records = int(stats["total_records"].iloc[0]) if not stats.empty else 0
+    int(stats["total_stocks"].iloc[0]) if not stats.empty else 0
+    int(stats["total_records"].iloc[0]) if not stats.empty else 0
 
     bullish_count = (
         int(trend_dist.loc[trend_dist["trend_direction"] == "bullish", "count"].iloc[0])
@@ -161,8 +158,8 @@ def generate_html_report():
         else 0
     )
     total_trend = int(trend_dist["count"].sum()) if not trend_dist.empty else 0
-    bullish_pct = int(bullish_count / total_trend * 100) if total_trend else 0
-    bearish_pct = int(bearish_count / total_trend * 100) if total_trend else 0
+    int(bullish_count / total_trend * 100) if total_trend else 0
+    int(bearish_count / total_trend * 100) if total_trend else 0
 
     # -------- 主 HTML（只有一層 f-string，CSS 全部用 {{ }} 逃脫） --------
     html_content = """<!DOCTYPE html>

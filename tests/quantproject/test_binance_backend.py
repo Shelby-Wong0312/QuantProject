@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from unittest.mock import patch, MagicMock
-import pandas as pd
 
 from src.quantproject.data_pipeline.backends.binance import BinanceBackend
 

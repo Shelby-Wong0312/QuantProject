@@ -4,10 +4,9 @@ Dynamic Stop Loss System
 Cloud Quant - Task Q-601
 """
 
-import numpy as np
 import pandas as pd
 from typing import Dict, Optional, Tuple, List
-from datetime import datetime, timedelta
+from datetime import datetime
 import logging
 from dataclasses import dataclass
 from enum import Enum
@@ -90,7 +89,9 @@ class DynamicStopLoss:
             ATR序列
         """
         if len(df) < period:
-            logger.warning(f"Insufficient data for ATR calculation (need {period} rows)")
+            logger.warning(
+                f"Insufficient data for ATR calculation (need {period} rows)"
+            )
             return pd.Series([df["high"].iloc[-1] - df["low"].iloc[-1]] * len(df))
 
         high = df["high"]
@@ -111,7 +112,11 @@ class DynamicStopLoss:
         return atr
 
     def set_initial_stop(
-        self, symbol: str, entry_price: float, current_atr: float, position_type: str = "LONG"
+        self,
+        symbol: str,
+        entry_price: float,
+        current_atr: float,
+        position_type: str = "LONG",
     ) -> float:
         """
         設置初始止損價
@@ -148,11 +153,15 @@ class DynamicStopLoss:
         self.position_stops[symbol] = stop_info
         self.stats["total_stops_set"] += 1
 
-        logger.info(f"{symbol}: Initial stop set at {stop_price:.2f} (Entry: {entry_price:.2f})")
+        logger.info(
+            f"{symbol}: Initial stop set at {stop_price:.2f} (Entry: {entry_price:.2f})"
+        )
 
         return stop_price
 
-    def update_trailing_stop(self, symbol: str, current_price: float) -> Optional[float]:
+    def update_trailing_stop(
+        self, symbol: str, current_price: float
+    ) -> Optional[float]:
         """
         更新追蹤止損
 
@@ -209,7 +218,9 @@ class DynamicStopLoss:
 
         return stop_info.stop_price
 
-    def check_stop_triggered(self, symbol: str, current_price: float) -> Tuple[bool, str]:
+    def check_stop_triggered(
+        self, symbol: str, current_price: float
+    ) -> Tuple[bool, str]:
         """
         檢查是否觸發止損
 
@@ -256,7 +267,9 @@ class DynamicStopLoss:
             return False
 
         stop_info = self.position_stops[symbol]
-        holding_duration = (datetime.now() - stop_info.entry_time).total_seconds() / 3600
+        holding_duration = (
+            datetime.now() - stop_info.entry_time
+        ).total_seconds() / 3600
 
         return holding_duration >= self.time_stop_hours
 
@@ -338,7 +351,8 @@ class DynamicStopLoss:
             "trailing_activated": stop_info.trailing_activated,
             "highest_price": stop_info.highest_price,
             "lowest_price": stop_info.lowest_price,
-            "holding_hours": (datetime.now() - stop_info.entry_time).total_seconds() / 3600,
+            "holding_hours": (datetime.now() - stop_info.entry_time).total_seconds()
+            / 3600,
             "last_update": stop_info.last_update.isoformat(),
         }
 
@@ -366,7 +380,8 @@ class DynamicStopLoss:
             "stops_triggered": self.stats["stops_triggered"],
             "trailing_updates": self.stats["trailing_updates"],
             "profit_locks": self.stats["profit_locks"],
-            "trigger_rate": self.stats["stops_triggered"] / max(1, self.stats["total_stops_set"]),
+            "trigger_rate": self.stats["stops_triggered"]
+            / max(1, self.stats["total_stops_set"]),
         }
 
 
@@ -519,6 +534,8 @@ if __name__ == "__main__":
     for price in test_prices:
         protection_stop = profit_protector.calculate_protection_stop(entry, price)
         profit_pct = (price - entry) / entry
-        print(f"Price: {price} | Profit: {profit_pct:.1%} | Protection Stop: {protection_stop:.2f}")
+        print(
+            f"Price: {price} | Profit: {profit_pct:.1%} | Protection Stop: {protection_stop:.2f}"
+        )
 
     print("\nDynamic Stop Loss System Test Complete!")

@@ -39,9 +39,9 @@ class RiskMonitor:
         """Check and trigger stop losses"""
         for symbol, position in positions.items():
             if "current_price" in position and "entry_price" in position:
-                loss_pct = (position["current_price"] - position["entry_price"]) / position[
-                    "entry_price"
-                ]
+                loss_pct = (
+                    position["current_price"] - position["entry_price"]
+                ) / position["entry_price"]
 
                 if position["quantity"] > 0:  # Long position
                     if loss_pct < -self.stop_loss:
@@ -82,7 +82,9 @@ class RiskMonitor:
 
         sorted_returns = np.sort(returns)
         index = int((1 - confidence) * len(sorted_returns))
-        return sorted_returns[index] if index < len(sorted_returns) else sorted_returns[0]
+        return (
+            sorted_returns[index] if index < len(sorted_returns) else sorted_returns[0]
+        )
 
     def get_risk_metrics(self, positions: Dict, capital: float) -> Dict:
         """Get current risk metrics"""

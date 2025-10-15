@@ -60,7 +60,9 @@ def test_alpaca_direct_api():
 
     try:
         # Latest trade endpoint (requires authentication)
-        response = requests.get(f"{data_url}/stocks/AAPL/trades/latest", headers=headers)
+        response = requests.get(
+            f"{data_url}/stocks/AAPL/trades/latest", headers=headers
+        )
 
         if response.status_code == 200:
             response.json()

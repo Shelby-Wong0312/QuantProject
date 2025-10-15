@@ -6,16 +6,16 @@ Cloud PM - 最終驗證
 import os
 import sys
 import json
-import time
-import asyncio
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
-from typing import Dict, List, Tuple
+from datetime import datetime
+from typing import List, Tuple
 import logging
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -133,7 +133,6 @@ class SystemTestSuite:
         # 測試數據品質
         try:
             # 檢查數據完整性
-            data_quality = {"missing_values": 0, "duplicates": 0, "outliers": 0}
             tests.append(("數據品質檢查", True, "數據品質良好"))
         except Exception as e:
             tests.append(("數據品質檢查", False, str(e)))
@@ -157,7 +156,6 @@ class SystemTestSuite:
         # 測試訂單系統
         try:
             # 模擬訂單
-            order = {"symbol": "AAPL", "quantity": 100, "order_type": "MARKET", "side": "BUY"}
             tests.append(("訂單系統", True, "訂單結構正確"))
         except Exception as e:
             tests.append(("訂單系統", False, str(e)))
@@ -200,7 +198,7 @@ class SystemTestSuite:
         try:
             from src.connectors.capital_com_api import CapitalComAPI
 
-            api = CapitalComAPI()
+            CapitalComAPI()
             # 檢查API配置
             if os.path.exists(".env"):
                 tests.append(("Capital.com配置", True, "API憑證已配置"))
@@ -251,7 +249,7 @@ class SystemTestSuite:
             initial_capital = 100000
             returns = np.random.randn(252) * 0.01  # 一年的日收益
             cumulative_returns = (1 + returns).cumprod()
-            final_value = initial_capital * cumulative_returns[-1]
+            initial_capital * cumulative_returns[-1]
 
             sharpe_ratio = np.sqrt(252) * returns.mean() / returns.std()
             max_drawdown = (cumulative_returns / cumulative_returns.cummax() - 1).min()
@@ -374,7 +372,9 @@ class SystemTestSuite:
         print("=" * 60)
 
         total = self.test_results["tests_passed"] + self.test_results["tests_failed"]
-        pass_rate = (self.test_results["tests_passed"] / total * 100) if total > 0 else 0
+        pass_rate = (
+            (self.test_results["tests_passed"] / total * 100) if total > 0 else 0
+        )
 
         print(f"\n總測試數: {total}")
         print(f"✅ 通過: {self.test_results['tests_passed']}")

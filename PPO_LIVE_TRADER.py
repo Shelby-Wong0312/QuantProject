@@ -33,7 +33,10 @@ class ActorCritic(nn.Module):
 
         # Feature extractor
         self.feature_extractor = nn.Sequential(
-            nn.Linear(obs_dim, hidden_dim), nn.LayerNorm(hidden_dim), nn.ReLU(), nn.Dropout(0.1)
+            nn.Linear(obs_dim, hidden_dim),
+            nn.LayerNorm(hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(0.1),
         )
 
         # Actor (policy)
@@ -96,12 +99,18 @@ class PPOLiveTrader:
         self.dry_run = (
             os.getenv("DRY_RUN", "0") == "1"
         )  # When true, skip login and never place orders
-        self.max_loops = int(os.getenv("MAX_LOOPS", "0"))  # When >0, stop after N scan loops
-        self.scan_interval = int(os.getenv("SCAN_INTERVAL_SECONDS", "60"))  # Interval between scans
+        self.max_loops = int(
+            os.getenv("MAX_LOOPS", "0")
+        )  # When >0, stop after N scan loops
+        self.scan_interval = int(
+            os.getenv("SCAN_INTERVAL_SECONDS", "60")
+        )  # Interval between scans
 
         # Load PPO model
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.model = ActorCritic(obs_dim=220, action_dim=4)  # Match trained model dimensions
+        self.model = ActorCritic(
+            obs_dim=220, action_dim=4
+        )  # Match trained model dimensions
         self.load_model()
 
         # Trading parameters
@@ -109,7 +118,9 @@ class PPOLiveTrader:
         # Default to 0 (no cap) so thousands can be loaded if not configured
         self.max_symbols = int(os.getenv("MAX_SYMBOLS", "0"))  # 0 or negative = no cap
         # Default to 200 to avoid overloading when scanning thousands
-        self.batch_size = int(os.getenv("BATCH_SIZE", "200"))  # 0 = process all each loop
+        self.batch_size = int(
+            os.getenv("BATCH_SIZE", "200")
+        )  # 0 = process all each loop
         self.batch_index = 0
         # Symbol mappings (Capital <-> Yahoo, EPIC codes)
         self.symbol_map_yahoo: Dict[str, str] = {}
@@ -145,7 +156,9 @@ class PPOLiveTrader:
 
         if model_path and os.path.exists(model_path):
             # Load with weights_only=False to handle custom classes
-            checkpoint = torch.load(model_path, map_location=self.device, weights_only=False)
+            checkpoint = torch.load(
+                model_path, map_location=self.device, weights_only=False
+            )
 
             # Extract model state from checkpoint
             if isinstance(checkpoint, dict):
@@ -168,7 +181,9 @@ class PPOLiveTrader:
                         self.model.load_state_dict(checkpoint)
                     except Exception:
                         print(f"[INFO] Checkpoint keys: {checkpoint.keys()}")
-                        print("[WARNING] Could not load model weights, using random initialization")
+                        print(
+                            "[WARNING] Could not load model weights, using random initialization"
+                        )
             else:
                 # Direct model state
                 self.model.load_state_dict(checkpoint)
@@ -185,7 +200,9 @@ class PPOLiveTrader:
         # Prefer full mapping file
         try:
             if os.path.exists("capital_yahoo_full_mapping.json"):
-                with open("capital_yahoo_full_mapping.json", "r", encoding="utf-8") as f:
+                with open(
+                    "capital_yahoo_full_mapping.json", "r", encoding="utf-8"
+                ) as f:
                     json.load(f)
                 mapped = data.get("mapped") if isinstance(data, dict) else None
                 if isinstance(mapped, list):
@@ -323,7 +340,10 @@ class PPOLiveTrader:
 
         try:
             response = requests.post(
-                f"{self.base_url}/api/v1/session", headers=headers, json=payload, timeout=10
+                f"{self.base_url}/api/v1/session",
+                headers=headers,
+                json=payload,
+                timeout=10,
             )
             if response.status_code == 200:
                 self.cst = response.headers.get("CST")
@@ -386,7 +406,10 @@ class PPOLiveTrader:
 
             # 5. Bollinger Bands
             bb_std = np.array(
-                [close_prices[: i + 1].std() if i >= 19 else 0 for i in range(len(close_prices))]
+                [
+                    close_prices[: i + 1].std() if i >= 19 else 0
+                    for i in range(len(close_prices))
+                ]
             )
             bb_upper = ma20 + 2 * bb_std
             bb_lower = ma20 - 2 * bb_std
@@ -442,7 +465,10 @@ class PPOLiveTrader:
             return
 
         elif action == 1 or action == 3:  # Buy (3 = strong buy with larger position)
-            if symbol not in self.positions and len(self.positions) < self.max_positions:
+            if (
+                symbol not in self.positions
+                and len(self.positions) < self.max_positions
+            ):
                 shares = 200 if action == 3 else 100  # Double size for strong signal
                 self.positions[symbol] = {
                     "entry_price": current_price,
@@ -452,7 +478,9 @@ class PPOLiveTrader:
                     "take_profit": current_price * 1.05,  # 5% take profit
                 }
                 signal_type = "STRONG BUY" if action == 3 else "BUY"
-                print(f"[PPO {signal_type}] {symbol} @ ${current_price:.2f} x {shares} shares")
+                print(
+                    f"[PPO {signal_type}] {symbol} @ ${current_price:.2f} x {shares} shares"
+                )
 
                 # Execute on Capital.com if connected
                 if self.cst:
@@ -490,7 +518,10 @@ class PPOLiveTrader:
 
         try:
             response = requests.post(
-                f"{self.base_url}/api/v1/positions", headers=headers, json=payload, timeout=10
+                f"{self.base_url}/api/v1/positions",
+                headers=headers,
+                json=payload,
+                timeout=10,
             )
             if response.status_code == 200:
                 print(f"[CAPITAL.COM] Order executed: {direction} {size} {symbol}")
@@ -526,7 +557,9 @@ class PPOLiveTrader:
                 timeout=10,
             )
             if response.status_code == 200:
-                print(f"[CAPITAL.COM] Order executed: {direction} {size} {symbol} (EPIC={epic})")
+                print(
+                    f"[CAPITAL.COM] Order executed: {direction} {size} {symbol} (EPIC={epic})"
+                )
                 return
             if response.status_code in (401, 403):
                 logger.warning("Auth failed (401/403). Re-login and retry once.")
@@ -555,13 +588,17 @@ class PPOLiveTrader:
         for symbol in list(self.positions.keys()):
             try:
                 yahoo_symbol = self.get_yahoo_symbol(symbol)
-                current_price = yf.Ticker(yahoo_symbol).info.get("regularMarketPrice", 0)
+                current_price = yf.Ticker(yahoo_symbol).info.get(
+                    "regularMarketPrice", 0
+                )
                 position = self.positions[symbol]
 
                 # Check stop loss
                 if current_price <= position["stop_loss"]:
                     pnl = (current_price - position["entry_price"]) * position["shares"]
-                    print(f"[STOP LOSS] {symbol} @ ${current_price:.2f} | Loss: ${pnl:.2f}")
+                    print(
+                        f"[STOP LOSS] {symbol} @ ${current_price:.2f} | Loss: ${pnl:.2f}"
+                    )
                     del self.positions[symbol]
                     if self.cst:
                         self.place_order(symbol, "SELL", position["shares"])
@@ -569,7 +606,9 @@ class PPOLiveTrader:
                 # Check take profit
                 elif current_price >= position["take_profit"]:
                     pnl = (current_price - position["entry_price"]) * position["shares"]
-                    print(f"[TAKE PROFIT] {symbol} @ ${current_price:.2f} | Profit: ${pnl:.2f}")
+                    print(
+                        f"[TAKE PROFIT] {symbol} @ ${current_price:.2f} | Profit: ${pnl:.2f}"
+                    )
                     del self.positions[symbol]
                     if self.cst:
                         self.place_order(symbol, "SELL", position["shares"])
@@ -596,12 +635,18 @@ class PPOLiveTrader:
             try:
                 total_syms = len(self.symbols)
                 if total_syms == 0:
-                    print("[WARNING] No symbols to scan. Check SYMBOLS_FILE or data/tier_s.txt")
+                    print(
+                        "[WARNING] No symbols to scan. Check SYMBOLS_FILE or data/tier_s.txt"
+                    )
                     time.sleep(self.scan_interval)
                     continue
 
                 # batching support
-                if self.batch_size and self.batch_size > 0 and self.batch_size < total_syms:
+                if (
+                    self.batch_size
+                    and self.batch_size > 0
+                    and self.batch_size < total_syms
+                ):
                     start = (self.batch_index * self.batch_size) % total_syms
                     end = start + self.batch_size
                     if end <= total_syms:
@@ -626,7 +671,9 @@ class PPOLiveTrader:
                         action = self.get_ppo_signal(symbol)
 
                         # Get current price
-                        current_price = yf.Ticker(symbol).info.get("regularMarketPrice", 0)
+                        current_price = yf.Ticker(symbol).info.get(
+                            "regularMarketPrice", 0
+                        )
 
                         if current_price > 0:
                             # Execute trade based on PPO decision
@@ -649,7 +696,9 @@ class PPOLiveTrader:
                 if self.positions:
                     print(f"\n[POSITIONS] {len(self.positions)} active:")
                     for sym, pos in self.positions.items():
-                        print(f"  {sym}: Entry=${pos['entry_price']:.2f}, Shares={pos['shares']}")
+                        print(
+                            f"  {sym}: Entry=${pos['entry_price']:.2f}, Shares={pos['shares']}"
+                        )
 
                 # Wait before next scan
                 time.sleep(self.scan_interval)
@@ -657,7 +706,9 @@ class PPOLiveTrader:
                 # Stop in test mode after N loops
                 loops += 1
                 if self.max_loops and loops >= self.max_loops:
-                    print(f"[INFO] MAX_LOOPS={self.max_loops} reached, exiting test run.")
+                    print(
+                        f"[INFO] MAX_LOOPS={self.max_loops} reached, exiting test run."
+                    )
                     break
 
             except KeyboardInterrupt:

@@ -11,7 +11,8 @@ import os
 from typing import Dict, Any, Optional
 
 # --- 動態把專案根目錄放到 sys.path，確保能 import 到 infra/* ---
-import sys, pathlib
+import sys
+import pathlib
 
 _THIS = pathlib.Path(__file__).resolve()
 # 嘗試往上最多 5 層找 infra 目錄
@@ -24,8 +25,12 @@ for up in range(1, 6):
 # 這裡會用到你前面建立的兩個模組
 try:
     from infra.publish_to_sns import publish_trade_event
-    from infra.state_writer import write_summary, write_positions_text, append_trade_event
-except Exception as e:
+    from infra.state_writer import (
+        write_summary,
+        write_positions_text,
+        append_trade_event,
+    )
+except Exception:
     # 若還沒建立 infra/*，保留原 ingest 功能，但不做 LINE/DDB
     publish_trade_event = None  # type: ignore
     write_summary = None  # type: ignore
@@ -42,7 +47,11 @@ def _resp(status: int, body: Any = None):
         body = {"ok": status < 400}
     if not isinstance(body, str):
         body = json.dumps(body, ensure_ascii=False)
-    return {"statusCode": status, "headers": {"Content-Type": "application/json"}, "body": body}
+    return {
+        "statusCode": status,
+        "headers": {"Content-Type": "application/json"},
+        "body": body,
+    }
 
 
 # ---------- 簡單的 header token 驗證（保留原樣） ----------
@@ -91,7 +100,13 @@ def _format_event(ev: Dict[str, Any]) -> str:
 # ---------- 將自由格式 payload 映射到我們的標準欄位 ----------
 def _normalize_trade(ev: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     et = (
-        (ev.get("event") or ev.get("type") or ev.get("status") or ev.get("action") or "")
+        (
+            ev.get("event")
+            or ev.get("type")
+            or ev.get("status")
+            or ev.get("action")
+            or ""
+        )
         .strip()
         .lower()
     )
@@ -112,7 +127,9 @@ def _normalize_trade(ev: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     side = (ev.get("side") or ev.get("action") or "").strip().lower()
     qty = ev.get("quantity") if "quantity" in ev else ev.get("qty")
     price = ev.get("price") or ev.get("fill_price") or ev.get("avg_price")
-    deal_id = ev.get("dealId") or ev.get("deal_id") or ev.get("orderId") or ev.get("order_id")
+    deal_id = (
+        ev.get("dealId") or ev.get("deal_id") or ev.get("orderId") or ev.get("order_id")
+    )
     pnl = ev.get("pnl") or ev.get("profit")
 
     if not symbol or side not in ("buy", "sell") or qty is None or price is None:
@@ -184,7 +201,10 @@ def _maybe_update_state(ev: Dict[str, Any]) -> Dict[str, bool]:
 
     try:
         if write_positions_text:
-            if isinstance(ev.get("positions_text"), str) and ev["positions_text"].strip():
+            if (
+                isinstance(ev.get("positions_text"), str)
+                and ev["positions_text"].strip()
+            ):
                 write_positions_text(ev["positions_text"])
                 updated["positions"] = True
             elif isinstance(ev.get("positions"), list) and ev["positions"]:

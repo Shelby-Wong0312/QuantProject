@@ -10,11 +10,12 @@ from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from datetime import datetime
 import logging
-from typing import Optional, Dict, Any
 from dotenv import load_dotenv
 
 # 設置日誌
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 # 加載環境變量
@@ -55,7 +56,9 @@ class DatabaseSetup:
             return True
         except Exception as e:
             logger.error(f"[X] PostgreSQL not available: {e}")
-            logger.info("Please install PostgreSQL from: https://www.postgresql.org/download/")
+            logger.info(
+                "Please install PostgreSQL from: https://www.postgresql.org/download/"
+            )
             return False
 
     def create_database(self) -> bool:
@@ -74,7 +77,8 @@ class DatabaseSetup:
 
             # 檢查數據庫是否存在
             cursor.execute(
-                "SELECT 1 FROM pg_database WHERE datname = %s", (self.config["database"],)
+                "SELECT 1 FROM pg_database WHERE datname = %s",
+                (self.config["database"],),
             )
 
             if cursor.fetchone():
@@ -82,7 +86,9 @@ class DatabaseSetup:
             else:
                 # 創建數據庫
                 cursor.execute(
-                    sql.SQL("CREATE DATABASE {}").format(sql.Identifier(self.config["database"]))
+                    sql.SQL("CREATE DATABASE {}").format(
+                        sql.Identifier(self.config["database"])
+                    )
                 )
                 logger.info(f"[OK] Created database '{self.config['database']}'")
 
@@ -239,7 +245,7 @@ class DatabaseSetup:
         """創建月度分區表"""
         try:
             # 創建最近3個月和未來1個月的分區
-            from datetime import datetime, timedelta
+            from datetime import datetime
             from dateutil.relativedelta import relativedelta
 
             current_date = datetime.now()
@@ -250,15 +256,13 @@ class DatabaseSetup:
                 month = partition_date.month
 
                 # 分區名稱
-                tick_partition = f"tick_data_{year}_{month:02d}"
-                ohlc_partition = f"ohlc_data_{year}_{month:02d}"
 
                 # 分區日期範圍
                 start_date = partition_date.replace(day=1)
                 if month == 12:
-                    end_date = start_date.replace(year=year + 1, month=1)
+                    start_date.replace(year=year + 1, month=1)
                 else:
-                    end_date = start_date.replace(month=month + 1)
+                    start_date.replace(month=month + 1)
 
                 # 創建tick數據分區
                 cursor.execute(

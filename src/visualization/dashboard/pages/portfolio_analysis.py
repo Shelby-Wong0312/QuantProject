@@ -3,16 +3,13 @@ Portfolio Analysis Dashboard Page
 投資組合分析儀表板頁面
 """
 
-import dash
 from dash import dcc, html, Input, Output, State, callback
 import plotly.graph_objs as go
-import plotly.express as px
 from plotly.subplots import make_subplots
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime
 import networkx as nx
-from typing import Dict, List, Optional, Any
 import json
 
 # Color scheme
@@ -38,7 +35,9 @@ def create_portfolio_analysis_layout():
             html.Div(
                 [
                     html.H2("投資組合分析 Portfolio Analysis", className="page-header"),
-                    html.P("多資產投資組合表現分析與風險監控", className="page-subtitle"),
+                    html.P(
+                        "多資產投資組合表現分析與風險監控", className="page-subtitle"
+                    ),
                 ],
                 className="header-section",
             ),
@@ -103,7 +102,9 @@ def create_portfolio_analysis_layout():
                             html.H3("累積報酬 Cumulative Returns"),
                             dcc.Graph(id="cumulative-returns-chart"),
                             # Return Statistics
-                            html.Div(id="return-statistics", className="stats-container"),
+                            html.Div(
+                                id="return-statistics", className="stats-container"
+                            ),
                         ],
                         className="chart-section",
                     ),
@@ -164,10 +165,12 @@ def create_portfolio_analysis_layout():
                                                         "VaR (95%)",
                                                     ),
                                                     html.Div(
-                                                        id="var-value", className="metric-value"
+                                                        id="var-value",
+                                                        className="metric-value",
                                                     ),
                                                     html.Div(
-                                                        id="cvar-value", className="metric-subtitle"
+                                                        id="cvar-value",
+                                                        className="metric-subtitle",
                                                     ),
                                                 ],
                                                 className="metric-card",
@@ -254,7 +257,10 @@ def create_portfolio_analysis_layout():
 # Callback for updating portfolio data
 @callback(
     Output("portfolio-data-store", "children"),
-    [Input("portfolio-refresh-btn", "n_clicks"), Input("portfolio-update-interval", "n_intervals")],
+    [
+        Input("portfolio-refresh-btn", "n_clicks"),
+        Input("portfolio-update-interval", "n_intervals"),
+    ],
     [State("portfolio-time-range", "value")],
 )
 def update_portfolio_data(n_clicks, n_intervals, time_range):
@@ -455,7 +461,9 @@ def update_cumulative_returns(data_json, time_range, benchmark):
                     html.Span(
                         f"{outperformance:.2f}%",
                         className=(
-                            "stat-value positive" if outperformance > 0 else "stat-value negative"
+                            "stat-value positive"
+                            if outperformance > 0
+                            else "stat-value negative"
                         ),
                     ),
                 ],
@@ -537,7 +545,10 @@ def update_risk_metrics(data_json, time_range):
     rolling_fig = make_subplots(
         rows=2,
         cols=1,
-        subplot_titles=("滾動夏普比率 Rolling Sharpe Ratio", "滾動波動率 Rolling Volatility"),
+        subplot_titles=(
+            "滾動夏普比率 Rolling Sharpe Ratio",
+            "滾動波動率 Rolling Volatility",
+        ),
         vertical_spacing=0.15,
     )
 
@@ -586,7 +597,10 @@ def update_risk_metrics(data_json, time_range):
 
 # Callback for correlation network
 @callback(
-    [Output("correlation-network-graph", "figure"), Output("correlation-heatmap", "figure")],
+    [
+        Output("correlation-network-graph", "figure"),
+        Output("correlation-heatmap", "figure"),
+    ],
     [Input("portfolio-data-store", "children")],
 )
 def update_correlation_network(data_json):
@@ -656,7 +670,9 @@ def update_correlation_network(data_json):
             mode="markers+text",
             text=node_text,
             textposition="top center",
-            marker=dict(size=30, color=COLORS["primary"], line=dict(width=2, color="white")),
+            marker=dict(
+                size=30, color=COLORS["primary"], line=dict(width=2, color="white")
+            ),
             hovertemplate="%{text}<extra></extra>",
         )
     )
@@ -732,7 +748,9 @@ def update_position_changes(data_json):
     )
 
     pie_fig.update_layout(
-        title="當前倉位配置 Current Position Allocation", template="plotly_white", height=400
+        title="當前倉位配置 Current Position Allocation",
+        template="plotly_white",
+        height=400,
     )
 
     # Position history chart

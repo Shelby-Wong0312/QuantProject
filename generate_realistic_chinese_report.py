@@ -6,7 +6,6 @@
 """
 
 import os
-import json
 import torch
 import numpy as np
 import pandas as pd
@@ -30,12 +29,16 @@ class RealisticChineseReport:
 
         # 載入模型檢查點
         if os.path.exists(self.model_path):
-            checkpoint = torch.load(self.model_path, map_location="cpu", weights_only=False)
+            checkpoint = torch.load(
+                self.model_path, map_location="cpu", weights_only=False
+            )
             raw_rewards = checkpoint.get("episode_rewards", [])
             self.losses = checkpoint.get("losses", [])
 
             # 修正不合理的獎勵值
-            print(f"Original reward range: {min(raw_rewards):.2f} to {max(raw_rewards):.2f}")
+            print(
+                f"Original reward range: {min(raw_rewards):.2f} to {max(raw_rewards):.2f}"
+            )
 
             # 將獎勵縮放到合理範圍 (-2% 到 +2% 每次交易)
             self.episode_rewards = []
@@ -53,11 +56,15 @@ class RealisticChineseReport:
             # 生成模擬數據
             print("Using simulated data...")
             # 生成更真實的收益分布（大部分小幅波動，少數大幅盈虧）
-            self.episode_rewards = np.random.normal(0.001, 0.01, 2000)  # 平均0.1%，標準差1%
+            self.episode_rewards = np.random.normal(
+                0.001, 0.01, 2000
+            )  # 平均0.1%，標準差1%
             # 加入一些大的波動
             for i in range(20):
                 idx = np.random.randint(0, len(self.episode_rewards))
-                self.episode_rewards[idx] = np.random.choice([-0.05, 0.05])  # 5%的大波動
+                self.episode_rewards[idx] = np.random.choice(
+                    [-0.05, 0.05]
+                )  # 5%的大波動
             self.losses = np.abs(np.random.randn(2000)) * 0.5
 
     def simulate_realistic_trading(self):
@@ -90,15 +97,19 @@ class RealisticChineseReport:
 
             # 決定交易動作（基於獎勵）
             if reward_pct > 0.5:  # 買入信號
-                action = "買入"
                 if position_size == 0 and balance > 10000:  # 至少保留1萬美金
                     # 計算買入數量（最多使用30%資金）
                     invest_amount = min(balance * 0.3, balance - 10000)
-                    shares = int(invest_amount / (current_price * (1 + commission_rate + slippage)))
+                    shares = int(
+                        invest_amount
+                        / (current_price * (1 + commission_rate + slippage))
+                    )
 
                     if shares > 0:
                         # 執行買入
-                        actual_cost = shares * current_price * (1 + commission_rate + slippage)
+                        actual_cost = (
+                            shares * current_price * (1 + commission_rate + slippage)
+                        )
                         balance -= actual_cost
                         position_size = shares
                         entry_price = current_price
@@ -122,7 +133,6 @@ class RealisticChineseReport:
                         )
 
             elif reward_pct < -0.5:  # 賣出信號
-                action = "賣出"
                 if position_size > 0:
                     # 執行賣出
                     gross_amount = position_size * current_price
@@ -149,7 +159,9 @@ class RealisticChineseReport:
                             "position": 0,
                             "pnl": pnl,
                             "pnl_pct": pnl_pct,
-                            "commission": position_size * current_price * commission_rate,
+                            "commission": position_size
+                            * current_price
+                            * commission_rate,
                             "time": datetime.now() + timedelta(hours=i),
                         }
                     )
@@ -157,17 +169,21 @@ class RealisticChineseReport:
                     position_size = 0
                     entry_price = 0
             else:
-                action = "持有"
+                pass
 
             # 計算總資產價值（現金 + 持倉市值）
-            total_value = balance + (position_size * current_price if position_size > 0 else 0)
+            total_value = balance + (
+                position_size * current_price if position_size > 0 else 0
+            )
             portfolio_values.append(total_value)
 
         # 如果還有持倉，按最後價格平倉
         if position_size > 0:
             final_price = prices[-1]
             net_amount = position_size * final_price * (1 - commission_rate - slippage)
-            pnl = net_amount - (position_size * entry_price * (1 + commission_rate + slippage))
+            pnl = net_amount - (
+                position_size * entry_price * (1 + commission_rate + slippage)
+            )
             balance += net_amount
 
             trade_id += 1
@@ -191,7 +207,9 @@ class RealisticChineseReport:
         # 保存結果
         self.portfolio_values = portfolio_values[: len(self.episode_rewards) + 1]
         self.final_balance = balance
-        self.total_return = ((balance - self.initial_balance) / self.initial_balance) * 100
+        self.total_return = (
+            (balance - self.initial_balance) / self.initial_balance
+        ) * 100
         self.detailed_trades = detailed_trades
         self.prices = prices[: len(self.episode_rewards) + 1]
 
@@ -252,7 +270,9 @@ class RealisticChineseReport:
         )
 
         # 2. 收益分布
-        trade_returns = [t["pnl_pct"] for t in self.detailed_trades if t["pnl_pct"] != 0]
+        trade_returns = [
+            t["pnl_pct"] for t in self.detailed_trades if t["pnl_pct"] != 0
+        ]
         if trade_returns:
             fig.add_trace(
                 go.Histogram(
@@ -268,7 +288,8 @@ class RealisticChineseReport:
 
         # 3. 累積收益率
         cumulative_returns = [
-            (v - self.initial_balance) / self.initial_balance * 100 for v in self.portfolio_values
+            (v - self.initial_balance) / self.initial_balance * 100
+            for v in self.portfolio_values
         ]
         fig.add_trace(
             go.Scatter(
@@ -324,7 +345,9 @@ class RealisticChineseReport:
 
         # 6. 風險指標 - 滾動波動率
         if len(self.episode_rewards) > 20:
-            volatility = pd.Series(self.episode_rewards).rolling(20).std() * np.sqrt(252)
+            volatility = pd.Series(self.episode_rewards).rolling(20).std() * np.sqrt(
+                252
+            )
             fig.add_trace(
                 go.Scatter(
                     x=list(range(len(volatility))),
@@ -374,7 +397,9 @@ class RealisticChineseReport:
         fig.update_layout(
             height=1600,
             showlegend=False,
-            title=dict(text="<b>PPO模型訓練結果 - 詳細分析報告</b>", font=dict(size=20)),
+            title=dict(
+                text="<b>PPO模型訓練結果 - 詳細分析報告</b>", font=dict(size=20)
+            ),
             template="plotly_white",
         )
 
@@ -429,7 +454,7 @@ class RealisticChineseReport:
         self.simulate_realistic_trading()
 
         # 創建圖表
-        main_chart = self.create_detailed_charts()
+        self.create_detailed_charts()
 
         # 計算統計數據
         if self.detailed_trades:
@@ -439,22 +464,22 @@ class RealisticChineseReport:
             total_profit = sum(t["pnl"] for t in winning_trades)
             total_loss = sum(abs(t["pnl"]) for t in losing_trades)
 
-            win_rate = (
+            (
                 (len(winning_trades) / len(self.detailed_trades)) * 100
                 if self.detailed_trades
                 else 0
             )
-            avg_win = np.mean([t["pnl"] for t in winning_trades]) if winning_trades else 0
-            avg_loss = np.mean([abs(t["pnl"]) for t in losing_trades]) if losing_trades else 0
-            profit_factor = total_profit / total_loss if total_loss > 0 else 0
+            np.mean([t["pnl"] for t in winning_trades]) if winning_trades else 0
+            np.mean([abs(t["pnl"]) for t in losing_trades]) if losing_trades else 0
+            total_profit / total_loss if total_loss > 0 else 0
 
-            max_win = max([t["pnl"] for t in winning_trades]) if winning_trades else 0
-            max_loss = min([t["pnl"] for t in losing_trades]) if losing_trades else 0
+            max([t["pnl"] for t in winning_trades]) if winning_trades else 0
+            min([t["pnl"] for t in losing_trades]) if losing_trades else 0
         else:
-            win_rate = avg_win = avg_loss = profit_factor = max_win = max_loss = 0
+            pass
 
         # 生成交易明細表格
-        trades_table = self.generate_trades_table()
+        self.generate_trades_table()
 
         # 生成HTML
         html_content = """
@@ -861,7 +886,9 @@ class RealisticChineseReport:
 
         # 只顯示最近20筆交易
         recent_trades = (
-            self.detailed_trades[-20:] if len(self.detailed_trades) > 20 else self.detailed_trades
+            self.detailed_trades[-20:]
+            if len(self.detailed_trades) > 20
+            else self.detailed_trades
         )
 
         table_html = """
@@ -884,8 +911,8 @@ class RealisticChineseReport:
         """
 
         for trade in reversed(recent_trades):
-            action_class = "buy" if trade["action"] == "買入" else "sell"
-            pnl_class = "positive" if trade["pnl"] > 0 else "negative" if trade["pnl"] < 0 else ""
+            "buy" if trade["action"] == "買入" else "sell"
+            "positive" if trade["pnl"] > 0 else "negative" if trade["pnl"] < 0 else ""
 
             table_html += """
                 <tr>

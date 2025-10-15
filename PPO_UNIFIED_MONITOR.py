@@ -14,8 +14,7 @@ import yfinance as yf
 from datetime import datetime, timedelta
 import json
 import time
-import threading
-from typing import Dict, List, Tuple
+from typing import Dict, List
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import warnings
 
@@ -71,7 +70,9 @@ class UnifiedPPOMonitor:
         self.model = PPONetwork()
 
         if os.path.exists(self.model_path):
-            checkpoint = torch.load(self.model_path, map_location="cpu", weights_only=False)
+            checkpoint = torch.load(
+                self.model_path, map_location="cpu", weights_only=False
+            )
             if "model_state_dict" in checkpoint:
                 try:
                     self.model.load_state_dict(checkpoint["model_state_dict"])
@@ -92,7 +93,9 @@ class UnifiedPPOMonitor:
                 all_symbols = [line.strip() for line in f if line.strip()]
             # 只使用前100個活躍股票進行測試
             self.symbols = all_symbols[:100]
-            print(f"[SUCCESS] Loaded {len(self.symbols)} symbols (from {len(all_symbols)} total)")
+            print(
+                f"[SUCCESS] Loaded {len(self.symbols)} symbols (from {len(all_symbols)} total)"
+            )
         else:
             # 使用默認測試列表
             self.symbols = [
@@ -185,7 +188,9 @@ class UnifiedPPOMonitor:
 
         # ATR
         if len(ticker_data) >= 14:
-            tr = np.maximum(highs[-14:] - lows[-14:], np.abs(highs[-14:] - prices[-15:-1]))
+            tr = np.maximum(
+                highs[-14:] - lows[-14:], np.abs(highs[-14:] - prices[-15:-1])
+            )
             atr = np.mean(tr)
             features.append(atr / prices[-1] if prices[-1] > 0 else 0)
         else:
@@ -237,7 +242,9 @@ class UnifiedPPOMonitor:
 
             # 計算變化
             price_change = float(
-                (data["Close"].iloc[-1] - data["Close"].iloc[-2]) / data["Close"].iloc[-2] * 100
+                (data["Close"].iloc[-1] - data["Close"].iloc[-2])
+                / data["Close"].iloc[-2]
+                * 100
             )
 
             return {
@@ -284,7 +291,9 @@ class UnifiedPPOMonitor:
         print("=" * 100)
         print(f"Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(100))
         print(
-            f"Monitoring {len(self.symbols)} Stocks | Refresh: {self.refresh_interval}s".center(100)
+            f"Monitoring {len(self.symbols)} Stocks | Refresh: {self.refresh_interval}s".center(
+                100
+            )
         )
         print("=" * 100)
 
@@ -396,7 +405,9 @@ class UnifiedPPOMonitor:
 
                     # 顯示進度
                     progress = min(i + batch_size, len(self.symbols))
-                    print(f"[PROGRESS] Processed {progress}/{len(self.symbols)} stocks...")
+                    print(
+                        f"[PROGRESS] Processed {progress}/{len(self.symbols)} stocks..."
+                    )
 
                 # 顯示儀表板
                 self.display_dashboard()

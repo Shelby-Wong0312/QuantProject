@@ -13,7 +13,9 @@ def _parse_iso(value: str) -> datetime:
     if not value:
         raise ValueError("empty iso timestamp")
     try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(timezone.utc)
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(
+            timezone.utc
+        )
     except ValueError:
         return datetime.fromisoformat(f"{value}T00:00:00+00:00")
 
@@ -49,15 +51,21 @@ def _load_weights_df(oos_dir: Path) -> Optional[pd.DataFrame]:
         return None
 
     payload = json.loads(json_path.read_text(encoding="utf-8"))
-    if isinstance(payload, dict) and {"index", "columns", "data"} <= set(payload.keys()):
-        return pd.DataFrame(payload["data"], index=payload["index"], columns=payload["columns"])
+    if isinstance(payload, dict) and {"index", "columns", "data"} <= set(
+        payload.keys()
+    ):
+        return pd.DataFrame(
+            payload["data"], index=payload["index"], columns=payload["columns"]
+        )
     if isinstance(payload, list) and payload:
         sample = payload[0]
         if isinstance(sample, dict) and "weights" in sample:
             index: List[Optional[str]] = []
             rows: List[List[float]] = []
             for record in payload:
-                index.append(record.get("ts") or record.get("t") or record.get("timestamp"))
+                index.append(
+                    record.get("ts") or record.get("t") or record.get("timestamp")
+                )
                 rows.append(record["weights"])
             return pd.DataFrame(rows, index=index).sort_index()
         if isinstance(sample, (list, tuple)):
@@ -92,7 +100,9 @@ def _nanmean(values: list[float]) -> float:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Check OOS weight consistency (scripts)")
+    parser = argparse.ArgumentParser(
+        description="Check OOS weight consistency (scripts)"
+    )
     parser.add_argument("--wf_root", required=True)
     parser.add_argument("--thr", type=float, required=True)
     parser.add_argument("--bars_per_week", type=float, default=32.5)
@@ -156,9 +166,7 @@ def main() -> None:
         print(f"Skipped {skipped} window(s) shorter than {args.min_weeks:.2f} weeks.")
 
     if args.count_mode == "both":
-        header = (
-            "window,rows,unique_rows,trades/week_accum,trades/week_step,accum_hits,total_dweight"
-        )
+        header = "window,rows,unique_rows,trades/week_accum,trades/week_step,accum_hits,total_dweight"
     elif args.count_mode == "accum":
         header = "window,rows,unique_rows,total_dweight,accum_hits,trades/week(accum)"
     else:

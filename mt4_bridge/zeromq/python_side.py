@@ -5,8 +5,6 @@ ZeroMQ Python-MT4 橋接 - Python 端
 """
 
 import zmq
-import json
-import time
 from datetime import datetime
 from typing import Dict, Any, Optional
 
@@ -35,7 +33,11 @@ class MT4Bridge:
 
     def send_command(self, command: str, **kwargs) -> None:
         """發送命令到 MT4"""
-        message = {"command": command, "timestamp": datetime.now().isoformat(), **kwargs}
+        message = {
+            "command": command,
+            "timestamp": datetime.now().isoformat(),
+            **kwargs,
+        }
         self.push_socket.send_json(message)
 
     def receive_data(self, timeout: int = 1000) -> Optional[Dict[str, Any]]:
@@ -86,7 +88,9 @@ class MT4Bridge:
         self.send_command("CLOSE_ORDER", ticket=ticket)
         return self.receive_data(timeout=3000)
 
-    def modify_order(self, ticket: int, sl: float = None, tp: float = None) -> Dict[str, Any]:
+    def modify_order(
+        self, ticket: int, sl: float = None, tp: float = None
+    ) -> Dict[str, Any]:
         """修改訂單"""
         self.send_command("MODIFY_ORDER", ticket=ticket, sl=sl, tp=tp)
         return self.receive_data(timeout=3000)
@@ -166,7 +170,9 @@ def example_usage():
         positions = bridge.get_positions()
         if positions:
             for pos in positions:
-                print(f"訂單 {pos['ticket']}: {pos['symbol']} {pos['type']} {pos['volume']}手")
+                print(
+                    f"訂單 {pos['ticket']}: {pos['symbol']} {pos['type']} {pos['volume']}手"
+                )
 
         # 5. 獲取歷史數據
         print("\n獲取歷史數據...")

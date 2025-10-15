@@ -5,8 +5,7 @@ Evaluation utilities for RL trading agents
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional, Any
 from pathlib import Path
 import json
 import logging
@@ -29,7 +28,9 @@ class Evaluator:
             results_dir: Directory to save results
         """
         self.agent = agent
-        self.results_dir = Path(results_dir) if results_dir else Path("./evaluation_results")
+        self.results_dir = (
+            Path(results_dir) if results_dir else Path("./evaluation_results")
+        )
         self.results_dir.mkdir(parents=True, exist_ok=True)
 
     def evaluate(
@@ -90,7 +91,13 @@ class Evaluator:
         env.reset()
         done = False
 
-        episode_data = {"observations": [], "actions": [], "rewards": [], "infos": [], "trades": []}
+        episode_data = {
+            "observations": [],
+            "actions": [],
+            "rewards": [],
+            "infos": [],
+            "trades": [],
+        }
 
         while not done:
             # Get action from agent
@@ -214,7 +221,9 @@ class Evaluator:
 
         analysis["performance_stability"] = {
             "return_volatility": np.std(returns),
-            "sharpe_stability": np.std(rolling_sharpe) if len(rolling_sharpe) > 0 else 0,
+            "sharpe_stability": (
+                np.std(rolling_sharpe) if len(rolling_sharpe) > 0 else 0
+            ),
             "consistency_score": self._calculate_consistency_score(returns),
         }
 
@@ -248,7 +257,9 @@ class Evaluator:
 
         logger.info(f"Saved evaluation results to {self.results_dir}")
 
-    def _generate_evaluation_plots(self, episode_results: List[Dict], all_trades: List[Dict]):
+    def _generate_evaluation_plots(
+        self, episode_results: List[Dict], all_trades: List[Dict]
+    ):
         """Generate evaluation visualizations"""
         plt.style.use("seaborn-v0_8-darkgrid")
 
@@ -260,7 +271,10 @@ class Evaluator:
         returns = [ep["total_return"] for ep in episode_results]
         ax.hist(returns, bins=20, alpha=0.7, color="blue", edgecolor="black")
         ax.axvline(
-            np.mean(returns), color="red", linestyle="--", label=f"Mean: {np.mean(returns):.2%}"
+            np.mean(returns),
+            color="red",
+            linestyle="--",
+            label=f"Mean: {np.mean(returns):.2%}",
         )
         ax.set_xlabel("Total Return")
         ax.set_ylabel("Frequency")
@@ -272,7 +286,10 @@ class Evaluator:
         sharpes = [ep.get("sharpe_ratio", 0) for ep in episode_results]
         ax.hist(sharpes, bins=20, alpha=0.7, color="green", edgecolor="black")
         ax.axvline(
-            np.mean(sharpes), color="red", linestyle="--", label=f"Mean: {np.mean(sharpes):.2f}"
+            np.mean(sharpes),
+            color="red",
+            linestyle="--",
+            label=f"Mean: {np.mean(sharpes):.2f}",
         )
         ax.set_xlabel("Sharpe Ratio")
         ax.set_ylabel("Frequency")
@@ -323,7 +340,9 @@ class Evaluator:
             # Portfolio value at trades
             if "portfolio_value" in trade_df.columns:
                 ax = axes[1, 0]
-                ax.plot(trade_df.index, trade_df["portfolio_value"], marker="o", alpha=0.7)
+                ax.plot(
+                    trade_df.index, trade_df["portfolio_value"], marker="o", alpha=0.7
+                )
                 ax.set_xlabel("Trade Number")
                 ax.set_ylabel("Portfolio Value ($)")
                 ax.set_title("Portfolio Value at Trade Execution")
@@ -368,7 +387,9 @@ class Evaluator:
 
         return np.mean(((np.array(returns) - mean) / std) ** 4) - 3
 
-    def _calculate_calmar_ratio(self, returns: List[float], max_drawdowns: List[float]) -> float:
+    def _calculate_calmar_ratio(
+        self, returns: List[float], max_drawdowns: List[float]
+    ) -> float:
         """Calculate Calmar ratio"""
         mean_return = np.mean(returns)
         worst_drawdown = abs(np.min(max_drawdowns))
@@ -378,7 +399,9 @@ class Evaluator:
 
         return mean_return / worst_drawdown
 
-    def _calculate_sortino_ratio(self, returns: List[float], risk_free_rate: float = 0.0) -> float:
+    def _calculate_sortino_ratio(
+        self, returns: List[float], risk_free_rate: float = 0.0
+    ) -> float:
         """Calculate Sortino ratio"""
         excess_returns = np.array(returns) - risk_free_rate
         downside_returns = excess_returns[excess_returns < 0]

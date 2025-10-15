@@ -18,7 +18,9 @@ def _parse_iso(value: str) -> datetime:
     if not value:
         raise ValueError("empty iso timestamp")
     try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(timezone.utc)
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(
+            timezone.utc
+        )
     except ValueError:
         return datetime.fromisoformat(f"{value}T00:00:00+00:00")
 
@@ -218,7 +220,11 @@ def summarize_walkforward(
     avg_step_hits = _nanmean(step_hits_vals)
     avg_total_dweight = _nanmean(total_dweights)
 
-    gate_passes = sum(1 for status, _ in gate_results if status == "PASS") if gating_enabled else 0
+    gate_passes = (
+        sum(1 for status, _ in gate_results if status == "PASS")
+        if gating_enabled
+        else 0
+    )
 
     if compare:
         header_parts = [

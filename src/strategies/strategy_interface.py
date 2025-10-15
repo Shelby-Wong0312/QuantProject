@@ -54,7 +54,9 @@ class TradingSignal:
     def __post_init__(self):
         """Validate signal data after initialization"""
         if not 0.0 <= self.strength <= 1.0:
-            raise ValueError(f"Signal strength must be between 0.0 and 1.0, got {self.strength}")
+            raise ValueError(
+                f"Signal strength must be between 0.0 and 1.0, got {self.strength}"
+            )
 
         if self.price is not None and self.price <= 0:
             raise ValueError(f"Price must be positive, got {self.price}")
@@ -89,10 +91,14 @@ class StrategyConfig:
             raise ValueError(f"Weight must be between 0.0 and 1.0, got {self.weight}")
 
         if not 0.0 <= self.risk_limit <= 1.0:
-            raise ValueError(f"Risk limit must be between 0.0 and 1.0, got {self.risk_limit}")
+            raise ValueError(
+                f"Risk limit must be between 0.0 and 1.0, got {self.risk_limit}"
+            )
 
         if self.max_positions <= 0:
-            raise ValueError(f"Max positions must be positive, got {self.max_positions}")
+            raise ValueError(
+                f"Max positions must be positive, got {self.max_positions}"
+            )
 
 
 @dataclass

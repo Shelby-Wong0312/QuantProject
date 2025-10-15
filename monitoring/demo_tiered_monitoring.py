@@ -5,9 +5,7 @@ Tiered Monitoring System Demo - Simplified Version
 """
 
 import time
-import json
 import logging
-from datetime import datetime
 from pathlib import Path
 
 # 添加項目根目錄到路徑
@@ -18,7 +16,9 @@ sys.path.append(str(Path(__file__).parent.parent))
 from monitoring.tiered_monitor import TieredMonitor, TierLevel
 
 # 配置日誌
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 

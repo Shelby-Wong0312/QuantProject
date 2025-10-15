@@ -5,7 +5,6 @@ OBV (On-Balance Volume) Strategy - Cloud Quant Task PHASE3-002
 """
 
 import pandas as pd
-import numpy as np
 from typing import Dict
 import logging
 
@@ -29,7 +28,10 @@ class OBVStrategy:
     """
 
     def __init__(
-        self, obv_ma_period: int = 20, price_ma_period: int = 20, divergence_threshold: float = 0.05
+        self,
+        obv_ma_period: int = 20,
+        price_ma_period: int = 20,
+        divergence_threshold: float = 0.05,
     ):
         """
         初始化 OBV 策略
@@ -72,7 +74,7 @@ class OBVStrategy:
         obv_ma = obv_values.rolling(window=self.obv_ma_period).mean()
 
         # 計算價格移動平均
-        price_ma = self.price_sma.calculate(data)
+        self.price_sma.calculate(data)
 
         # 初始化信號
         pd.DataFrame(index=data.index)
@@ -92,7 +94,9 @@ class OBVStrategy:
             recent_obv = obv_values.iloc[i - lookback : i + 1]
 
             # 計算趨勢
-            price_trend = (recent_prices.iloc[-1] - recent_prices.iloc[0]) / recent_prices.iloc[0]
+            price_trend = (
+                recent_prices.iloc[-1] - recent_prices.iloc[0]
+            ) / recent_prices.iloc[0]
             obv_trend = (
                 (recent_obv.iloc[-1] - recent_obv.iloc[0]) / abs(recent_obv.iloc[0])
                 if recent_obv.iloc[0] != 0
@@ -100,7 +104,10 @@ class OBVStrategy:
             )
 
             # === 看漲背離（價格下跌但OBV上升）===
-            if price_trend < -self.divergence_threshold and obv_trend > self.divergence_threshold:
+            if (
+                price_trend < -self.divergence_threshold
+                and obv_trend > self.divergence_threshold
+            ):
                 signals.iloc[i, signals.columns.get_loc("buy")] = True
                 signals.iloc[i, signals.columns.get_loc("signal_strength")] = min(
                     abs(obv_trend - price_trend), 1.0
@@ -117,7 +124,10 @@ class OBVStrategy:
                 )
 
             # === 看跌背離（價格上漲但OBV下降）===
-            elif price_trend > self.divergence_threshold and obv_trend < -self.divergence_threshold:
+            elif (
+                price_trend > self.divergence_threshold
+                and obv_trend < -self.divergence_threshold
+            ):
                 signals.iloc[i, signals.columns.get_loc("sell")] = True
                 signals.iloc[i, signals.columns.get_loc("signal_strength")] = min(
                     abs(price_trend - obv_trend), 1.0
@@ -153,7 +163,9 @@ class OBVStrategy:
 
             # === 成交量極值信號 ===
             if i > 20:
-                volume_percentile = data["volume"].iloc[i - 20 : i + 1].rank(pct=True).iloc[-1]
+                volume_percentile = (
+                    data["volume"].iloc[i - 20 : i + 1].rank(pct=True).iloc[-1]
+                )
 
                 # 極高成交量配合OBV上升
                 if volume_percentile > 0.95 and current_obv > current_obv_ma:
@@ -233,14 +245,18 @@ class OBVStrategy:
         obv_values = self.obv_indicator.calculate(data)
 
         analysis = {
-            "obv_trend": "BULLISH" if obv_values.iloc[-1] > obv_values.iloc[-20] else "BEARISH",
+            "obv_trend": (
+                "BULLISH" if obv_values.iloc[-1] > obv_values.iloc[-20] else "BEARISH"
+            ),
             "volume_trend": (
                 "INCREASING"
                 if data["volume"].iloc[-5:].mean() > data["volume"].iloc[-20:].mean()
                 else "DECREASING"
             ),
             "divergence_count": len(self.divergence_signals),
-            "recent_divergence": self.divergence_signals[-1] if self.divergence_signals else None,
+            "recent_divergence": (
+                self.divergence_signals[-1] if self.divergence_signals else None
+            ),
         }
 
         return analysis

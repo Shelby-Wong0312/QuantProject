@@ -3,18 +3,15 @@
 Tiered Monitoring System - Intelligent Three-Tier Stock Monitoring
 """
 
-import asyncio
 import threading
 import time
 import json
-import sqlite3
 import pandas as pd
 import yaml
-from datetime import datetime, timedelta
-from typing import Dict, List, Set, Optional, Tuple, Any
-from dataclasses import dataclass, asdict
+from datetime import datetime
+from typing import Dict, List, Set, Any
+from dataclasses import dataclass
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
 from enum import Enum
 
@@ -132,7 +129,9 @@ class TieredMonitor:
                     self._add_stock_to_tier(symbol, TierLevel.B_TIER)
 
         except FileNotFoundError:
-            logger.warning("tradeable_stocks.csv not found, using limited B-tier stocks")
+            logger.warning(
+                "tradeable_stocks.csv not found, using limited B-tier stocks"
+            )
 
         logger.info(
             f"Initialized stock allocation: S={len(self.tier_stocks[TierLevel.S_TIER])}, "
@@ -207,7 +206,9 @@ class TieredMonitor:
         tier_config = self.config["tiers"][tier.value]
         update_interval = tier_config["update_interval"]
 
-        logger.info(f"Started monitoring loop for {tier.value} (interval: {update_interval}s)")
+        logger.info(
+            f"Started monitoring loop for {tier.value} (interval: {update_interval}s)"
+        )
 
         while self.is_running:
             try:
@@ -234,7 +235,7 @@ class TieredMonitor:
     def _monitor_tier_batch(self, tier: TierLevel, symbols: List[str]):
         """批量監控指定層級的股票"""
         try:
-            tier_config = self.config["tiers"][tier.value]
+            self.config["tiers"][tier.value]
             batch_size = self.config.get("performance", {}).get("batch_size", 50)
 
             # 分批處理
@@ -242,7 +243,9 @@ class TieredMonitor:
                 batch_symbols = symbols[i : i + batch_size]
 
                 # 獲取報價數據
-                quotes = self.client.get_batch_quotes(batch_symbols, show_progress=False)
+                quotes = self.client.get_batch_quotes(
+                    batch_symbols, show_progress=False
+                )
 
                 # 為每個股票掃描信號
                 for symbol in batch_symbols:
@@ -251,7 +254,9 @@ class TieredMonitor:
 
                 self.performance_stats["total_scans"] += len(batch_symbols)
 
-            logger.debug(f"Completed {tier.value} batch monitoring for {len(symbols)} symbols")
+            logger.debug(
+                f"Completed {tier.value} batch monitoring for {len(symbols)} symbols"
+            )
 
         except Exception as e:
             logger.error(f"Error in batch monitoring for {tier.value}: {e}")
@@ -271,7 +276,9 @@ class TieredMonitor:
 
             if signals:
                 # 計算組合信號強度
-                signal_strength = self.signal_scanner.calculate_combined_signal_strength(signals)
+                signal_strength = (
+                    self.signal_scanner.calculate_combined_signal_strength(signals)
+                )
 
                 # 更新股票資訊
                 if symbol in self.stock_tiers:
@@ -287,7 +294,9 @@ class TieredMonitor:
                 self.signal_scanner.save_signals_to_db(signals)
                 self.performance_stats["total_signals"] += len(signals)
 
-                logger.debug(f"{symbol}: {len(signals)} signals, strength: {signal_strength:.2f}")
+                logger.debug(
+                    f"{symbol}: {len(signals)} signals, strength: {signal_strength:.2f}"
+                )
 
         except Exception as e:
             logger.error(f"Error scanning {symbol}: {e}")
@@ -372,7 +381,9 @@ class TieredMonitor:
 
                     # 檢查時間窗口
                     time_window = conditions.get("time_window", 300)
-                    if (datetime.now() - stock_info.last_update).total_seconds() <= time_window:
+                    if (
+                        datetime.now() - stock_info.last_update
+                    ).total_seconds() <= time_window:
                         candidates.append((symbol, stock_info.promotion_score))
 
         # 按分數排序，升級最佳候選
@@ -401,11 +412,15 @@ class TieredMonitor:
                 stock_info = self.stock_tiers[symbol]
 
                 # 檢查無活動時間
-                inactive_duration = (datetime.now() - stock_info.last_update).total_seconds()
+                inactive_duration = (
+                    datetime.now() - stock_info.last_update
+                ).total_seconds()
 
                 if inactive_duration >= conditions.get(
                     "inactive_duration", 3600
-                ) and stock_info.signal_strength <= conditions.get("max_signal_strength", 0.3):
+                ) and stock_info.signal_strength <= conditions.get(
+                    "max_signal_strength", 0.3
+                ):
 
                     self._move_stock_to_tier(symbol, to_tier)
                     adjustments += 1
@@ -446,10 +461,14 @@ class TieredMonitor:
                 if self.performance_stats["start_time"]
                 else 0
             ),
-            "tier_counts": {tier.value: len(self.tier_stocks[tier]) for tier in TierLevel},
+            "tier_counts": {
+                tier.value: len(self.tier_stocks[tier]) for tier in TierLevel
+            },
             "performance_stats": self.performance_stats.copy(),
             "last_adjustment": self.last_adjustment_time,
-            "active_threads": len([t for t in self.monitoring_threads.values() if t.is_alive()]),
+            "active_threads": len(
+                [t for t in self.monitoring_threads.values() if t.is_alive()]
+            ),
         }
 
         return status
@@ -519,7 +538,8 @@ class TieredMonitor:
 # 示例使用
 if __name__ == "__main__":
     logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
     print("=" * 60)

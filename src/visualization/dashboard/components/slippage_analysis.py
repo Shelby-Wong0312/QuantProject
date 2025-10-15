@@ -3,7 +3,6 @@ Slippage analysis visualization component
 """
 
 import plotly.graph_objects as go
-import plotly.express as px
 import numpy as np
 import pandas as pd
 from typing import Dict, Optional, List
@@ -51,7 +50,9 @@ def create_slippage_analysis(agent_data: Optional[Dict] = None) -> go.Figure:
                 mode="markers",
                 marker=dict(
                     size=df["volume"].apply(lambda x: min(20, 5 + x / 100)),
-                    color=df["action"].map({"BUY": "red", "SELL": "green", "HOLD": "gray"}),
+                    color=df["action"].map(
+                        {"BUY": "red", "SELL": "green", "HOLD": "gray"}
+                    ),
                     opacity=0.6,
                     line=dict(width=1, color="white"),
                 ),
@@ -69,7 +70,9 @@ def create_slippage_analysis(agent_data: Optional[Dict] = None) -> go.Figure:
         # Add moving average line
         window = min(20, len(df) // 5)
         if window > 2:
-            df["ma_slippage"] = df["slippage_bps"].rolling(window=window, center=True).mean()
+            df["ma_slippage"] = (
+                df["slippage_bps"].rolling(window=window, center=True).mean()
+            )
 
             fig.add_trace(
                 go.Scatter(
@@ -104,14 +107,23 @@ def create_slippage_analysis(agent_data: Optional[Dict] = None) -> go.Figure:
         # Update layout with dual x-axes
         fig.update_layout(
             title=dict(
-                text="滑價分析<br><sup>預期價格與實際成交價格差異</sup>", x=0.5, xanchor="center"
+                text="滑價分析<br><sup>預期價格與實際成交價格差異</sup>",
+                x=0.5,
+                xanchor="center",
             ),
             xaxis=dict(title="交易時間", domain=[0, 0.75]),
             xaxis2=dict(title="頻率", domain=[0.8, 1], showgrid=False),
-            yaxis=dict(title="滑價 (基點)", zeroline=True, zerolinecolor="gray", zerolinewidth=1),
+            yaxis=dict(
+                title="滑價 (基點)",
+                zeroline=True,
+                zerolinecolor="gray",
+                zerolinewidth=1,
+            ),
             height=350,
             showlegend=True,
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            legend=dict(
+                orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+            ),
             hovermode="closest",
         )
 
@@ -133,13 +145,14 @@ def extract_trade_data(agent_data: Dict) -> List[Dict]:
         for episode in agent_data["episodes"]:
             for trade in episode.get("trades", []):
                 if "expected_price" in trade and "executed_price" in trade:
-                    slippage = (trade["executed_price"] - trade["expected_price"]) / trade[
-                        "expected_price"
-                    ]
+                    slippage = (
+                        trade["executed_price"] - trade["expected_price"]
+                    ) / trade["expected_price"]
 
                     trades.append(
                         {
-                            "trade_time": pd.Timestamp.now() - pd.Timedelta(days=len(trades)),
+                            "trade_time": pd.Timestamp.now()
+                            - pd.Timedelta(days=len(trades)),
                             "action": trade["action"],
                             "expected_price": trade["expected_price"],
                             "executed_price": trade["executed_price"],
@@ -201,8 +214,8 @@ def add_slippage_statistics(fig: go.Figure, df: pd.DataFrame):
     # Calculate statistics
     avg_slippage = df["slippage_bps"].mean()
     std_slippage = df["slippage_bps"].std()
-    max_slippage = df["slippage_bps"].max()
-    min_slippage = df["slippage_bps"].min()
+    df["slippage_bps"].max()
+    df["slippage_bps"].min()
 
     # Separate by action type
     buy_avg = df[df["action"] == "BUY"]["slippage_bps"].mean()
@@ -285,7 +298,10 @@ def create_empty_slippage_chart() -> go.Figure:
     )
 
     fig.update_layout(
-        title="滑價分析", height=350, xaxis=dict(visible=False), yaxis=dict(visible=False)
+        title="滑價分析",
+        height=350,
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False),
     )
 
     return fig

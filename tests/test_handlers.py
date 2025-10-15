@@ -9,7 +9,6 @@ import sys
 from types import ModuleType
 
 import boto3
-import pytest
 from moto import mock_aws
 
 
@@ -378,7 +377,9 @@ def test_line_webhook_status_and_last_three(monkeypatch):
     assert res.get("statusCode") == 200
     reply_text = calls.get("reply", [{}])[-1].get("text", "")
     assert (
-        "Equity" in reply_text and ": 100000.00" in reply_text or "Equity：100000.00" in reply_text
+        "Equity" in reply_text
+        and ": 100000.00" in reply_text
+        or "Equity：100000.00" in reply_text
     )
 
     # /last 3 returns 3 lines

@@ -5,19 +5,15 @@ Moving Average Crossover Strategy
 
 import pandas as pd
 import numpy as np
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 import logging
-from datetime import datetime
 
 from ..base_strategy import BaseStrategy
 from ..strategy_interface import (
     TradingSignal,
     SignalType,
     StrategyConfig,
-    StrategyPerformance,
     Position,
-    RiskMetrics,
-    StrategyStatus,
 )
 from ...indicators.trend_indicators import SMA, EMA
 
@@ -105,8 +101,13 @@ class MovingAverageCrossoverStrategy(BaseStrategy):
         []
 
         try:
-            if len(data) < max(self.params["fast_period"], self.params["slow_period"]) + 10:
-                logger.warning(f"Insufficient data for MA calculation: {len(data)} bars")
+            if (
+                len(data)
+                < max(self.params["fast_period"], self.params["slow_period"]) + 10
+            ):
+                logger.warning(
+                    f"Insufficient data for MA calculation: {len(data)} bars"
+                )
                 return signals
 
             # 計算移動平均線
@@ -145,7 +146,9 @@ class MovingAverageCrossoverStrategy(BaseStrategy):
             # 多頭交叉：快線上穿慢線
             if prev_fast_ma <= prev_slow_ma and fast_ma > slow_ma:
                 if self._validate_buy_signal(data, fast_ma, slow_ma):
-                    signal_strength = self._calculate_signal_strength(data, "BUY", fast_ma, slow_ma)
+                    signal_strength = self._calculate_signal_strength(
+                        data, "BUY", fast_ma, slow_ma
+                    )
 
                     if signal_strength >= self.params["signal_strength_threshold"]:
                         signal = TradingSignal(
@@ -199,7 +202,9 @@ class MovingAverageCrossoverStrategy(BaseStrategy):
 
         return signals
 
-    def _validate_buy_signal(self, data: pd.DataFrame, fast_ma: float, slow_ma: float) -> bool:
+    def _validate_buy_signal(
+        self, data: pd.DataFrame, fast_ma: float, slow_ma: float
+    ) -> bool:
         """
         驗證買入信號
 
@@ -242,7 +247,9 @@ class MovingAverageCrossoverStrategy(BaseStrategy):
             logger.error(f"Error validating buy signal: {e}")
             return False
 
-    def _validate_sell_signal(self, data: pd.DataFrame, fast_ma: float, slow_ma: float) -> bool:
+    def _validate_sell_signal(
+        self, data: pd.DataFrame, fast_ma: float, slow_ma: float
+    ) -> bool:
         """
         驗證賣出信號
 
@@ -390,7 +397,9 @@ class MovingAverageCrossoverStrategy(BaseStrategy):
             logger.error(f"Error calculating volume ratio: {e}")
             return 1.0
 
-    def _calculate_momentum_strength(self, data: pd.DataFrame, signal_type: str) -> float:
+    def _calculate_momentum_strength(
+        self, data: pd.DataFrame, signal_type: str
+    ) -> float:
         """
         計算動量強度
 
@@ -516,7 +525,11 @@ class MovingAverageCrossoverStrategy(BaseStrategy):
                     position.size < 0 and current_price >= position.stop_loss
                 ):
                     action.update(
-                        {"action": "close", "new_size": 0, "reason": "Stop loss triggered"}
+                        {
+                            "action": "close",
+                            "new_size": 0,
+                            "reason": "Stop loss triggered",
+                        }
                     )
 
             # 止盈檢查
@@ -525,7 +538,11 @@ class MovingAverageCrossoverStrategy(BaseStrategy):
                     position.size < 0 and current_price <= position.take_profit
                 ):
                     action.update(
-                        {"action": "close", "new_size": 0, "reason": "Take profit triggered"}
+                        {
+                            "action": "close",
+                            "new_size": 0,
+                            "reason": "Take profit triggered",
+                        }
                     )
 
         except Exception as e:

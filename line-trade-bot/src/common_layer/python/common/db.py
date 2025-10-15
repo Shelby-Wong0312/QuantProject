@@ -16,8 +16,12 @@ _line_groups_table_name = (
     or os.environ.get("LINE_GROUPS_TABLE")
     or os.environ.get("GROUP_WHITELIST_TABLE", "")
 )
-_line_groups_table = _dynamodb.Table(_line_groups_table_name) if _line_groups_table_name else None
-_system_state_table_name = os.environ.get("SYSTEM_STATE_TABLE") or os.environ.get("STATE_TABLE", "")
+_line_groups_table = (
+    _dynamodb.Table(_line_groups_table_name) if _line_groups_table_name else None
+)
+_system_state_table_name = os.environ.get("SYSTEM_STATE_TABLE") or os.environ.get(
+    "STATE_TABLE", ""
+)
 _system_state_table = (
     _dynamodb.Table(_system_state_table_name) if _system_state_table_name else None
 )
@@ -154,7 +158,9 @@ def put_system_positions(snapshot: Dict[str, Any]) -> None:
     if not _system_state_table:
         return
     item: Dict[str, Any] = {"pk": "positions", "updatedAt": _now_ms()}
-    item.update(_to_decimal(snapshot) if isinstance(snapshot, dict) else {"raw": snapshot})
+    item.update(
+        _to_decimal(snapshot) if isinstance(snapshot, dict) else {"raw": snapshot}
+    )
     _system_state_table.put_item(Item=item)
 
 
@@ -165,7 +171,9 @@ def get_system_positions() -> Optional[Dict[str, Any]]:
     return resp.get("Item")
 
 
-def append_trade_event_recent(event_item: Dict[str, Any], *, max_items: int = 200) -> None:
+def append_trade_event_recent(
+    event_item: Dict[str, Any], *, max_items: int = 200
+) -> None:
     if not _system_state_table:
         return
     # project minimal fields to store

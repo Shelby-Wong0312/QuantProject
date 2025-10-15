@@ -7,9 +7,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import GATConv, global_mean_pool, global_max_pool
-from torch_geometric.data import Data, Batch
+from torch_geometric.data import Data
 import numpy as np
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -176,7 +176,9 @@ class StockCorrelationGNN(nn.Module):
         )
 
         self.volatility_predictor = nn.Sequential(
-            nn.Linear(output_dim, hidden_dim // 2), nn.ReLU(), nn.Linear(hidden_dim // 2, 1)
+            nn.Linear(output_dim, hidden_dim // 2),
+            nn.ReLU(),
+            nn.Linear(hidden_dim // 2, 1),
         )
 
         logger.info(f"Initialized StockCorrelationGNN with {num_layers} layers")
@@ -419,7 +421,8 @@ class GNNFeatureExtractor:
                         correlation_matrix[i, j] = 1.0
                     else:
                         corr = self.model.predict_correlation(
-                            node_embeddings[i].unsqueeze(0), node_embeddings[j].unsqueeze(0)
+                            node_embeddings[i].unsqueeze(0),
+                            node_embeddings[j].unsqueeze(0),
                         ).item()
                         correlation_matrix[i, j] = corr
                         correlation_matrix[j, i] = corr

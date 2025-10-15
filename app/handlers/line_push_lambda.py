@@ -23,7 +23,11 @@ _TRACE_ID: str = ""
 
 
 def _log(event_type: str, status: str, **fields):
-    rec = {"trace_id": _TRACE_ID or str(uuid.uuid4()), "event_type": event_type, "status": status}
+    rec = {
+        "trace_id": _TRACE_ID or str(uuid.uuid4()),
+        "event_type": event_type,
+        "status": status,
+    }
     rec.update(fields)
     try:
         logger.info(json.dumps(rec, ensure_ascii=False))
@@ -56,7 +60,9 @@ def _get_line_client() -> "LineBotApi":
 
 
 def _ddb_table(name_env: str, fallback_env: Optional[str] = None):
-    table_name = os.getenv(name_env) or (os.getenv(fallback_env) if fallback_env else None)
+    table_name = os.getenv(name_env) or (
+        os.getenv(fallback_env) if fallback_env else None
+    )
     if not table_name:
         raise RuntimeError(f"Missing DynamoDB table env: {name_env}")
     return boto3.resource("dynamodb").Table(table_name)
@@ -129,10 +135,14 @@ def _list_targets() -> List[str]:
     start_key = None
     while True:
         if start_key:
-            resp = groups_tbl.scan(ExclusiveStartKey=start_key, ProjectionExpression="targetId")
+            resp = groups_tbl.scan(
+                ExclusiveStartKey=start_key, ProjectionExpression="targetId"
+            )
         else:
             resp = groups_tbl.scan(ProjectionExpression="targetId")
-        ids.extend([it.get("targetId") for it in resp.get("Items", []) if it.get("targetId")])
+        ids.extend(
+            [it.get("targetId") for it in resp.get("Items", []) if it.get("targetId")]
+        )
         start_key = resp.get("LastEvaluatedKey")
         if not start_key:
             break
@@ -171,7 +181,9 @@ def _put_trade_event(evt: Dict[str, Any]) -> None:
         from datetime import datetime, timezone
 
         evt["ts"] = (
-            datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
+            datetime.now(timezone.utc)
+            .isoformat(timespec="milliseconds")
+            .replace("+00:00", "Z")
         )
     if "bucket" not in evt:
         evt["bucket"] = "ALL"
@@ -284,7 +296,9 @@ def lambda_handler(event, context):
                         _log("push", "ok", target_id=rid, count=len(chunk))
                     except LineBotApiError as e:
                         status = getattr(e, "status_code", None)
-                        if status in (429,) or (isinstance(status, int) and 500 <= status < 600):
+                        if status in (429,) or (
+                            isinstance(status, int) and 500 <= status < 600
+                        ):
                             time.sleep(0.5 + random.random() * 0.5)
                             try:
                                 client.push_message(rid, msgs)

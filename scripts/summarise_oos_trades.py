@@ -16,7 +16,6 @@ for path in (ROOT, SRC):
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))
 
-import numpy as np
 import pandas as pd
 
 from src.quantproject.data_pipeline.loaders.bars import load_and_align_router
@@ -43,7 +42,9 @@ def _load_oos(oos_dir: Path, tolerance: float) -> dict:
         json.loads((oos_dir / "oos_weights.json").read_text(encoding="utf-8")),
         columns=meta.get("symbols", []),
     )
-    returns = pd.Series(json.loads((oos_dir / "oos_returns.json").read_text(encoding="utf-8")))
+    returns = pd.Series(
+        json.loads((oos_dir / "oos_returns.json").read_text(encoding="utf-8"))
+    )
 
     return {
         "meta": meta,
@@ -103,7 +104,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Summarise OOS trade counts per week")
     parser.add_argument("paths", nargs="+", help="One or more OOS directories")
     parser.add_argument(
-        "--tolerance", type=float, default=1e-6, help="Threshold on |Δw| to count a trade"
+        "--tolerance",
+        type=float,
+        default=1e-6,
+        help="Threshold on |Δw| to count a trade",
     )
     args = parser.parse_args()
 

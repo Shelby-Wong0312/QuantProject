@@ -5,7 +5,6 @@ Buy WTI Crude Oil - Direct Purchase
 import os
 import sys
 import time
-from datetime import datetime
 
 # Add project root to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -60,20 +59,20 @@ def buy_wti_oil():
     print("Testing different epic codes...")
 
     order_placed = False
-    successful_epic = None
 
     for epic in possible_epics:
         print(f"\nTrying epic: {epic}")
 
         # Try to place the order
         try:
-            result = api.place_order(symbol=epic, direction="BUY", size=1000, order_type="MARKET")
+            result = api.place_order(
+                symbol=epic, direction="BUY", size=1000, order_type="MARKET"
+            )
 
             if result:
                 print(f"[SUCCESS] Order placed with epic: {epic}")
                 print(f"Deal Reference: {result}")
                 order_placed = True
-                successful_epic = epic
                 break
             else:
                 print(f"  Failed with {epic}")
@@ -93,7 +92,9 @@ def buy_wti_oil():
             "X-CAP-API-KEY": os.environ["CAPITAL_API_KEY"],
             "Content-Type": "application/json",
             "CST": api.cst if hasattr(api, "cst") else "",
-            "X-SECURITY-TOKEN": api.security_token if hasattr(api, "security_token") else "",
+            "X-SECURITY-TOKEN": (
+                api.security_token if hasattr(api, "security_token") else ""
+            ),
         }
 
         # Try with CFD format
@@ -136,8 +137,12 @@ def buy_wti_oil():
                 # Position object has attributes, not dict
                 if hasattr(pos, "symbol"):
                     print("\nPosition:")
-                    print(f"  Symbol: {pos.symbol if hasattr(pos, 'symbol') else 'N/A'}")
-                    print(f"  Direction: {pos.direction if hasattr(pos, 'direction') else 'N/A'}")
+                    print(
+                        f"  Symbol: {pos.symbol if hasattr(pos, 'symbol') else 'N/A'}"
+                    )
+                    print(
+                        f"  Direction: {pos.direction if hasattr(pos, 'direction') else 'N/A'}"
+                    )
                     print(f"  Size: {pos.size if hasattr(pos, 'size') else 0}")
                     print(
                         f"  Entry Price: ${pos.entry_price if hasattr(pos, 'entry_price') else 0:.2f}"

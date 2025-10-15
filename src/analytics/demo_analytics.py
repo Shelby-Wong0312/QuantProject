@@ -11,11 +11,9 @@ Demonstrates:
 
 import sys
 import os
-import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import sqlite3
-import json
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -110,7 +108,9 @@ class AnalyticsDemo:
             if is_winning:
                 exit_multiplier = 1 + np.random.uniform(0.005, 0.03)  # 0.5% to 3% gain
             else:
-                exit_multiplier = 1 - np.random.uniform(0.005, 0.025)  # 0.5% to 2.5% loss
+                exit_multiplier = 1 - np.random.uniform(
+                    0.005, 0.025
+                )  # 0.5% to 2.5% loss
 
             exit_price = entry_price * exit_multiplier
 
@@ -271,7 +271,9 @@ class AnalyticsDemo:
             if len(symbol_returns) > 1:
                 corr_fig = self.charts.create_correlation_heatmap(symbol_returns)
                 corr_fig.write_html("reports/correlation_heatmap.html")
-                print("   ✅ Correlation heatmap saved to reports/correlation_heatmap.html")
+                print(
+                    "   ✅ Correlation heatmap saved to reports/correlation_heatmap.html"
+                )
 
         print("\\n📈 All charts generated successfully!")
 
@@ -288,7 +290,9 @@ class AnalyticsDemo:
         start_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
 
         report_html = self.report_generator.generate_report(
-            start_date=start_date, end_date=end_date, output_file="reports/performance_report.html"
+            start_date=start_date,
+            end_date=end_date,
+            output_file="reports/performance_report.html",
         )
 
         print("   ✅ HTML report generated: reports/performance_report.html")
@@ -296,7 +300,9 @@ class AnalyticsDemo:
         # Try PDF generation (optional)
         print("\\n📋 Attempting PDF generation...")
         try:
-            self.report_generator.export_to_pdf(report_html, "reports/performance_report.pdf")
+            self.report_generator.export_to_pdf(
+                report_html, "reports/performance_report.pdf"
+            )
         except Exception as e:
             print(f"   ⚠️ PDF generation not available: {e}")
             print("   💡 Install weasyprint for PDF support: pip install weasyprint")
@@ -349,7 +355,7 @@ streamlit run src/analytics/streamlit_app.py
             self.create_sample_database()
 
             # Step 2: Demonstrate analysis
-            analysis = self.demonstrate_trade_analysis()
+            self.demonstrate_trade_analysis()
 
             # Step 3: Demonstrate visualization
             self.demonstrate_visualization()

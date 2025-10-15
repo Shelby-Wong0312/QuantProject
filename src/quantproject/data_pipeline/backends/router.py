@@ -66,7 +66,9 @@ class DataRouter:
             providers.append(self.alpha)
         return providers
 
-    def get_bars(self, symbol: str, start: str, end: str, timeframe: str = "5min") -> pd.DataFrame:
+    def get_bars(
+        self, symbol: str, start: str, end: str, timeframe: str = "5min"
+    ) -> pd.DataFrame:
         for backend in self._providers_for(symbol, timeframe):
             df = backend.get_bars(symbol, start, end, timeframe)
             if df is not None and not df.empty:
@@ -74,7 +76,8 @@ class DataRouter:
                 ordered = ordered[~ordered.index.duplicated(keep="last")]
                 if isinstance(ordered.columns, pd.MultiIndex):
                     ordered.columns = [
-                        str(level).lower() for level in ordered.columns.get_level_values(0)
+                        str(level).lower()
+                        for level in ordered.columns.get_level_values(0)
                     ]
                 missing = [col for col in _COLS if col not in ordered.columns]
                 if missing:
@@ -85,7 +88,9 @@ class DataRouter:
     def fetch_ohlcv(
         self, symbols: Iterable[str], start: str, end: str, timeframe: str = "5min"
     ) -> Dict[str, pd.DataFrame]:
-        return {symbol: self.get_bars(symbol, start, end, timeframe) for symbol in symbols}
+        return {
+            symbol: self.get_bars(symbol, start, end, timeframe) for symbol in symbols
+        }
 
 
 __all__ = ["DataRouter"]

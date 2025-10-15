@@ -11,9 +11,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 import pandas as pd
 import numpy as np
 import sqlite3
-from datetime import datetime, timedelta
+from datetime import datetime
 import json
-from typing import Dict, List, Tuple
+from typing import Dict, List
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -73,10 +73,15 @@ class IndicatorBacktest:
             if buy_signal and portfolio["cash"] > 0:
                 # Buy signal - invest all cash
                 shares_to_buy = int(
-                    portfolio["cash"] / (price * (1 + self.commission_rate + self.slippage_rate))
+                    portfolio["cash"]
+                    / (price * (1 + self.commission_rate + self.slippage_rate))
                 )
                 if shares_to_buy > 0:
-                    cost = shares_to_buy * price * (1 + self.commission_rate + self.slippage_rate)
+                    cost = (
+                        shares_to_buy
+                        * price
+                        * (1 + self.commission_rate + self.slippage_rate)
+                    )
                     portfolio["cash"] -= cost
                     portfolio["shares"] += shares_to_buy
                     portfolio["trades"].append(
@@ -92,7 +97,9 @@ class IndicatorBacktest:
             elif sell_signal and portfolio["shares"] > 0:
                 # Sell signal - sell all shares
                 revenue = (
-                    portfolio["shares"] * price * (1 - self.commission_rate - self.slippage_rate)
+                    portfolio["shares"]
+                    * price
+                    * (1 - self.commission_rate - self.slippage_rate)
                 )
                 portfolio["cash"] += revenue
                 portfolio["trades"].append(
@@ -120,7 +127,11 @@ class IndicatorBacktest:
         num_trades = len(portfolio["trades"])
 
         if len(returns) > 0:
-            sharpe_ratio = np.sqrt(252) * returns.mean() / returns.std() if returns.std() > 0 else 0
+            sharpe_ratio = (
+                np.sqrt(252) * returns.mean() / returns.std()
+                if returns.std() > 0
+                else 0
+            )
             max_drawdown = self.calculate_max_drawdown(values)
             win_rate = self.calculate_win_rate(portfolio["trades"])
         else:
@@ -131,7 +142,9 @@ class IndicatorBacktest:
         # Annualized return
         years = len(data) / 252
         annualized_return = (
-            ((values.iloc[-1] / self.initial_capital) ** (1 / years) - 1) * 100 if years > 0 else 0
+            ((values.iloc[-1] / self.initial_capital) ** (1 / years) - 1) * 100
+            if years > 0
+            else 0
         )
 
         return {
@@ -184,12 +197,25 @@ def test_all_indicators_backtest():
 
     # Get database connection
     db_path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "data",
+        "quant_trading.db",
     )
     conn = sqlite3.connect(db_path)
 
     # Test on multiple stocks
-    test_symbols = ["AAPL", "MSFT", "GOOGL", "META", "AMZN", "NVDA", "TSLA", "JPM", "V", "WMT"]
+    test_symbols = [
+        "AAPL",
+        "MSFT",
+        "GOOGL",
+        "META",
+        "AMZN",
+        "NVDA",
+        "TSLA",
+        "JPM",
+        "V",
+        "WMT",
+    ]
 
     # Initialize results storage
     all_results = {}
@@ -224,7 +250,9 @@ def test_all_indicators_backtest():
         ("ADLine", ADLine()),
     ]
 
-    print(f"Testing {len(indicators_to_test)} indicators on {len(test_symbols)} stocks...")
+    print(
+        f"Testing {len(indicators_to_test)} indicators on {len(test_symbols)} stocks..."
+    )
     print("-" * 80)
 
     for symbol in test_symbols:
@@ -282,8 +310,12 @@ def test_all_indicators_backtest():
             all_results[symbol] = symbol_results
 
             # Print best performer for this stock
-            best_indicator = max(symbol_results.items(), key=lambda x: x[1]["total_return"])
-            print(f"  Best: {best_indicator[0]} - Return: {best_indicator[1]['total_return']:.2f}%")
+            best_indicator = max(
+                symbol_results.items(), key=lambda x: x[1]["total_return"]
+            )
+            print(
+                f"  Best: {best_indicator[0]} - Return: {best_indicator[1]['total_return']:.2f}%"
+            )
 
         except Exception as e:
             print(f"  Error processing {symbol}: {str(e)}")

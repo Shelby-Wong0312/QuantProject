@@ -6,11 +6,8 @@
 """
 
 import os
-import json
 import torch
 import numpy as np
-import pandas as pd
-from datetime import datetime, timedelta
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import warnings
@@ -29,7 +26,9 @@ class AggressiveTradingReport:
 
         # 載入模型數據
         if os.path.exists(self.model_path):
-            checkpoint = torch.load(self.model_path, map_location="cpu", weights_only=False)
+            checkpoint = torch.load(
+                self.model_path, map_location="cpu", weights_only=False
+            )
             raw_rewards = checkpoint.get("episode_rewards", [])
         else:
             # 生成模擬數據 - 更多變化
@@ -118,7 +117,10 @@ class AggressiveTradingReport:
                             # 執行買入
                             cash -= cost
                             if target_stock not in positions:
-                                positions[target_stock] = {"shares": 0, "entry_price": 0}
+                                positions[target_stock] = {
+                                    "shares": 0,
+                                    "entry_price": 0,
+                                }
 
                             # 更新持倉（加權平均成本）
                             old_shares = positions[target_stock]["shares"]
@@ -127,7 +129,8 @@ class AggressiveTradingReport:
                             positions[target_stock] = {
                                 "shares": new_shares,
                                 "entry_price": (
-                                    (old_shares * old_price + shares * current_price) / new_shares
+                                    (old_shares * old_price + shares * current_price)
+                                    / new_shares
                                     if new_shares > 0
                                     else current_price
                                 ),
@@ -195,7 +198,9 @@ class AggressiveTradingReport:
                         if current_value > balance * 0.3:
                             sell_shares = int(positions[stock]["shares"] * 0.3)
                             if sell_shares > 0:
-                                revenue = sell_shares * stock_price * (1 - commission_rate)
+                                revenue = (
+                                    sell_shares * stock_price * (1 - commission_rate)
+                                )
                                 cash += revenue
                                 positions[stock]["shares"] -= sell_shares
 
@@ -256,7 +261,9 @@ class AggressiveTradingReport:
         # 計算統計
         self.total_trades = len(trades)
         self.buy_trades = len([t for t in trades if "BUY" in t["type"]])
-        self.sell_trades = len([t for t in trades if "SELL" in t["type"] or "CLOSE" in t["type"]])
+        self.sell_trades = len(
+            [t for t in trades if "SELL" in t["type"] or "CLOSE" in t["type"]]
+        )
 
         print(f"Final Balance: ${cash:,.2f}")
         print(f"Total Return: {self.total_return:.2f}%")
@@ -374,7 +381,11 @@ class AggressiveTradingReport:
         if buy_signals:
             fig.add_trace(
                 go.Histogram(
-                    x=buy_signals, nbinsx=20, name="Buy Signals", marker_color="green", opacity=0.7
+                    x=buy_signals,
+                    nbinsx=20,
+                    name="Buy Signals",
+                    marker_color="green",
+                    opacity=0.7,
                 ),
                 row=2,
                 col=1,
@@ -432,7 +443,9 @@ class AggressiveTradingReport:
         fig.add_hline(y=0.1, line_dash="dash", line_color="green", row=3, col=2)
         fig.add_hline(y=-0.1, line_dash="dash", line_color="red", row=3, col=2)
 
-        fig.update_layout(height=1200, showlegend=True, title="PPO積極交易策略 - 詳細分析")
+        fig.update_layout(
+            height=1200, showlegend=True, title="PPO積極交易策略 - 詳細分析"
+        )
 
         return fig
 
@@ -445,23 +458,25 @@ class AggressiveTradingReport:
         self.simulate_active_trading()
 
         # 創建圖表
-        chart = self.create_comprehensive_charts()
+        self.create_comprehensive_charts()
 
         # 計算統計
         winning_trades = [t for t in self.trades if t.get("pnl", 0) > 0]
         losing_trades = [t for t in self.trades if t.get("pnl", 0) < 0]
 
-        win_rate = (
+        (
             (len(winning_trades) / len([t for t in self.trades if "pnl" in t])) * 100
             if self.trades
             else 0
         )
-        avg_win = np.mean([t["pnl"] for t in winning_trades]) if winning_trades else 0
-        avg_loss = np.mean([abs(t["pnl"]) for t in losing_trades]) if losing_trades else 0
+        np.mean([t["pnl"] for t in winning_trades]) if winning_trades else 0
+        np.mean([abs(t["pnl"]) for t in losing_trades]) if losing_trades else 0
 
         # 計算每日平均交易次數
-        avg_daily_trades = (
-            self.total_trades / (len(self.episode_rewards) / 20) if self.episode_rewards else 0
+        (
+            self.total_trades / (len(self.episode_rewards) / 20)
+            if self.episode_rewards
+            else 0
         )
 
         # 生成HTML
@@ -696,9 +711,8 @@ class AggressiveTradingReport:
         # 添加最近20筆交易
         recent_trades = self.trades[-20:] if len(self.trades) > 20 else self.trades
         for t in reversed(recent_trades):
-            trade_class = "buy" if "BUY" in t["type"] else "sell"
-            pnl = t.get("pnl", 0)
-            pnl_display = f"${pnl:+,.2f}" if "pnl" in t else "-"
+            "buy" if "BUY" in t["type"] else "sell"
+            t.get("pnl", 0)
 
             html_content += """
                     <tr>

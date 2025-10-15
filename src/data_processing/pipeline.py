@@ -81,7 +81,9 @@ class DataProcessingPipeline:
             self.validation_report = report
 
             if not is_valid:
-                logger.warning("Data validation failed. Check validation_report for details.")
+                logger.warning(
+                    "Data validation failed. Check validation_report for details."
+                )
                 # Continue with processing but log the issues
                 for issue in report["issues"]:
                     logger.error(f"Validation issue: {issue}")
@@ -106,16 +108,24 @@ class DataProcessingPipeline:
             logger.info("Scaling features...")
             # Don't scale OHLCV columns
             feature_cols = [
-                col for col in df.columns if col not in ["open", "high", "low", "close", "volume"]
+                col
+                for col in df.columns
+                if col not in ["open", "high", "low", "close", "volume"]
             ]
-            df[feature_cols] = self.feature_engineer.scale_features(df[feature_cols], fit=True)
+            df[feature_cols] = self.feature_engineer.scale_features(
+                df[feature_cols], fit=True
+            )
 
         # Final validation
         if validate_first:
             logger.info("Performing final validation...")
-            is_valid_final, report_final = self.validator.validate_ohlcv(df, check_gaps=False)
+            is_valid_final, report_final = self.validator.validate_ohlcv(
+                df, check_gaps=False
+            )
 
-            logger.info(f"Final data quality score: {report_final['quality_score']:.2f}/100")
+            logger.info(
+                f"Final data quality score: {report_final['quality_score']:.2f}/100"
+            )
 
         self.processed_data = df
         return df
@@ -227,7 +237,9 @@ class DataProcessingPipeline:
             info = {
                 "feature": col,
                 "dtype": str(self.processed_data[col].dtype),
-                "missing_pct": (self.processed_data[col].isna().sum() / len(self.processed_data))
+                "missing_pct": (
+                    self.processed_data[col].isna().sum() / len(self.processed_data)
+                )
                 * 100,
                 "unique_values": self.processed_data[col].nunique(),
                 "mean": (

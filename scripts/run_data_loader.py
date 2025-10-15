@@ -37,7 +37,9 @@ async def main():
 
         print("\nData Loading Complete!")
         print(f"  - Success Rate: {data_report['summary']['success_rate']}")
-        print(f"  - Average Quality: {data_report['quality_metrics']['average_quality_score']:.2f}")
+        print(
+            f"  - Average Quality: {data_report['quality_metrics']['average_quality_score']:.2f}"
+        )
 
         # Step 2: Optimize Storage
         print("\n[STEP 2/3] Optimizing Data Storage...")
@@ -99,14 +101,28 @@ async def main():
 
         # Check success criteria
         success_criteria = {
-            "Data Completeness > 95%": float(data_report["summary"]["success_rate"].rstrip("%"))
+            "Data Completeness > 95%": float(
+                data_report["summary"]["success_rate"].rstrip("%")
+            )
             > 95,
-            "Data Quality > 90%": data_report["quality_metrics"]["average_quality_score"] > 0.90,
-            "Annual Return > 15%": validation_report["portfolio_metrics"]["avg_annual_return"]
+            "Data Quality > 90%": data_report["quality_metrics"][
+                "average_quality_score"
+            ]
+            > 0.90,
+            "Annual Return > 15%": validation_report["portfolio_metrics"][
+                "avg_annual_return"
+            ]
             > 0.15,
-            "Sharpe Ratio > 1.0": validation_report["portfolio_metrics"]["avg_sharpe_ratio"] > 1.0,
-            "Max Drawdown < 15%": validation_report["portfolio_metrics"]["avg_max_drawdown"] < 0.15,
-            "Win Rate > 55%": validation_report["portfolio_metrics"]["avg_win_rate"] > 0.55,
+            "Sharpe Ratio > 1.0": validation_report["portfolio_metrics"][
+                "avg_sharpe_ratio"
+            ]
+            > 1.0,
+            "Max Drawdown < 15%": validation_report["portfolio_metrics"][
+                "avg_max_drawdown"
+            ]
+            < 0.15,
+            "Win Rate > 55%": validation_report["portfolio_metrics"]["avg_win_rate"]
+            > 0.55,
         }
 
         print("\nSuccess Criteria:")
@@ -123,7 +139,10 @@ async def main():
         print("=" * 80)
 
         deliverables = [
-            ("1. Historical Data Loader", "scripts/data_loader/historical_data_loader.py"),
+            (
+                "1. Historical Data Loader",
+                "scripts/data_loader/historical_data_loader.py",
+            ),
             ("2. Data Storage System", "scripts/data_loader/data_storage.py"),
             ("3. Model Validation", "scripts/validation/model_validation.py"),
             ("4. SQLite Database", "data/historical_market_data.db"),

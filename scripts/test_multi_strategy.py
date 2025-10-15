@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime
 import json
 import logging
 
@@ -179,7 +179,13 @@ def test_signal_aggregator(data):
     all_signals = aggregator.collect_signals(data, parallel=False)
 
     # 測試不同的共識方法
-    consensus_methods = ["voting", "weighted_voting", "score_based", "conservative", "aggressive"]
+    consensus_methods = [
+        "voting",
+        "weighted_voting",
+        "score_based",
+        "conservative",
+        "aggressive",
+    ]
 
     for method in consensus_methods:
         print(f"\n--- Testing {method} consensus ---")
@@ -198,8 +204,12 @@ def test_signal_aggregator(data):
 
                 # 分析策略一致性
                 agreement = aggregator.analyze_strategy_agreement(all_signals)
-                print(f"  Avg buy agreement: {agreement.get('avg_buy_agreement', 0):.3f}")
-                print(f"  Avg sell agreement: {agreement.get('avg_sell_agreement', 0):.3f}")
+                print(
+                    f"  Avg buy agreement: {agreement.get('avg_buy_agreement', 0):.3f}"
+                )
+                print(
+                    f"  Avg sell agreement: {agreement.get('avg_sell_agreement', 0):.3f}"
+                )
                 print(f"  Conflict points: {agreement.get('conflict_points', 0)}")
                 print(f"  Unanimous buy signals: {agreement.get('unanimous_buy', 0)}")
                 print(f"  Unanimous sell signals: {agreement.get('unanimous_sell', 0)}")
@@ -243,7 +253,13 @@ def test_multi_strategy_manager(data):
         print(f"Added strategy: {name}")
 
     # 設置策略權重
-    weights = {"CCI_20": 0.3, "Williams_R": 0.25, "Stochastic": 0.15, "Volume_SMA": 0.2, "OBV": 0.1}
+    weights = {
+        "CCI_20": 0.3,
+        "Williams_R": 0.25,
+        "Stochastic": 0.15,
+        "Volume_SMA": 0.2,
+        "OBV": 0.1,
+    }
     manager.set_strategy_weights(weights)
 
     print("\n--- Executing all strategies ---")
@@ -252,19 +268,25 @@ def test_multi_strategy_manager(data):
     all_results = manager.execute_all_strategies(data, parallel=False)
 
     # 獲取共識信號
-    consensus_signal = manager.get_consensus_signal(all_results, method="weighted_voting")
+    consensus_signal = manager.get_consensus_signal(
+        all_results, method="weighted_voting"
+    )
 
     if consensus_signal:
         print("Consensus Signal:")
         print(f"  Action: {consensus_signal['action']}")
         print(f"  Confidence: {consensus_signal['confidence']:.3f}")
-        print(f"  Agreeing strategies: {consensus_signal.get('agreeing_strategies', [])}")
+        print(
+            f"  Agreeing strategies: {consensus_signal.get('agreeing_strategies', [])}"
+        )
 
         # 計算持倉大小
         portfolio_value = 100000
         current_price = data["close"].iloc[-1]
 
-        position = manager.calculate_position_size(consensus_signal, portfolio_value, current_price)
+        position = manager.calculate_position_size(
+            consensus_signal, portfolio_value, current_price
+        )
 
         print("\nPosition Sizing:")
         print(f"  Shares: {position['shares']}")
@@ -326,7 +348,9 @@ def test_backtest_simulation(data):
             # 買入信號
             if consensus["action"] == "BUY" and position == 0:
                 # 計算持倉
-                pos_size = manager.calculate_position_size(consensus, capital, current_price)
+                pos_size = manager.calculate_position_size(
+                    consensus, capital, current_price
+                )
                 if pos_size["shares"] > 0:
                     position = pos_size["shares"]
                     entry_price = current_price
@@ -397,7 +421,9 @@ def test_backtest_simulation(data):
         print(f"Losing trades: {len(losing_trades)}")
 
         if winning_trades or losing_trades:
-            win_rate = len(winning_trades) / (len(winning_trades) + len(losing_trades)) * 100
+            win_rate = (
+                len(winning_trades) / (len(winning_trades) + len(losing_trades)) * 100
+            )
             print(f"Win rate: {win_rate:.1f}%")
 
         # 顯示最近交易

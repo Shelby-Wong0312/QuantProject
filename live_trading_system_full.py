@@ -5,10 +5,9 @@ Live Automated Trading System - Full Market Coverage
 
 import asyncio
 import logging
-import json
 import sqlite3
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Set
+from datetime import datetime
+from typing import Dict, List, Optional
 import pandas as pd
 import numpy as np
 import sys
@@ -32,7 +31,10 @@ from src.signals.signal_generator import SignalGenerator
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("logs/live_trading_full.log"), logging.StreamHandler()],
+    handlers=[
+        logging.FileHandler("logs/live_trading_full.log"),
+        logging.StreamHandler(),
+    ],
 )
 logger = logging.getLogger(__name__)
 
@@ -289,7 +291,7 @@ class FullMarketTradingSystem:
                         }
                     )
 
-            except Exception as e:
+            except Exception:
                 # Skip stocks that cause errors
                 pass
 
@@ -385,7 +387,9 @@ class FullMarketTradingSystem:
             # Check existing positions for exit
             if symbol in self.active_positions:
                 position = self.active_positions[symbol]
-                pnl_pct = (current_price - position["entry_price"]) / position["entry_price"]
+                pnl_pct = (current_price - position["entry_price"]) / position[
+                    "entry_price"
+                ]
 
                 if pnl_pct <= -0.05:  # Stop loss
                     return "SELL"
@@ -394,7 +398,7 @@ class FullMarketTradingSystem:
 
             return "HOLD"
 
-        except Exception as e:
+        except Exception:
             return None
 
     async def execute_trade(self, symbol: str, action: str):
@@ -453,7 +457,9 @@ class FullMarketTradingSystem:
                     }
                 )
 
-                logger.info(f"[TRADE] Bought {shares} shares of {symbol} at ${current_price:.2f}")
+                logger.info(
+                    f"[TRADE] Bought {shares} shares of {symbol} at ${current_price:.2f}"
+                )
 
             elif action == "SELL" and symbol in self.active_positions:
                 position = self.active_positions[symbol]
@@ -528,13 +534,21 @@ class FullMarketTradingSystem:
         # Positions
         if self.active_positions:
             print("\n📈 OPEN POSITIONS:")
-            for symbol, position in list(self.active_positions.items())[:10]:  # Show top 10
+            for symbol, position in list(self.active_positions.items())[
+                :10
+            ]:  # Show top 10
                 try:
                     ticker = yf.Ticker(symbol)
-                    current_price = ticker.info.get("currentPrice", position["entry_price"])
-                    pnl = (current_price - position["entry_price"]) * position["quantity"]
+                    current_price = ticker.info.get(
+                        "currentPrice", position["entry_price"]
+                    )
+                    pnl = (current_price - position["entry_price"]) * position[
+                        "quantity"
+                    ]
                     pnl_pct = (
-                        (current_price - position["entry_price"]) / position["entry_price"] * 100
+                        (current_price - position["entry_price"])
+                        / position["entry_price"]
+                        * 100
                     )
                     print(
                         f"  {symbol:6} {position['quantity']:4} shares | Entry: ${position['entry_price']:.2f} | Current: ${current_price:.2f} | P&L: ${pnl:+.2f} ({pnl_pct:+.1f}%)"
@@ -544,7 +558,9 @@ class FullMarketTradingSystem:
 
         # Statistics
         win_rate = (
-            (self.profitable_trades / self.total_trades * 100) if self.total_trades > 0 else 0
+            (self.profitable_trades / self.total_trades * 100)
+            if self.total_trades > 0
+            else 0
         )
 
         print("\n📊 STATISTICS:")
@@ -561,7 +577,10 @@ class FullMarketTradingSystem:
             return
 
         # Check if we need to ping
-        if self.last_ping is None or (datetime.now() - self.last_ping).seconds > self.ping_interval:
+        if (
+            self.last_ping is None
+            or (datetime.now() - self.last_ping).seconds > self.ping_interval
+        ):
             try:
                 # Ping the API to keep session alive
                 self.api.ping()
@@ -596,7 +615,9 @@ class FullMarketTradingSystem:
     async def run(self):
         """主交易循環"""
         self.running = True
-        logger.info("Starting automated trading - monitoring top 40 stocks (WebSocket limit)...")
+        logger.info(
+            "Starting automated trading - monitoring top 40 stocks (WebSocket limit)..."
+        )
 
         scan_counter = 0
 

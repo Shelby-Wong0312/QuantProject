@@ -1,5 +1,6 @@
 # path: infra/publish_to_sns.py
-import os, json
+import os
+import json
 from datetime import datetime, timezone
 from typing import Optional, Dict, Any
 import boto3

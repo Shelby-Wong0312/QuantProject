@@ -5,9 +5,7 @@ Capital.com Service Module
 """
 
 import os
-import sys
 import requests
-import json
 from dotenv import load_dotenv
 import logging
 
@@ -46,7 +44,9 @@ class CapitalService:
         }
 
         try:
-            response = self.session.post(login_url, headers=headers, json=payload, timeout=10)
+            response = self.session.post(
+                login_url, headers=headers, json=payload, timeout=10
+            )
             if response.status_code == 200:
                 self.cst = response.headers.get("CST")
                 self.x_security_token = response.headers.get("X-SECURITY-TOKEN")
@@ -54,7 +54,10 @@ class CapitalService:
             else:
                 try:
                     error_data = response.json()
-                    return False, f"登入失敗: {error_data.get('errorCode', 'Unknown error')}"
+                    return (
+                        False,
+                        f"登入失敗: {error_data.get('errorCode', 'Unknown error')}",
+                    )
                 except Exception:
                     return False, f"登入失敗: Status {response.status_code}"
         except Exception as e:
@@ -83,7 +86,9 @@ class CapitalService:
         }
 
         try:
-            response = self.session.post(order_url, headers=headers, json=payload, timeout=10)
+            response = self.session.post(
+                order_url, headers=headers, json=payload, timeout=10
+            )
             if response.status_code == 200:
                 return {"success": True, "data": response.json()}
             else:
@@ -108,7 +113,9 @@ class CapitalService:
         params = {"searchTerm": search_term, "limit": limit}
 
         try:
-            response = self.session.get(search_url, headers=headers, params=params, timeout=10)
+            response = self.session.get(
+                search_url, headers=headers, params=params, timeout=10
+            )
             if response.status_code == 200:
                 return response.json().get("markets", [])
             else:

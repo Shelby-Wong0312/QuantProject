@@ -4,7 +4,7 @@ PPO (Proximal Policy Optimization) agent for trading
 
 import numpy as np
 import torch
-from typing import Dict, List, Optional, Tuple, Any, Union, Callable
+from typing import Dict, Optional, Tuple, Any, Union
 from pathlib import Path
 import logging
 
@@ -13,8 +13,6 @@ from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecNorm
 from stable_baselines3.common.callbacks import (
     BaseCallback,
     EvalCallback,
-    StopTrainingOnRewardThreshold,
-    StopTrainingOnNoModelImprovement,
     CheckpointCallback,
 )
 from stable_baselines3.common.monitor import Monitor
@@ -30,7 +28,9 @@ class TradingCallback(BaseCallback):
     Custom callback for trading environment
     """
 
-    def __init__(self, check_freq: int = 1000, log_dir: Optional[Path] = None, verbose: int = 0):
+    def __init__(
+        self, check_freq: int = 1000, log_dir: Optional[Path] = None, verbose: int = 0
+    ):
         super().__init__(verbose)
         self.check_freq = check_freq
         self.log_dir = Path(log_dir) if log_dir else Path("./logs")
@@ -75,7 +75,9 @@ class PPOAgent(BaseAgent):
     PPO agent for trading
     """
 
-    def __init__(self, env, config: Optional[Dict[str, Any]] = None, name: str = "PPOAgent"):
+    def __init__(
+        self, env, config: Optional[Dict[str, Any]] = None, name: str = "PPOAgent"
+    ):
         """
         Initialize PPO agent
 
@@ -145,7 +147,11 @@ class PPOAgent(BaseAgent):
         # Add normalization wrapper if enabled
         if self.config["normalize_env"]:
             vec_env = VecNormalize(
-                vec_env, norm_obs=True, norm_reward=True, clip_obs=10.0, clip_reward=10.0
+                vec_env,
+                norm_obs=True,
+                norm_reward=True,
+                clip_obs=10.0,
+                clip_reward=10.0,
             )
 
         return vec_env
@@ -231,7 +237,10 @@ class PPOAgent(BaseAgent):
         # Add checkpoint callback
         if save_path:
             checkpoint_callback = CheckpointCallback(
-                save_freq=save_freq, save_path=save_path, name_prefix=self.name, verbose=1
+                save_freq=save_freq,
+                save_path=save_path,
+                name_prefix=self.name,
+                verbose=1,
             )
             callbacks.append(checkpoint_callback)
 
@@ -254,7 +263,9 @@ class PPOAgent(BaseAgent):
 
             eval_callback = EvalCallback(
                 eval_env,
-                best_model_save_path=save_path / "best_model" if save_path else "./best_model",
+                best_model_save_path=(
+                    save_path / "best_model" if save_path else "./best_model"
+                ),
                 log_path=save_path / "eval_logs" if save_path else "./eval_logs",
                 eval_freq=eval_freq,
                 n_eval_episodes=n_eval_episodes,
@@ -282,12 +293,21 @@ class PPOAgent(BaseAgent):
         logger.info("PPO training completed")
 
         # Update training history
-        self.training_history["episode_rewards"].extend(trading_callback.episode_rewards)
-        self.training_history["episode_lengths"].extend(trading_callback.episode_lengths)
-        self.training_history["episode_metrics"].extend(trading_callback.episode_trading_metrics)
+        self.training_history["episode_rewards"].extend(
+            trading_callback.episode_rewards
+        )
+        self.training_history["episode_lengths"].extend(
+            trading_callback.episode_lengths
+        )
+        self.training_history["episode_metrics"].extend(
+            trading_callback.episode_trading_metrics
+        )
 
     def predict(
-        self, observation: np.ndarray, state: Optional[Any] = None, deterministic: bool = True
+        self,
+        observation: np.ndarray,
+        state: Optional[Any] = None,
+        deterministic: bool = True,
     ) -> Tuple[np.ndarray, Optional[Any]]:
         """
         Predict action given observation
@@ -304,7 +324,9 @@ class PPOAgent(BaseAgent):
         if hasattr(self.vec_env, "normalize_obs"):
             observation = self.vec_env.normalize_obs(observation)
 
-        action, state = self.model.predict(observation, state=state, deterministic=deterministic)
+        action, state = self.model.predict(
+            observation, state=state, deterministic=deterministic
+        )
 
         return action, state
 
@@ -386,7 +408,9 @@ class PPOAgent(BaseAgent):
 
         # Calculate parameter count
         total_params = sum(p.numel() for p in policy.parameters())
-        trainable_params = sum(p.numel() for p in policy.parameters() if p.requires_grad)
+        trainable_params = sum(
+            p.numel() for p in policy.parameters() if p.requires_grad
+        )
 
         stats["total_parameters"] = total_params
         stats["trainable_parameters"] = trainable_params

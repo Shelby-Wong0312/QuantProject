@@ -4,7 +4,6 @@
 
 import asyncio
 import sys
-import os
 from pathlib import Path
 import logging
 from datetime import datetime
@@ -32,7 +31,6 @@ async def main():
         print("\n[1/6] Loading system modules...")
         from monitoring.tiered_monitor import TieredMonitor, TierLevel
         from data_pipeline.free_data_client import FreeDataClient
-        from src.indicators.indicator_calculator import IndicatorCalculator
         from monitoring.signal_scanner import SignalScanner
 
         print("   [OK] Core modules loaded successfully")

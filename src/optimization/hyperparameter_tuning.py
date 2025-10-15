@@ -6,7 +6,7 @@ Cloud Quant - Task Q-701
 
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Tuple, Any, Optional
+from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass, field
 import json
 import logging
@@ -14,7 +14,6 @@ from pathlib import Path
 import asyncio
 from datetime import datetime
 import itertools
-from scipy.stats import uniform, loguniform
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -113,7 +112,9 @@ class HyperparameterTuner:
     Uses Bayesian optimization to find optimal parameters
     """
 
-    def __init__(self, config: OptimizationConfig, param_space: Optional[ParameterSpace] = None):
+    def __init__(
+        self, config: OptimizationConfig, param_space: Optional[ParameterSpace] = None
+    ):
         """
         Initialize hyperparameter tuner
 
@@ -129,7 +130,9 @@ class HyperparameterTuner:
         self.best_params: Dict = {}
         self.best_score: float = -np.inf
 
-        logger.info(f"Hyperparameter Tuner initialized with target metric: {config.target_metric}")
+        logger.info(
+            f"Hyperparameter Tuner initialized with target metric: {config.target_metric}"
+        )
 
     def create_search_space(self) -> Dict:
         """
@@ -213,7 +216,9 @@ class HyperparameterTuner:
                 }
 
                 # Configure stop loss
-                strategy.stop_loss.atr_multiplier = params.get("stop_loss_multiplier", 2.0)
+                strategy.stop_loss.atr_multiplier = params.get(
+                    "stop_loss_multiplier", 2.0
+                )
 
                 # Run simplified backtest
                 backtest_config = BacktestConfig(
@@ -266,11 +271,15 @@ class HyperparameterTuner:
         if self.config.save_results:
             self.save_optimization_results()
 
-        logger.info(f"Optimization complete. Best {self.config.target_metric}: {best_score:.4f}")
+        logger.info(
+            f"Optimization complete. Best {self.config.target_metric}: {best_score:.4f}"
+        )
 
         return best_params
 
-    def grid_search(self, param_grid: Dict, historical_data: Dict[str, pd.DataFrame]) -> Dict:
+    def grid_search(
+        self, param_grid: Dict, historical_data: Dict[str, pd.DataFrame]
+    ) -> Dict:
         """
         Perform grid search for comparison
 
@@ -309,7 +318,9 @@ class HyperparameterTuner:
 
         return best_params
 
-    def random_search(self, n_iter: int, historical_data: Dict[str, pd.DataFrame]) -> Dict:
+    def random_search(
+        self, n_iter: int, historical_data: Dict[str, pd.DataFrame]
+    ) -> Dict:
         """
         Perform random search
 
@@ -434,7 +445,9 @@ class HyperparameterTuner:
                     param_importance[param] = abs(correlation)
 
         # Sort by importance
-        param_importance = dict(sorted(param_importance.items(), key=lambda x: x[1], reverse=True))
+        param_importance = dict(
+            sorted(param_importance.items(), key=lambda x: x[1], reverse=True)
+        )
 
         analysis = {
             "total_evaluations": len(self.optimization_history),
@@ -475,15 +488,20 @@ class HyperparameterTuner:
         return {
             "converged": converged,
             "iterations_to_best": running_best.index(self.best_score) + 1,
-            "final_improvement_rate": (running_best[-1] - running_best[0]) / len(running_best),
+            "final_improvement_rate": (running_best[-1] - running_best[0])
+            / len(running_best),
         }
 
     def _get_top_configurations(self, n: int) -> List[Dict]:
         """Get top N configurations"""
-        sorted_history = sorted(self.optimization_history, key=lambda x: x["score"], reverse=True)
+        sorted_history = sorted(
+            self.optimization_history, key=lambda x: x["score"], reverse=True
+        )
         return sorted_history[:n]
 
-    def save_optimization_results(self, filepath: str = "reports/optimal_parameters.yaml"):
+    def save_optimization_results(
+        self, filepath: str = "reports/optimal_parameters.yaml"
+    ):
         """
         Save optimization results to file
 
@@ -587,11 +605,19 @@ Improvement Rate: {improvement_rate:.6f}
             std_score=analysis["score_statistics"]["std"],
             min_score=analysis["score_statistics"]["min"],
             max_score=analysis["score_statistics"]["max"],
-            param_importance=self._format_importance(analysis.get("parameter_importance", {})),
+            param_importance=self._format_importance(
+                analysis.get("parameter_importance", {})
+            ),
             converged=analysis.get("convergence", {}).get("converged", "N/A"),
-            iter_to_best=analysis.get("convergence", {}).get("iterations_to_best", "N/A"),
-            improvement_rate=analysis.get("convergence", {}).get("final_improvement_rate", 0),
-            top_configs=self._format_top_configs(analysis.get("top_5_configurations", [])[:3]),
+            iter_to_best=analysis.get("convergence", {}).get(
+                "iterations_to_best", "N/A"
+            ),
+            improvement_rate=analysis.get("convergence", {}).get(
+                "final_improvement_rate", 0
+            ),
+            top_configs=self._format_top_configs(
+                analysis.get("top_5_configurations", [])[:3]
+            ),
         )
 
         return report
@@ -636,7 +662,9 @@ async def main():
 
     # Configure optimization
     config = OptimizationConfig(
-        target_metric="sharpe_ratio", n_iterations=20, save_results=True  # Reduced for demo
+        target_metric="sharpe_ratio",
+        n_iterations=20,
+        save_results=True,  # Reduced for demo
     )
 
     # Initialize tuner
@@ -650,7 +678,8 @@ async def main():
     for symbol in ["AAPL", "GOOGL", "MSFT"]:
         prices = 100 * np.exp(np.cumsum(np.random.normal(0.0005, 0.02, len(dates))))
         df = pd.DataFrame(
-            {"close": prices, "returns": pd.Series(prices).pct_change().fillna(0)}, index=dates
+            {"close": prices, "returns": pd.Series(prices).pct_change().fillna(0)},
+            index=dates,
         )
         sample_data[symbol] = df
 

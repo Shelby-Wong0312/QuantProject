@@ -14,7 +14,7 @@ import sqlite3
 from datetime import datetime
 import json
 import time
-from typing import Dict, List
+from typing import Dict
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -29,7 +29,9 @@ class ComprehensiveBacktest:
 
     def __init__(self):
         self.db_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "data",
+            "quant_trading.db",
         )
         self.initial_capital = 100000.0
         self.commission_rate = 0.001
@@ -108,7 +110,11 @@ class ComprehensiveBacktest:
                     break
 
                 # Check signals
-                if "buy" in signals.columns and signals["buy"].iloc[i] and portfolio["cash"] > 0:
+                if (
+                    "buy" in signals.columns
+                    and signals["buy"].iloc[i]
+                    and portfolio["cash"] > 0
+                ):
                     # Buy signal
                     shares_to_buy = int(
                         portfolio["cash"]
@@ -116,7 +122,9 @@ class ComprehensiveBacktest:
                     )
                     if shares_to_buy > 0:
                         cost = (
-                            shares_to_buy * price * (1 + self.commission_rate + self.slippage_rate)
+                            shares_to_buy
+                            * price
+                            * (1 + self.commission_rate + self.slippage_rate)
                         )
                         portfolio["cash"] -= cost
                         portfolio["shares"] += shares_to_buy
@@ -169,7 +177,9 @@ class ComprehensiveBacktest:
 
             # Win rate
             total_trades = portfolio["wins"] + portfolio["losses"]
-            win_rate = (portfolio["wins"] / total_trades * 100) if total_trades > 0 else 0
+            win_rate = (
+                (portfolio["wins"] / total_trades * 100) if total_trades > 0 else 0
+            )
 
             return {
                 "symbol": symbol,
@@ -182,7 +192,7 @@ class ComprehensiveBacktest:
                 "final_value": values[-1],
             }
 
-        except Exception as e:
+        except Exception:
             conn.close()
             return None
 
@@ -233,7 +243,9 @@ class ComprehensiveBacktest:
                     if result:
                         all_results.append(result)
                         stock_results.append(result)
-                        indicator_performance[indicator_name].append(result["total_return"])
+                        indicator_performance[indicator_name].append(
+                            result["total_return"]
+                        )
 
                     completed += 1
 
@@ -335,7 +347,9 @@ class ComprehensiveBacktest:
         )
 
         # Count positive returns per stock
-        positive_counts = results_df[results_df["total_return"] > 0].groupby("symbol").size()
+        positive_counts = (
+            results_df[results_df["total_return"] > 0].groupby("symbol").size()
+        )
         symbol_avg["positive_indicators"] = positive_counts
 
         # Filter stocks that work with at least 3 indicators
@@ -361,7 +375,9 @@ class ComprehensiveBacktest:
         print("-" * 80)
         print(f"Total stocks tested: {len(all_stocks)}")
         print(f"Total backtests run: {len(results_df)}")
-        print(f"Average return across all tests: {results_df['total_return'].mean():.2f}%")
+        print(
+            f"Average return across all tests: {results_df['total_return'].mean():.2f}%"
+        )
         print(
             f"Percentage of profitable tests: {(results_df['total_return'] > 0).mean() * 100:.2f}%"
         )

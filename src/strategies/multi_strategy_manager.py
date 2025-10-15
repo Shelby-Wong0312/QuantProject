@@ -4,8 +4,7 @@ Multi-Strategy Manager - Cloud DE Task PHASE3-001
 """
 
 import pandas as pd
-import numpy as np
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 from datetime import datetime
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -81,7 +80,9 @@ class MultiStrategyManager:
             return False
 
         if len(self.active_strategies) >= self.max_concurrent:
-            logger.error(f"Maximum concurrent strategies ({self.max_concurrent}) reached")
+            logger.error(
+                f"Maximum concurrent strategies ({self.max_concurrent}) reached"
+            )
             return False
 
         self.active_strategies.append(strategy_name)
@@ -128,9 +129,13 @@ class MultiStrategyManager:
 
         if parallel:
             # 並行執行策略
-            with ThreadPoolExecutor(max_workers=min(len(self.active_strategies), 5)) as executor:
+            with ThreadPoolExecutor(
+                max_workers=min(len(self.active_strategies), 5)
+            ) as executor:
                 future_to_strategy = {
-                    executor.submit(self._execute_single_strategy, name, market_data): name
+                    executor.submit(
+                        self._execute_single_strategy, name, market_data
+                    ): name
                     for name in self.active_strategies
                 }
 
@@ -189,13 +194,20 @@ class MultiStrategyManager:
         # 記錄信號歷史
         for _, signal in signals.iterrows():
             self.signal_history.append(
-                {"strategy": strategy_name, "timestamp": datetime.now(), "signal": signal.to_dict()}
+                {
+                    "strategy": strategy_name,
+                    "timestamp": datetime.now(),
+                    "signal": signal.to_dict(),
+                }
             )
 
         return signals
 
     def get_consensus_signal(
-        self, all_signals: Dict[str, pd.DataFrame], method: str = "voting", threshold: float = 0.6
+        self,
+        all_signals: Dict[str, pd.DataFrame],
+        method: str = "voting",
+        threshold: float = 0.6,
     ) -> pd.DataFrame:
         """
         獲取共識信號（多策略投票或加權）
@@ -243,14 +255,18 @@ class MultiStrategyManager:
             if "buy" in signals.columns:
                 for idx, buy_signal in signals[signals["buy"]].iterrows():
                     symbol = (
-                        signals.loc[idx, "symbol"] if "symbol" in signals.columns else "DEFAULT"
+                        signals.loc[idx, "symbol"]
+                        if "symbol" in signals.columns
+                        else "DEFAULT"
                     )
                     buy_votes[symbol] = buy_votes.get(symbol, 0) + 1
 
             if "sell" in signals.columns:
                 for idx, sell_signal in signals[signals["sell"]].iterrows():
                     symbol = (
-                        signals.loc[idx, "symbol"] if "symbol" in signals.columns else "DEFAULT"
+                        signals.loc[idx, "symbol"]
+                        if "symbol" in signals.columns
+                        else "DEFAULT"
                     )
                     sell_votes[symbol] = sell_votes.get(symbol, 0) + 1
 
@@ -309,7 +325,9 @@ class MultiStrategyManager:
 
         return pd.DataFrame(weighted_signals)
 
-    def _unanimous_consensus(self, all_signals: Dict[str, pd.DataFrame]) -> pd.DataFrame:
+    def _unanimous_consensus(
+        self, all_signals: Dict[str, pd.DataFrame]
+    ) -> pd.DataFrame:
         """
         一致共識機制（所有策略都同意）
 

@@ -4,7 +4,7 @@ Portfolio tracking utilities for RL trading
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 import logging
@@ -173,7 +173,9 @@ class PortfolioTracker:
 
         elif action == "SELL":
             if symbol not in self.positions or self.positions[symbol].shares < shares:
-                available = self.positions[symbol].shares if symbol in self.positions else 0
+                available = (
+                    self.positions[symbol].shares if symbol in self.positions else 0
+                )
                 logger.warning(
                     f"Insufficient shares: trying to sell {shares}, available {available}"
                 )
@@ -206,7 +208,9 @@ class PortfolioTracker:
 
         return True
 
-    def update_equity(self, current_prices: Dict[str, float], timestamp: Optional[datetime] = None):
+    def update_equity(
+        self, current_prices: Dict[str, float], timestamp: Optional[datetime] = None
+    ):
         """
         Update equity curve with current prices
 
@@ -278,7 +282,9 @@ class PortfolioTracker:
 
         return pd.DataFrame(summaries)
 
-    def get_performance_metrics(self, current_prices: Dict[str, float]) -> Dict[str, float]:
+    def get_performance_metrics(
+        self, current_prices: Dict[str, float]
+    ) -> Dict[str, float]:
         """Calculate performance metrics"""
         current_equity = self.get_portfolio_value(current_prices)
 
@@ -291,7 +297,8 @@ class PortfolioTracker:
         metrics = {
             "initial_capital": self.initial_capital,
             "current_equity": current_equity,
-            "total_return": (current_equity - self.initial_capital) / self.initial_capital,
+            "total_return": (current_equity - self.initial_capital)
+            / self.initial_capital,
             "total_pnl": total_pnl,
             "cash": self.cash,
             "positions_value": current_equity - self.cash,
@@ -309,7 +316,9 @@ class PortfolioTracker:
         if len(self.equity_curve) > 20:
             returns = pd.DataFrame(self.equity_curve)["equity"].pct_change().dropna()
             metrics["sharpe_ratio"] = (
-                np.sqrt(252) * returns.mean() / returns.std() if returns.std() > 0 else 0
+                np.sqrt(252) * returns.mean() / returns.std()
+                if returns.std() > 0
+                else 0
             )
         else:
             metrics["sharpe_ratio"] = 0

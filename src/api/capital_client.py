@@ -7,20 +7,16 @@ Cloud DE - Task CAP-001
 import aiohttp
 import asyncio
 import json
-import hmac
-import hashlib
 import time
-from typing import Dict, List, Optional, Any, Callable
+from typing import Dict, List, Optional, Callable
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
 import logging
 from pathlib import Path
 import websockets
 import ssl
 import certifi
-from urllib.parse import urlencode
-import base64
 
 logger = logging.getLogger(__name__)
 
@@ -165,7 +161,9 @@ class CapitalComClient:
             max_requests=self.config.get("rate_limit", 100), time_window=60
         )
 
-        logger.info(f"Capital.com client initialized for {environment.value} environment")
+        logger.info(
+            f"Capital.com client initialized for {environment.value} environment"
+        )
 
     def _load_config(self, config_path: Optional[str]) -> Dict:
         """載入配置"""
@@ -196,7 +194,9 @@ class CapitalComClient:
             if not self.session:
                 timeout = aiohttp.ClientTimeout(total=self.config["timeout"])
                 connector = aiohttp.TCPConnector(limit=self.config["max_connections"])
-                self.session = aiohttp.ClientSession(timeout=timeout, connector=connector)
+                self.session = aiohttp.ClientSession(
+                    timeout=timeout, connector=connector
+                )
 
             # 執行認證
             auth_success = await self._authenticate()
@@ -229,9 +229,14 @@ class CapitalComClient:
 
             payload = {"identifier": self.api_key, "password": self.password}
 
-            headers = {"Content-Type": "application/json", "X-CAP-API-KEY": self.api_key}
+            headers = {
+                "Content-Type": "application/json",
+                "X-CAP-API-KEY": self.api_key,
+            }
 
-            async with self.session.post(url, json=payload, headers=headers) as response:
+            async with self.session.post(
+                url, json=payload, headers=headers
+            ) as response:
                 if response.status == 200:
                     # 獲取認證令牌
                     self.cst_token = response.headers.get("CST")
@@ -371,7 +376,9 @@ class CapitalComClient:
             if order.stop_price:
                 payload["stopLevel"] = order.stop_price
 
-            async with self.session.post(url, json=payload, headers=headers) as response:
+            async with self.session.post(
+                url, json=payload, headers=headers
+            ) as response:
                 if response.status == 200:
                     await response.json()
                     deal_reference = data.get("dealReference")
@@ -536,7 +543,10 @@ class CapitalComClient:
 
                 # 發送心跳
                 if self.ws_connection:
-                    ping_msg = {"destination": "ping", "correlationId": str(time.time())}
+                    ping_msg = {
+                        "destination": "ping",
+                        "correlationId": str(time.time()),
+                    }
                     await self.ws_connection.send(json.dumps(ping_msg))
 
             except Exception as e:
@@ -595,7 +605,9 @@ class RateLimiter:
 
             # 清理過期請求
             self.requests = [
-                req_time for req_time in self.requests if now - req_time < self.time_window
+                req_time
+                for req_time in self.requests
+                if now - req_time < self.time_window
             ]
 
             # 檢查是否超限
@@ -611,7 +623,9 @@ class RateLimiter:
                     # 重新清理
                     now = time.time()
                     self.requests = [
-                        req_time for req_time in self.requests if now - req_time < self.time_window
+                        req_time
+                        for req_time in self.requests
+                        if now - req_time < self.time_window
                     ]
 
             # 記錄新請求

@@ -9,7 +9,7 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Dict, List, Optional
 
 
@@ -92,7 +92,8 @@ class DashboardCharts:
         # Daily returns bar chart
         if "return" in df.columns:
             colors = [
-                self.colors["success"] if r >= 0 else self.colors["danger"] for r in df["return"]
+                self.colors["success"] if r >= 0 else self.colors["danger"]
+                for r in df["return"]
             ]
 
             fig.add_trace(
@@ -116,7 +117,9 @@ class DashboardCharts:
             template=self.theme,
             height=500,
             hovermode="x unified",
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            legend=dict(
+                orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+            ),
         )
 
         return fig
@@ -136,7 +139,9 @@ class DashboardCharts:
 
         for symbol, pos in positions.items():
             symbols.append(symbol)
-            values.append(pos.get("market_value", pos["quantity"] * pos.get("current_price", 100)))
+            values.append(
+                pos.get("market_value", pos["quantity"] * pos.get("current_price", 100))
+            )
 
         fig = go.Figure(
             [
@@ -145,7 +150,8 @@ class DashboardCharts:
                     values=values,
                     hole=0.4,
                     marker=dict(
-                        colors=px.colors.sequential.Viridis, line=dict(color="white", width=2)
+                        colors=px.colors.sequential.Viridis,
+                        line=dict(color="white", width=2),
                     ),
                     textfont=dict(size=12),
                     textposition="auto",
@@ -156,14 +162,20 @@ class DashboardCharts:
 
         # Add center text
         fig.add_annotation(
-            text="Portfolio<br>Distribution", x=0.5, y=0.5, font=dict(size=14), showarrow=False
+            text="Portfolio<br>Distribution",
+            x=0.5,
+            y=0.5,
+            font=dict(size=14),
+            showarrow=False,
         )
 
         fig.update_layout(
             template=self.theme,
             height=400,
             showlegend=True,
-            legend=dict(orientation="v", yanchor="middle", y=0.5, xanchor="left", x=1.05),
+            legend=dict(
+                orientation="v", yanchor="middle", y=0.5, xanchor="left", x=1.05
+            ),
         )
 
         return fig
@@ -202,7 +214,11 @@ class DashboardCharts:
                 value=risk_metrics.get("risk_score", 50),
                 gauge={
                     "axis": {"range": [0, 100]},
-                    "bar": {"color": self._get_risk_color(risk_metrics.get("risk_score", 50))},
+                    "bar": {
+                        "color": self._get_risk_color(
+                            risk_metrics.get("risk_score", 50)
+                        )
+                    },
                     "steps": [
                         {"range": [0, 30], "color": "rgba(0, 255, 0, 0.2)"},
                         {"range": [30, 60], "color": "rgba(255, 255, 0, 0.2)"},
@@ -239,7 +255,11 @@ class DashboardCharts:
                 number={"suffix": "x", "font": {"size": 24}},
                 gauge={
                     "axis": {"range": [0, 3]},
-                    "bar": {"color": self._get_leverage_color(risk_metrics.get("leverage", 1.5))},
+                    "bar": {
+                        "color": self._get_leverage_color(
+                            risk_metrics.get("leverage", 1.5)
+                        )
+                    },
                     "threshold": {
                         "line": {"color": "red", "width": 4},
                         "thickness": 0.75,
@@ -255,7 +275,10 @@ class DashboardCharts:
         risk_values = np.random.normal(0, 1, 100)  # Sample data
         fig.add_trace(
             go.Histogram(
-                x=risk_values, marker_color=self.colors["info"], nbinsx=20, showlegend=False
+                x=risk_values,
+                marker_color=self.colors["info"],
+                nbinsx=20,
+                showlegend=False,
             ),
             row=2,
             col=1,
@@ -347,14 +370,20 @@ class DashboardCharts:
 
         # Add mean line
         mean_pnl = trades_df["pnl"].mean()
-        fig.add_vline(x=mean_pnl, line_dash="dash", line_color="yellow", row=1, col=1, opacity=0.5)
-        fig.add_vline(x=0, line_dash="dash", line_color="red", row=1, col=1, opacity=0.5)
+        fig.add_vline(
+            x=mean_pnl, line_dash="dash", line_color="yellow", row=1, col=1, opacity=0.5
+        )
+        fig.add_vline(
+            x=0, line_dash="dash", line_color="red", row=1, col=1, opacity=0.5
+        )
 
         # P&L by Symbol (Box plot)
         if "symbol" in trades_df.columns:
             for symbol in trades_df["symbol"].unique():
                 symbol_pnl = trades_df[trades_df["symbol"] == symbol]["pnl"]
-                fig.add_trace(go.Box(y=symbol_pnl, name=symbol, showlegend=False), row=1, col=2)
+                fig.add_trace(
+                    go.Box(y=symbol_pnl, name=symbol, showlegend=False), row=1, col=2
+                )
 
         # Cumulative P&L
         cumulative_pnl = trades_df["pnl"].cumsum()
@@ -413,9 +442,13 @@ class DashboardCharts:
             pos = positions[symbol]
             pnl = pos.get("unrealized_pnl", 0)
             pnl_pct = (
-                (pos["current_price"] / pos["avg_price"] - 1) * 100 if pos.get("avg_price") else 0
+                (pos["current_price"] / pos["avg_price"] - 1) * 100
+                if pos.get("avg_price")
+                else 0
             )
-            market_value = pos.get("market_value", pos["quantity"] * pos.get("current_price", 100))
+            market_value = pos.get(
+                "market_value", pos["quantity"] * pos.get("current_price", 100)
+            )
 
             data.append([pos["quantity"], market_value, pnl, pnl_pct])
 
@@ -498,7 +531,10 @@ class DashboardCharts:
                 y=y_positions,
                 mode="markers+text",
                 marker=dict(
-                    size=15, color=colors, symbol="diamond", line=dict(width=2, color="white")
+                    size=15,
+                    color=colors,
+                    symbol="diamond",
+                    line=dict(width=2, color="white"),
                 ),
                 text=messages,
                 textposition="top center",

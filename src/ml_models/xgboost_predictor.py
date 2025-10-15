@@ -11,11 +11,11 @@ from sklearn.model_selection import TimeSeriesSplit, GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import joblib
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, Optional, Tuple, Any
 import logging
 from pathlib import Path
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -71,7 +71,9 @@ class XGBoostPredictor:
         # 性能指標
         self.performance_metrics = {}
 
-        logger.info(f"XGBoost Predictor initialized with {prediction_horizon}-day horizon")
+        logger.info(
+            f"XGBoost Predictor initialized with {prediction_horizon}-day horizon"
+        )
 
     def create_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -103,7 +105,9 @@ class XGBoostPredictor:
         # 3. 波動率特徵
         features["volatility_5d"] = features["returns_1d"].rolling(5).std()
         features["volatility_20d"] = features["returns_1d"].rolling(20).std()
-        features["volatility_ratio"] = features["volatility_5d"] / features["volatility_20d"]
+        features["volatility_ratio"] = (
+            features["volatility_5d"] / features["volatility_20d"]
+        )
 
         # 4. 成交量特徵
         features["volume_ratio"] = df["volume"] / df["volume"].rolling(20).mean()
@@ -168,9 +172,9 @@ class XGBoostPredictor:
         features["quarter"] = df.index.quarter
 
         # 11. 成交量加權價格
-        features["vwap"] = (df["close"] * df["volume"]).rolling(20).sum() / df["volume"].rolling(
-            20
-        ).sum()
+        features["vwap"] = (df["close"] * df["volume"]).rolling(20).sum() / df[
+            "volume"
+        ].rolling(20).sum()
         features["price_to_vwap"] = df["close"] / features["vwap"] - 1
 
         # 12. 支撐阻力特徵
@@ -201,7 +205,9 @@ class XGBoostPredictor:
         features = self.create_features(df)
 
         # 創建目標變量（未來收益）
-        future_returns = df[target_col].shift(-self.prediction_horizon) / df[target_col] - 1
+        future_returns = (
+            df[target_col].shift(-self.prediction_horizon) / df[target_col] - 1
+        )
 
         # 移除 NaN
         valid_idx = ~(features.isnull().any(axis=1) | future_returns.isnull())
@@ -249,7 +255,11 @@ class XGBoostPredictor:
             # 訓練模型
             model = xgb.XGBRegressor(**self.params)
             model.fit(
-                X_train, y_train, eval_set=[(X_val, y_val)], early_stopping_rounds=50, verbose=False
+                X_train,
+                y_train,
+                eval_set=[(X_val, y_val)],
+                early_stopping_rounds=50,
+                verbose=False,
             )
 
             # 驗證預測
@@ -298,11 +308,15 @@ class XGBoostPredictor:
             "colsample_bytree": [0.7, 0.8],
         }
 
-        model = xgb.XGBRegressor(objective="reg:squarederror", n_jobs=-1, random_state=42)
+        model = xgb.XGBRegressor(
+            objective="reg:squarederror", n_jobs=-1, random_state=42
+        )
 
         tscv = TimeSeriesSplit(n_splits=3)
 
-        grid_search = GridSearchCV(model, param_grid, cv=tscv, scoring="r2", n_jobs=-1, verbose=1)
+        grid_search = GridSearchCV(
+            model, param_grid, cv=tscv, scoring="r2", n_jobs=-1, verbose=1
+        )
 
         grid_search.fit(X, y)
 
@@ -373,7 +387,10 @@ class XGBoostPredictor:
             raise ValueError("Model not trained yet")
 
         importance = pd.DataFrame(
-            {"feature": self.feature_names, "importance": self.model.feature_importances_}
+            {
+                "feature": self.feature_names,
+                "importance": self.model.feature_importances_,
+            }
         ).sort_values("importance", ascending=False)
 
         return importance
@@ -418,7 +435,9 @@ class XGBoostPredictor:
 
         logger.info(f"Model loaded from {load_path}")
 
-    def backtest(self, df: pd.DataFrame, initial_capital: float = 10000) -> Dict[str, Any]:
+    def backtest(
+        self, df: pd.DataFrame, initial_capital: float = 10000
+    ) -> Dict[str, Any]:
         """
         回測預測策略
 
@@ -483,7 +502,9 @@ class XGBoostPredictor:
             "direction_accuracy": direction_correct,
             "num_trades": np.sum(np.array(positions) != 0),
             "win_rate": (
-                np.sum(returns > 0) / np.sum(returns != 0) if np.sum(returns != 0) > 0 else 0
+                np.sum(returns > 0) / np.sum(returns != 0)
+                if np.sum(returns != 0) > 0
+                else 0
             ),
         }
 
@@ -540,7 +561,9 @@ class XGBoostMPTIntegration:
                 "xgboost": xgb_predictions.values,
                 "lstm": lstm_predictions.values,
                 "difference": xgb_predictions.values - lstm_predictions.values,
-                "correlation": np.corrcoef(xgb_predictions.values, lstm_predictions.values)[0, 1],
+                "correlation": np.corrcoef(
+                    xgb_predictions.values, lstm_predictions.values
+                )[0, 1],
             }
         )
 

@@ -2,14 +2,11 @@
 Execution Efficiency Page - RL Agent performance visualization
 """
 
-from dash import html, dcc, callback, Input, Output, State
+from dash import html, dcc, callback, Input, Output
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
-import plotly.express as px
-import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
-import json
+from datetime import datetime
 from pathlib import Path
 import logging
 
@@ -178,42 +175,59 @@ def create_execution_efficiency_page():
                                     dbc.CardBody(
                                         [
                                             html.H5("平均滑價", className="card-title"),
-                                            html.H3(id="avg-slippage", children="0.05%"),
-                                            html.P("較上期 ↓ 0.01%", className="text-success"),
-                                        ]
-                                    )
-                                ]
-                            )
-                        ],
-                        md=3,
-                    ),
-                    dbc.Col(
-                        [
-                            dbc.Card(
-                                [
-                                    dbc.CardBody(
-                                        [
-                                            html.H5("執行成功率", className="card-title"),
-                                            html.H3(id="execution-rate", children="98.5%"),
-                                            html.P("較上期 ↑ 1.2%", className="text-success"),
-                                        ]
-                                    )
-                                ]
-                            )
-                        ],
-                        md=3,
-                    ),
-                    dbc.Col(
-                        [
-                            dbc.Card(
-                                [
-                                    dbc.CardBody(
-                                        [
-                                            html.H5("最佳執行時段", className="card-title"),
                                             html.H3(
-                                                id="best-execution-time", children="10:00-11:00"
+                                                id="avg-slippage", children="0.05%"
                                             ),
-                                            html.P("流動性最高", className="text-muted"),
+                                            html.P(
+                                                "較上期 ↓ 0.01%",
+                                                className="text-success",
+                                            ),
+                                        ]
+                                    )
+                                ]
+                            )
+                        ],
+                        md=3,
+                    ),
+                    dbc.Col(
+                        [
+                            dbc.Card(
+                                [
+                                    dbc.CardBody(
+                                        [
+                                            html.H5(
+                                                "執行成功率", className="card-title"
+                                            ),
+                                            html.H3(
+                                                id="execution-rate", children="98.5%"
+                                            ),
+                                            html.P(
+                                                "較上期 ↑ 1.2%",
+                                                className="text-success",
+                                            ),
+                                        ]
+                                    )
+                                ]
+                            )
+                        ],
+                        md=3,
+                    ),
+                    dbc.Col(
+                        [
+                            dbc.Card(
+                                [
+                                    dbc.CardBody(
+                                        [
+                                            html.H5(
+                                                "最佳執行時段", className="card-title"
+                                            ),
+                                            html.H3(
+                                                id="best-execution-time",
+                                                children="10:00-11:00",
+                                            ),
+                                            html.P(
+                                                "流動性最高", className="text-muted"
+                                            ),
                                         ]
                                     )
                                 ]
@@ -228,8 +242,13 @@ def create_execution_efficiency_page():
                                     dbc.CardBody(
                                         [
                                             html.H5("決策效率", className="card-title"),
-                                            html.H3(id="decision-efficiency", children="87.3%"),
-                                            html.P("正確決策比例", className="text-muted"),
+                                            html.H3(
+                                                id="decision-efficiency",
+                                                children="87.3%",
+                                            ),
+                                            html.P(
+                                                "正確決策比例", className="text-muted"
+                                            ),
                                         ]
                                     )
                                 ]
@@ -253,7 +272,8 @@ def create_execution_efficiency_page():
                                     dbc.CardBody(
                                         [
                                             dcc.Graph(
-                                                id="decision-heatmap", style={"height": "350px"}
+                                                id="decision-heatmap",
+                                                style={"height": "350px"},
                                             )
                                         ]
                                     ),
@@ -265,7 +285,12 @@ def create_execution_efficiency_page():
                                 [
                                     dbc.CardHeader("訓練獎勵曲線"),
                                     dbc.CardBody(
-                                        [dcc.Graph(id="reward-curve", style={"height": "350px"})]
+                                        [
+                                            dcc.Graph(
+                                                id="reward-curve",
+                                                style={"height": "350px"},
+                                            )
+                                        ]
                                     ),
                                 ]
                             ),
@@ -282,7 +307,8 @@ def create_execution_efficiency_page():
                                     dbc.CardBody(
                                         [
                                             dcc.Graph(
-                                                id="slippage-analysis", style={"height": "350px"}
+                                                id="slippage-analysis",
+                                                style={"height": "350px"},
                                             )
                                         ]
                                     ),
@@ -296,7 +322,8 @@ def create_execution_efficiency_page():
                                     dbc.CardBody(
                                         [
                                             dcc.Graph(
-                                                id="volume-distribution", style={"height": "350px"}
+                                                id="volume-distribution",
+                                                style={"height": "350px"},
                                             )
                                         ]
                                     ),
@@ -324,7 +351,9 @@ def create_execution_efficiency_page():
                 ]
             ),
             # Auto-refresh interval
-            dcc.Interval(id="efficiency-interval", interval=10000, n_intervals=0),  # 10 seconds
+            dcc.Interval(
+                id="efficiency-interval", interval=10000, n_intervals=0
+            ),  # 10 seconds
             # Hidden storage
             dcc.Store(id="efficiency-data-store"),
         ],
@@ -432,7 +461,9 @@ def load_agent_data(model: str, source: str) -> dict:
                 "step": np.random.randint(0, n_steps),
                 "action": np.random.choice(["BUY", "SELL", "HOLD"], p=[0.3, 0.3, 0.4]),
                 "expected_price": 100 + np.random.randn(),
-                "executed_price": 100 + np.random.randn() + np.random.uniform(-0.1, 0.1),
+                "executed_price": 100
+                + np.random.randn()
+                + np.random.uniform(-0.1, 0.1),
                 "volume": np.random.randint(10, 1000),
                 "hour": np.random.randint(9, 16),
             }
@@ -481,7 +512,8 @@ def calculate_efficiency_metrics(agent_data: dict) -> dict:
         for trade in all_trades:
             if "expected_price" in trade and "executed_price" in trade:
                 slippage = (
-                    abs(trade["executed_price"] - trade["expected_price"]) / trade["expected_price"]
+                    abs(trade["executed_price"] - trade["expected_price"])
+                    / trade["expected_price"]
                 )
                 slippages.append(slippage)
 
@@ -544,7 +576,9 @@ def create_detailed_metrics_table(metrics: dict) -> html.Div:
         )
         rows.append(row)
 
-    table = dbc.Table([html.Tbody(rows)], striped=True, bordered=True, hover=True, responsive=True)
+    table = dbc.Table(
+        [html.Tbody(rows)], striped=True, bordered=True, hover=True, responsive=True
+    )
 
     return table
 

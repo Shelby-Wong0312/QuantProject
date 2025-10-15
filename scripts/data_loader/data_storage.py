@@ -5,20 +5,16 @@ Optimized storage for 4,215 stocks with 15 years of data
 """
 
 import pandas as pd
-import numpy as np
 import sqlite3
 import psycopg2
 from psycopg2.extras import execute_batch
 import redis
 import json
-import pickle
 import os
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
+from datetime import datetime
+from typing import Dict, Optional, Any
 import logging
 from dataclasses import dataclass
-import pyarrow as pa
-import pyarrow.parquet as pq
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -244,7 +240,7 @@ class DataStorage:
             records = data.to_records(index=False)
 
             # Use COPY for fastest insertion
-            columns = data.columns.tolist()
+            data.columns.tolist()
             query = """
                 INSERT INTO market_data_ts ({','.join(columns)})
                 VALUES %s
@@ -338,7 +334,9 @@ class DataStorage:
         except Exception as e:
             logger.error(f"Cache update failed: {e}")
 
-    def get_data(self, symbol: str, start_date: str = None, end_date: str = None) -> pd.DataFrame:
+    def get_data(
+        self, symbol: str, start_date: str = None, end_date: str = None
+    ) -> pd.DataFrame:
         """Retrieve data for a symbol"""
 
         # Try cache first
@@ -484,7 +482,9 @@ class DataStorage:
             pd.to_datetime(catalog["end_date"]) - pd.to_datetime(catalog["start_date"])
         ).dt.days / 365.25
 
-        catalog["data_completeness"] = catalog["total_days"] / (catalog["years_of_data"] * 252)
+        catalog["data_completeness"] = catalog["total_days"] / (
+            catalog["years_of_data"] * 252
+        )
         catalog["data_completeness"] = catalog["data_completeness"].clip(upper=1.0)
 
         # Format for display
@@ -500,7 +500,9 @@ class DataStorage:
         catalog["max_close"] = catalog["max_close"].apply(
             lambda x: f"${x:.2f}" if pd.notna(x) else "N/A"
         )
-        catalog["data_completeness"] = catalog["data_completeness"].apply(lambda x: f"{x*100:.1f}%")
+        catalog["data_completeness"] = catalog["data_completeness"].apply(
+            lambda x: f"{x*100:.1f}%"
+        )
 
         # Save catalog
         catalog.to_csv("data/data_catalog.csv", index=False)
@@ -541,7 +543,9 @@ class DataStorage:
 
         # SQLite stats
         if os.path.exists(self.sqlite_path):
-            stats["sqlite_size"] = os.path.getsize(self.sqlite_path) / (1024 * 1024)  # MB
+            stats["sqlite_size"] = os.path.getsize(self.sqlite_path) / (
+                1024 * 1024
+            )  # MB
 
             conn = sqlite3.connect(self.sqlite_path)
             cursor = conn.cursor()

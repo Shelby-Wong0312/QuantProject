@@ -2,10 +2,8 @@
 Portfolio Management - Handles position tracking, P&L calculation, and trade execution
 """
 
-import numpy as np
-import pandas as pd
 from typing import Dict, List, Optional, Tuple, Any
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 import logging
 
@@ -73,7 +71,10 @@ class Portfolio:
     """
 
     def __init__(
-        self, initial_capital: float = 100000.0, commission: float = 0.001, slippage: float = 0.0005
+        self,
+        initial_capital: float = 100000.0,
+        commission: float = 0.001,
+        slippage: float = 0.0005,
     ):
         """
         Initialize portfolio
@@ -103,7 +104,12 @@ class Portfolio:
         logger.info(f"Portfolio initialized with ${initial_capital:,.2f}")
 
     def execute_trade(
-        self, symbol: str, quantity: float, price: float, signal_type: str, timestamp: datetime
+        self,
+        symbol: str,
+        quantity: float,
+        price: float,
+        signal_type: str,
+        timestamp: datetime,
     ) -> Dict[str, Any]:
         """
         Execute a trade (buy/sell)
@@ -123,7 +129,7 @@ class Portfolio:
             trade_value = abs(quantity * price)
             commission = trade_value * self.commission_rate
             slippage_cost = trade_value * self.slippage_rate
-            total_cost = trade_value + commission + slippage_cost
+            trade_value + commission + slippage_cost
 
             # Apply slippage to price
             if quantity > 0:  # Buying
@@ -145,13 +151,23 @@ class Portfolio:
             if quantity > 0:  # Buy order
                 result.update(
                     self._execute_buy(
-                        symbol, quantity, execution_price, commission, timestamp, signal_type
+                        symbol,
+                        quantity,
+                        execution_price,
+                        commission,
+                        timestamp,
+                        signal_type,
                     )
                 )
             else:  # Sell order
                 result.update(
                     self._execute_sell(
-                        symbol, abs(quantity), execution_price, commission, timestamp, signal_type
+                        symbol,
+                        abs(quantity),
+                        execution_price,
+                        commission,
+                        timestamp,
+                        signal_type,
                     )
                 )
 
@@ -204,7 +220,9 @@ class Portfolio:
             # Average down existing position
             existing_pos = self.positions[symbol]
             total_quantity = existing_pos.quantity + quantity
-            total_value = existing_pos.quantity * existing_pos.entry_price + quantity * price
+            total_value = (
+                existing_pos.quantity * existing_pos.entry_price + quantity * price
+            )
             avg_price = total_value / total_quantity
 
             self.positions[symbol] = Position(
@@ -309,7 +327,9 @@ class Portfolio:
         if symbol in self.positions:
             self.positions[symbol].update_price(new_price)
 
-    def calculate_total_value(self, market_data: Optional[Dict[str, Dict]] = None) -> float:
+    def calculate_total_value(
+        self, market_data: Optional[Dict[str, Dict]] = None
+    ) -> float:
         """
         Calculate total portfolio value
 
@@ -356,7 +376,8 @@ class Portfolio:
                 "market_value": position.get_market_value(),
                 "unrealized_pnl": position.unrealized_pnl,
                 "return_pct": (
-                    (position.current_price - position.entry_price) / position.entry_price
+                    (position.current_price - position.entry_price)
+                    / position.entry_price
                 )
                 * 100,
                 "days_held": (datetime.now() - position.entry_time).days,
@@ -454,7 +475,10 @@ class Portfolio:
         }
 
     def close_all_positions(
-        self, market_data: Dict[str, Dict], timestamp: datetime, reason: str = "Close all"
+        self,
+        market_data: Dict[str, Dict],
+        timestamp: datetime,
+        reason: str = "Close all",
     ) -> List[Dict]:
         """
         Close all open positions
@@ -486,7 +510,9 @@ class Portfolio:
 
                 if result["success"]:
                     closing_trades.append(result)
-                    logger.info(f"Closed position: {symbol} @ ${current_price:.2f} - {reason}")
+                    logger.info(
+                        f"Closed position: {symbol} @ ${current_price:.2f} - {reason}"
+                    )
 
         return closing_trades
 

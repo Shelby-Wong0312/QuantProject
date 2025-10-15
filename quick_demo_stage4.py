@@ -6,7 +6,6 @@ import pandas as pd
 import numpy as np
 import sys
 import os
-from datetime import datetime, timedelta
 
 # 添加項目路徑
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -46,17 +45,23 @@ def test_strategy_creation():
     print("=" * 40)
 
     try:
-        from src.strategies.traditional.momentum_strategy import create_momentum_strategy
+        from src.strategies.traditional.momentum_strategy import (
+            create_momentum_strategy,
+        )
 
         momentum = create_momentum_strategy(["TEST"])
         print("SUCCESS: Momentum Strategy created successfully")
         print(f"  Name: {momentum.name}")
-        print(f"  Parameters: RSI period={momentum.rsi_period}, MACD fast={momentum.macd_fast}")
+        print(
+            f"  Parameters: RSI period={momentum.rsi_period}, MACD fast={momentum.macd_fast}"
+        )
     except Exception as e:
         print(f"FAILED: Momentum Strategy failed: {e}")
 
     try:
-        from src.strategies.traditional.mean_reversion import create_mean_reversion_strategy
+        from src.strategies.traditional.mean_reversion import (
+            create_mean_reversion_strategy,
+        )
 
         mean_rev = create_mean_reversion_strategy(["TEST"])
         print("SUCCESS: Mean Reversion Strategy created successfully")
@@ -68,7 +73,9 @@ def test_strategy_creation():
         print(f"FAILED: Mean Reversion Strategy failed: {e}")
 
     try:
-        from src.strategies.traditional.breakout_strategy import create_breakout_strategy
+        from src.strategies.traditional.breakout_strategy import (
+            create_breakout_strategy,
+        )
 
         breakout = create_breakout_strategy(["TEST"])
         print("SUCCESS: Breakout Strategy created successfully")
@@ -80,12 +87,16 @@ def test_strategy_creation():
         print(f"FAILED: Breakout Strategy failed: {e}")
 
     try:
-        from src.strategies.traditional.trend_following import create_trend_following_strategy
+        from src.strategies.traditional.trend_following import (
+            create_trend_following_strategy,
+        )
 
         trend = create_trend_following_strategy(["TEST"])
         print("SUCCESS: Trend Following Strategy created successfully")
         print(f"  Name: {trend.name}")
-        print(f"  Parameters: MA periods={trend.ma_short}/{trend.ma_medium}/{trend.ma_long}")
+        print(
+            f"  Parameters: MA periods={trend.ma_short}/{trend.ma_medium}/{trend.ma_long}"
+        )
     except Exception as e:
         print(f"FAILED: Trend Following Strategy failed: {e}")
 
@@ -103,7 +114,9 @@ def test_indicators():
         # 測試RSI
         rsi_indicator = RSI(period=14)
         rsi = rsi_indicator.calculate(data)
-        print(f"SUCCESS: RSI calculated: {len(rsi)} values, range {rsi.min():.1f}-{rsi.max():.1f}")
+        print(
+            f"SUCCESS: RSI calculated: {len(rsi)} values, range {rsi.min():.1f}-{rsi.max():.1f}"
+        )
 
         # 測試MACD
         macd_indicator = MACD(fast_period=12, slow_period=26, signal_period=9)
@@ -128,7 +141,9 @@ def test_signal_generation():
 
     # 測試動量策略信號生成
     try:
-        from src.strategies.traditional.momentum_strategy import create_momentum_strategy
+        from src.strategies.traditional.momentum_strategy import (
+            create_momentum_strategy,
+        )
 
         momentum = create_momentum_strategy(["TEST"])
 
@@ -150,7 +165,9 @@ def test_ml_strategies():
     print("=" * 40)
 
     try:
-        from src.strategies.ml.random_forest_strategy import create_random_forest_strategy
+        from src.strategies.ml.random_forest_strategy import (
+            create_random_forest_strategy,
+        )
 
         rf_strategy = create_random_forest_strategy(["TEST"])
         print("SUCCESS: Random Forest Strategy created successfully")
@@ -159,7 +176,9 @@ def test_ml_strategies():
             f"  Parameters: n_estimators={rf_strategy.n_estimators}, confidence_threshold={rf_strategy.confidence_threshold}"
         )
     except ImportError:
-        print("FAILED: Random Forest Strategy requires scikit-learn (pip install scikit-learn)")
+        print(
+            "FAILED: Random Forest Strategy requires scikit-learn (pip install scikit-learn)"
+        )
     except Exception as e:
         print(f"FAILED: Random Forest Strategy failed: {e}")
 

@@ -40,7 +40,12 @@ class SignalEvent(Event):
     quantity: float
 
     def __init__(
-        self, symbol: str, timestamp: datetime, direction: str, strategy_id: str, quantity: float
+        self,
+        symbol: str,
+        timestamp: datetime,
+        direction: str,
+        strategy_id: str,
+        quantity: float,
     ):
         super().__init__(EventType.SIGNAL)
         self.symbol = symbol
@@ -57,7 +62,9 @@ class OrderEvent(Event):
     direction: str
     quantity: float
 
-    def __init__(self, symbol: str, timestamp: datetime, direction: str, quantity: float):
+    def __init__(
+        self, symbol: str, timestamp: datetime, direction: str, quantity: float
+    ):
         super().__init__(EventType.ORDER)
         self.symbol = symbol
         self.timestamp = timestamp

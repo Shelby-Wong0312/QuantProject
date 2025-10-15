@@ -8,10 +8,6 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import pandas as pd
-import numpy as np
-import json
-from datetime import datetime
 from src.performance_calculator import PerformanceCalculator
 
 
@@ -35,8 +31,8 @@ class ProfessionalReportGenerator:
         perf_data = self.calculator.generate_performance_summary()
 
         # Extract metrics
-        strategy = perf_data["strategy_metrics"]
-        benchmark = perf_data["benchmark_metrics"]
+        perf_data["strategy_metrics"]
+        perf_data["benchmark_metrics"]
 
         # Generate HTML
         html_content = """<!DOCTYPE html>
@@ -1294,7 +1290,9 @@ class ProfessionalReportGenerator:
 </html>"""
 
         # Save report
-        report_path = os.path.join(self.output_dir, "professional_investment_report.html")
+        report_path = os.path.join(
+            self.output_dir, "professional_investment_report.html"
+        )
         with open(report_path, "w", encoding="utf-8") as f:
             f.write(html_content)
 
@@ -1307,9 +1305,8 @@ class ProfessionalReportGenerator:
         """Generate HTML for stock list"""
         html = ""
         for stock in stocks[:5]:
-            return_val = stock.get("total_return", 0)
-            return_class = "positive" if return_val > 0 else "negative"
-            symbol = stock.get("symbol", "N/A")
+            stock.get("total_return", 0)
+            stock.get("symbol", "N/A")
             html += """
                 <div class="stock-item">
                     <span class="stock-symbol">{symbol}</span>
@@ -1324,8 +1321,8 @@ class ProfessionalReportGenerator:
         """Generate HTML for most traded stocks"""
         html = ""
         for stock in stocks[:5]:
-            symbol = stock.get("symbol", "N/A")
-            volume = stock.get("avg_volume", 0)
+            stock.get("symbol", "N/A")
+            stock.get("avg_volume", 0)
             html += """
                 <div class="stock-item">
                     <span class="stock-symbol">{symbol}</span>

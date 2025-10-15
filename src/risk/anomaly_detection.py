@@ -6,8 +6,8 @@ Cloud Quant - Task Q-603
 
 import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple
+from datetime import datetime
+from typing import Dict, List
 from dataclasses import dataclass
 from enum import Enum
 import logging
@@ -63,7 +63,10 @@ class MarketAnomalyDetector:
     """
 
     def __init__(
-        self, contamination: float = 0.01, sensitivity: float = 0.5, lookback_period: int = 100
+        self,
+        contamination: float = 0.01,
+        sensitivity: float = 0.5,
+        lookback_period: int = 100,
     ):
         """
         Initialize anomaly detector
@@ -79,7 +82,10 @@ class MarketAnomalyDetector:
 
         # Initialize detectors
         self.isolation_forest = IsolationForest(
-            contamination=contamination, n_estimators=100, max_samples="auto", random_state=42
+            contamination=contamination,
+            n_estimators=100,
+            max_samples="auto",
+            random_state=42,
         )
 
         self.dbscan = DBSCAN(eps=0.3, min_samples=5)
@@ -127,7 +133,7 @@ class MarketAnomalyDetector:
 
         # Technical indicators
         sma_20 = data["close"].rolling(20).mean()
-        sma_50 = data["close"].rolling(50).mean()
+        data["close"].rolling(50).mean()
         price_to_sma20 = data["close"].iloc[-1] / sma_20.iloc[-1]
         features.append(price_to_sma20)
 
@@ -226,10 +232,14 @@ class MarketAnomalyDetector:
         # Volatility jump detection
         volatility = returns.rolling(20).std()
         volatility_ratio = volatility.iloc[-1] / volatility.mean()
-        anomalies["volatility_jump"] = volatility_ratio > self.thresholds["volatility_ratio"]
+        anomalies["volatility_jump"] = (
+            volatility_ratio > self.thresholds["volatility_ratio"]
+        )
 
         # Flash crash detection
-        intraday_drop = (data["low"].iloc[-1] - data["open"].iloc[-1]) / data["open"].iloc[-1]
+        intraday_drop = (data["low"].iloc[-1] - data["open"].iloc[-1]) / data[
+            "open"
+        ].iloc[-1]
         anomalies["flash_crash"] = intraday_drop < -0.03  # 3% intraday drop
 
         return anomalies
@@ -297,7 +307,9 @@ class MarketAnomalyDetector:
         else:
             return AnomalyType.CORRELATION_BREAK
 
-    def _generate_description(self, anomaly_type: AnomalyType, data: pd.DataFrame) -> str:
+    def _generate_description(
+        self, anomaly_type: AnomalyType, data: pd.DataFrame
+    ) -> str:
         """
         Generate anomaly description
 
@@ -341,7 +353,8 @@ class MarketAnomalyDetector:
             "volatility": returns.std(),
             "high": data["high"].iloc[-1],
             "low": data["low"].iloc[-1],
-            "spread": (data["high"].iloc[-1] - data["low"].iloc[-1]) / data["close"].iloc[-1],
+            "spread": (data["high"].iloc[-1] - data["low"].iloc[-1])
+            / data["close"].iloc[-1],
         }
 
     def train_model(self, historical_data: pd.DataFrame):
@@ -388,7 +401,12 @@ class MarketAnomalyDetector:
             Report dictionary
         """
         if not self.anomaly_history:
-            return {"total_anomalies": 0, "by_type": {}, "by_severity": {}, "recent_anomalies": []}
+            return {
+                "total_anomalies": 0,
+                "by_type": {},
+                "by_severity": {},
+                "recent_anomalies": [],
+            }
 
         # Count by type
         by_type = {}
@@ -404,7 +422,9 @@ class MarketAnomalyDetector:
 
         # Recent anomalies
         recent = (
-            self.anomaly_history[-10:] if len(self.anomaly_history) > 10 else self.anomaly_history
+            self.anomaly_history[-10:]
+            if len(self.anomaly_history) > 10
+            else self.anomaly_history
         )
 
         return {
@@ -422,7 +442,8 @@ class MarketAnomalyDetector:
                 }
                 for a in recent
             ],
-            "detection_rate": len(self.anomaly_history) / max(1, len(self.detection_cache)),
+            "detection_rate": len(self.anomaly_history)
+            / max(1, len(self.detection_cache)),
         }
 
 

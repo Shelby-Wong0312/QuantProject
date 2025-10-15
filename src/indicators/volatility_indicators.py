@@ -4,7 +4,6 @@ Volatility Indicators - Bollinger Bands, ATR, Keltner Channel, Donchian Channel
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Tuple
 from .base_indicator import BaseIndicator
 import logging
 
@@ -83,7 +82,9 @@ class BollingerBands(BaseIndicator):
         signals["hold"] = ~(signals["buy"] | signals["sell"])
 
         # Squeeze detection (low volatility)
-        signals["squeeze"] = bb_data["band_width"] < bb_data["band_width"].rolling(100).mean()
+        signals["squeeze"] = (
+            bb_data["band_width"] < bb_data["band_width"].rolling(100).mean()
+        )
 
         return signals
 
@@ -136,11 +137,17 @@ class ATR(BaseIndicator):
 
         # Volatility expansion signal (potential breakout)
         signals["volatility_expansion"] = (
-            (atr > atr.shift(1)) & (atr.shift(1) > atr.shift(2)) & (atr.shift(2) > atr.shift(3))
+            (atr > atr.shift(1))
+            & (atr.shift(1) > atr.shift(2))
+            & (atr.shift(2) > atr.shift(3))
         )
 
-        signals["buy"] = signals["volatility_expansion"] & (data["close"] > data["close"].shift(1))
-        signals["sell"] = signals["volatility_expansion"] & (data["close"] < data["close"].shift(1))
+        signals["buy"] = signals["volatility_expansion"] & (
+            data["close"] > data["close"].shift(1)
+        )
+        signals["sell"] = signals["volatility_expansion"] & (
+            data["close"] < data["close"].shift(1)
+        )
         signals["hold"] = ~(signals["buy"] | signals["sell"])
 
         return signals

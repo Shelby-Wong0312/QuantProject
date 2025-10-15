@@ -5,7 +5,7 @@ System Integration Tests
 import unittest
 import asyncio
 from unittest.mock import Mock, patch, AsyncMock
-from datetime import datetime, timedelta
+from datetime import datetime
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -32,7 +32,10 @@ class TestMainController(unittest.TestCase):
             "risk_limit": 0.02,
             "data_lookback_days": 30,
             "prediction_horizons": [1, 5],
-            "model_paths": {"lstm": "./test_models/lstm.h5", "rl_agent": "./test_models/rl_agent"},
+            "model_paths": {
+                "lstm": "./test_models/lstm.h5",
+                "rl_agent": "./test_models/rl_agent",
+            },
         }
 
         # Create controller with test config
@@ -43,7 +46,9 @@ class TestMainController(unittest.TestCase):
     @patch("src.integration.main_controller.LSTMPredictor")
     @patch("src.integration.main_controller.FinBERTAnalyzer")
     @patch("src.integration.main_controller.PPOAgent")
-    async def test_initialize_components(self, mock_ppo, mock_finbert, mock_lstm, mock_client):
+    async def test_initialize_components(
+        self, mock_ppo, mock_finbert, mock_lstm, mock_client
+    ):
         """Test component initialization"""
         # Mock client connection
         mock_client_instance = AsyncMock()
@@ -72,16 +77,29 @@ class TestMainController(unittest.TestCase):
         self.controller.rl_agent = Mock()
 
         # Mock data
-        market_data = pd.DataFrame({"close": [100, 101, 102], "volume": [1000, 1100, 1200]})
+        market_data = pd.DataFrame(
+            {"close": [100, 101, 102], "volume": [1000, 1100, 1200]}
+        )
 
         self.controller.data_pipeline.prepare_features.return_value = market_data
-        self.controller.lstm_predictor.predict.return_value = 0.02  # 2% predicted return
-        self.controller.rl_agent.predict.return_value = (1, 0.8)  # BUY action with 80% confidence
+        self.controller.lstm_predictor.predict.return_value = (
+            0.02  # 2% predicted return
+        )
+        self.controller.rl_agent.predict.return_value = (
+            1,
+            0.8,
+        )  # BUY action with 80% confidence
 
         # Mock async methods
-        self.controller._get_lstm_predictions = AsyncMock(return_value={"horizon_1d": 0.02})
-        self.controller._get_sentiment_analysis = AsyncMock(return_value={"overall_sentiment": 0.5})
-        self.controller._execute_trade = AsyncMock(return_value={"success": True, "pnl": 100})
+        self.controller._get_lstm_predictions = AsyncMock(
+            return_value={"horizon_1d": 0.02}
+        )
+        self.controller._get_sentiment_analysis = AsyncMock(
+            return_value={"overall_sentiment": 0.5}
+        )
+        self.controller._execute_trade = AsyncMock(
+            return_value={"success": True, "pnl": 100}
+        )
 
         # Process signal
         await self.controller._process_trading_signal(
@@ -166,7 +184,9 @@ class TestDataPipeline(unittest.TestCase):
 
         # Get historical data
         result = await self.pipeline.get_historical_data(
-            symbol="AAPL", start_date=datetime(2024, 1, 1), end_date=datetime(2024, 1, 3)
+            symbol="AAPL",
+            start_date=datetime(2024, 1, 1),
+            end_date=datetime(2024, 1, 3),
         )
 
         # Verify result
@@ -298,27 +318,42 @@ class TestHealthMonitor(unittest.TestCase):
 
         # Test all healthy
         component_health = {
-            "comp1": ComponentHealth("comp1", HealthStatus.HEALTHY, datetime.now(), "OK", {}),
-            "comp2": ComponentHealth("comp2", HealthStatus.HEALTHY, datetime.now(), "OK", {}),
+            "comp1": ComponentHealth(
+                "comp1", HealthStatus.HEALTHY, datetime.now(), "OK", {}
+            ),
+            "comp2": ComponentHealth(
+                "comp2", HealthStatus.HEALTHY, datetime.now(), "OK", {}
+            ),
         }
-        resource_report = {"cpu": {"status": "healthy"}, "memory": {"status": "healthy"}}
+        resource_report = {
+            "cpu": {"status": "healthy"},
+            "memory": {"status": "healthy"},
+        }
 
-        status = self.monitor._determine_overall_status(component_health, resource_report)
+        status = self.monitor._determine_overall_status(
+            component_health, resource_report
+        )
         self.assertEqual(status, HealthStatus.HEALTHY)
 
         # Test with warning
         component_health["comp1"].status = HealthStatus.WARNING
-        status = self.monitor._determine_overall_status(component_health, resource_report)
+        status = self.monitor._determine_overall_status(
+            component_health, resource_report
+        )
         self.assertEqual(status, HealthStatus.WARNING)
 
         # Test with critical
         component_health["comp2"].status = HealthStatus.CRITICAL
-        status = self.monitor._determine_overall_status(component_health, resource_report)
+        status = self.monitor._determine_overall_status(
+            component_health, resource_report
+        )
         self.assertEqual(status, HealthStatus.CRITICAL)
 
         # Test with down
         component_health["comp1"].status = HealthStatus.DOWN
-        status = self.monitor._determine_overall_status(component_health, resource_report)
+        status = self.monitor._determine_overall_status(
+            component_health, resource_report
+        )
         self.assertEqual(status, HealthStatus.DOWN)
 
 
@@ -329,7 +364,9 @@ class TestIntegration(unittest.TestCase):
     @patch("src.integration.main_controller.LSTMPredictor")
     @patch("src.integration.main_controller.FinBERTAnalyzer")
     @patch("src.integration.main_controller.PPOAgent")
-    async def test_full_system_flow(self, mock_ppo, mock_finbert, mock_lstm, mock_client):
+    async def test_full_system_flow(
+        self, mock_ppo, mock_finbert, mock_lstm, mock_client
+    ):
         """Test full system integration flow"""
         # Create controller
         controller = MainController()
@@ -356,11 +393,15 @@ class TestIntegration(unittest.TestCase):
         await controller.initialize_components()
 
         # Mock data pipeline method
-        controller.data_pipeline.get_historical_data = AsyncMock(return_value=historical_data)
+        controller.data_pipeline.get_historical_data = AsyncMock(
+            return_value=historical_data
+        )
 
         # Mock predictions
         controller._get_lstm_predictions = AsyncMock(return_value={"horizon_1d": 0.02})
-        controller._get_sentiment_analysis = AsyncMock(return_value={"overall_sentiment": 0.5})
+        controller._get_sentiment_analysis = AsyncMock(
+            return_value={"overall_sentiment": 0.5}
+        )
 
         # Mock RL agent
         mock_ppo_instance = controller.rl_agent

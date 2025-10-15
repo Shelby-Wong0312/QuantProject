@@ -5,9 +5,8 @@ Alpha Generation Page - Main visualization dashboard
 from dash import html, dcc, callback, Input, Output
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
-import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime
 import logging
 
 # Import components
@@ -35,7 +34,9 @@ def create_alpha_page():
                     dbc.Col(
                         [
                             html.H2("Alpha 信號生成儀表板", className="mb-4"),
-                            html.P("整合 LSTM 預測、FinBERT 情緒分析與技術指標的智能交易信號"),
+                            html.P(
+                                "整合 LSTM 預測、FinBERT 情緒分析與技術指標的智能交易信號"
+                            ),
                         ]
                     )
                 ]
@@ -123,7 +124,10 @@ def create_alpha_page():
                                                                         "label": "實時",
                                                                         "value": 1000,
                                                                     },
-                                                                    {"label": "5秒", "value": 5000},
+                                                                    {
+                                                                        "label": "5秒",
+                                                                        "value": 5000,
+                                                                    },
                                                                     {
                                                                         "label": "30秒",
                                                                         "value": 30000,
@@ -184,7 +188,8 @@ def create_alpha_page():
                                     dbc.CardBody(
                                         [
                                             dcc.Graph(
-                                                id="candlestick-chart", style={"height": "400px"}
+                                                id="candlestick-chart",
+                                                style={"height": "400px"},
                                             )
                                         ]
                                     ),
@@ -227,7 +232,9 @@ def create_alpha_page():
                                         [
                                             html.Div(
                                                 id="signal-summary",
-                                                children=[dbc.Alert("載入中...", color="info")],
+                                                children=[
+                                                    dbc.Alert("載入中...", color="info")
+                                                ],
                                             )
                                         ]
                                     ),
@@ -262,7 +269,9 @@ def create_alpha_page():
                 ]
             ),
             # Auto-refresh interval component
-            dcc.Interval(id="interval-component", interval=5000, n_intervals=0),  # milliseconds
+            dcc.Interval(
+                id="interval-component", interval=5000, n_intervals=0
+            ),  # milliseconds
             # Hidden div to store data
             html.Div(id="data-store", style={"display": "none"}),
         ],
@@ -308,7 +317,13 @@ def update_dashboard(symbol, timeframe, n_intervals, n_clicks):
         # Signal summary
         signal_summary = create_signal_summary(symbol)
 
-        return candlestick_fig, lstm_fig, sentiment_content, indicators_fig, signal_summary
+        return (
+            candlestick_fig,
+            lstm_fig,
+            sentiment_content,
+            indicators_fig,
+            signal_summary,
+        )
 
     except Exception as e:
         logger.error(f"Error updating dashboard: {str(e)}")
@@ -368,7 +383,9 @@ def create_signal_summary(symbol):
                                     dbc.Row(
                                         [
                                             dbc.Col("情緒分析:", width=6),
-                                            dbc.Col(html.Strong(sentiment_signal), width=6),
+                                            dbc.Col(
+                                                html.Strong(sentiment_signal), width=6
+                                            ),
                                         ]
                                     )
                                 ]
@@ -378,7 +395,9 @@ def create_signal_summary(symbol):
                                     dbc.Row(
                                         [
                                             dbc.Col("技術指標:", width=6),
-                                            dbc.Col(html.Strong(technical_signal), width=6),
+                                            dbc.Col(
+                                                html.Strong(technical_signal), width=6
+                                            ),
                                         ]
                                     )
                                 ]

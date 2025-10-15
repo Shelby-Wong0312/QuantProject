@@ -4,9 +4,8 @@ Data Cleaning Pipeline for Financial Data
 
 import pandas as pd
 import numpy as np
-from typing import Optional, List, Dict, Any, Union
+from typing import Optional, Dict, Any
 import logging
-from datetime import datetime, timedelta
 
 
 logger = logging.getLogger(__name__)
@@ -25,7 +24,9 @@ class DataCleaner:
             config: Optional configuration dictionary
         """
         self.config = config or {}
-        self.missing_threshold = self.config.get("missing_threshold", 0.1)  # 10% max missing
+        self.missing_threshold = self.config.get(
+            "missing_threshold", 0.1
+        )  # 10% max missing
         self.outlier_std = self.config.get("outlier_std", 5)  # 5 standard deviations
 
     def clean_ohlcv_data(
@@ -57,7 +58,9 @@ class DataCleaner:
             elif "date" in df.columns:
                 df.set_index("date", inplace=True)
             else:
-                raise ValueError("DataFrame must have datetime index or datetime/date column")
+                raise ValueError(
+                    "DataFrame must have datetime index or datetime/date column"
+                )
 
         # Sort by datetime
         df.sort_index(inplace=True)
@@ -132,7 +135,9 @@ class DataCleaner:
 
         return df
 
-    def _handle_missing_values(self, df: pd.DataFrame, forward_fill_limit: int = 5) -> pd.DataFrame:
+    def _handle_missing_values(
+        self, df: pd.DataFrame, forward_fill_limit: int = 5
+    ) -> pd.DataFrame:
         """
         Handle missing values in the dataframe
 
@@ -162,7 +167,9 @@ class DataCleaner:
 
         return df
 
-    def _remove_outliers(self, df: pd.DataFrame, method: str = "zscore") -> pd.DataFrame:
+    def _remove_outliers(
+        self, df: pd.DataFrame, method: str = "zscore"
+    ) -> pd.DataFrame:
         """
         Remove outliers from price data
 
@@ -245,7 +252,9 @@ class DataCleaner:
             }
 
         # Apply aggregation rules for existing columns
-        agg_dict = {col: rule for col, rule in aggregation_rules.items() if col in df.columns}
+        agg_dict = {
+            col: rule for col, rule in aggregation_rules.items() if col in df.columns
+        }
 
         # Resample
         resampled = df.resample(target_frequency).agg(agg_dict)

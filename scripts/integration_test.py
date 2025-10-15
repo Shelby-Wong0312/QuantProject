@@ -10,9 +10,8 @@ import time
 import json
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
 import logging
 
 # Add project root to path
@@ -114,7 +113,9 @@ class SystemIntegrationTester:
         dashboard_path = Path("dashboard/main_dashboard.py")
         self.components["dashboard"] = dashboard_path.exists()
         status = "[OK]" if self.components["dashboard"] else "[FAIL]"
-        print(f"{status} Dashboard: {'Available' if dashboard_path.exists() else 'Not found'}")
+        print(
+            f"{status} Dashboard: {'Available' if dashboard_path.exists() else 'Not found'}"
+        )
 
         # Check Anomaly Detection
         try:
@@ -147,9 +148,11 @@ class SystemIntegrationTester:
         try:
             from src.data.realtime_collector import RealtimeDataCollector
 
-            collector = RealtimeDataCollector(["AAPL", "GOOGL", "MSFT"])
+            RealtimeDataCollector(["AAPL", "GOOGL", "MSFT"])
             # Simulate data collection
-            workflow_steps.append(("Data Collection", True, "Data collected successfully"))
+            workflow_steps.append(
+                ("Data Collection", True, "Data collected successfully")
+            )
             print("   [OK] Data collection initialized")
         except Exception as e:
             workflow_steps.append(("Data Collection", False, str(e)))
@@ -163,8 +166,10 @@ class SystemIntegrationTester:
             optimizer = MPTOptimizer()
             # Generate test data
             test_returns = pd.DataFrame(np.random.randn(100, 3) * 0.01)
-            weights = optimizer.optimize(test_returns.values)
-            workflow_steps.append(("Portfolio Optimization", True, "Optimal weights calculated"))
+            optimizer.optimize(test_returns.values)
+            workflow_steps.append(
+                ("Portfolio Optimization", True, "Optimal weights calculated")
+            )
             print("   [OK] Portfolio optimized")
         except Exception as e:
             workflow_steps.append(("Portfolio Optimization", False, str(e)))
@@ -176,7 +181,7 @@ class SystemIntegrationTester:
             from src.risk.risk_manager_enhanced import EnhancedRiskManager
 
             risk_manager = EnhancedRiskManager(initial_capital=100000)
-            risk_check = risk_manager.check_trade_risk("AAPL", 100, 150.0, "BUY")
+            risk_manager.check_trade_risk("AAPL", 100, 150.0, "BUY")
             workflow_steps.append(("Risk Management", True, "Risk checks passed"))
             print("   [OK] Risk management active")
         except Exception as e:
@@ -190,7 +195,7 @@ class SystemIntegrationTester:
 
             simulator = PaperTradingSimulator(initial_balance=100000)
             # Execute test trade
-            result = await simulator.execute_trade("AAPL", 10, "BUY")
+            await simulator.execute_trade("AAPL", 10, "BUY")
             workflow_steps.append(("Paper Trading", True, "Trade executed"))
             print("   [OK] Paper trading functional")
         except Exception as e:
@@ -202,7 +207,7 @@ class SystemIntegrationTester:
         try:
             from src.risk.anomaly_detection import MarketAnomalyDetector
 
-            detector = MarketAnomalyDetector()
+            MarketAnomalyDetector()
             # Test with synthetic data
             workflow_steps.append(("Anomaly Detection", True, "Monitoring active"))
             print("   [OK] Anomaly detection operational")
@@ -223,7 +228,10 @@ class SystemIntegrationTester:
 
         print(f"\nSuccess Rate: {success_rate:.1%} ({successful}/{total})")
 
-        self.test_results["workflow"] = {"success_rate": success_rate, "steps": workflow_steps}
+        self.test_results["workflow"] = {
+            "success_rate": success_rate,
+            "steps": workflow_steps,
+        }
 
         return success_rate >= 0.8
 
@@ -241,7 +249,7 @@ class SystemIntegrationTester:
         try:
             # Simulate data processing
             pd.DataFrame(np.random.randn(10000, 10))
-            processed = data.rolling(20).mean()
+            data.rolling(20).mean()
             elapsed = time.time() - start
             performance_metrics["data_processing"] = {
                 "time": elapsed,
@@ -265,7 +273,7 @@ class SystemIntegrationTester:
             X = np.random.randn(1000, 20)
             # Simple linear model simulation
             W = np.random.randn(20, 1)
-            predictions = X @ W
+            X @ W
             elapsed = time.time() - start
             performance_metrics["model_inference"] = {
                 "time": elapsed,
@@ -290,7 +298,9 @@ class SystemIntegrationTester:
             stop_loss = DynamicStopLoss()
             # Test stop loss calculation
             for _ in range(100):
-                stop_loss.calculate_atr_stop("AAPL", 150.0, pd.Series(np.random.randn(20)))
+                stop_loss.calculate_atr_stop(
+                    "AAPL", 150.0, pd.Series(np.random.randn(20))
+                )
             elapsed = time.time() - start
             performance_metrics["risk_calculation"] = {
                 "time": elapsed,
@@ -361,7 +371,9 @@ class SystemIntegrationTester:
             )
             print("   [OK] Missing data handled")
         except Exception as e:
-            recovery_tests.append({"test": "Missing Data", "passed": False, "message": str(e)})
+            recovery_tests.append(
+                {"test": "Missing Data", "passed": False, "message": str(e)}
+            )
             print(f"   [FAIL] {e}")
 
         # Test 2: Circuit Breaker Activation
@@ -383,7 +395,9 @@ class SystemIntegrationTester:
             )
             print("   [OK] Circuit breaker functional")
         except Exception as e:
-            recovery_tests.append({"test": "Circuit Breaker", "passed": False, "message": str(e)})
+            recovery_tests.append(
+                {"test": "Circuit Breaker", "passed": False, "message": str(e)}
+            )
             print(f"   [FAIL] {e}")
 
         # Test 3: Error Recovery
@@ -395,11 +409,10 @@ class SystemIntegrationTester:
 
             try:
                 # Intentionally cause an error
-                result = 1 / 0
+                pass
             except ZeroDivisionError:
                 error_occurred = True
                 # Recover with default value
-                result = 0
                 recovered = True
 
             recovery_tests.append(
@@ -411,7 +424,9 @@ class SystemIntegrationTester:
             )
             print("   [OK] Error recovery successful")
         except Exception as e:
-            recovery_tests.append({"test": "Error Recovery", "passed": False, "message": str(e)})
+            recovery_tests.append(
+                {"test": "Error Recovery", "passed": False, "message": str(e)}
+            )
             print(f"   [FAIL] {e}")
 
         # Calculate recovery score
@@ -427,7 +442,10 @@ class SystemIntegrationTester:
 
         print(f"\nRecovery Score: {recovery_score:.1%}")
 
-        self.test_results["fault_recovery"] = {"score": recovery_score, "tests": recovery_tests}
+        self.test_results["fault_recovery"] = {
+            "score": recovery_score,
+            "tests": recovery_tests,
+        }
 
         return recovery_score >= 0.7
 

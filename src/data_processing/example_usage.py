@@ -4,7 +4,6 @@ Example usage of the data processing module
 
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
 import logging
 
 # Import all components
@@ -32,10 +31,15 @@ def create_sample_data():
     df = pd.DataFrame(index=dates)
     df["close"] = close_prices
     df["open"] = (
-        df["close"].shift(1).fillna(df["close"].iloc[0]) + np.random.randn(len(dates)) * 0.1
+        df["close"].shift(1).fillna(df["close"].iloc[0])
+        + np.random.randn(len(dates)) * 0.1
     )
-    df["high"] = df[["open", "close"]].max(axis=1) + abs(np.random.randn(len(dates)) * 0.2)
-    df["low"] = df[["open", "close"]].min(axis=1) - abs(np.random.randn(len(dates)) * 0.2)
+    df["high"] = df[["open", "close"]].max(axis=1) + abs(
+        np.random.randn(len(dates)) * 0.2
+    )
+    df["low"] = df[["open", "close"]].min(axis=1) - abs(
+        np.random.randn(len(dates)) * 0.2
+    )
     df["volume"] = np.random.randint(1000, 10000, len(dates))
 
     # Add some data quality issues for demonstration
@@ -104,7 +108,9 @@ def example_data_cleaning():
     cleaner = DataCleaner()
 
     # Clean data
-    clean_data = cleaner.clean_ohlcv_data(raw_data, remove_weekends=True, forward_fill_limit=5)
+    clean_data = cleaner.clean_ohlcv_data(
+        raw_data, remove_weekends=True, forward_fill_limit=5
+    )
 
     print(f"Original rows: {len(raw_data)}")
     print(f"Cleaned rows: {len(clean_data)}")
@@ -129,7 +135,9 @@ def example_technical_indicators():
     # Calculate individual indicators
     rsi = TechnicalIndicators.rsi(clean_data["close"])
     macd, signal, histogram = TechnicalIndicators.macd(clean_data["close"])
-    bb_upper, bb_middle, bb_lower = TechnicalIndicators.bollinger_bands(clean_data["close"])
+    bb_upper, bb_middle, bb_lower = TechnicalIndicators.bollinger_bands(
+        clean_data["close"]
+    )
 
     print(f"RSI - Mean: {rsi.mean():.2f}, Std: {rsi.std():.2f}")
     print(f"MACD - Mean: {macd.mean():.2f}, Std: {macd.std():.2f}")
@@ -181,7 +189,9 @@ def example_feature_engineering():
 
     # Scale features
     feature_cols = [
-        col for col in all_features.columns if col not in ["open", "high", "low", "close", "volume"]
+        col
+        for col in all_features.columns
+        if col not in ["open", "high", "low", "close", "volume"]
     ]
     scaled_features = engineer.scale_features(all_features[feature_cols])
 

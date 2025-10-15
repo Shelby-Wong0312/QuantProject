@@ -1,5 +1,4 @@
 from pathlib import Path
-import numpy as np
 
 path = Path("rl3/eval/rollout.py")
 text = path.read_text(encoding="utf-8")

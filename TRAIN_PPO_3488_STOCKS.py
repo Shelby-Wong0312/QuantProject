@@ -6,7 +6,6 @@ Full-scale training with 15 years of data
 """
 
 import os
-import sys
 import json
 import torch
 import torch.nn as nn
@@ -14,7 +13,7 @@ import torch.optim as optim
 import numpy as np
 import pandas as pd
 import yfinance as yf
-from datetime import datetime, timedelta
+from datetime import datetime
 from tqdm import tqdm
 import warnings
 
@@ -80,7 +79,9 @@ class EnhancedPPONetwork(nn.Module):
         )
 
         # Critic head
-        self.critic = nn.Sequential(nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1))
+        self.critic = nn.Sequential(
+            nn.Linear(hidden_dim, 64), nn.ReLU(), nn.Linear(64, 1)
+        )
 
         # Initialize weights
         self.apply(self._init_weights)
@@ -184,7 +185,8 @@ def extract_features(df, idx, window=50):
                 np.std(returns),
                 returns[-1],
                 (prices[-1] - prices[0]) / prices[0],
-                (prices[-1] - np.min(prices)) / (np.max(prices) - np.min(prices) + 1e-8),
+                (prices[-1] - np.min(prices))
+                / (np.max(prices) - np.min(prices) + 1e-8),
             ]
         )
 
@@ -198,7 +200,10 @@ def extract_features(df, idx, window=50):
 
         # Volume features
         features.extend(
-            [np.mean(volumes) / (np.max(volumes) + 1e-8), volumes[-1] / (np.mean(volumes) + 1e-8)]
+            [
+                np.mean(volumes) / (np.max(volumes) + 1e-8),
+                volumes[-1] / (np.mean(volumes) + 1e-8),
+            ]
         )
 
         # RSI
@@ -287,7 +292,9 @@ def train_ppo(network, optimizer, data, num_episodes=1000):
         if episode % 100 == 0 and episode > 0:
             avg_reward = np.mean(episode_rewards[-100:])
             avg_loss = np.mean(losses[-100:])
-            print(f"\nEpisode {episode}: Avg Reward={avg_reward:.2f}, Avg Loss={avg_loss:.4f}")
+            print(
+                f"\nEpisode {episode}: Avg Reward={avg_reward:.2f}, Avg Loss={avg_loss:.4f}"
+            )
 
     return episode_rewards, losses
 

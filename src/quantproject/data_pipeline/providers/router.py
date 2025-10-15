@@ -84,7 +84,9 @@ def fetch_bars(
             ordered = df.sort_index()
             ordered = ordered[~ordered.index.duplicated(keep="last")]
             results[symbol] = (
-                ordered[_COLS].copy() if all(col in ordered for col in _COLS) else ordered.copy()
+                ordered[_COLS].copy()
+                if all(col in ordered for col in _COLS)
+                else ordered.copy()
             )
             break
 

@@ -6,9 +6,8 @@ Capital.com API Connection Test
 import requests
 import json
 import os
-from datetime import datetime, timedelta
-from typing import Dict, Optional, List
-import time
+from datetime import datetime
+from typing import Dict, Optional
 
 
 class CapitalComAPITester:
@@ -29,7 +28,10 @@ class CapitalComAPITester:
 
         self.session_token = None
         self.cst = None
-        self.headers = {"Content-Type": "application/json", "X-CAP-API-KEY": self.api_key}
+        self.headers = {
+            "Content-Type": "application/json",
+            "X-CAP-API-KEY": self.api_key,
+        }
 
     def test_connection(self) -> Dict:
         """測試基本連接"""
@@ -123,7 +125,9 @@ class CapitalComAPITester:
             "total_tests": total_tests,
             "passed": passed_tests,
             "failed": total_tests - passed_tests,
-            "success_rate": f"{(passed_tests/total_tests*100):.1f}%" if total_tests > 0 else "0%",
+            "success_rate": (
+                f"{(passed_tests/total_tests*100):.1f}%" if total_tests > 0 else "0%"
+            ),
         }
 
         # 顯示測試摘要
@@ -148,7 +152,10 @@ class CapitalComAPITester:
             auth_data = {"identifier": self.identifier, "password": self.password}
 
             response = requests.post(
-                f"{self.base_url}/api/v1/session", headers=self.headers, json=auth_data, timeout=10
+                f"{self.base_url}/api/v1/session",
+                headers=self.headers,
+                json=auth_data,
+                timeout=10,
             )
 
             if response.status_code == 200:
@@ -156,7 +163,9 @@ class CapitalComAPITester:
                 self.session_token = response.headers.get("X-SECURITY-TOKEN")
 
                 # 更新 headers
-                self.headers.update({"CST": self.cst, "X-SECURITY-TOKEN": self.session_token})
+                self.headers.update(
+                    {"CST": self.cst, "X-SECURITY-TOKEN": self.session_token}
+                )
                 return True
             else:
                 print(f"認證失敗: {response.status_code}")
@@ -191,7 +200,9 @@ class CapitalComAPITester:
         """獲取市場價格"""
         try:
             response = requests.get(
-                f"{self.base_url}/api/v1/markets/{symbol}", headers=self.headers, timeout=10
+                f"{self.base_url}/api/v1/markets/{symbol}",
+                headers=self.headers,
+                timeout=10,
             )
 
             if response.status_code == 200:

@@ -4,10 +4,8 @@ Base Indicator Class - Abstract base class for all technical indicators
 
 from abc import ABC, abstractmethod
 import pandas as pd
-import numpy as np
-from typing import Dict, List, Optional, Union, Tuple
+from typing import Dict, Optional
 import logging
-from functools import lru_cache
 import hashlib
 
 logger = logging.getLogger(__name__)
@@ -77,7 +75,9 @@ class BaseIndicator(ABC):
             return False
 
         if len(data) < self.period:
-            logger.error(f"{self.name}: Insufficient data. Need at least {self.period} periods")
+            logger.error(
+                f"{self.name}: Insufficient data. Need at least {self.period} periods"
+            )
             return False
 
         if data.isnull().any().any():
@@ -108,7 +108,9 @@ class BaseIndicator(ABC):
         if key and self.use_cache:
             self._cache[key] = result.copy()
 
-    def batch_calculate(self, stocks_data: Dict[str, pd.DataFrame]) -> Dict[str, pd.Series]:
+    def batch_calculate(
+        self, stocks_data: Dict[str, pd.DataFrame]
+    ) -> Dict[str, pd.Series]:
         """
         Calculate indicator for multiple stocks
 

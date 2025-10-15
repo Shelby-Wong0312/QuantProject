@@ -7,14 +7,16 @@ Validates ML/DL/RL models with 15 years of real market data
 import sys
 import os
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.append(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+)
 
 import pandas as pd
 import numpy as np
 import json
 import sqlite3
-from datetime import datetime, timedelta
-from typing import Dict, List, Tuple, Optional
+from datetime import datetime
+from typing import Dict, List
 import logging
 from dataclasses import dataclass, asdict
 import warnings
@@ -23,7 +25,6 @@ warnings.filterwarnings("ignore")
 
 # Import our ML systems
 from src.strategies.ml_strategy_integration import MLStrategyIntegration
-from src.backtesting.ml_backtest import MLBacktester, BacktestConfig
 from src.data.feature_pipeline import FeaturePipeline
 
 logging.basicConfig(level=logging.INFO)
@@ -168,8 +169,12 @@ class ModelValidation:
             return self._create_default_metrics(symbol)
 
         # Split into train and test
-        train_data = data[(data["date"] >= self.train_start) & (data["date"] <= self.train_end)]
-        test_data = data[(data["date"] >= self.test_start) & (data["date"] <= self.test_end)]
+        train_data = data[
+            (data["date"] >= self.train_start) & (data["date"] <= self.train_end)
+        ]
+        test_data = data[
+            (data["date"] >= self.test_start) & (data["date"] <= self.test_end)
+        ]
 
         if len(train_data) < 252 or len(test_data) < 252:
             logger.warning(f"Insufficient train/test data for {symbol}")
@@ -177,7 +182,7 @@ class ModelValidation:
 
         # Extract features
         logger.info(f"Extracting features for {symbol}...")
-        train_features = self.feature_pipeline.extract_features(train_data)
+        self.feature_pipeline.extract_features(train_data)
         test_features = self.feature_pipeline.extract_features(test_data)
 
         # Generate trading signals
@@ -189,7 +194,9 @@ class ModelValidation:
 
         return metrics
 
-    def _generate_signals(self, features: pd.DataFrame, price_data: pd.DataFrame) -> pd.DataFrame:
+    def _generate_signals(
+        self, features: pd.DataFrame, price_data: pd.DataFrame
+    ) -> pd.DataFrame:
         """Generate trading signals using ML models"""
         []
 
@@ -206,7 +213,7 @@ class ModelValidation:
                 continue
 
             # Get features for current period
-            current_features = features.iloc[i : i + 1]
+            features.iloc[i : i + 1]
 
             # Get ML signals (simplified for validation)
             try:
@@ -281,7 +288,9 @@ class ModelValidation:
         # Sharpe ratio
         if merged["strategy_returns"].std() > 0:
             sharpe_ratio = (
-                np.sqrt(252) * merged["strategy_returns"].mean() / merged["strategy_returns"].std()
+                np.sqrt(252)
+                * merged["strategy_returns"].mean()
+                / merged["strategy_returns"].std()
             )
         else:
             sharpe_ratio = 0
@@ -322,7 +331,9 @@ class ModelValidation:
                 if drawdown_idx < len(cum_returns) - 1
                 else drawdown_idx
             )
-            recovery_time = (recovery_idx - drawdown_idx) if recovery_idx > drawdown_idx else 0
+            recovery_time = (
+                (recovery_idx - drawdown_idx) if recovery_idx > drawdown_idx else 0
+            )
         else:
             recovery_time = 0
 
@@ -395,7 +406,9 @@ class ModelValidation:
                 "total_symbols": len(symbols),
                 "passed": len(passed_symbols),
                 "failed": len(failed_symbols),
-                "pass_rate": f"{len(passed_symbols)/len(symbols)*100:.1f}%" if symbols else "0%",
+                "pass_rate": (
+                    f"{len(passed_symbols)/len(symbols)*100:.1f}%" if symbols else "0%"
+                ),
             },
             "portfolio_metrics": portfolio_stats,
             "passed_symbols": passed_symbols,
@@ -487,8 +500,12 @@ class ModelValidation:
 
         # Add top performers
         if results["passed_symbols"]:
-            report_lines.append("| Symbol | Annual Return | Sharpe Ratio | Max Drawdown |")
-            report_lines.append("|--------|--------------|--------------|--------------|")
+            report_lines.append(
+                "| Symbol | Annual Return | Sharpe Ratio | Max Drawdown |"
+            )
+            report_lines.append(
+                "|--------|--------------|--------------|--------------|"
+            )
 
             for symbol in results["passed_symbols"][:10]:  # Top 10
                 metrics = results["detailed_results"].get(symbol, {})

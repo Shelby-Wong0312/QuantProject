@@ -53,7 +53,9 @@ class RiskManagedTradingSystem:
         """
         # Get historical performance for Kelly calculation
         if len(self.returns_history) > 10:
-            kelly_fraction = self.position_sizer.kelly_from_returns(self.returns_history)
+            kelly_fraction = self.position_sizer.kelly_from_returns(
+                self.returns_history
+            )
         else:
             kelly_fraction = 0.02  # Default 2% risk
 
@@ -124,7 +126,9 @@ class RiskManagedTradingSystem:
             # Default 5% stop
             self.stop_manager.set_percentage_stop(symbol, price, 0.05, direction)
 
-        print(f"Entered {direction} position: {shares} shares of {symbol} at ${price:.2f}")
+        print(
+            f"Entered {direction} position: {shares} shares of {symbol} at ${price:.2f}"
+        )
         return True
 
     def check_stops_and_exits(self, market_data: dict) -> list:
@@ -210,7 +214,9 @@ class RiskManagedTradingSystem:
         del self.positions[symbol]
         self.stop_manager.remove_stop(symbol)
 
-        print(f"Exited {symbol}: {reason}, P&L: ${pnl:.2f}, Return: {trade_return*100:.2f}%")
+        print(
+            f"Exited {symbol}: {reason}, P&L: ${pnl:.2f}, Return: {trade_return*100:.2f}%"
+        )
         return pnl
 
     def get_portfolio_risk_metrics(self) -> dict:
@@ -232,7 +238,8 @@ class RiskManagedTradingSystem:
                 else 0
             ),
             "current_capital": self.capital,
-            "total_return": (self.capital - self.initial_capital) / self.initial_capital,
+            "total_return": (self.capital - self.initial_capital)
+            / self.initial_capital,
             "active_positions": len(self.positions),
         }
 
@@ -274,13 +281,13 @@ def demo_integrated_system():
             market_data = {}
             for pos_symbol in system.positions:
                 # Random price movement
-                current_price = system.positions[pos_symbol]["entry_price"] * np.random.uniform(
-                    0.90, 1.15
-                )
+                current_price = system.positions[pos_symbol][
+                    "entry_price"
+                ] * np.random.uniform(0.90, 1.15)
                 market_data[pos_symbol] = current_price
 
             # Check stops
-            closed = system.check_stops_and_exits(market_data)
+            system.check_stops_and_exits(market_data)
 
             # Random exits for demo
             if np.random.random() < 0.3 and system.positions:

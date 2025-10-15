@@ -23,7 +23,12 @@ def test_capital_api():
     demo_url = "https://demo-api-capital.backend-capital.com"
     live_url = "https://api-capital.backend-capital.com"
 
-    results = {"demo_api": False, "live_api": False, "websocket": False, "documentation": False}
+    results = {
+        "demo_api": False,
+        "live_api": False,
+        "websocket": False,
+        "documentation": False,
+    }
 
     # Test 1: Demo API endpoint
     print("\n[Test 1] Checking Demo API endpoint...")
@@ -99,7 +104,10 @@ def test_capital_api():
 
         try:
             response = requests.post(
-                f"{demo_url}/api/v1/session", headers=headers, json=auth_data, timeout=10
+                f"{demo_url}/api/v1/session",
+                headers=headers,
+                json=auth_data,
+                timeout=10,
             )
 
             if response.status_code == 200:
@@ -127,7 +135,9 @@ def test_capital_api():
                         for acc in accounts[:3]:  # Show first 3 accounts
                             print(f"  - Account: {acc.get('accountName', 'N/A')}")
                     else:
-                        print(f"[FAIL] Could not get account info: {acc_response.status_code}")
+                        print(
+                            f"[FAIL] Could not get account info: {acc_response.status_code}"
+                        )
             else:
                 print(f"[FAIL] Authentication failed: {response.status_code}")
                 if response.text:

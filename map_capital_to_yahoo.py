@@ -14,7 +14,6 @@ import re
 
 def load_capital_stocks():
     """載入所有Capital.com股票"""
-    stocks = []
 
     if os.path.exists("capital_real_stocks.json"):
         with open("capital_real_stocks.json", "r", encoding="utf-8") as f:
@@ -32,7 +31,18 @@ def clean_symbol(symbol):
     cleaned = symbol.upper()
 
     # 移除貨幣後綴
-    for suffix in ["USD", "GBP", "EUR", "JPY", "CHF", "CAD", "AUD", "SGD", "HKD", "CNH"]:
+    for suffix in [
+        "USD",
+        "GBP",
+        "EUR",
+        "JPY",
+        "CHF",
+        "CAD",
+        "AUD",
+        "SGD",
+        "HKD",
+        "CNH",
+    ]:
         if cleaned.endswith(suffix):
             cleaned = cleaned[: -len(suffix)]
 
@@ -155,7 +165,9 @@ def validate_yahoo_symbol(symbol):
         info = ticker.info
 
         # 檢查是否有基本信息
-        if info and (info.get("regularMarketPrice") or info.get("bid") or info.get("ask")):
+        if info and (
+            info.get("regularMarketPrice") or info.get("bid") or info.get("ask")
+        ):
             return True, info.get("longName", info.get("shortName", symbol))
 
         # 備用方法：嘗試下載最近數據
@@ -186,7 +198,9 @@ def map_all_stocks():
         print("[ERROR] No Capital.com stocks to process")
         return []
 
-    print(f"\n[START] Mapping {len(capital_stocks)} Capital.com stocks to Yahoo Finance")
+    print(
+        f"\n[START] Mapping {len(capital_stocks)} Capital.com stocks to Yahoo Finance"
+    )
     print("[INFO] This will take some time...\n")
 
     # 映射結果
@@ -232,7 +246,9 @@ def map_all_stocks():
         if (i + 1) % 100 == 0:
             time.sleep(1)
             print(f"\n[PROGRESS] Processed {i+1}/{len(capital_stocks)} stocks")
-            print(f"[STATS] Mapped: {len(mapped_stocks)}, Unmapped: {len(unmapped_stocks)}")
+            print(
+                f"[STATS] Mapped: {len(mapped_stocks)}, Unmapped: {len(unmapped_stocks)}"
+            )
 
     return mapped_stocks, unmapped_stocks
 

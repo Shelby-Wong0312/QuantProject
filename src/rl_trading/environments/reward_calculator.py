@@ -3,7 +3,7 @@ Reward function calculator for RL trading environment
 """
 
 import numpy as np
-from typing import Dict, Optional, List
+from typing import Dict, Optional
 from dataclasses import dataclass
 import logging
 
@@ -118,7 +118,9 @@ class RewardCalculator:
         if len(self.equity_history) >= 2:
             drawdown = self._calculate_drawdown()
             if drawdown < -0.1:  # Penalty for >10% drawdown
-                reward_components["drawdown_penalty"] = drawdown * self.config.max_drawdown_penalty
+                reward_components["drawdown_penalty"] = (
+                    drawdown * self.config.max_drawdown_penalty
+                )
 
         # 5. Exposure penalty (encourage appropriate position sizing)
         if info and "portfolio_exposure" in info:
@@ -133,7 +135,9 @@ class RewardCalculator:
         if self.episode_trades > 0:
             trade_frequency = self.episode_trades / max(1, len(self.returns_history))
             if trade_frequency > 0.5:  # More than 50% of steps involve trades
-                reward_components["overtrading_penalty"] = -self.config.overtrading_penalty
+                reward_components["overtrading_penalty"] = (
+                    -self.config.overtrading_penalty
+                )
 
         # Holding reward (for profitable positions)
         if position_held > 0 and returns > 0:
@@ -159,7 +163,9 @@ class RewardCalculator:
 
         # Clip reward if configured
         if self.config.clip_reward is not None:
-            total_reward = np.clip(total_reward, -self.config.clip_reward, self.config.clip_reward)
+            total_reward = np.clip(
+                total_reward, -self.config.clip_reward, self.config.clip_reward
+            )
 
         # Update history
         self.returns_history.append(returns)

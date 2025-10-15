@@ -5,9 +5,6 @@ Execute WTI Crude Oil Trade
 
 import os
 import sys
-import json
-import time
-from datetime import datetime
 
 # Add project root to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -126,7 +123,11 @@ def execute_wti_trade():
 
     # Place the order
     order_result = api.place_order(
-        epic=found_symbol, direction="BUY", size=1000, currency_code="USD", force_open=True
+        epic=found_symbol,
+        direction="BUY",
+        size=1000,
+        currency_code="USD",
+        force_open=True,
     )
 
     if order_result:
@@ -151,9 +152,15 @@ def execute_wti_trade():
                 if found_symbol in pos.get("market", {}).get("epic", ""):
                     print("\nWTI Position:")
                     print(f"  Size: {pos.get('position', {}).get('size', 0)}")
-                    print(f"  Direction: {pos.get('position', {}).get('direction', 'N/A')}")
-                    print(f"  Entry Price: ${pos.get('position', {}).get('level', 0):.2f}")
-                    print(f"  Current P&L: ${pos.get('position', {}).get('profit', 0):.2f}")
+                    print(
+                        f"  Direction: {pos.get('position', {}).get('direction', 'N/A')}"
+                    )
+                    print(
+                        f"  Entry Price: ${pos.get('position', {}).get('level', 0):.2f}"
+                    )
+                    print(
+                        f"  Current P&L: ${pos.get('position', {}).get('profit', 0):.2f}"
+                    )
 
         return True
     else:

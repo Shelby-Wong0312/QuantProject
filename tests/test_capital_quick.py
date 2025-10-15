@@ -8,13 +8,14 @@ from datetime import datetime, timedelta
 
 # 設置日誌
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", encoding="utf-8"
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    encoding="utf-8",
 )
 
 # 關閉config的調試輸出
 os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
 sys.stdout = open(os.devnull, "w")
-import config
 
 sys.stdout = sys.__stdout__
 

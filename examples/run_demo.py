@@ -10,9 +10,7 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from src.core.paper_trading import PaperTradingSimulator
-import pandas as pd
 import numpy as np
-from datetime import datetime
 
 
 async def run_paper_trading():
@@ -74,7 +72,9 @@ async def run_paper_trading():
             new_prices[stock] = prices[stock] * (1 + change)
 
             direction = "UP" if change > 0 else "DOWN"
-            print(f"  {stock}: ${new_prices[stock]:.2f} [{direction} {abs(change):.2%}]")
+            print(
+                f"  {stock}: ${new_prices[stock]:.2f} [{direction} {abs(change):.2%}]"
+            )
 
         simulator.update_market_prices(new_prices)
         prices = new_prices

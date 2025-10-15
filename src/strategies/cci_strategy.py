@@ -6,8 +6,7 @@ CCI-20 Trading Strategy - Cloud Quant Task PHASE3-002
 
 import pandas as pd
 import numpy as np
-from typing import Dict, Optional, Tuple
-from datetime import datetime
+from typing import Dict
 import logging
 
 import sys
@@ -215,7 +214,9 @@ class CCI20Strategy:
         elif pnl_pct >= 5.0:
             position["action"] = "TAKE_PROFIT"
             position["exit_reason"] = "Take profit triggered at 5%"
-            logger.info(f"Take profit triggered for {position.get('symbol', 'UNKNOWN')}")
+            logger.info(
+                f"Take profit triggered for {position.get('symbol', 'UNKNOWN')}"
+            )
 
         # 動態停損（移動停損）
         elif pnl_pct > 2.0:
@@ -231,7 +232,9 @@ class CCI20Strategy:
 
         return position
 
-    def optimize_parameters(self, data: pd.DataFrame, param_ranges: Dict = None) -> Dict:
+    def optimize_parameters(
+        self, data: pd.DataFrame, param_ranges: Dict = None
+    ) -> Dict:
         """
         優化策略參數
 
@@ -302,9 +305,9 @@ class CCI20Strategy:
                 position = 0
 
             if position == 1 and i > 0:
-                daily_return = (data["close"].iloc[i] - data["close"].iloc[i - 1]) / data[
-                    "close"
-                ].iloc[i - 1]
+                daily_return = (
+                    data["close"].iloc[i] - data["close"].iloc[i - 1]
+                ) / data["close"].iloc[i - 1]
                 returns.append(daily_return)
             else:
                 returns.append(0)

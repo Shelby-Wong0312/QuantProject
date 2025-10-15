@@ -7,7 +7,6 @@ MT4 數據饋送器
 import asyncio
 import logging
 import pandas as pd
-from datetime import datetime, timezone
 from collections import deque
 from typing import List, Optional, Dict, Any
 from concurrent.futures import ThreadPoolExecutor
@@ -60,7 +59,12 @@ class MT4DataFeed:
         self.symbols = symbols
         self.event_queue = event_queue
         self.mt4_bridge = mt4_bridge or MT4Bridge()
-        self.timeframes = timeframes or [TimeFrame.M1, TimeFrame.M5, TimeFrame.M15, TimeFrame.H1]
+        self.timeframes = timeframes or [
+            TimeFrame.M1,
+            TimeFrame.M5,
+            TimeFrame.M15,
+            TimeFrame.H1,
+        ]
         self.enable_tick_collection = enable_tick_collection
         self.enable_indicators = enable_indicators
         self.market_event_timeframe = market_event_timeframe
@@ -71,10 +75,14 @@ class MT4DataFeed:
         self._connected = False
 
         # 價格歷史數據（為了與現有系統兼容）
-        self.price_history = {symbol: deque(maxlen=price_history_length) for symbol in self.symbols}
+        self.price_history = {
+            symbol: deque(maxlen=price_history_length) for symbol in self.symbols
+        }
 
         # 線程池
-        self.executor = ThreadPoolExecutor(max_workers=3, thread_name_prefix="MT4DataFeed")
+        self.executor = ThreadPoolExecutor(
+            max_workers=3, thread_name_prefix="MT4DataFeed"
+        )
 
         # 初始化數據收集組件
         if self.enable_tick_collection:
@@ -165,10 +173,14 @@ class MT4DataFeed:
         except Exception as e:
             logger.error(f"處理K線完成事件時出錯: {e}")
 
-    def _on_indicators_updated(self, symbol: str, timeframe: TimeFrame, indicators: Dict[str, Any]):
+    def _on_indicators_updated(
+        self, symbol: str, timeframe: TimeFrame, indicators: Dict[str, Any]
+    ):
         """技術指標更新回調"""
         try:
-            logger.debug(f"指標更新: {symbol} {timeframe.value} - 已更新 {len(indicators)} 個指標")
+            logger.debug(
+                f"指標更新: {symbol} {timeframe.value} - 已更新 {len(indicators)} 個指標"
+            )
 
             # 可以在這裡添加指標相關的事件處理
 
@@ -179,7 +191,10 @@ class MT4DataFeed:
         """發送市場事件（與現有系統兼容）"""
         try:
             # 構建與現有 LiveDataFeed 相同格式的 DataFrame
-            if bar.symbol in self.price_history and len(self.price_history[bar.symbol]) >= 50:
+            if (
+                bar.symbol in self.price_history
+                and len(self.price_history[bar.symbol]) >= 50
+            ):
                 df_data = list(self.price_history[bar.symbol])[-50:]  # 取最近50條
                 df = pd.DataFrame(df_data).set_index("Date")
 
@@ -231,7 +246,9 @@ class MT4DataFeed:
         try:
             # 啟動 Tick 收集器
             if self.tick_collector:
-                collect_task = asyncio.create_task(self.tick_collector.start_collecting())
+                collect_task = asyncio.create_task(
+                    self.tick_collector.start_collecting()
+                )
 
             # 主循環 - 監控連接狀態和處理其他任務
             while self._running:
@@ -346,7 +363,9 @@ class MT4DataFeed:
             logger.error(f"獲取價格歷史時出錯: {e}")
             return pd.DataFrame()
 
-    def get_ohlc_data(self, symbol: str, timeframe: TimeFrame, count: int = None) -> pd.DataFrame:
+    def get_ohlc_data(
+        self, symbol: str, timeframe: TimeFrame, count: int = None
+    ) -> pd.DataFrame:
         """獲取 OHLC 數據"""
         if self.ohlc_aggregator:
             return self.ohlc_aggregator.get_ohlc_dataframe(symbol, timeframe, count)
@@ -357,7 +376,9 @@ class MT4DataFeed:
     ) -> pd.DataFrame:
         """獲取技術指標數據"""
         if self.ohlc_aggregator and self.enable_indicators:
-            return self.ohlc_aggregator.get_indicators_dataframe(symbol, timeframe, count)
+            return self.ohlc_aggregator.get_indicators_dataframe(
+                symbol, timeframe, count
+            )
         return pd.DataFrame()
 
     def get_statistics(self) -> Dict[str, Any]:
@@ -378,7 +399,9 @@ class MT4DataFeed:
                 {
                     "total_ticks": tick_stats.get("total_ticks", 0),
                     "ticks_per_symbol": tick_stats.get("ticks_per_symbol", {}),
-                    "average_ticks_per_second": tick_stats.get("average_ticks_per_second", 0),
+                    "average_ticks_per_second": tick_stats.get(
+                        "average_ticks_per_second", 0
+                    ),
                 }
             )
 
@@ -400,7 +423,8 @@ async def example_usage():
 
     # 設置日誌
     logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
     # 創建事件循環

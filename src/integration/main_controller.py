@@ -4,7 +4,7 @@ Main Controller - Central orchestrator for the intelligent quantitative trading 
 
 import asyncio
 import logging
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
@@ -82,7 +82,10 @@ class MainController:
             "prediction_horizons": [1, 5, 20],
             "sentiment_update_interval": 3600,  # 1 hour
             "health_check_interval": 60,  # 1 minute
-            "model_paths": {"lstm": "./models/lstm_predictor.h5", "rl_agent": "./models/ppo_agent"},
+            "model_paths": {
+                "lstm": "./models/lstm_predictor.h5",
+                "rl_agent": "./models/ppo_agent",
+            },
         }
 
         if config_path and Path(config_path).exists():
@@ -107,7 +110,9 @@ class MainController:
             )
 
             # 3. Initialize LSTM predictor
-            self.lstm_predictor = LSTMPredictor(sequence_length=60, n_features=10, lstm_units=128)
+            self.lstm_predictor = LSTMPredictor(
+                sequence_length=60, n_features=10, lstm_units=128
+            )
 
             # Load pre-trained model if exists
             lstm_path = Path(self.config["model_paths"]["lstm"])
@@ -182,7 +187,9 @@ class MainController:
 
         try:
             # Get historical data
-            start_date = datetime.now() - timedelta(days=self.config["data_lookback_days"])
+            start_date = datetime.now() - timedelta(
+                days=self.config["data_lookback_days"]
+            )
             end_date = datetime.now()
 
             for symbol in self.config["symbols"]:
@@ -239,14 +246,22 @@ class MainController:
             except Exception as e:
                 logger.error(f"Live trading error: {str(e)}")
                 self.performance_metrics["errors"].append(
-                    {"timestamp": datetime.now(), "error": str(e), "mode": self.config["mode"]}
+                    {
+                        "timestamp": datetime.now(),
+                        "error": str(e),
+                        "mode": self.config["mode"],
+                    }
                 )
 
     async def _handle_realtime_data(self, symbol: str, data: Dict[str, Any]):
         """Handle real-time data updates"""
-        self.message_queue.put({"symbol": symbol, "timestamp": datetime.now(), "data": data})
+        self.message_queue.put(
+            {"symbol": symbol, "timestamp": datetime.now(), "data": data}
+        )
 
-    async def _process_trading_signal(self, symbol: str, timestamp: datetime, data: Any):
+    async def _process_trading_signal(
+        self, symbol: str, timestamp: datetime, data: Any
+    ):
         """Process trading signal through the full pipeline"""
         try:
             # 1. Prepare market data
@@ -271,7 +286,10 @@ class MainController:
             # 6. Execute trade if needed
             if action != 0:  # Not HOLD
                 trade_result = await self._execute_trade(
-                    symbol=symbol, action=action, confidence=confidence, timestamp=timestamp
+                    symbol=symbol,
+                    action=action,
+                    confidence=confidence,
+                    timestamp=timestamp,
                 )
 
                 # Update performance metrics
@@ -294,7 +312,9 @@ class MainController:
             logger.error(f"Error processing signal for {symbol}: {str(e)}")
             raise
 
-    async def _get_lstm_predictions(self, market_data: pd.DataFrame) -> Dict[str, float]:
+    async def _get_lstm_predictions(
+        self, market_data: pd.DataFrame
+    ) -> Dict[str, float]:
         """Get LSTM predictions for multiple horizons"""
         predictions = {}
 
@@ -306,7 +326,9 @@ class MainController:
 
         return predictions
 
-    async def _get_sentiment_analysis(self, symbol: str, timestamp: datetime) -> Dict[str, float]:
+    async def _get_sentiment_analysis(
+        self, symbol: str, timestamp: datetime
+    ) -> Dict[str, float]:
         """Get sentiment analysis for the symbol"""
         # In production, this would fetch real news
         # For now, return mock sentiment
@@ -388,7 +410,9 @@ class MainController:
             logger.error(f"Trade execution error: {str(e)}")
             return {"success": False, "reason": str(e)}
 
-    def _calculate_position_size(self, symbol: str, size_pct: float, confidence: float) -> int:
+    def _calculate_position_size(
+        self, symbol: str, size_pct: float, confidence: float
+    ) -> int:
         """Calculate position size based on risk management"""
         # Get account balance
         if self.config["mode"] == "backtest":
@@ -487,7 +511,9 @@ class MainController:
         }
 
         # Save report
-        report_path = Path(f'reports/performance_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json')
+        report_path = Path(
+            f'reports/performance_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'
+        )
         report_path.parent.mkdir(exist_ok=True)
 
         with open(report_path, "w") as f:
@@ -511,7 +537,8 @@ async def main():
 
 if __name__ == "__main__":
     logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
     asyncio.run(main())

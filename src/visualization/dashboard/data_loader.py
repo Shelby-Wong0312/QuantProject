@@ -8,7 +8,7 @@ from pathlib import Path
 import sys
 import logging
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Optional
 
 # Add parent directories to path
 sys.path.append(str(Path(__file__).parent.parent.parent))
@@ -144,7 +144,9 @@ class DashboardDataLoader:
                 df = df[df["timestamp"] >= cutoff]
 
                 return {
-                    "current_score": df.iloc[-1]["sentiment_score"] if len(df) > 0 else 0,
+                    "current_score": (
+                        df.iloc[-1]["sentiment_score"] if len(df) > 0 else 0
+                    ),
                     "historical": df[["timestamp", "sentiment_score"]],
                     "news": df[["title", "sentiment", "confidence", "timestamp"]],
                 }
@@ -155,7 +157,9 @@ class DashboardDataLoader:
             logger.error(f"Error loading sentiment data: {str(e)}")
             return self._generate_mock_sentiment_data(symbol, hours)
 
-    def load_backtest_signals(self, symbol: str, strategy: str = "default") -> pd.DataFrame:
+    def load_backtest_signals(
+        self, symbol: str, strategy: str = "default"
+    ) -> pd.DataFrame:
         """
         Load backtest trading signals
 
@@ -250,11 +254,17 @@ class DashboardDataLoader:
 
         predictions = {}
         for horizon, noise_level in [("1d", 0.01), ("5d", 0.03), ("20d", 0.05)]:
-            pred = market_data["close"] * (1 + np.random.normal(0, noise_level, len(market_data)))
+            pred = market_data["close"] * (
+                1 + np.random.normal(0, noise_level, len(market_data))
+            )
             confidence = np.random.uniform(0.6, 0.9, len(market_data))
 
             predictions[horizon] = pd.DataFrame(
-                {"datetime": market_data["datetime"], "prediction": pred, "confidence": confidence}
+                {
+                    "datetime": market_data["datetime"],
+                    "prediction": pred,
+                    "confidence": confidence,
+                }
             )
 
         return predictions
@@ -279,7 +289,8 @@ class DashboardDataLoader:
                     "title": f"Sample news about {symbol} #{i+1}",
                     "sentiment": sentiment,
                     "confidence": confidence,
-                    "timestamp": datetime.now() - timedelta(hours=np.random.randint(1, 24)),
+                    "timestamp": datetime.now()
+                    - timedelta(hours=np.random.randint(1, 24)),
                 }
             )
 

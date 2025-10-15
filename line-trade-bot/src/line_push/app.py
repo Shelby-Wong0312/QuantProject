@@ -30,7 +30,9 @@ def lambda_handler(event, context):
                     "realized_pnl",
                 )
             ):
-                account_id = str(payload.get("accountId") or payload.get("account") or "default")
+                account_id = str(
+                    payload.get("accountId") or payload.get("account") or "default"
+                )
                 status = {
                     "equity": payload.get("equity"),
                     "cash": payload.get("cash"),
@@ -52,8 +54,12 @@ def lambda_handler(event, context):
                     # piggyback process_payload to push a line; formatter zh for consistency
                     # but do not count delivery towards totals to keep metrics focused on trade events
                     pass
-            elif ptype == "positions" or (isinstance(payload, dict) and "positions" in payload):
-                account_id = str(payload.get("accountId") or payload.get("account") or "default")
+            elif ptype == "positions" or (
+                isinstance(payload, dict) and "positions" in payload
+            ):
+                account_id = str(
+                    payload.get("accountId") or payload.get("account") or "default"
+                )
                 db.put_positions(account_id, payload)
                 try:
                     db.put_system_positions(payload)

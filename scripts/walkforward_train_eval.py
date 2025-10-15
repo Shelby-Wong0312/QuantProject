@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import argparse
-import sys, pathlib
+import sys
+import pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
@@ -94,7 +95,10 @@ def _max_feature_warmup(cfg: dict) -> int:
 
 
 def _ensure_min_train_span(
-    train_start: str, train_end: str, test_end: str, min_bdays: int = MIN_TRAIN_BUSINESS_DAYS
+    train_start: str,
+    train_end: str,
+    test_end: str,
+    min_bdays: int = MIN_TRAIN_BUSINESS_DAYS,
 ):
     if min_bdays <= 0:
         return train_start, train_end, False
@@ -122,9 +126,10 @@ def _date_range_pairs(
     te = _PDTimestamp(test_end).tz_localize("UTC")
     out: List[Tuple[str, str, str]] = []
     while t1 < te:
-        test_start = t1
         test_stop = min(t1 + _PDTimedelta(days=step_days), te)
-        out.append((t0.date().isoformat(), t1.date().isoformat(), test_stop.date().isoformat()))
+        out.append(
+            (t0.date().isoformat(), t1.date().isoformat(), test_stop.date().isoformat())
+        )
         t0 += _PDTimedelta(days=step_days)
         t1 += _PDTimedelta(days=step_days)
     return out
@@ -253,8 +258,12 @@ def run_wf(
         if train_len <= 0:
             print(f"[WF] {idx:02d} train {tr_s}~{tr_e} -> no aligned bars returned")
         else:
-            bar_note = f"window={window}, warmup={feature_warmup}, required>={required_bars}"
-            print(f"[WF] {idx:02d} train {tr_s}~{tr_e} -> bars={train_len} ({bar_note})")
+            bar_note = (
+                f"window={window}, warmup={feature_warmup}, required>={required_bars}"
+            )
+            print(
+                f"[WF] {idx:02d} train {tr_s}~{tr_e} -> bars={train_len} ({bar_note})"
+            )
         if train_len < required_bars:
             reason = f"Train window bars {train_len} < required {required_bars} (window={window}, warmup={feature_warmup})"
             (run_dir / "SKIPPED_TRAIN_TOO_SHORT").write_text(reason, encoding="utf-8")
@@ -274,7 +283,8 @@ def run_wf(
 
         tmp_yaml = run_dir / "train.yaml"
         tmp_yaml.write_text(
-            yaml.safe_dump(wf_cfg, sort_keys=False, allow_unicode=True), encoding="utf-8"
+            yaml.safe_dump(wf_cfg, sort_keys=False, allow_unicode=True),
+            encoding="utf-8",
         )
 
         t0 = time.time()
@@ -285,7 +295,9 @@ def run_wf(
             value_error_signals = ("Not enough bars for window", "requires at least")
             if any(token in msg for token in value_error_signals):
                 reason = msg
-                (run_dir / "SKIPPED_TRAIN_TOO_SHORT").write_text(reason, encoding="utf-8")
+                (run_dir / "SKIPPED_TRAIN_TOO_SHORT").write_text(
+                    reason, encoding="utf-8"
+                )
                 skipped_windows.append(
                     {
                         "index": idx,
@@ -308,7 +320,9 @@ def run_wf(
             )
             if any(token in msg for token in assertion_signals):
                 reason = msg
-                (run_dir / "SKIPPED_TRAIN_TOO_SHORT").write_text(reason, encoding="utf-8")
+                (run_dir / "SKIPPED_TRAIN_TOO_SHORT").write_text(
+                    reason, encoding="utf-8"
+                )
                 skipped_windows.append(
                     {
                         "index": idx,
@@ -357,7 +371,9 @@ def run_wf(
                     base_env.close()  # type: ignore[attr-defined]
             except Exception:
                 pass
-        if (_PDTimestamp(te_e) - _PDTimestamp(tr_e)).total_seconds() < 24 * 3600 or oos_len < 3:
+        if (
+            _PDTimestamp(te_e) - _PDTimestamp(tr_e)
+        ).total_seconds() < 24 * 3600 or oos_len < 3:
             (run_dir / "SKIPPED_TOO_SHORT").write_text(
                 "OOS window < 1 day or < 3 bars", encoding="utf-8"
             )
@@ -421,7 +437,9 @@ def run_wf(
     }
     if skipped_windows:
         summary_payload["skipped_windows"] = skipped_windows
-    (out_root / "summary.json").write_text(json.dumps(summary_payload, indent=2), encoding="utf-8")
+    (out_root / "summary.json").write_text(
+        json.dumps(summary_payload, indent=2), encoding="utf-8"
+    )
 
     lines = ["# RL3  WalkForward Summary", ""]
     for r in results:
@@ -450,21 +468,31 @@ def run_wf(
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Walk-forward training and OOS evaluation")
+    parser = argparse.ArgumentParser(
+        description="Walk-forward training and OOS evaluation"
+    )
     parser.add_argument("--config", required=True, help="Path to training YAML config")
-    parser.add_argument("--out", required=True, help="Directory to write walk-forward artifacts")
     parser.add_argument(
-        "--train-start", required=True, help="Initial training window start (YYYY-MM-DD)"
+        "--out", required=True, help="Directory to write walk-forward artifacts"
+    )
+    parser.add_argument(
+        "--train-start",
+        required=True,
+        help="Initial training window start (YYYY-MM-DD)",
     )
     parser.add_argument(
         "--train-end", required=True, help="Initial training window end (YYYY-MM-DD)"
     )
-    parser.add_argument("--test-end", required=True, help="Final OOS window end (YYYY-MM-DD)")
+    parser.add_argument(
+        "--test-end", required=True, help="Final OOS window end (YYYY-MM-DD)"
+    )
     parser.add_argument(
         "--step-days", type=int, default=5, help="Step size in days between windows"
     )
     parser.add_argument(
-        "--save-oos", action="store_true", help="Keep OOS equity/returns even if already present"
+        "--save-oos",
+        action="store_true",
+        help="Keep OOS equity/returns even if already present",
     )
     return parser.parse_args()
 

@@ -8,9 +8,8 @@ import sys
 import json
 import time
 import sqlite3
-import pickle
 from datetime import datetime, timedelta
-from typing import List, Dict, Optional
+from typing import Dict
 import pandas as pd
 from tqdm import tqdm
 import logging
@@ -18,7 +17,6 @@ import logging
 # Add parent directory to path to import src modules
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from src.capital_service import CapitalService
-import requests
 
 # 設置日誌
 logging.basicConfig(
@@ -260,7 +258,9 @@ class FullDataDownloader:
             all_tickers = [line.strip() for line in f if line.strip()]
 
         # 過濾已完成的
-        remaining_tickers = [t for t in all_tickers if t not in self.checkpoint["completed"]]
+        remaining_tickers = [
+            t for t in all_tickers if t not in self.checkpoint["completed"]
+        ]
 
         self.stats["total_tickers"] = len(all_tickers)
 
@@ -278,7 +278,7 @@ class FullDataDownloader:
             pbar.set_description(f"Processing {ticker}")
 
             # 下載數據
-            success = self.download_ticker_data(ticker)
+            self.download_ticker_data(ticker)
 
             # 更新進度條後綴
             pbar.set_postfix(

@@ -1,13 +1,14 @@
 # Test Capital.com API - Simple Version
 import os
-import sys
 import logging
 import requests
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 # Load environment variables
@@ -21,9 +22,17 @@ CAPITAL_BASE_URL = "https://demo-api-capital.backend-capital.com/api/v1"
 
 print("Capital.com API Test")
 print("=" * 60)
-print(f"API Key: {CAPITAL_API_KEY[:10]}..." if CAPITAL_API_KEY else "API Key: NOT FOUND")
-print(f"Identifier: {CAPITAL_IDENTIFIER}" if CAPITAL_IDENTIFIER else "Identifier: NOT FOUND")
-print(f"Password: {'*' * len(CAPITAL_API_PASSWORD) if CAPITAL_API_PASSWORD else 'NOT FOUND'}")
+print(
+    f"API Key: {CAPITAL_API_KEY[:10]}..." if CAPITAL_API_KEY else "API Key: NOT FOUND"
+)
+print(
+    f"Identifier: {CAPITAL_IDENTIFIER}"
+    if CAPITAL_IDENTIFIER
+    else "Identifier: NOT FOUND"
+)
+print(
+    f"Password: {'*' * len(CAPITAL_API_PASSWORD) if CAPITAL_API_PASSWORD else 'NOT FOUND'}"
+)
 print("=" * 60)
 
 
@@ -40,7 +49,9 @@ class SimpleCapitalTest:
         payload = {"identifier": CAPITAL_IDENTIFIER, "password": CAPITAL_API_PASSWORD}
 
         try:
-            response = self.session.post(login_url, headers=headers, json=payload, timeout=15)
+            response = self.session.post(
+                login_url, headers=headers, json=payload, timeout=15
+            )
             if response.status_code == 200:
                 self.cst = response.headers.get("CST")
                 self.x_security_token = response.headers.get("X-SECURITY-TOKEN")

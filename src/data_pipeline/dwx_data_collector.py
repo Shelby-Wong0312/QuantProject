@@ -5,13 +5,10 @@ DWX MT4 數據收集系統
 """
 
 import sys
-import os
 import time
-import json
 import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Tuple, Callable
+from datetime import datetime
+from typing import Dict, List, Optional, Callable
 from collections import deque
 import threading
 import logging
@@ -77,7 +74,12 @@ class DWXDataCollector:
         self.trade_callbacks = []
 
         # 統計
-        self.stats = {"connected": False, "tick_count": 0, "last_update": None, "errors": 0}
+        self.stats = {
+            "connected": False,
+            "tick_count": 0,
+            "last_update": None,
+            "errors": 0,
+        }
 
         # 線程控制
         self._running = False
@@ -116,8 +118,12 @@ class DWXDataCollector:
                 self.account_info = self.dwx._AccountInfo
                 self.stats["connected"] = True
                 logger.info("✓ 成功連接到MT4")
-                logger.info(f"  帳戶: {self.account_info.get('_account_number', 'N/A')}")
-                logger.info(f"  餘額: ${self.account_info.get('_account_balance', 0):.2f}")
+                logger.info(
+                    f"  帳戶: {self.account_info.get('_account_number', 'N/A')}"
+                )
+                logger.info(
+                    f"  餘額: ${self.account_info.get('_account_balance', 0):.2f}"
+                )
                 return True
             else:
                 logger.warning("連接已建立但未收到帳戶信息")
@@ -247,7 +253,9 @@ class DWXDataCollector:
                 }
 
                 # 添加到歷史
-                self.tick_history[symbol].append({"timestamp": timestamp, "bid": bid, "ask": ask})
+                self.tick_history[symbol].append(
+                    {"timestamp": timestamp, "bid": bid, "ask": ask}
+                )
 
                 # 更新統計
                 self.stats["tick_count"] += 1
@@ -360,7 +368,11 @@ class DWXDataCollector:
             "last_update": self.stats["last_update"],
             "errors": self.stats["errors"],
             "current_prices": {
-                symbol: {"bid": data["bid"], "ask": data["ask"], "spread": data["spread"]}
+                symbol: {
+                    "bid": data["bid"],
+                    "ask": data["ask"],
+                    "spread": data["spread"],
+                }
                 for symbol, data in self.market_data.items()
             },
         }

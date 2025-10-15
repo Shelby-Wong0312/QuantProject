@@ -6,7 +6,6 @@ Tests compatibility with existing EventLoop and system components
 
 import asyncio
 import sys
-import os
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -55,7 +54,10 @@ def test_tick_data_structure():
 
         # Create a test tick
         tick = TickData(
-            symbol="EURUSD", timestamp=datetime.now(timezone.utc), bid=1.1000, ask=1.1002
+            symbol="EURUSD",
+            timestamp=datetime.now(timezone.utc),
+            bid=1.1000,
+            ask=1.1002,
         )
 
         # Test conversion methods
@@ -132,7 +134,9 @@ async def test_event_compatibility():
         event_loop.add_handler(EventType.MARKET, market_event_handler)
 
         # Create test DataFrame
-        dates = [datetime.now(timezone.utc) - timedelta(minutes=i) for i in range(10, 0, -1)]
+        dates = [
+            datetime.now(timezone.utc) - timedelta(minutes=i) for i in range(10, 0, -1)
+        ]
         []
 
         for i, date in enumerate(dates):

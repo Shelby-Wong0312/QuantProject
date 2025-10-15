@@ -6,11 +6,9 @@ PPO Unified Monitoring Terminal - Final Version
 """
 
 import os
-import sys
 import torch
 import torch.nn as nn
 import numpy as np
-import pandas as pd
 import yfinance as yf
 from datetime import datetime
 import json
@@ -51,7 +49,7 @@ class PPOMonitor:
         model_path = "models/ppo_3488_stocks.pt"
         if os.path.exists(model_path):
             try:
-                checkpoint = torch.load(model_path, map_location="cpu", weights_only=False)
+                torch.load(model_path, map_location="cpu", weights_only=False)
                 print("[MODEL] PPO model loaded successfully")
             except Exception:
                 print("[MODEL] Using fresh PPO model")
@@ -171,8 +169,8 @@ class PPOMonitor:
 
         features = []
         close = data["Close"].values
-        high = data["High"].values
-        low = data["Low"].values
+        data["High"].values
+        data["Low"].values
         volume = data["Volume"].values
 
         # 價格特徵
@@ -249,8 +247,14 @@ class PPOMonitor:
 
             # 計算價格變化
             current_price = float(data["Close"].iloc[-1])
-            prev_close = float(data["Close"].iloc[-2]) if len(data) > 1 else current_price
-            change_pct = ((current_price - prev_close) / prev_close * 100) if prev_close > 0 else 0
+            prev_close = (
+                float(data["Close"].iloc[-2]) if len(data) > 1 else current_price
+            )
+            change_pct = (
+                ((current_price - prev_close) / prev_close * 100)
+                if prev_close > 0
+                else 0
+            )
 
             return {
                 "symbol": symbol,
@@ -264,12 +268,14 @@ class PPOMonitor:
                 "timestamp": datetime.now().strftime("%H:%M:%S"),
             }
 
-        except Exception as e:
+        except Exception:
             return None
 
     def monitor_all(self):
         """監控所有股票"""
-        print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Analyzing {len(self.symbols)} stocks...")
+        print(
+            f"\n[{datetime.now().strftime('%H:%M:%S')}] Analyzing {len(self.symbols)} stocks..."
+        )
 
         results = []
         for i, symbol in enumerate(self.symbols):

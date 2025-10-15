@@ -8,13 +8,12 @@ import asyncio
 import logging
 import pandas as pd
 import numpy as np
-from datetime import datetime, timezone, timedelta
-from collections import defaultdict, deque
+from datetime import datetime, timedelta
+from collections import deque
 from dataclasses import dataclass, asdict
 from typing import Dict, List, Optional, Callable, Any, Tuple
 from enum import Enum
 import threading
-import time
 
 from .tick_collector import TickData
 
@@ -191,7 +190,12 @@ class OHLCAggregator:
             max_bars_per_timeframe: 每個時間框架最大保存K線數
         """
         self.symbols = symbols
-        self.timeframes = timeframes or [TimeFrame.M1, TimeFrame.M5, TimeFrame.M15, TimeFrame.H1]
+        self.timeframes = timeframes or [
+            TimeFrame.M1,
+            TimeFrame.M5,
+            TimeFrame.M15,
+            TimeFrame.H1,
+        ]
         self.enable_indicators = enable_indicators
         self.max_bars_per_timeframe = max_bars_per_timeframe
 
@@ -225,7 +229,9 @@ class OHLCAggregator:
 
         # 回調函數
         self.bar_callbacks: List[Callable[[OHLCBar], None]] = []
-        self.indicator_callbacks: List[Callable[[str, TimeFrame, Dict[str, Any]], None]] = []
+        self.indicator_callbacks: List[
+            Callable[[str, TimeFrame, Dict[str, Any]], None]
+        ] = []
 
         # 線程鎖
         self._lock = threading.RLock()
@@ -243,9 +249,13 @@ class OHLCAggregator:
             self.price_history[symbol] = {}
 
             for timeframe in self.timeframes:
-                self.ohlc_data[symbol][timeframe] = deque(maxlen=self.max_bars_per_timeframe)
+                self.ohlc_data[symbol][timeframe] = deque(
+                    maxlen=self.max_bars_per_timeframe
+                )
                 self.current_bars[symbol][timeframe] = None
-                self.price_history[symbol][timeframe] = deque(maxlen=200)  # 保存足夠的歷史價格
+                self.price_history[symbol][timeframe] = deque(
+                    maxlen=200
+                )  # 保存足夠的歷史價格
 
                 if self.enable_indicators:
                     self.indicators[symbol][timeframe] = {
@@ -267,12 +277,16 @@ class OHLCAggregator:
         self.bar_callbacks.append(callback)
         logger.info(f"已添加K線回調: {callback.__name__}")
 
-    def add_indicator_callback(self, callback: Callable[[str, TimeFrame, Dict[str, Any]], None]):
+    def add_indicator_callback(
+        self, callback: Callable[[str, TimeFrame, Dict[str, Any]], None]
+    ):
         """添加技術指標回調"""
         self.indicator_callbacks.append(callback)
         logger.info(f"已添加指標回調: {callback.__name__}")
 
-    def _get_bar_start_time(self, timestamp: datetime, timeframe: TimeFrame) -> datetime:
+    def _get_bar_start_time(
+        self, timestamp: datetime, timeframe: TimeFrame
+    ) -> datetime:
         """獲取K線開始時間"""
         if timeframe == TimeFrame.M1:
             return timestamp.replace(second=0, microsecond=0)
@@ -302,7 +316,9 @@ class OHLCAggregator:
         else:
             return timestamp.replace(second=0, microsecond=0)
 
-    def _create_new_bar(self, symbol: str, timeframe: TimeFrame, tick: TickData) -> OHLCBar:
+    def _create_new_bar(
+        self, symbol: str, timeframe: TimeFrame, tick: TickData
+    ) -> OHLCBar:
         """創建新的K線"""
         bar_time = self._get_bar_start_time(tick.timestamp, timeframe)
 
@@ -341,10 +357,18 @@ class OHLCAggregator:
 
             try:
                 # 移動平均線
-                sma_short = TechnicalIndicators.sma(prices, self.indicator_periods["sma_short"])
-                sma_long = TechnicalIndicators.sma(prices, self.indicator_periods["sma_long"])
-                ema_short = TechnicalIndicators.ema(prices, self.indicator_periods["ema_short"])
-                ema_long = TechnicalIndicators.ema(prices, self.indicator_periods["ema_long"])
+                sma_short = TechnicalIndicators.sma(
+                    prices, self.indicator_periods["sma_short"]
+                )
+                sma_long = TechnicalIndicators.sma(
+                    prices, self.indicator_periods["sma_long"]
+                )
+                ema_short = TechnicalIndicators.ema(
+                    prices, self.indicator_periods["ema_short"]
+                )
+                ema_long = TechnicalIndicators.ema(
+                    prices, self.indicator_periods["ema_long"]
+                )
 
                 # RSI
                 rsi = TechnicalIndicators.rsi(prices, self.indicator_periods["rsi"])
@@ -428,7 +452,9 @@ class OHLCAggregator:
                         self.ohlc_data[tick.symbol][timeframe].append(current_bar)
 
                         # 更新價格歷史
-                        self.price_history[tick.symbol][timeframe].append(current_bar.close)
+                        self.price_history[tick.symbol][timeframe].append(
+                            current_bar.close
+                        )
 
                         # 計算技術指標
                         self._calculate_indicators(tick.symbol, timeframe)
@@ -467,7 +493,15 @@ class OHLCAggregator:
 
             if not bars:
                 return pd.DataFrame(
-                    columns=["timestamp", "open", "high", "low", "close", "volume", "tick_count"]
+                    columns=[
+                        "timestamp",
+                        "open",
+                        "high",
+                        "low",
+                        "close",
+                        "volume",
+                        "tick_count",
+                    ]
                 )
 
             [bar.to_dict() for bar in bars]
@@ -535,7 +569,10 @@ class OHLCAggregator:
 
     def get_current_bar(self, symbol: str, timeframe: TimeFrame) -> Optional[OHLCBar]:
         """獲取當前未完成的K線"""
-        if symbol not in self.current_bars or timeframe not in self.current_bars[symbol]:
+        if (
+            symbol not in self.current_bars
+            or timeframe not in self.current_bars[symbol]
+        ):
             return None
 
         with self._lock:
@@ -580,14 +617,17 @@ async def example_usage():
 
     # 設置日誌
     logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
     ["EURUSD", "GBPUSD"]
     timeframes = [TimeFrame.M1, TimeFrame.M5, TimeFrame.M15]
 
     # 創建聚合器
-    aggregator = OHLCAggregator(symbols=symbols, timeframes=timeframes, enable_indicators=True)
+    aggregator = OHLCAggregator(
+        symbols=symbols, timeframes=timeframes, enable_indicators=True
+    )
 
     # 添加回調函數
     def on_bar_complete(bar: OHLCBar):
@@ -596,7 +636,9 @@ async def example_usage():
             f"OHLC({bar.open:.5f}, {bar.high:.5f}, {bar.low:.5f}, {bar.close:.5f})"
         )
 
-    def on_indicators_updated(symbol: str, timeframe: TimeFrame, indicators: Dict[str, Any]):
+    def on_indicators_updated(
+        symbol: str, timeframe: TimeFrame, indicators: Dict[str, Any]
+    ):
         print(f"指標更新: {symbol} {timeframe.value} - {indicators}")
 
     aggregator.add_bar_callback(on_bar_complete)

@@ -12,12 +12,8 @@ import io
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
 
-import json
-import numpy as np
-import pandas as pd
 import yfinance as yf
-from datetime import datetime, timedelta
-from tqdm import tqdm
+from datetime import datetime
 import warnings
 
 warnings.filterwarnings("ignore")

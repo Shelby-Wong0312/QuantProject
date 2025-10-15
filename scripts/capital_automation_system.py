@@ -6,13 +6,9 @@ Capital.com 完整自動化交易系統
 """
 
 import os
-import sys
 import time
-import json
-import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional
+from datetime import datetime
+from typing import Dict, Optional
 import threading
 import logging
 
@@ -71,7 +67,9 @@ class CapitalAutomationSystem:
         if account:
             self.performance["start_balance"] = account.get("balance", 0)
             self.performance["current_balance"] = account.get("balance", 0)
-            logger.info(f"Account initialized - Balance: ${account.get('balance'):,.2f}")
+            logger.info(
+                f"Account initialized - Balance: ${account.get('balance'):,.2f}"
+            )
 
     def monitor_positions(self):
         """持續監控持倉"""
@@ -92,7 +90,9 @@ class CapitalAutomationSystem:
 
                         # 計算盈虧
                         current_price = (
-                            market.get("bid") if direction == "BUY" else market.get("offer")
+                            market.get("bid")
+                            if direction == "BUY"
+                            else market.get("offer")
                         )
                         if direction == "BUY":
                             pnl = (current_price - open_level) * size
@@ -110,7 +110,9 @@ class CapitalAutomationSystem:
                             )
                             # 可以實現自動平倉邏輯
                         elif pnl_pct < -2:  # 虧損超過2%
-                            logger.warning(f"Position {epic} loss {pnl_pct:.2f}% - Risk warning")
+                            logger.warning(
+                                f"Position {epic} loss {pnl_pct:.2f}% - Risk warning"
+                            )
 
                     # 更新總盈虧
                     account = self.collector.get_account_info()
@@ -183,7 +185,9 @@ class CapitalAutomationSystem:
             signals["mean_reversion"] = self.live_trading.mean_reversion_strategy(epic)
 
         if "trend_following" in self.config["enabled_strategies"]:
-            signals["trend_following"] = self.live_trading.trend_following_strategy(epic)
+            signals["trend_following"] = self.live_trading.trend_following_strategy(
+                epic
+            )
 
         # 計算共識
         buy_count = sum(1 for s in signals.values() if s == "BUY")
@@ -213,7 +217,7 @@ class CapitalAutomationSystem:
             # 計算倉位大小
             account = self.collector.get_account_info()
             balance = account.get("balance", 10000)
-            risk_amount = balance * self.config["risk_per_trade"]
+            balance * self.config["risk_per_trade"]
 
             # 設置止損止利
             if signal["signal"] == "BUY":
@@ -258,17 +262,20 @@ class CapitalAutomationSystem:
                 time.sleep(3600)
 
                 # 計算績效指標
-                pnl = self.performance["current_balance"] - self.performance["start_balance"]
-                pnl_pct = (
+                pnl = (
+                    self.performance["current_balance"]
+                    - self.performance["start_balance"]
+                )
+                (
                     (pnl / self.performance["start_balance"]) * 100
                     if self.performance["start_balance"] > 0
                     else 0
                 )
 
-                win_rate = 0
                 if self.performance["total_trades"] > 0:
-                    win_rate = (
-                        self.performance["winning_trades"] / self.performance["total_trades"]
+                    (
+                        self.performance["winning_trades"]
+                        / self.performance["total_trades"]
                     ) * 100
 
                 """
@@ -298,7 +305,9 @@ class CapitalAutomationSystem:
                 logger.info(report)
 
                 # 保存報告到文件
-                with open(f'reports/report_{datetime.now().strftime("%Y%m%d_%H")}.txt', "w") as f:
+                with open(
+                    f'reports/report_{datetime.now().strftime("%Y%m%d_%H")}.txt', "w"
+                ) as f:
                     f.write(report)
 
             except Exception as e:
@@ -318,7 +327,9 @@ class CapitalAutomationSystem:
         self.threads.append(monitor_thread)
 
         # 啟動交易線程
-        trading_thread = threading.Thread(target=self.execute_trading_cycle, daemon=True)
+        trading_thread = threading.Thread(
+            target=self.execute_trading_cycle, daemon=True
+        )
         trading_thread.start()
         self.threads.append(trading_thread)
 
@@ -356,7 +367,7 @@ class CapitalAutomationSystem:
     def generate_final_report(self):
         """生成最終報告"""
         pnl = self.performance["current_balance"] - self.performance["start_balance"]
-        pnl_pct = (
+        (
             (pnl / self.performance["start_balance"]) * 100
             if self.performance["start_balance"] > 0
             else 0
@@ -381,7 +392,9 @@ class CapitalAutomationSystem:
         print(report)
 
         # 保存最終報告
-        with open(f'reports/final_report_{datetime.now().strftime("%Y%m%d_%H%M%S")}.txt', "w") as f:
+        with open(
+            f'reports/final_report_{datetime.now().strftime("%Y%m%d_%H%M%S")}.txt', "w"
+        ) as f:
             f.write(report)
 
 
@@ -411,7 +424,9 @@ def main():
 
         while True:
             positions = collector.get_positions()
-            print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Positions: {len(positions)}")
+            print(
+                f"\n[{datetime.now().strftime('%H:%M:%S')}] Positions: {len(positions)}"
+            )
 
             for pos in positions:
                 market = pos.get("market", {})

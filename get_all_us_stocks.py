@@ -4,10 +4,7 @@ Getting所有美國股票列表
 """
 
 import pandas as pd
-import yfinance as yf
 from pathlib import Path
-import requests
-import json
 
 
 def get_sp500_stocks():
@@ -22,7 +19,18 @@ def get_sp500_stocks():
         return symbols
     except Exception:
         # 備用列表
-        return ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "BRK-B", "NVDA", "JPM", "JNJ"]
+        return [
+            "AAPL",
+            "MSFT",
+            "GOOGL",
+            "AMZN",
+            "META",
+            "TSLA",
+            "BRK-B",
+            "NVDA",
+            "JPM",
+            "JNJ",
+        ]
 
 
 def get_nasdaq_stocks():

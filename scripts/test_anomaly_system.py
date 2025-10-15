@@ -8,7 +8,7 @@ import sys
 import asyncio
 import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 import json
 import logging
@@ -43,7 +43,9 @@ class AnomalySystemTester:
             "integration": {},
         }
 
-    def generate_test_market_data(self, n_days: int = 200, inject_anomalies: bool = True) -> Dict:
+    def generate_test_market_data(
+        self, n_days: int = 200, inject_anomalies: bool = True
+    ) -> Dict:
         """Generate test market data with optional anomalies"""
 
         ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN"]
@@ -128,7 +130,9 @@ class AnomalySystemTester:
         # Calculate accuracy (assuming we know anomalies were injected)
         expected_anomalies = 2  # We injected anomalies in AAPL and TSLA
         detected_symbols = {a.symbol for a in anomalies}
-        accuracy = len(detected_symbols.intersection({"AAPL", "TSLA"})) / expected_anomalies
+        accuracy = (
+            len(detected_symbols.intersection({"AAPL", "TSLA"})) / expected_anomalies
+        )
 
         self.test_results["anomaly_detection"] = {
             "passed": True,
@@ -166,7 +170,9 @@ class AnomalySystemTester:
 
             if expected_level:
                 if triggered != expected_level:
-                    print(f"[FAIL] {description} - Expected {expected_level}, got {triggered}")
+                    print(
+                        f"[FAIL] {description} - Expected {expected_level}, got {triggered}"
+                    )
                     triggers_correct = False
                 else:
                     print(f"[OK] {description}")
@@ -187,13 +193,13 @@ class AnomalySystemTester:
         # Test manual resume
         if breaker.is_paused:
             breaker.resume_trading("Test resume")
-            assert breaker.trading_enabled == True
+            assert breaker.trading_enabled
             print("[OK] Manual resume successful")
 
         # Test emergency stop
         breaker.emergency_stop("Test emergency")
         assert breaker.current_level == BreakerLevel.EMERGENCY
-        assert breaker.is_paused == True
+        assert breaker.is_paused
         print("[OK] Emergency stop successful")
 
         # Test history
@@ -244,7 +250,9 @@ class AnomalySystemTester:
                 assert plan.estimated_proceeds > 0
                 assert plan.strategy_used == strategy
                 strategies_tested.append(strategy.value)
-                print(f"[OK] {strategy.value} strategy: {len(plan.positions_to_close)} positions")
+                print(
+                    f"[OK] {strategy.value} strategy: {len(plan.positions_to_close)} positions"
+                )
 
         # Test execution
         plan = self.deleverager.create_deleveraging_plan(
@@ -289,13 +297,17 @@ class AnomalySystemTester:
 
         # Step 1: Detect anomalies
         anomalies = self.detector.detect_anomalies(market_data)
-        critical_anomalies = [a for a in anomalies if a.severity.value >= SeverityLevel.HIGH.value]
+        critical_anomalies = [
+            a for a in anomalies if a.severity.value >= SeverityLevel.HIGH.value
+        ]
         print(f"[OK] Step 1: Detected {len(critical_anomalies)} critical anomalies")
 
         # Step 2: Check circuit breaker
         portfolio_value = 85000  # 15% drawdown
         triggered = self.breaker.check_trigger(portfolio_value)
-        print(f"[OK] Step 2: Circuit breaker triggered: {triggered.name if triggered else 'None'}")
+        print(
+            f"[OK] Step 2: Circuit breaker triggered: {triggered.name if triggered else 'None'}"
+        )
 
         # Step 3: Execute deleveraging if needed
         if triggered and triggered.value >= BreakerLevel.LEVEL_2.value:
@@ -310,12 +322,16 @@ class AnomalySystemTester:
 
             if plan:
                 result = self.deleverager.execute_deleveraging(plan)
-                print(f"[OK] Step 3: Deleveraging executed - {result['executed_count']} positions")
+                print(
+                    f"[OK] Step 3: Deleveraging executed - {result['executed_count']} positions"
+                )
             else:
                 print("[OK] Step 3: No deleveraging needed")
 
         # Test workflow completion
-        workflow_complete = len(anomalies) > 0 and triggered is not None and self.breaker.is_paused
+        workflow_complete = (
+            len(anomalies) > 0 and triggered is not None and self.breaker.is_paused
+        )
 
         self.test_results["integration"] = {
             "passed": workflow_complete,
@@ -324,11 +340,17 @@ class AnomalySystemTester:
             "trading_paused": self.breaker.is_paused,
         }
 
-        print(f"\n[STAT] Integration Test: {'PASSED' if workflow_complete else 'FAILED'}")
+        print(
+            f"\n[STAT] Integration Test: {'PASSED' if workflow_complete else 'FAILED'}"
+        )
         print("[STAT] System Response Chain:")
         print(f"   1. Anomalies -> {len(anomalies)} detected")
-        print(f"   2. Circuit Breaker -> {triggered.name if triggered else 'Not triggered'}")
-        print(f"   3. Trading Status -> {'PAUSED' if self.breaker.is_paused else 'ACTIVE'}")
+        print(
+            f"   2. Circuit Breaker -> {triggered.name if triggered else 'Not triggered'}"
+        )
+        print(
+            f"   3. Trading Status -> {'PAUSED' if self.breaker.is_paused else 'ACTIVE'}"
+        )
 
         return workflow_complete
 
@@ -390,9 +412,9 @@ class AnomalySystemTester:
         print("=" * 60)
 
         criteria = {
-            "Anomaly Detection Accuracy > 95%": self.test_results["anomaly_detection"].get(
-                "accuracy", 0
-            )
+            "Anomaly Detection Accuracy > 95%": self.test_results[
+                "anomaly_detection"
+            ].get("accuracy", 0)
             > 0.95,
             "Circuit Breaker 100% Reliable": self.test_results["circuit_breaker"].get(
                 "passed", False
@@ -412,9 +434,13 @@ class AnomalySystemTester:
         all_criteria_met = all(criteria.values())
 
         if all_criteria_met:
-            print("\n[SUCCESS] ALL ACCEPTANCE CRITERIA MET! System ready for production.")
+            print(
+                "\n[SUCCESS] ALL ACCEPTANCE CRITERIA MET! System ready for production."
+            )
         else:
-            print("\n[WARNING] Some criteria not met. Review and optimize before deployment.")
+            print(
+                "\n[WARNING] Some criteria not met. Review and optimize before deployment."
+            )
 
         return all_criteria_met
 

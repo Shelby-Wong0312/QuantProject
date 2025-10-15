@@ -5,7 +5,7 @@ Kelly Criterion, Fixed Proportion, Risk Parity
 
 import numpy as np
 import pandas as pd
-from typing import Union, Dict, List
+from typing import Union, List
 
 
 class PositionSizing:
@@ -145,7 +145,9 @@ class PositionSizing:
         return int(max_capital_at_risk / price)
 
     @staticmethod
-    def atr_position_sizing(capital: float, price: float, atr: float, risk_amount: float) -> int:
+    def atr_position_sizing(
+        capital: float, price: float, atr: float, risk_amount: float
+    ) -> int:
         """
         Calculate position size using ATR (Average True Range)
 

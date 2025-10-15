@@ -52,7 +52,7 @@ if not CAPITAL_API_KEY or not CAPITAL_API_PASSWORD:
     print("  CAPITAL_API_PASSWORD=your_password")
     sys.exit(1)
 else:
-    logger.info("✓" +  API Key loaded: {CAPITAL_API_KEY[:4]}...{CAPITAL_API_KEY[-4:]}")
+    logger.info(f" API Key loaded: {CAPITAL_API_KEY[:4]}...{CAPITAL_API_KEY[-4:]}")
     logger.info("✓" +  Demo Mode: {CAPITAL_DEMO_MODE}")
     logger.info("✓" +  API URL: {CAPITAL_API_URL}")
     logger.info("✓" +  Identifier: {CAPITAL_IDENTIFIER}")

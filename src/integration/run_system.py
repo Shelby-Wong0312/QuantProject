@@ -87,7 +87,10 @@ class SystemRunner:
             "prediction_horizons": [1, 5, 20],
             "sentiment_update_interval": 3600,
             "health_check_interval": 60,
-            "model_paths": {"lstm": "./models/lstm_predictor.h5", "rl_agent": "./models/ppo_agent"},
+            "model_paths": {
+                "lstm": "./models/lstm_predictor.h5",
+                "rl_agent": "./models/ppo_agent",
+            },
             "backtest_settings": {
                 "start_date": "2023-01-01",
                 "end_date": "2024-01-01",
@@ -120,7 +123,9 @@ class SystemRunner:
 
 async def main():
     """Main entry point"""
-    parser = argparse.ArgumentParser(description="Run the intelligent quantitative trading system")
+    parser = argparse.ArgumentParser(
+        description="Run the intelligent quantitative trading system"
+    )
 
     parser.add_argument("--config", type=str, help="Path to configuration file")
 

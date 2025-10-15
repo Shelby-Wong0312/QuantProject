@@ -5,10 +5,7 @@ ULTIMATE SIMPLE AUTO-TRADER
 """
 
 import yfinance as yf
-import pandas as pd
-import numpy as np
 import requests
-import json
 import time
 import os
 from datetime import datetime
@@ -86,7 +83,10 @@ class SimpleAutoTrader:
 
         try:
             response = requests.post(
-                f"{self.base_url}/api/v1/session", headers=headers, json=payload, timeout=10
+                f"{self.base_url}/api/v1/session",
+                headers=headers,
+                json=payload,
+                timeout=10,
             )
             if response.status_code == 200:
                 self.cst = response.headers.get("CST")
@@ -154,7 +154,7 @@ class SimpleAutoTrader:
                     "volume_ratio": volume_ratio,
                 }
 
-        except Exception as e:
+        except Exception:
             pass
 
         return None
@@ -198,7 +198,10 @@ class SimpleAutoTrader:
 
         try:
             response = requests.post(
-                f"{self.base_url}/api/v1/positions", headers=headers, json=payload, timeout=10
+                f"{self.base_url}/api/v1/positions",
+                headers=headers,
+                json=payload,
+                timeout=10,
             )
             if response.status_code == 200:
                 print(f"[CAPITAL.COM] Order success: {symbol}")
@@ -226,11 +229,15 @@ class SimpleAutoTrader:
 
     def scan_market(self):
         """Scan market for signals"""
-        print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Scanning {len(self.stocks)} stocks...")
+        print(
+            f"\n[{datetime.now().strftime('%H:%M:%S')}] Scanning {len(self.stocks)} stocks..."
+        )
 
         []
         with ThreadPoolExecutor(max_workers=20) as executor:
-            futures = [executor.submit(self.get_signals, symbol) for symbol in self.stocks]
+            futures = [
+                executor.submit(self.get_signals, symbol) for symbol in self.stocks
+            ]
             for future in futures:
                 result = future.result()
                 if result:

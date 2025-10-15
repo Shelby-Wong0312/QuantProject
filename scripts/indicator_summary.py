@@ -17,7 +17,9 @@ def generate_indicator_summary():
     """Generate comprehensive indicator summary"""
 
     db_path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "data",
+        "quant_trading.db",
     )
     conn = sqlite3.connect(db_path)
 
@@ -119,7 +121,9 @@ def generate_indicator_summary():
     if not strong_trends.empty:
         print("\nStocks with Strongest Trends:")
         for _, row in strong_trends.iterrows():
-            print(f"  {row['symbol']}: {row['trend_strength']:.1f}% ({row['trend_direction']})")
+            print(
+                f"  {row['symbol']}: {row['trend_strength']:.1f}% ({row['trend_direction']})"
+            )
 
     # Find stocks near support/resistance (price near major MAs)
     query = """
@@ -154,7 +158,9 @@ def generate_indicator_summary():
     return {
         "total_stocks": int(stats["total_stocks"].iloc[0]) if not stats.empty else 0,
         "total_records": int(stats["total_records"].iloc[0]) if not stats.empty else 0,
-        "trend_distribution": trend_dist.to_dict("records") if not trend_dist.empty else [],
+        "trend_distribution": (
+            trend_dist.to_dict("records") if not trend_dist.empty else []
+        ),
         "strong_trends": (
             strong_trends.head(5).to_dict("records") if not strong_trends.empty else []
         ),

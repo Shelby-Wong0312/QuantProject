@@ -6,9 +6,9 @@ Cloud Quant - Task Q-701
 
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 import logging
 import asyncio
 from pathlib import Path
@@ -73,7 +73,10 @@ class MLStrategyIntegration:
     """
 
     def __init__(
-        self, initial_capital: float = 100000, risk_tolerance: float = 0.02, max_positions: int = 20
+        self,
+        initial_capital: float = 100000,
+        risk_tolerance: float = 0.02,
+        max_positions: int = 20,
     ):
         """
         Initialize ML Strategy Integration
@@ -149,11 +152,14 @@ class MLStrategyIntegration:
         ema_26 = market_data["close"].ewm(span=26).mean()
         macd = ema_12 - ema_26
         signal = macd.ewm(span=9).mean()
-        features.append((macd.iloc[-1] - signal.iloc[-1]) / market_data["close"].iloc[-1])
+        features.append(
+            (macd.iloc[-1] - signal.iloc[-1]) / market_data["close"].iloc[-1]
+        )
 
         # Volume features
         volume_ratio = (
-            market_data["volume"].iloc[-1] / market_data["volume"].rolling(20).mean().iloc[-1]
+            market_data["volume"].iloc[-1]
+            / market_data["volume"].rolling(20).mean().iloc[-1]
         )
         features.append(volume_ratio)
 
@@ -182,7 +188,9 @@ class MLStrategyIntegration:
 
         # Momentum
         momentum_5 = (market_data["close"].iloc[-1] / market_data["close"].iloc[-5]) - 1
-        momentum_10 = (market_data["close"].iloc[-1] / market_data["close"].iloc[-10]) - 1
+        momentum_10 = (
+            market_data["close"].iloc[-1] / market_data["close"].iloc[-10]
+        ) - 1
         features.append(momentum_5)
         features.append(momentum_10)
 
@@ -256,7 +264,9 @@ class MLStrategyIntegration:
                 source="LSTM",
             )
 
-    def generate_xgboost_signal(self, features: np.ndarray, symbol: str) -> TradingSignal:
+    def generate_xgboost_signal(
+        self, features: np.ndarray, symbol: str
+    ) -> TradingSignal:
         """
         Generate trading signal from XGBoost model
 
@@ -379,7 +389,10 @@ class MLStrategyIntegration:
             )
 
     def ensemble_signals(
-        self, lstm_signal: TradingSignal, xgb_signal: TradingSignal, ppo_signal: TradingSignal
+        self,
+        lstm_signal: TradingSignal,
+        xgb_signal: TradingSignal,
+        ppo_signal: TradingSignal,
     ) -> TradingSignal:
         """
         Combine signals from all models using weighted ensemble
@@ -397,9 +410,15 @@ class MLStrategyIntegration:
 
         # Calculate weighted score
         weighted_score = (
-            action_map[lstm_signal.action] * lstm_signal.confidence * self.model_weights["lstm"]
-            + action_map[xgb_signal.action] * xgb_signal.confidence * self.model_weights["xgboost"]
-            + action_map[ppo_signal.action] * ppo_signal.confidence * self.model_weights["ppo"]
+            action_map[lstm_signal.action]
+            * lstm_signal.confidence
+            * self.model_weights["lstm"]
+            + action_map[xgb_signal.action]
+            * xgb_signal.confidence
+            * self.model_weights["xgboost"]
+            + action_map[ppo_signal.action]
+            * ppo_signal.confidence
+            * self.model_weights["ppo"]
         )
 
         # Calculate average confidence
@@ -502,7 +521,9 @@ class MLStrategyIntegration:
                 ppo_signal = self.generate_ppo_signal(features, symbol)
 
                 # Ensemble signals
-                ensemble_signal = self.ensemble_signals(lstm_signal, xgb_signal, ppo_signal)
+                ensemble_signal = self.ensemble_signals(
+                    lstm_signal, xgb_signal, ppo_signal
+                )
 
                 # Calculate position size
                 current_price = data["close"].iloc[-1]
@@ -550,7 +571,10 @@ class MLStrategyIntegration:
             try:
                 # Risk check
                 risk_check = self.risk_manager.check_trade_risk(
-                    signal.symbol, signal.position_size, signal.predicted_return, signal.action
+                    signal.symbol,
+                    signal.position_size,
+                    signal.predicted_return,
+                    signal.action,
                 )
 
                 if not risk_check["allowed"]:
@@ -588,7 +612,9 @@ class MLStrategyIntegration:
                             trading_simulator.market_data_cache[signal.symbol]["price"],
                             pd.Series([100, 101, 99, 102, 98]),  # Simplified
                         )
-                        logger.info(f"Stop loss set for {signal.symbol} at ${stop_price:.2f}")
+                        logger.info(
+                            f"Stop loss set for {signal.symbol} at ${stop_price:.2f}"
+                        )
 
                 elif signal.action == "SELL":
                     # Check if we have position to sell
@@ -651,7 +677,9 @@ class MLStrategyIntegration:
         # Model contributions
         model_contributions = {
             "LSTM": sum(1 for p in self.prediction_history if p.model_name == "LSTM"),
-            "XGBoost": sum(1 for p in self.prediction_history if p.model_name == "XGBoost"),
+            "XGBoost": sum(
+                1 for p in self.prediction_history if p.model_name == "XGBoost"
+            ),
             "PPO": sum(1 for p in self.prediction_history if p.model_name == "PPO"),
         }
 
@@ -659,11 +687,17 @@ class MLStrategyIntegration:
             "total_signals": total_signals,
             "signal_distribution": signal_distribution,
             "avg_confidence": avg_confidence,
-            "avg_predicted_return": np.mean([s.predicted_return for s in self.signal_history]),
+            "avg_predicted_return": np.mean(
+                [s.predicted_return for s in self.signal_history]
+            ),
             "avg_risk_score": np.mean([s.risk_score for s in self.signal_history]),
             "model_contributions": model_contributions,
             "signals_per_hour": total_signals
-            / max(1, (datetime.now() - self.signal_history[0].timestamp).total_seconds() / 3600),
+            / max(
+                1,
+                (datetime.now() - self.signal_history[0].timestamp).total_seconds()
+                / 3600,
+            ),
         }
 
     def update_model_weights(self, performance_data: Dict):
@@ -677,9 +711,15 @@ class MLStrategyIntegration:
         total_score = sum(performance_data.values())
 
         if total_score > 0:
-            self.model_weights["lstm"] = performance_data.get("lstm_accuracy", 0.33) / total_score
-            self.model_weights["xgboost"] = performance_data.get("xgb_accuracy", 0.33) / total_score
-            self.model_weights["ppo"] = performance_data.get("ppo_reward", 0.34) / total_score
+            self.model_weights["lstm"] = (
+                performance_data.get("lstm_accuracy", 0.33) / total_score
+            )
+            self.model_weights["xgboost"] = (
+                performance_data.get("xgb_accuracy", 0.33) / total_score
+            )
+            self.model_weights["ppo"] = (
+                performance_data.get("ppo_reward", 0.34) / total_score
+            )
 
         # Normalize weights
         total_weight = sum(self.model_weights.values())

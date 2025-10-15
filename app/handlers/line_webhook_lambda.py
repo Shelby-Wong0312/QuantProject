@@ -29,7 +29,11 @@ _TRACE_ID: str = ""
 
 
 def _log(event_type: str, status: str, **fields):
-    rec = {"trace_id": _TRACE_ID or str(uuid.uuid4()), "event_type": event_type, "status": status}
+    rec = {
+        "trace_id": _TRACE_ID or str(uuid.uuid4()),
+        "event_type": event_type,
+        "status": status,
+    }
     rec.update(fields)
     try:
         logger.info(json.dumps(rec, ensure_ascii=False))
@@ -94,7 +98,9 @@ def _verify_signature(secret: str, headers: Dict[str, str], raw: bytes) -> bool:
 
 
 def _ddb_table(name_env: str, fallback_env: Optional[str] = None):
-    table_name = os.getenv(name_env) or (os.getenv(fallback_env) if fallback_env else None)
+    table_name = os.getenv(name_env) or (
+        os.getenv(fallback_env) if fallback_env else None
+    )
     if not table_name:
         raise RuntimeError(f"Missing DynamoDB table env: {name_env}")
     return boto3.resource("dynamodb").Table(table_name)
@@ -194,7 +200,11 @@ def _get_positions() -> Optional[Dict[str, Any]]:
 
 
 def _handle_text(
-    client: "LineBotApi", text: str, reply_token: str, recipient_id: str, recipient_type: str
+    client: "LineBotApi",
+    text: str,
+    reply_token: str,
+    recipient_id: str,
+    recipient_type: str,
 ) -> None:
     raw = text.strip()
     if raw.startswith("/"):
@@ -213,7 +223,9 @@ def _handle_text(
 
     if cmd in ("subscribe", "sub"):
         if not recipient_id:
-            _reply_with_retry(client, reply_token, "無法取得聊天室 ID，請在正式對話中使用。")
+            _reply_with_retry(
+                client, reply_token, "無法取得聊天室 ID，請在正式對話中使用。"
+            )
             return
         subs_tbl = _ddb_table("SUBSCRIBERS_TABLE")
         subs_tbl.put_item(
@@ -247,7 +259,9 @@ def _handle_text(
     if cmd in ("last", "l"):
         try:
             if recipient_id and not _is_whitelisted(recipient_id):
-                _reply_with_retry(client, reply_token, "此對話未在白名單，請輸入 /subscribe 以授權")
+                _reply_with_retry(
+                    client, reply_token, "此對話未在白名單，請輸入 /subscribe 以授權"
+                )
                 return
         except Exception:
             pass
@@ -266,7 +280,9 @@ def _handle_text(
     if cmd in ("status",):
         try:
             if recipient_id and not _is_whitelisted(recipient_id):
-                _reply_with_retry(client, reply_token, "此對話未在白名單，請輸入 /subscribe 以授權")
+                _reply_with_retry(
+                    client, reply_token, "此對話未在白名單，請輸入 /subscribe 以授權"
+                )
                 return
         except Exception:
             pass
@@ -283,7 +299,11 @@ def _handle_text(
 
         parts = [
             f"帳戶：{st.get('accountId') or 'default'}",
-            f"Equity：{_fmt2(st.get('equity'))}" if st.get("equity") is not None else None,
+            (
+                f"Equity：{_fmt2(st.get('equity'))}"
+                if st.get("equity") is not None
+                else None
+            ),
             f"Cash：{_fmt2(st.get('cash'))}" if st.get("cash") is not None else None,
             (
                 f"未實現PnL：{_fmt2(st.get('unrealizedPnL'))}"
@@ -303,7 +323,9 @@ def _handle_text(
     if cmd in ("positions", "pos"):
         try:
             if recipient_id and not _is_whitelisted(recipient_id):
-                _reply_with_retry(client, reply_token, "此對話未在白名單，請輸入 /subscribe 以授權")
+                _reply_with_retry(
+                    client, reply_token, "此對話未在白名單，請輸入 /subscribe 以授權"
+                )
                 return
         except Exception:
             pass
@@ -395,7 +417,8 @@ def lambda_handler(event, context):
             rt = ev.get("replyToken")
             if rt:
                 client.reply_message(
-                    rt, TextSendMessage(text="已加入群組，若要接收推播請輸入 /subscribe")
+                    rt,
+                    TextSendMessage(text="已加入群組，若要接收推播請輸入 /subscribe"),
                 )
             continue
 

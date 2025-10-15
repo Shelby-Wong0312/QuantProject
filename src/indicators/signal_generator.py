@@ -5,7 +5,7 @@ Signal Generator - Generate trading signals based on technical indicators
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Union, Tuple, Any
+from typing import Dict, List, Optional, Tuple, Any
 import logging
 from dataclasses import dataclass
 from datetime import datetime
@@ -15,7 +15,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Import indicator classes
-from .trend_indicators import SMA, EMA, WMA, VWAP, MovingAverageCrossover
+from .trend_indicators import SMA, EMA, VWAP, MovingAverageCrossover
 from .momentum_indicators import RSI, MACD, Stochastic, WilliamsR, CCI
 from .volatility_indicators import BollingerBands, ATR, KeltnerChannel, DonchianChannel
 from .volume_indicators import OBV, VolumeSMA, MFI, ADLine
@@ -66,7 +66,9 @@ class IndicatorSignalGenerator:
     4. 動態止損止盈
     """
 
-    def __init__(self, signal_config: Optional[Dict] = None, filter_config: Optional[Dict] = None):
+    def __init__(
+        self, signal_config: Optional[Dict] = None, filter_config: Optional[Dict] = None
+    ):
         """
         初始化信號生成器
 
@@ -228,7 +230,9 @@ class IndicatorSignalGenerator:
 
         return results
 
-    def _generate_base_signals(self, indicators: Dict[str, Any], data: pd.DataFrame) -> List[Dict]:
+    def _generate_base_signals(
+        self, indicators: Dict[str, Any], data: pd.DataFrame
+    ) -> List[Dict]:
         """生成基礎信號"""
         []
         latest_idx = data.index[-1]
@@ -264,7 +268,10 @@ class IndicatorSignalGenerator:
             sma_50 = indicators["sma_50"].iloc[-1]
 
             # 金叉/死叉
-            if sma_20 > sma_50 and indicators["sma_20"].iloc[-2] <= indicators["sma_50"].iloc[-2]:
+            if (
+                sma_20 > sma_50
+                and indicators["sma_20"].iloc[-2] <= indicators["sma_50"].iloc[-2]
+            ):
                 signals.append(
                     {
                         "type": SignalType.BUY,
@@ -274,7 +281,10 @@ class IndicatorSignalGenerator:
                         "timestamp": latest_idx,
                     }
                 )
-            elif sma_20 < sma_50 and indicators["sma_20"].iloc[-2] >= indicators["sma_50"].iloc[-2]:
+            elif (
+                sma_20 < sma_50
+                and indicators["sma_20"].iloc[-2] >= indicators["sma_50"].iloc[-2]
+            ):
                 signals.append(
                     {
                         "type": SignalType.SELL,
@@ -583,9 +593,9 @@ class IndicatorSignalGenerator:
                 volume_ratio = vol_data["volume_ratio"].iloc[-1]
 
                 if volume_ratio > 2.0:  # 成交量突增
-                    price_change = (data["close"].iloc[-1] - data["close"].iloc[-2]) / data[
-                        "close"
-                    ].iloc[-2]
+                    price_change = (
+                        data["close"].iloc[-1] - data["close"].iloc[-2]
+                    ) / data["close"].iloc[-2]
 
                     if price_change > 0.02:  # 放量上漲
                         signals.append(
@@ -643,10 +653,14 @@ class IndicatorSignalGenerator:
 
         # 按類型分組信號
         buy_signals = [
-            s for s in base_signals if s["type"] in [SignalType.BUY, SignalType.STRONG_BUY]
+            s
+            for s in base_signals
+            if s["type"] in [SignalType.BUY, SignalType.STRONG_BUY]
         ]
         sell_signals = [
-            s for s in base_signals if s["type"] in [SignalType.SELL, SignalType.STRONG_SELL]
+            s
+            for s in base_signals
+            if s["type"] in [SignalType.SELL, SignalType.STRONG_SELL]
         ]
 
         confirmed_signals = []
@@ -657,7 +671,9 @@ class IndicatorSignalGenerator:
             categories = set(s["category"] for s in buy_signals)
             if len(categories) >= 2:
                 # 計算綜合強度
-                total_strength = sum(s["strength"] for s in buy_signals) / len(buy_signals)
+                total_strength = sum(s["strength"] for s in buy_signals) / len(
+                    buy_signals
+                )
                 confirmed_signals.append(
                     {
                         "type": SignalType.BUY,
@@ -672,7 +688,9 @@ class IndicatorSignalGenerator:
         if len(sell_signals) >= 2:
             categories = set(s["category"] for s in sell_signals)
             if len(categories) >= 2:
-                total_strength = sum(s["strength"] for s in sell_signals) / len(sell_signals)
+                total_strength = sum(s["strength"] for s in sell_signals) / len(
+                    sell_signals
+                )
                 confirmed_signals.append(
                     {
                         "type": SignalType.SELL,
@@ -685,7 +703,9 @@ class IndicatorSignalGenerator:
 
         # 強信號單獨確認
         strong_signals = [
-            s for s in base_signals if s["type"] in [SignalType.STRONG_BUY, SignalType.STRONG_SELL]
+            s
+            for s in base_signals
+            if s["type"] in [SignalType.STRONG_BUY, SignalType.STRONG_SELL]
         ]
         for signal in strong_signals:
             confirmed_signals.append(
@@ -737,13 +757,21 @@ class IndicatorSignalGenerator:
             take_profit=take_profit,
             reasons=signal_info["reasons"],
             indicators={
-                "rsi": indicators.get("rsi", pd.Series()).iloc[-1] if "rsi" in indicators else None,
+                "rsi": (
+                    indicators.get("rsi", pd.Series()).iloc[-1]
+                    if "rsi" in indicators
+                    else None
+                ),
                 "macd": (
                     indicators.get("macd", pd.DataFrame()).iloc[-1].to_dict()
                     if "macd" in indicators
                     else None
                 ),
-                "cci": indicators.get("cci", pd.Series()).iloc[-1] if "cci" in indicators else None,
+                "cci": (
+                    indicators.get("cci", pd.Series()).iloc[-1]
+                    if "cci" in indicators
+                    else None
+                ),
                 "volume_ratio": (
                     indicators.get("volume_sma", pd.DataFrame())
                     .get("volume_ratio", pd.Series())
@@ -801,7 +829,10 @@ class IndicatorSignalGenerator:
         # 基於成交量確認
         if "volume_sma" in indicators:
             vol_data = indicators["volume_sma"]
-            if isinstance(vol_data, pd.DataFrame) and "volume_ratio" in vol_data.columns:
+            if (
+                isinstance(vol_data, pd.DataFrame)
+                and "volume_ratio" in vol_data.columns
+            ):
                 volume_ratio = vol_data["volume_ratio"].iloc[-1]
                 volume_confidence = min(1.0, volume_ratio / 2)  # 成交量比率越高信心越強
                 confidence_factors.append(volume_confidence)
@@ -909,10 +940,16 @@ if __name__ == "__main__":
     if signals:
         print(f"\nGenerated {len(signals)} signals:")
         for signal in signals[-3:]:  # 顯示最後3個信號
-            print(f"  {signal.timestamp.strftime('%Y-%m-%d')} - {signal.signal_type.value}")
-            print(f"    Strength: {signal.strength:.1f}, Confidence: {signal.confidence:.2%}")
+            print(
+                f"  {signal.timestamp.strftime('%Y-%m-%d')} - {signal.signal_type.value}"
+            )
+            print(
+                f"    Strength: {signal.strength:.1f}, Confidence: {signal.confidence:.2%}"
+            )
             print(f"    Price: ${signal.price:.2f}")
-            print(f"    Stop Loss: ${signal.stop_loss:.2f}, Take Profit: ${signal.take_profit:.2f}")
+            print(
+                f"    Stop Loss: ${signal.stop_loss:.2f}, Take Profit: ${signal.take_profit:.2f}"
+            )
             print(f"    Reasons: {', '.join(signal.reasons)}")
             print()
 

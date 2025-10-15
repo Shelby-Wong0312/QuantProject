@@ -7,7 +7,7 @@ import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Optional, Tuple, Any, Union
+from typing import Dict, Optional, Tuple, Any, Union
 import logging
 from pathlib import Path
 import sys
@@ -16,7 +16,7 @@ import sys
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from .state_processor import StateProcessor, StateConfig
-from .action_space import ActionSpace, ActionType
+from .action_space import ActionSpace
 from .reward_calculator import RewardCalculator, RewardConfig
 
 # Import data interfaces
@@ -100,7 +100,10 @@ class TradingEnvironment(gym.Env):
         )
 
         self.observation_space = spaces.Box(
-            low=-np.inf, high=np.inf, shape=self.state_processor.get_state_shape(), dtype=np.float32
+            low=-np.inf,
+            high=np.inf,
+            shape=self.state_processor.get_state_shape(),
+            dtype=np.float32,
         )
 
         # Episode variables
@@ -180,7 +183,9 @@ class TradingEnvironment(gym.Env):
             self.data[f"lstm_pred_{horizon}d"] = self.data["close"] * (
                 1 + np.random.normal(0, 0.01 * np.sqrt(horizon), len(self.data))
             )
-            self.data[f"lstm_conf_{horizon}d"] = np.random.uniform(0.6, 0.9, len(self.data))
+            self.data[f"lstm_conf_{horizon}d"] = np.random.uniform(
+                0.6, 0.9, len(self.data)
+            )
 
         # Mock sentiment scores
         self.data["sentiment_score"] = np.random.normal(0, 0.3, len(self.data))
@@ -286,16 +291,20 @@ class TradingEnvironment(gym.Env):
 
         if shares > 0:  # Buy
             # Update position and average entry price
-            total_position_value = self.position * self.avg_entry_price + shares * current_price
+            total_position_value = (
+                self.position * self.avg_entry_price + shares * current_price
+            )
             self.position += shares
             self.avg_entry_price = (
-                total_position_value / self.position if self.position > 0 else current_price
+                total_position_value / self.position
+                if self.position > 0
+                else current_price
             )
 
         elif shares < 0:  # Sell
             # Calculate realized P&L
             shares_to_sell = abs(shares)
-            realized_pnl = shares_to_sell * (current_price - self.avg_entry_price)
+            shares_to_sell * (current_price - self.avg_entry_price)
 
             # Update position
             self.position += shares  # shares is negative
@@ -434,7 +443,9 @@ class TradingEnvironment(gym.Env):
                 else 0
             ),
             "price_trend": (
-                self.data["returns"].iloc[self.current_step - 5 : self.current_step].mean()
+                self.data["returns"]
+                .iloc[self.current_step - 5 : self.current_step]
+                .mean()
                 if self.current_step > 5
                 else 0
             ),
@@ -493,9 +504,15 @@ class TradingEnvironment(gym.Env):
             "avg_trade_size": (
                 np.mean([abs(t["shares"]) for t in self.trades]) if self.trades else 0
             ),
-            "win_rate": np.mean([t.get("pnl", 0) > 0 for t in self.trades]) if self.trades else 0,
+            "win_rate": (
+                np.mean([t.get("pnl", 0) > 0 for t in self.trades])
+                if self.trades
+                else 0
+            ),
             "sharpe_ratio": (
-                self.reward_calculator._calculate_sharpe_ratio() if len(returns) > 20 else 0
+                self.reward_calculator._calculate_sharpe_ratio()
+                if len(returns) > 20
+                else 0
             ),
             "max_drawdown": min(
                 0, np.min(self.portfolio_values) / np.max(self.portfolio_values) - 1

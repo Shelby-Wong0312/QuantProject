@@ -7,7 +7,6 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
-from collections import deque
 import random
 from datetime import datetime
 import os
@@ -39,7 +38,9 @@ class PPONetwork(nn.Module):
         )
 
         # Actor頭
-        self.actor = nn.Sequential(nn.Linear(128, 64), nn.ReLU(), nn.Linear(64, output_dim))
+        self.actor = nn.Sequential(
+            nn.Linear(128, 64), nn.ReLU(), nn.Linear(64, output_dim)
+        )
 
         # Critic頭
         self.critic = nn.Sequential(nn.Linear(128, 64), nn.ReLU(), nn.Linear(64, 1))
@@ -94,7 +95,9 @@ class SimplePPOTrainer:
             input_dim=self.config["feature_dim"], output_dim=self.config["action_dim"]
         ).to(self.device)
 
-        self.optimizer = optim.Adam(self.network.parameters(), lr=self.config["learning_rate"])
+        self.optimizer = optim.Adam(
+            self.network.parameters(), lr=self.config["learning_rate"]
+        )
 
         # 訓練統計
         self.episode_rewards = []
@@ -176,7 +179,9 @@ class SimplePPOTrainer:
 
             # Convert to numpy array and handle NaN values
             features_array = np.array(features[:220], dtype=np.float32)
-            features_array = np.nan_to_num(features_array, nan=0.0, posinf=1.0, neginf=-1.0)
+            features_array = np.nan_to_num(
+                features_array, nan=0.0, posinf=1.0, neginf=-1.0
+            )
 
             # Normalize features to prevent exploding gradients
             mean = np.mean(features_array)
@@ -186,7 +191,7 @@ class SimplePPOTrainer:
 
             return features_array
 
-        except Exception as e:
+        except Exception:
             return np.zeros(220, dtype=np.float32)
 
     def train_episode(self, num_steps=1000):
@@ -227,7 +232,11 @@ class SimplePPOTrainer:
 
             # 執行動作
             current_price = df.iloc[date_idx]["Close"]
-            next_price = df.iloc[date_idx + 1]["Close"] if date_idx + 1 < len(df) else current_price
+            next_price = (
+                df.iloc[date_idx + 1]["Close"]
+                if date_idx + 1 < len(df)
+                else current_price
+            )
 
             reward = 0
             if action == 0:  # 買入
@@ -283,7 +292,9 @@ class SimplePPOTrainer:
             # 計算損失
             surr1 = ratio * advantages
             surr2 = (
-                torch.clamp(ratio, 1 - self.config["clip_range"], 1 + self.config["clip_range"])
+                torch.clamp(
+                    ratio, 1 - self.config["clip_range"], 1 + self.config["clip_range"]
+                )
                 * advantages
             )
 
@@ -334,7 +345,7 @@ def train_ppo_simple(stock_data):
 
     for episode in tqdm(range(num_episodes), desc="訓練進度"):
         # 訓練一個episode
-        episode_reward = trainer.train_episode()
+        trainer.train_episode()
 
         # 打印進度
         if episode % 10 == 0:

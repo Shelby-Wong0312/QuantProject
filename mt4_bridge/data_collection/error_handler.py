@@ -72,7 +72,10 @@ class MT4DataCollectionLogger:
             log_path.parent.mkdir(parents=True, exist_ok=True)
 
             file_handler = logging.handlers.RotatingFileHandler(
-                log_file, maxBytes=max_file_size, backupCount=backup_count, encoding="utf-8"
+                log_file,
+                maxBytes=max_file_size,
+                backupCount=backup_count,
+                encoding="utf-8",
             )
             file_handler.setFormatter(formatter)
             self.logger.addHandler(file_handler)
@@ -85,7 +88,9 @@ class MT4DataCollectionLogger:
 class MT4DataCollectionError(Exception):
     """MT4 數據收集系統基礎異常類"""
 
-    def __init__(self, message: str, error_code: str = None, context: Dict[str, Any] = None):
+    def __init__(
+        self, message: str, error_code: str = None, context: Dict[str, Any] = None
+    ):
         self.message = message
         self.error_code = error_code or "UNKNOWN_ERROR"
         self.context = context or {}
@@ -141,7 +146,11 @@ class ErrorHandler:
         self.error_stats = {"total_errors": 0, "error_types": {}, "last_error": None}
 
     def handle_error(
-        self, error: Exception, context: str = "", reraise: bool = False, error_code: str = None
+        self,
+        error: Exception,
+        context: str = "",
+        reraise: bool = False,
+        error_code: str = None,
     ) -> Optional[MT4DataCollectionError]:
         """
         統一錯誤處理
@@ -170,7 +179,10 @@ class ErrorHandler:
                 handled_error = MT4DataCollectionError(
                     message=str(error),
                     error_code=error_code or error_type,
-                    context={"original_context": context, "traceback": traceback.format_exc()},
+                    context={
+                        "original_context": context,
+                        "traceback": traceback.format_exc(),
+                    },
                 )
 
             self.error_stats["last_error"] = handled_error.to_dict()
@@ -293,7 +305,9 @@ def error_handler_decorator(
 
 
 def setup_logging(
-    log_level: LogLevel = LogLevel.INFO, log_file: str = None, console_output: bool = True
+    log_level: LogLevel = LogLevel.INFO,
+    log_file: str = None,
+    console_output: bool = True,
 ) -> logging.Logger:
     """
     設置 MT4 數據收集系統的日誌配置
@@ -310,7 +324,9 @@ def setup_logging(
     if log_file is None:
         log_dir = Path("./logs/mt4_data_collection")
         log_dir.mkdir(parents=True, exist_ok=True)
-        log_file = log_dir / f"mt4_data_collection_{datetime.now().strftime('%Y%m%d')}.log"
+        log_file = (
+            log_dir / f"mt4_data_collection_{datetime.now().strftime('%Y%m%d')}.log"
+        )
 
     logger_manager = MT4DataCollectionLogger(
         name="MT4DataCollection",
@@ -388,7 +404,9 @@ if __name__ == "__main__":
 
     try:
         # 模擬一些錯誤
-        raise TickCollectionError("模擬 Tick 收集錯誤", "TICK_001", {"symbol": "EURUSD"})
+        raise TickCollectionError(
+            "模擬 Tick 收集錯誤", "TICK_001", {"symbol": "EURUSD"}
+        )
 
     except Exception as e:
         handled_error = error_handler.handle_error(e, "測試錯誤處理")

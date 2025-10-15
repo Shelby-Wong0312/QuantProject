@@ -74,7 +74,10 @@ class BaseAgent(ABC):
 
     @abstractmethod
     def predict(
-        self, observation: np.ndarray, state: Optional[Any] = None, deterministic: bool = True
+        self,
+        observation: np.ndarray,
+        state: Optional[Any] = None,
+        deterministic: bool = True,
     ) -> Tuple[np.ndarray, Optional[Any]]:
         """
         Predict action given observation
@@ -110,7 +113,11 @@ class BaseAgent(ABC):
         pass
 
     def evaluate(
-        self, eval_env, n_episodes: int = 10, deterministic: bool = True, render: bool = False
+        self,
+        eval_env,
+        n_episodes: int = 10,
+        deterministic: bool = True,
+        render: bool = False,
     ) -> Dict[str, float]:
         """
         Evaluate agent performance
@@ -172,7 +179,9 @@ class BaseAgent(ABC):
 
         return metrics
 
-    def _aggregate_trading_metrics(self, episode_metrics: List[Dict]) -> Dict[str, float]:
+    def _aggregate_trading_metrics(
+        self, episode_metrics: List[Dict]
+    ) -> Dict[str, float]:
         """Aggregate trading-specific metrics"""
         aggregated = {}
 
@@ -210,7 +219,9 @@ class BaseAgent(ABC):
             "config": self.config,
             "training_history": self.training_history,
             "best_reward": float(self.best_reward),
-            "best_model_path": str(self.best_model_path) if self.best_model_path else None,
+            "best_model_path": (
+                str(self.best_model_path) if self.best_model_path else None
+            ),
         }
 
         with open(path, "w") as f:
@@ -233,7 +244,9 @@ class BaseAgent(ABC):
         self.training_history = history_data["training_history"]
         self.best_reward = history_data["best_reward"]
         self.best_model_path = (
-            Path(history_data["best_model_path"]) if history_data["best_model_path"] else None
+            Path(history_data["best_model_path"])
+            if history_data["best_model_path"]
+            else None
         )
 
         logger.info(f"Loaded training history from {path}")
@@ -311,10 +324,16 @@ class BaseAgent(ABC):
         df = pd.DataFrame(results)
 
         # Add additional analysis
-        df["cumulative_reward"] = df["rewards"].apply(lambda x: np.cumsum(x)[-1] if x else 0)
+        df["cumulative_reward"] = df["rewards"].apply(
+            lambda x: np.cumsum(x)[-1] if x else 0
+        )
         df["max_position"] = df["positions"].apply(lambda x: max(x) if x else 0)
         df["position_changes"] = df["positions"].apply(
-            lambda x: sum(1 for i in range(1, len(x)) if x[i] != x[i - 1]) if len(x) > 1 else 0
+            lambda x: (
+                sum(1 for i in range(1, len(x)) if x[i] != x[i - 1])
+                if len(x) > 1
+                else 0
+            )
         )
 
         return df

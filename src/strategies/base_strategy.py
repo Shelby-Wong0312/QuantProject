@@ -4,7 +4,7 @@ Provides standardized interface and common functionality for trading strategies
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Any
 import pandas as pd
 import numpy as np
 import logging
@@ -74,7 +74,9 @@ class BaseStrategy(ABC):
         # Cache for performance optimization
         self._cache = {}
 
-        logger.info(f"Initialized strategy: {self.name} with capital: ${initial_capital:,.0f}")
+        logger.info(
+            f"Initialized strategy: {self.name} with capital: ${initial_capital:,.0f}"
+        )
 
     @abstractmethod
     def _initialize_parameters(self) -> None:
@@ -199,7 +201,9 @@ class BaseStrategy(ABC):
             self.performance.total_trades = len(trades)
 
             winning_trades = [r for r in returns if r > 0]
-            self.performance.win_rate = len(winning_trades) / len(returns) if returns else 0
+            self.performance.win_rate = (
+                len(winning_trades) / len(returns) if returns else 0
+            )
 
             # Calculate Sharpe ratio (simplified)
             if len(returns) > 1:
@@ -211,10 +215,14 @@ class BaseStrategy(ABC):
             cumulative_returns = np.cumsum(returns)
             running_max = np.maximum.accumulate(cumulative_returns)
             drawdowns = cumulative_returns - running_max
-            self.performance.max_drawdown = abs(np.min(drawdowns)) if len(drawdowns) > 0 else 0
+            self.performance.max_drawdown = (
+                abs(np.min(drawdowns)) if len(drawdowns) > 0 else 0
+            )
 
             # Calculate average trade duration
-            durations = [trade.get("duration", 0) for trade in trades if "duration" in trade]
+            durations = [
+                trade.get("duration", 0) for trade in trades if "duration" in trade
+            ]
             self.performance.avg_trade_duration = np.mean(durations) if durations else 0
 
             self.performance.last_updated = pd.Timestamp.now()
@@ -304,7 +312,9 @@ class BaseStrategy(ABC):
             List of signals from specified time period
         """
         cutoff_time = pd.Timestamp.now() - timedelta(hours=hours)
-        return [signal for signal in self.signals_history if signal.timestamp >= cutoff_time]
+        return [
+            signal for signal in self.signals_history if signal.timestamp >= cutoff_time
+        ]
 
     def set_status(self, status: StrategyStatus) -> None:
         """
@@ -315,7 +325,9 @@ class BaseStrategy(ABC):
         """
         old_status = self.status
         self.status = status
-        logger.info(f"{self.name}: Status changed from {old_status.value} to {status.value}")
+        logger.info(
+            f"{self.name}: Status changed from {old_status.value} to {status.value}"
+        )
 
     def is_active(self) -> bool:
         """
@@ -394,12 +406,16 @@ class BaseStrategy(ABC):
                 return result
 
             # Risk manager trade allowance check
-            if not self.risk_manager.check_trade_allowed(signal.symbol, signal.signal_type.value):
+            if not self.risk_manager.check_trade_allowed(
+                signal.symbol, signal.signal_type.value
+            ):
                 result["reason"] = "Risk manager blocked trade"
                 return result
 
             # Calculate position size with risk consideration
-            raw_position_size = self.get_position_size(signal, portfolio_value, current_price)
+            raw_position_size = self.get_position_size(
+                signal, portfolio_value, current_price
+            )
 
             # Apply risk-adjusted position sizing
             max_position_value = portfolio_value * self.config.risk_limit
@@ -421,7 +437,9 @@ class BaseStrategy(ABC):
                 take_profit = current_price * (1 - take_profit_pct)
 
             # Calculate risk score
-            position_risk = abs(adjusted_position_size * current_price) / portfolio_value
+            position_risk = (
+                abs(adjusted_position_size * current_price) / portfolio_value
+            )
             signal_risk = 1 - signal.strength  # Lower strength = higher risk
             risk_score = int((position_risk + signal_risk) * 50)
 
@@ -534,7 +552,9 @@ class BaseStrategy(ABC):
         # Risk metrics
         metrics["volatility"] = np.std(returns) if len(returns) > 1 else 0
         metrics["sharpe_ratio"] = (
-            metrics["average_return"] / metrics["volatility"] if metrics["volatility"] > 0 else 0
+            metrics["average_return"] / metrics["volatility"]
+            if metrics["volatility"] > 0
+            else 0
         )
 
         # Drawdown calculation
@@ -546,7 +566,9 @@ class BaseStrategy(ABC):
         # Profit factor
         gross_profit = np.sum(returns[returns > 0])
         gross_loss = abs(np.sum(returns[returns < 0]))
-        metrics["profit_factor"] = gross_profit / gross_loss if gross_loss > 0 else float("inf")
+        metrics["profit_factor"] = (
+            gross_profit / gross_loss if gross_loss > 0 else float("inf")
+        )
 
         # Average win/loss
         if metrics["winning_trades"] > 0:
@@ -561,7 +583,9 @@ class BaseStrategy(ABC):
 
         # Risk-reward ratio
         if metrics["average_loss"] != 0:
-            metrics["risk_reward_ratio"] = abs(metrics["average_win"] / metrics["average_loss"])
+            metrics["risk_reward_ratio"] = abs(
+                metrics["average_win"] / metrics["average_loss"]
+            )
         else:
             metrics["risk_reward_ratio"] = float("inf")
 
@@ -608,7 +632,9 @@ class BaseStrategy(ABC):
         performance_metrics = self.calculate_advanced_performance_metrics()
 
         # Calculate position exposure
-        total_exposure = sum(abs(pos.size * pos.current_price) for pos in self.positions.values())
+        total_exposure = sum(
+            abs(pos.size * pos.current_price) for pos in self.positions.values()
+        )
 
         strategy_risk = {
             "strategy_name": self.name,
@@ -624,7 +650,10 @@ class BaseStrategy(ABC):
         return risk_report
 
     async def process_signals_with_risk_management(
-        self, signals: List[TradingSignal], market_data: Dict[str, Dict], portfolio_value: float
+        self,
+        signals: List[TradingSignal],
+        market_data: Dict[str, Dict],
+        portfolio_value: float,
     ) -> List[Dict]:
         """
         Process signals through risk management pipeline

@@ -6,7 +6,6 @@ Sell WTI Crude Oil Positions
 import os
 import sys
 import time
-from datetime import datetime
 
 # Add project root to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -131,7 +130,10 @@ def sell_all_oil_positions():
                 opposite_direction = "SELL" if direction == "BUY" else "BUY"
 
                 result = api.place_order(
-                    symbol=symbol, direction=opposite_direction, size=size, order_type="MARKET"
+                    symbol=symbol,
+                    direction=opposite_direction,
+                    size=size,
+                    order_type="MARKET",
                 )
 
                 if result:

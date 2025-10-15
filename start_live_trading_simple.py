@@ -5,7 +5,6 @@ Simplified Live Trading System Starter
 
 import asyncio
 import sys
-import os
 from pathlib import Path
 
 # Add project root to path

@@ -8,12 +8,10 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import pandas as pd
-import numpy as np
 import sqlite3
 from datetime import datetime
 import json
 import time
-from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Dict, List, Tuple
 import logging
 
@@ -23,8 +21,6 @@ from src.indicators.trend_indicators import (
     WMA,
     VWAP,
     MovingAverageCrossover,
-    GoldenCross,
-    DeathCross,
 )
 
 # Setup logging
@@ -37,7 +33,9 @@ class IndicatorCalculator:
 
     def __init__(self):
         self.db_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "data",
+            "quant_trading.db",
         )
         self.setup_indicator_tables()
 
@@ -141,7 +139,9 @@ class IndicatorCalculator:
             results["vwap"] = vwap.calculate(df)
 
             # Detect Golden/Death Crosses
-            ma_cross = MovingAverageCrossover(fast_period=50, slow_period=200, ma_type="EMA")
+            ma_cross = MovingAverageCrossover(
+                fast_period=50, slow_period=200, ma_type="EMA"
+            )
             cross_signals = ma_cross.get_signals(df)
             results["golden_cross"] = cross_signals["golden_cross"].astype(int)
             results["death_cross"] = cross_signals["death_cross"].astype(int)
@@ -181,7 +181,7 @@ class IndicatorCalculator:
 
         # Get latest data
         latest = indicators_df.iloc[-1]
-        prev = indicators_df.iloc[-2] if len(indicators_df) > 1 else None
+        indicators_df.iloc[-2] if len(indicators_df) > 1 else None
 
         # Check for Golden Cross
         if latest.get("golden_cross", 0) == 1:
@@ -326,7 +326,9 @@ class IndicatorCalculator:
             "stocks_with_indicators": int(stocks_count),
             "recent_signals": recent_signals.to_dict("records"),
             "golden_cross_stocks": (
-                golden_cross_stocks["symbol"].tolist() if not golden_cross_stocks.empty else []
+                golden_cross_stocks["symbol"].tolist()
+                if not golden_cross_stocks.empty
+                else []
             ),
         }
 

@@ -5,7 +5,6 @@ Volume SMA Strategy - Cloud Quant Task PHASE3-002
 """
 
 import pandas as pd
-import numpy as np
 from typing import Dict
 import logging
 
@@ -66,7 +65,9 @@ class VolumeSMAStrategy:
             "exit_volume_ratio": 0.5,  # 成交量萎縮到50%以下出場
         }
 
-        logger.info("Volume SMA Strategy initialized (Ultra-low frequency, high return)")
+        logger.info(
+            "Volume SMA Strategy initialized (Ultra-low frequency, high return)"
+        )
 
     def calculate_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """
@@ -81,7 +82,7 @@ class VolumeSMAStrategy:
         # 計算價格移動平均
         sma_short = self.price_sma_short.calculate(data)
         sma_long = self.price_sma_long.calculate(data)
-        ema_short = self.price_ema.calculate(data)
+        self.price_ema.calculate(data)
 
         # 初始化信號
         pd.DataFrame(index=data.index)
@@ -93,11 +94,11 @@ class VolumeSMAStrategy:
 
         # 計算20日最高價
         high_20 = data["high"].rolling(window=20).max()
-        low_20 = data["low"].rolling(window=20).min()
+        data["low"].rolling(window=20).min()
 
         for i in range(self.trend_period, len(signals)):
             current_price = data["close"].iloc[i]
-            current_volume = data["volume"].iloc[i]
+            data["volume"].iloc[i]
             volume_ratio = signals["volume_ratio"].iloc[i]
 
             # === 極嚴格的買入條件（所有條件必須同時滿足）===
@@ -135,7 +136,9 @@ class VolumeSMAStrategy:
                     signals.iloc[i, signals.columns.get_loc("signal_strength")] = min(
                         volume_ratio / 2.5, 1.0
                     )
-                    signals.iloc[i, signals.columns.get_loc("signal_type")] = "VOLUME_BREAKOUT"
+                    signals.iloc[i, signals.columns.get_loc("signal_type")] = (
+                        "VOLUME_BREAKOUT"
+                    )
 
                     self.in_position = True
                     self.entry_volume_ratio = volume_ratio
@@ -176,7 +179,9 @@ class VolumeSMAStrategy:
                     stop_loss = loss_pct < -0.05
                     if stop_loss:
                         signals.iloc[i, signals.columns.get_loc("sell")] = True
-                        signals.iloc[i, signals.columns.get_loc("signal_type")] = "STOP_LOSS"
+                        signals.iloc[i, signals.columns.get_loc("signal_type")] = (
+                            "STOP_LOSS"
+                        )
                         self.in_position = False
                         continue
 
@@ -184,7 +189,9 @@ class VolumeSMAStrategy:
                 if any(exit_conditions) and self.holding_days > 5:  # 至少持有5天
                     signals.iloc[i, signals.columns.get_loc("sell")] = True
                     signals.iloc[i, signals.columns.get_loc("signal_strength")] = 0.5
-                    signals.iloc[i, signals.columns.get_loc("signal_type")] = "VOLUME_SHRINK"
+                    signals.iloc[i, signals.columns.get_loc("signal_type")] = (
+                        "VOLUME_SHRINK"
+                    )
 
                     self.in_position = False
                     self.entry_volume_ratio = None

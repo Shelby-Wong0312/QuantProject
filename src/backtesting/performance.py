@@ -4,9 +4,8 @@ Performance Analysis - Comprehensive performance metrics and risk analysis
 
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional, Any
 import logging
-from datetime import datetime, timedelta
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -56,7 +55,9 @@ class PerformanceAnalyzer:
 
             # Basic return metrics
             metrics.update(
-                self._calculate_return_metrics(portfolio_values, returns, initial_capital)
+                self._calculate_return_metrics(
+                    portfolio_values, returns, initial_capital
+                )
             )
 
             # Risk metrics
@@ -76,7 +77,9 @@ class PerformanceAnalyzer:
 
             # Benchmark comparison (if provided)
             if benchmark_returns is not None:
-                metrics.update(self._calculate_benchmark_metrics(returns, benchmark_returns))
+                metrics.update(
+                    self._calculate_benchmark_metrics(returns, benchmark_returns)
+                )
 
             logger.debug("Performance metrics calculated successfully")
             return metrics
@@ -209,12 +212,16 @@ class PerformanceAnalyzer:
         if drawdown_periods:
             durations = [period["duration"] for period in drawdown_periods]
             recovery_times = [
-                period["recovery"] for period in drawdown_periods if period["recovery"] > 0
+                period["recovery"]
+                for period in drawdown_periods
+                if period["recovery"] > 0
             ]
 
             metrics["max_drawdown_duration"] = max(durations) if durations else 0
             metrics["avg_drawdown_duration"] = np.mean(durations) if durations else 0
-            metrics["avg_recovery_time"] = np.mean(recovery_times) if recovery_times else 0
+            metrics["avg_recovery_time"] = (
+                np.mean(recovery_times) if recovery_times else 0
+            )
         else:
             metrics["max_drawdown_duration"] = 0
             metrics["avg_drawdown_duration"] = 0
@@ -319,7 +326,9 @@ class PerformanceAnalyzer:
         # Profit factor
         gross_profit = sum(winning_trades) if winning_trades else 0
         gross_loss = abs(sum(losing_trades)) if losing_trades else 0
-        metrics["profit_factor"] = gross_profit / gross_loss if gross_loss > 0 else float("inf")
+        metrics["profit_factor"] = (
+            gross_profit / gross_loss if gross_loss > 0 else float("inf")
+        )
 
         # Risk-reward ratio
         avg_win = metrics["avg_win"]
@@ -345,7 +354,11 @@ class PerformanceAnalyzer:
     def _calculate_consecutive_metrics(self, pnls: List[float]) -> Dict[str, int]:
         """Calculate consecutive wins/losses metrics"""
         if not pnls:
-            return {"max_consecutive_wins": 0, "max_consecutive_losses": 0, "current_streak": 0}
+            return {
+                "max_consecutive_wins": 0,
+                "max_consecutive_losses": 0,
+                "current_streak": 0,
+            }
 
         max_wins = 0
         max_losses = 0
@@ -440,7 +453,9 @@ class PerformanceAnalyzer:
         if len(returns) > 30:
             try:
                 # Resample to monthly
-                monthly_returns = returns.resample("M").apply(lambda x: (1 + x).prod() - 1)
+                monthly_returns = returns.resample("M").apply(
+                    lambda x: (1 + x).prod() - 1
+                )
 
                 metrics["positive_months"] = len(monthly_returns[monthly_returns > 0])
                 metrics["negative_months"] = len(monthly_returns[monthly_returns < 0])
@@ -471,7 +486,9 @@ class PerformanceAnalyzer:
         metrics = {}
 
         # Align returns
-        aligned_returns, aligned_benchmark = returns.align(benchmark_returns, join="inner")
+        aligned_returns, aligned_benchmark = returns.align(
+            benchmark_returns, join="inner"
+        )
 
         if len(aligned_returns) == 0:
             return {
@@ -625,7 +642,10 @@ Avg Recovery Time: {avg_recovery_time:.1f} days
 
 
 def calculate_performance_metrics(
-    portfolio_values: pd.Series, returns: pd.Series, trades: List[Dict], initial_capital: float
+    portfolio_values: pd.Series,
+    returns: pd.Series,
+    trades: List[Dict],
+    initial_capital: float,
 ) -> Dict[str, Any]:
     """
     Convenience function to calculate performance metrics
@@ -640,4 +660,6 @@ def calculate_performance_metrics(
         Performance metrics dictionary
     """
     analyzer = PerformanceAnalyzer()
-    return analyzer.calculate_metrics(portfolio_values, returns, trades, initial_capital)
+    return analyzer.calculate_metrics(
+        portfolio_values, returns, trades, initial_capital
+    )

@@ -5,7 +5,6 @@ Close Oil Positions - Sell WTI Oil
 import os
 import sys
 import time
-from datetime import datetime
 
 # Add project root to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -56,7 +55,9 @@ def close_oil_positions():
 
     # First SELL order
     print("\nSelling 1000 units of OIL_CRUDE (Position 1)...")
-    result1 = api.place_order(symbol="OIL_CRUDE", direction="SELL", size=1000, order_type="MARKET")
+    result1 = api.place_order(
+        symbol="OIL_CRUDE", direction="SELL", size=1000, order_type="MARKET"
+    )
 
     if result1:
         print(f"[SUCCESS] SELL Order 1 placed: {result1}")
@@ -69,7 +70,9 @@ def close_oil_positions():
 
     # Second SELL order
     print("\nSelling 1000 units of OIL_CRUDE (Position 2)...")
-    result2 = api.place_order(symbol="OIL_CRUDE", direction="SELL", size=1000, order_type="MARKET")
+    result2 = api.place_order(
+        symbol="OIL_CRUDE", direction="SELL", size=1000, order_type="MARKET"
+    )
 
     if result2:
         print(f"[SUCCESS] SELL Order 2 placed: {result2}")

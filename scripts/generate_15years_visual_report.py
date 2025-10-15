@@ -11,7 +11,6 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import plotly.express as px
 from datetime import datetime
 import sqlite3
 import warnings
@@ -31,7 +30,9 @@ class Visual15YearsReport:
             "sample_15years_backtest.csv",
         )
         self.db_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "data",
+            "quant_trading.db",
         )
 
         # Load backtest results
@@ -156,7 +157,12 @@ class Visual15YearsReport:
         fig = make_subplots(
             rows=2,
             cols=2,
-            subplot_titles=("總報酬率分布", "年化報酬率分布", "交易次數分布", "報酬率 vs 交易次數"),
+            subplot_titles=(
+                "總報酬率分布",
+                "年化報酬率分布",
+                "交易次數分布",
+                "報酬率 vs 交易次數",
+            ),
             specs=[
                 [{"type": "histogram"}, {"type": "histogram"}],
                 [{"type": "histogram"}, {"type": "scatter"}],
@@ -257,14 +263,20 @@ class Visual15YearsReport:
         for tier in tier_counts.index:
             tier_stocks = self.results_df[self.results_df["tier"] == tier].head(10)
             for _, stock in tier_stocks.iterrows():
-                matrix_data.append([stock["total_return"], stock["annual_return"], stock["trades"]])
+                matrix_data.append(
+                    [stock["total_return"], stock["annual_return"], stock["trades"]]
+                )
                 tier_labels.append(tier)
                 stock_labels.append(stock["symbol"])
 
-        matrix_df = pd.DataFrame(matrix_data, columns=["總報酬", "年化報酬", "交易次數"])
+        matrix_df = pd.DataFrame(
+            matrix_data, columns=["總報酬", "年化報酬", "交易次數"]
+        )
 
         # Normalize for heatmap
-        matrix_normalized = (matrix_df - matrix_df.min()) / (matrix_df.max() - matrix_df.min())
+        matrix_normalized = (matrix_df - matrix_df.min()) / (
+            matrix_df.max() - matrix_df.min()
+        )
 
         fig = go.Figure(
             go.Heatmap(
@@ -412,9 +424,15 @@ class Visual15YearsReport:
         )
 
         # Add CCI levels
-        fig.add_hline(y=100, line_dash="dash", line_color="red", opacity=0.5, row=2, col=1)
-        fig.add_hline(y=-100, line_dash="dash", line_color="green", opacity=0.5, row=2, col=1)
-        fig.add_hline(y=0, line_dash="solid", line_color="gray", opacity=0.3, row=2, col=1)
+        fig.add_hline(
+            y=100, line_dash="dash", line_color="red", opacity=0.5, row=2, col=1
+        )
+        fig.add_hline(
+            y=-100, line_dash="dash", line_color="green", opacity=0.5, row=2, col=1
+        )
+        fig.add_hline(
+            y=0, line_dash="solid", line_color="gray", opacity=0.3, row=2, col=1
+        )
 
         # Portfolio value
         fig.add_trace(
@@ -434,13 +452,20 @@ class Visual15YearsReport:
 
         # Add initial capital line
         fig.add_hline(
-            y=initial_capital, line_dash="dash", line_color="gray", opacity=0.5, row=3, col=1
+            y=initial_capital,
+            line_dash="dash",
+            line_color="gray",
+            opacity=0.5,
+            row=3,
+            col=1,
         )
 
         fig.update_xaxes(title_text="日期", row=3, col=1)
         fig.update_yaxes(title_text="股價 ($)", row=1, col=1)
         fig.update_yaxes(title_text="CCI 值", row=2, col=1)
-        fig.update_yaxes(title_text="投資組合價值 ($)", row=3, col=1, tickformat="$,.0f")
+        fig.update_yaxes(
+            title_text="投資組合價值 ($)", row=3, col=1, tickformat="$,.0f"
+        )
 
         fig.update_layout(height=800, showlegend=True, hovermode="x unified")
 
@@ -452,18 +477,18 @@ class Visual15YearsReport:
         print("Generating 15-years visual report...")
 
         # Create all charts
-        top_performers = self.create_top_performers_chart()
-        portfolio_sim = self.create_portfolio_simulation()
-        distribution = self.create_distribution_chart()
-        heatmap = self.create_performance_heatmap()
+        self.create_top_performers_chart()
+        self.create_portfolio_simulation()
+        self.create_distribution_chart()
+        self.create_performance_heatmap()
         winner_detail = self.create_winner_detail_chart()
 
         # Calculate statistics
-        total_stocks = len(self.results_df)
-        profitable_stocks = len(self.results_df[self.results_df["total_return"] > 0])
-        avg_return = self.results_df["total_return"].mean()
-        avg_annual = self.results_df["annual_return"].mean()
-        best_stock = self.results_df.iloc[0]
+        len(self.results_df)
+        len(self.results_df[self.results_df["total_return"] > 0])
+        self.results_df["total_return"].mean()
+        self.results_df["annual_return"].mean()
+        self.results_df.iloc[0]
 
         # Create HTML
         html_content = """
@@ -822,7 +847,6 @@ class Visual15YearsReport:
 
         # Add top 30 stocks to table
         for i, row in enumerate(self.results_df.head(30).itertuples(), 1):
-            return_class = "positive" if row.total_return > 100 else ""
             html_content += """
                     <tr>
                         <td><strong>{i}</strong></td>

@@ -11,7 +11,7 @@
     shutdown()                         # 程式結束時
 """
 from __future__ import annotations
-import os, logging
+import logging
 from typing import Optional, Iterable
 from dataclasses import dataclass
 
@@ -55,7 +55,9 @@ class _MyBrokerAdapter(BrokerAdapter):
         例：self.engine.open_positions 內含欄位 symbol/qty/avg_price
         """
         for p in getattr(self.engine, "open_positions", []):
-            yield Position(symbol=p.symbol, quantity=float(p.qty), avg_price=float(p.avg_price))
+            yield Position(
+                symbol=p.symbol, quantity=float(p.qty), avg_price=float(p.avg_price)
+            )
 
 
 # ---- 對外 API（你程式只需要呼叫這幾個函式） ----

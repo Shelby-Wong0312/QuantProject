@@ -6,11 +6,9 @@ Small-scale Performance Test
 import pandas as pd
 import numpy as np
 import sys
-import os
 from pathlib import Path
 import time
-import logging
-from typing import Dict, List, Tuple, Any
+from typing import Dict
 import json
 from datetime import datetime
 import warnings
@@ -25,7 +23,9 @@ sys.path.append(str(project_root))
 from src.indicators.indicator_calculator import IndicatorCalculator, CalculationConfig
 
 
-def generate_test_data(n_stocks: int = 50, n_periods: int = 100) -> Dict[str, pd.DataFrame]:
+def generate_test_data(
+    n_stocks: int = 50, n_periods: int = 100
+) -> Dict[str, pd.DataFrame]:
     """生成小規模測試數據"""
     stocks_data = {}
     np.random.seed(42)
@@ -84,7 +84,9 @@ def test_small_scale_performance():
     results = {}
 
     for case in test_cases:
-        print(f"\nTesting {case['name']} scale: {case['stocks']} stocks, {case['periods']} periods")
+        print(
+            f"\nTesting {case['name']} scale: {case['stocks']} stocks, {case['periods']} periods"
+        )
 
         # 生成測試數據
         start_time = time.time()
@@ -136,7 +138,9 @@ def test_small_scale_performance():
         print(f"  Indicator calculation: {calc_time:.3f}s")
         print(f"  Signal generation: {signal_time:.3f}s")
         print(f"  Success rate: {case_result['success_rate']*100:.1f}%")
-        print(f"  Processing speed: {case_result['stocks_per_second']:.1f} stocks/second")
+        print(
+            f"  Processing speed: {case_result['stocks_per_second']:.1f} stocks/second"
+        )
 
     # 測試單個指標性能
     print("\nTesting individual indicator performance...")
@@ -162,14 +166,18 @@ def test_small_scale_performance():
             indicator_times[name] = {"error": str(e)}
 
     # 顯示最快和最慢的指標
-    valid_times = {k: v["time_ms"] for k, v in indicator_times.items() if "time_ms" in v}
+    valid_times = {
+        k: v["time_ms"] for k, v in indicator_times.items() if "time_ms" in v
+    }
     if valid_times:
         fastest = min(valid_times, key=valid_times.get)
         slowest = max(valid_times, key=valid_times.get)
 
         print(f"  Fastest indicator: {fastest} ({valid_times[fastest]:.2f}ms)")
         print(f"  Slowest indicator: {slowest} ({valid_times[slowest]:.2f}ms)")
-        print(f"  Average time per indicator: {np.mean(list(valid_times.values())):.2f}ms")
+        print(
+            f"  Average time per indicator: {np.mean(list(valid_times.values())):.2f}ms"
+        )
 
     # 保存結果
     test_results = {
@@ -178,7 +186,9 @@ def test_small_scale_performance():
         "individual_indicators": indicator_times,
         "summary": {
             "total_indicators_tested": len(calculator.indicators),
-            "avg_processing_speed": np.mean([r["stocks_per_second"] for r in results.values()]),
+            "avg_processing_speed": np.mean(
+                [r["stocks_per_second"] for r in results.values()]
+            ),
             "best_success_rate": max([r["success_rate"] for r in results.values()]),
         },
     }
@@ -192,7 +202,9 @@ def test_small_scale_performance():
     print(
         f"  Average processing speed: {test_results['summary']['avg_processing_speed']:.1f} stocks/second"
     )
-    print(f"  Best success rate: {test_results['summary']['best_success_rate']*100:.1f}%")
+    print(
+        f"  Best success rate: {test_results['summary']['best_success_rate']*100:.1f}%"
+    )
     print(f"\nResults saved to: {results_file}")
 
     # 檢查性能要求
@@ -207,9 +219,13 @@ def test_small_scale_performance():
         return True
     else:
         if not speed_ok:
-            print(f"\nWARNING: Processing speed below requirement ({min_speed_required} stocks/s)")
+            print(
+                f"\nWARNING: Processing speed below requirement ({min_speed_required} stocks/s)"
+            )
         if not success_ok:
-            print(f"\nWARNING: Success rate below requirement ({min_success_rate*100}%)")
+            print(
+                f"\nWARNING: Success rate below requirement ({min_success_rate*100}%)"
+            )
         return False
 
 

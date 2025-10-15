@@ -10,8 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
+from datetime import datetime
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -79,11 +78,13 @@ def test_mpt_optimization(prices_df):
 
     # 1. 基本統計
     print("\n1. Computing basic statistics...")
-    returns = mpt.calculate_returns(prices_df)
+    mpt.calculate_returns(prices_df)
     expected_returns, cov_matrix = mpt.calculate_statistics()
 
     print(f"   Average annual return: {expected_returns.mean():.2%}")
-    print(f"   Return range: [{expected_returns.min():.2%}, {expected_returns.max():.2%}]")
+    print(
+        f"   Return range: [{expected_returns.min():.2%}, {expected_returns.max():.2%}]"
+    )
 
     # 2. 優化投資組合
     print("\n2. Optimizing portfolio...")
@@ -119,7 +120,9 @@ def test_mpt_optimization(prices_df):
 
     # 選擇低相關資產
     uncorrelated_assets = mpt.select_uncorrelated_assets(prices_df, max_correlation=0.6)
-    print(f"   Selected {len(uncorrelated_assets)} uncorrelated assets: {uncorrelated_assets}")
+    print(
+        f"   Selected {len(uncorrelated_assets)} uncorrelated assets: {uncorrelated_assets}"
+    )
 
     return mpt, sharpe_portfolio
 
@@ -242,7 +245,9 @@ def test_integrated_strategy(prices_df):
 
     optimal_weights = result.x
     portfolio_return = np.dot(optimal_weights, lstm_expected_returns)
-    portfolio_risk = np.sqrt(np.dot(optimal_weights.T, np.dot(cov_matrix, optimal_weights)))
+    portfolio_risk = np.sqrt(
+        np.dot(optimal_weights.T, np.dot(cov_matrix, optimal_weights))
+    )
     sharpe = (portfolio_return - 0.02) / portfolio_risk
 
     print(f"   Integrated strategy expected return: {portfolio_return:.2%}")

@@ -7,13 +7,13 @@ import numpy as np
 import pandas as pd
 import torch
 from torch_geometric.data import Data
-from typing import Dict, List, Tuple, Optional, Any
+from typing import Dict, List, Optional, Any
 import logging
 from pathlib import Path
 import json
 import pickle
 
-from .graph_constructor import StockGraphConstructor, RelationType
+from .graph_constructor import StockGraphConstructor
 from .gnn_model import StockCorrelationGNN, TemporalStockGNN, GNNFeatureExtractor
 
 logger = logging.getLogger(__name__)
@@ -107,7 +107,9 @@ class StockRelationAnalyzer:
         self.graph_constructor.build_graph(price_data, stock_info)
 
         # 2. Convert to PyTorch Geometric format
-        node_features, edge_index, edge_attr = self.graph_constructor.to_pytorch_geometric()
+        node_features, edge_index, edge_attr = (
+            self.graph_constructor.to_pytorch_geometric()
+        )
 
         # 3. Create data object
         graph_data = Data(x=node_features, edge_index=edge_index, edge_attr=edge_attr)
@@ -153,7 +155,9 @@ class StockRelationAnalyzer:
         return results
 
     def predict_future_correlations(
-        self, historical_data: List[Dict[str, pd.DataFrame]], prediction_horizon: int = 5
+        self,
+        historical_data: List[Dict[str, pd.DataFrame]],
+        prediction_horizon: int = 5,
     ) -> Dict[str, np.ndarray]:
         """
         預測未來相關性變化
@@ -171,14 +175,15 @@ class StockRelationAnalyzer:
             return self._static_correlation_prediction(historical_data[-1])
 
         # Prepare temporal graph sequence
-        graph_sequence = []
         node_features_sequence = []
         edge_index_sequence = []
         edge_attr_sequence = []
 
         for data in historical_data:
             self.graph_constructor.build_graph(data)
-            node_features, edge_index, edge_attr = self.graph_constructor.to_pytorch_geometric()
+            node_features, edge_index, edge_attr = (
+                self.graph_constructor.to_pytorch_geometric()
+            )
 
             node_features_sequence.append(node_features)
             edge_index_sequence.append(edge_index)
@@ -227,7 +232,9 @@ class StockRelationAnalyzer:
 
         # Use spectral clustering on correlation matrix
         clustering = SpectralClustering(
-            n_clusters=min(n_clusters, len(symbols)), affinity="precomputed", random_state=42
+            n_clusters=min(n_clusters, len(symbols)),
+            affinity="precomputed",
+            random_state=42,
         )
 
         # Convert correlation to similarity (0 to 1)
@@ -291,7 +298,9 @@ class StockRelationAnalyzer:
         # Normalize embedding importance
         max_importance = max(embedding_importance.values())
         if max_importance > 0:
-            embedding_importance = {k: v / max_importance for k, v in embedding_importance.items()}
+            embedding_importance = {
+                k: v / max_importance for k, v in embedding_importance.items()
+            }
 
         return {
             "degree": degree_centrality,
@@ -316,7 +325,11 @@ class StockRelationAnalyzer:
             decay = 0.95 ** (h + 1)
             predicted_correlations[h] = current_corr * decay
 
-        return {"predicted_correlations": predicted_correlations, "symbols": symbols, "horizon": 5}
+        return {
+            "predicted_correlations": predicted_correlations,
+            "symbols": symbols,
+            "horizon": 5,
+        }
 
     def _save_results(self, results: Dict[str, Any]):
         """保存分析結果"""
@@ -327,7 +340,9 @@ class StockRelationAnalyzer:
 
         # Save correlation matrix
         corr_df = pd.DataFrame(
-            results["correlation_matrix"], index=results["symbols"], columns=results["symbols"]
+            results["correlation_matrix"],
+            index=results["symbols"],
+            columns=results["symbols"],
         )
         corr_df.to_csv(save_dir / f"correlation_matrix_{timestamp}.csv")
 
@@ -337,7 +352,9 @@ class StockRelationAnalyzer:
 
         # Save key relations
         key_relations_df = pd.DataFrame(results["key_relations"])
-        key_relations_df.to_csv(save_dir / f"key_relations_{timestamp}.csv", index=False)
+        key_relations_df.to_csv(
+            save_dir / f"key_relations_{timestamp}.csv", index=False
+        )
 
         # Save full results
         with open(save_dir / f"full_results_{timestamp}.pkl", "wb") as f:

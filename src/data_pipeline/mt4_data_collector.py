@@ -5,11 +5,9 @@ MT4數據收集系統 - 整合到主數據管道
 """
 
 import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Tuple, Union
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple, Union
 import logging
-import asyncio
 import json
 from pathlib import Path
 import sys
@@ -477,11 +475,17 @@ class MT4DataPipeline:
         while self._running:
             try:
                 # 定期保存統計信息
-                if self.stats["total_ticks"] % 1000 == 0 and self.stats["total_ticks"] > 0:
+                if (
+                    self.stats["total_ticks"] % 1000 == 0
+                    and self.stats["total_ticks"] > 0
+                ):
                     self._save_stats()
 
                 # 定期清理過期數據
-                if self.stats["total_ticks"] % 10000 == 0 and self.stats["total_ticks"] > 0:
+                if (
+                    self.stats["total_ticks"] % 10000 == 0
+                    and self.stats["total_ticks"] > 0
+                ):
                     self._cleanup_old_data()
 
                 time.sleep(1)
@@ -543,7 +547,10 @@ class MT4DataPipeline:
         return pd.DataFrame()
 
     def get_indicators(
-        self, symbol: str, timeframe: TimeFrame = TimeFrame.M5, indicators: List[str] = None
+        self,
+        symbol: str,
+        timeframe: TimeFrame = TimeFrame.M5,
+        indicators: List[str] = None,
     ) -> Dict:
         """
         獲取技術指標
@@ -557,7 +564,14 @@ class MT4DataPipeline:
             Dict: 指標值字典
         """
         if not indicators:
-            indicators = ["sma20", "sma50", "rsi14", "bb_upper", "bb_middle", "bb_lower"]
+            indicators = [
+                "sma20",
+                "sma50",
+                "rsi14",
+                "bb_upper",
+                "bb_middle",
+                "bb_lower",
+            ]
 
         result = {}
 
@@ -660,7 +674,9 @@ def get_realtime_data(symbol: str) -> Optional[MarketData]:
     return pipeline.get_latest_data(symbol)
 
 
-def get_historical_data(symbol: str, timeframe: str = "M5", periods: int = 100) -> pd.DataFrame:
+def get_historical_data(
+    symbol: str, timeframe: str = "M5", periods: int = 100
+) -> pd.DataFrame:
     """獲取歷史數據"""
     pipeline = get_pipeline()
     tf = TimeFrame(timeframe)

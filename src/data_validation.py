@@ -14,7 +14,9 @@ from tqdm import tqdm
 import logging
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -161,7 +163,8 @@ class DataValidator:
 
         # Close should be between High and Low
         invalid_close = df[
-            (df["close_price"] > df["high_price"]) | (df["close_price"] < df["low_price"])
+            (df["close_price"] > df["high_price"])
+            | (df["close_price"] < df["low_price"])
         ]
         if not invalid_close.empty:
             issues.append(f"Close outside H-L range in {len(invalid_close)} records")
@@ -174,7 +177,11 @@ class DataValidator:
             issues.append(f"Open outside H-L range in {len(invalid_open)} records")
 
         # Check for negative prices
-        if (df[["open_price", "high_price", "low_price", "close_price"]] < 0).any().any():
+        if (
+            (df[["open_price", "high_price", "low_price", "close_price"]] < 0)
+            .any()
+            .any()
+        ):
             issues.append("Negative prices found")
 
         return issues
@@ -265,7 +272,9 @@ class DataValidator:
 
         if summary["anomalies"]:
             outlier_stocks = [
-                s["symbol"] for s in summary["anomalies"] if "outliers" in str(s["issues"])
+                s["symbol"]
+                for s in summary["anomalies"]
+                if "outliers" in str(s["issues"])
             ]
             if outlier_stocks:
                 report.append(f"⚠️  {len(outlier_stocks)} stocks have outliers")

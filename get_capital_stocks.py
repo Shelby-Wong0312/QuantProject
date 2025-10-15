@@ -8,7 +8,6 @@ import os
 import json
 import requests
 from typing import List, Dict
-import time
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -19,7 +18,10 @@ class CapitalComStockFetcher:
     def __init__(self):
         self.api_key = os.getenv("CAPITAL_API_KEY")
         self.base_url = "https://api-capital.backend-capital.com/api/v1"
-        self.headers = {"X-CAP-API-KEY": self.api_key, "Content-Type": "application/json"}
+        self.headers = {
+            "X-CAP-API-KEY": self.api_key,
+            "Content-Type": "application/json",
+        }
 
     def get_all_markets(self) -> List[Dict]:
         """獲取所有可交易市場"""
@@ -68,13 +70,20 @@ class CapitalComStockFetcher:
                 ticker = epic.split(".")[-1] if "." in epic else epic
 
                 stocks.append(
-                    {"ticker": ticker, "epic": epic, "name": name, "type": instrument_type}
+                    {
+                        "ticker": ticker,
+                        "epic": epic,
+                        "name": name,
+                        "type": instrument_type,
+                    }
                 )
 
         print(f"[INFO] Filtered {len(stocks)} stocks from markets")
         return stocks
 
-    def save_stock_list(self, stocks: List[Dict], filename: str = "capital_stocks.json"):
+    def save_stock_list(
+        self, stocks: List[Dict], filename: str = "capital_stocks.json"
+    ):
         """保存股票列表"""
         # Save detailed JSON
         with open(filename, "w", encoding="utf-8") as f:
@@ -322,7 +331,9 @@ def main():
         # Create stock list in Capital.com format
         stocks = []
         for ticker in sorted(all_tickers):
-            stocks.append({"ticker": ticker, "epic": ticker, "name": ticker, "type": "SHARES"})
+            stocks.append(
+                {"ticker": ticker, "epic": ticker, "name": ticker, "type": "SHARES"}
+            )
 
         # Save the list
         with open("capital_stocks.json", "w", encoding="utf-8") as f:

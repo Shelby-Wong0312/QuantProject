@@ -12,13 +12,12 @@ from torch.distributions import Categorical
 import numpy as np
 import pandas as pd
 import yfinance as yf
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
 import json
 from tqdm import tqdm
 import logging
-from typing import Dict, List, Tuple, Optional
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Dict, List
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -143,7 +142,9 @@ class DataLoader:
 
         # 批量下載以提高效率
         batch_size = 100
-        for i in tqdm(range(0, len(self.symbols), batch_size), desc="Downloading batches"):
+        for i in tqdm(
+            range(0, len(self.symbols), batch_size), desc="Downloading batches"
+        ):
             batch_symbols = self.symbols[i : i + batch_size]
             batch_str = " ".join(batch_symbols)
 
@@ -187,7 +188,9 @@ class DataLoader:
                 logger.error(f"Batch download error: {e}")
                 failed_symbols.extend(batch_symbols)
 
-        print(f"\n[DATA] Successfully downloaded: {success_count}/{len(self.symbols)} stocks")
+        print(
+            f"\n[DATA] Successfully downloaded: {success_count}/{len(self.symbols)} stocks"
+        )
         if failed_symbols:
             print(f"[DATA] Failed symbols: {failed_symbols[:10]}...")
 
@@ -325,7 +328,9 @@ class TradingEnvironment:
         new_portfolio_value = self.cash
         for symbol, shares in self.positions.items():
             if symbol == self.current_symbol:
-                new_portfolio_value += shares * self.symbol_data.iloc[self.current_step]["Close"]
+                new_portfolio_value += (
+                    shares * self.symbol_data.iloc[self.current_step]["Close"]
+                )
 
         # 計算獎勵
         reward = (new_portfolio_value - self.portfolio_value) / self.portfolio_value
@@ -367,7 +372,9 @@ class PPOTrainer:
                 obs_tensor = torch.FloatTensor(obs).unsqueeze(0).to(self.config.device)
 
                 with torch.no_grad():
-                    action, log_prob, value, _ = self.model.get_action_and_value(obs_tensor)
+                    action, log_prob, value, _ = self.model.get_action_and_value(
+                        obs_tensor
+                    )
 
                 observations.append(obs)
                 actions.append(action.cpu().numpy())
@@ -385,7 +392,9 @@ class PPOTrainer:
             advantages, returns = self._compute_gae(rewards, values, dones)
 
             # PPO更新
-            total_loss = self._ppo_update(observations, actions, log_probs, advantages, returns)
+            total_loss = self._ppo_update(
+                observations, actions, log_probs, advantages, returns
+            )
 
             # 記錄訓練歷史
             self.training_history["iterations"].append(iteration)
@@ -413,8 +422,13 @@ class PPOTrainer:
             else:
                 next_value = values[t + 1]
 
-            delta = rewards[t] + self.config.gamma * next_value * (1 - dones[t]) - values[t]
-            gae = delta + self.config.gamma * self.config.gae_lambda * (1 - dones[t]) * gae
+            delta = (
+                rewards[t] + self.config.gamma * next_value * (1 - dones[t]) - values[t]
+            )
+            gae = (
+                delta
+                + self.config.gamma * self.config.gae_lambda * (1 - dones[t]) * gae
+            )
             advantages.insert(0, gae)
 
         advantages = np.array(advantages)
@@ -427,7 +441,9 @@ class PPOTrainer:
         # 轉換為張量
         obs_tensor = torch.FloatTensor(observations).to(self.config.device)
         action_tensor = torch.LongTensor(actions).squeeze().to(self.config.device)
-        old_log_probs_tensor = torch.FloatTensor(old_log_probs).squeeze().to(self.config.device)
+        old_log_probs_tensor = (
+            torch.FloatTensor(old_log_probs).squeeze().to(self.config.device)
+        )
         advantages_tensor = torch.FloatTensor(advantages).to(self.config.device)
         returns_tensor = torch.FloatTensor(returns).to(self.config.device)
 
@@ -449,7 +465,9 @@ class PPOTrainer:
             # 策略損失
             surr1 = ratio * advantages_tensor
             surr2 = (
-                torch.clamp(ratio, 1 - self.config.clip_ratio, 1 + self.config.clip_ratio)
+                torch.clamp(
+                    ratio, 1 - self.config.clip_ratio, 1 + self.config.clip_ratio
+                )
                 * advantages_tensor
             )
             policy_loss = -torch.min(surr1, surr2).mean()
@@ -528,7 +546,9 @@ def main():
 
     # 5. 開始訓練
     print(f"\n[TRAINING] Training with {len(stock_data)} stocks")
-    print(f"[TRAINING] Total data points: ~{sum(len(df) for df in stock_data.values())}")
+    print(
+        f"[TRAINING] Total data points: ~{sum(len(df) for df in stock_data.values())}"
+    )
 
     # 訓練1000次迭代（可調整）
     trainer.train(env, n_iterations=1000)
@@ -554,7 +574,9 @@ def main():
         "data_range": f"2010-01-01 to {datetime.now().date()}",
         "total_iterations": 1000,
         "final_reward": (
-            trainer.training_history["rewards"][-1] if trainer.training_history["rewards"] else 0
+            trainer.training_history["rewards"][-1]
+            if trainer.training_history["rewards"]
+            else 0
         ),
         "device": str(config.device),
     }

@@ -18,7 +18,9 @@ def _is_crypto_symbol(symbol: str) -> bool:
 def _ann_factor(timeframe: str, symbols: Iterable[str]) -> float:
     tf = (timeframe or "5min").lower()
     symbols_list = list(symbols or [])
-    is_crypto = bool(symbols_list) and all(_is_crypto_symbol(sym) for sym in symbols_list)
+    is_crypto = bool(symbols_list) and all(
+        _is_crypto_symbol(sym) for sym in symbols_list
+    )
 
     if tf in ("5m", "5min"):
         return 365 * 24 * 60 / 5 if is_crypto else 252 * 6.5 * 60 / 5

@@ -5,7 +5,7 @@ Order Manager - Handles order execution and management
 import asyncio
 import logging
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List
 from enum import Enum
 
 logger = logging.getLogger(__name__)
@@ -83,7 +83,9 @@ class OrderManager:
 
     def get_pending_orders(self) -> List[Dict]:
         """Get all pending orders"""
-        return [o for o in self.pending_orders if o["status"] == OrderStatus.PENDING.value]
+        return [
+            o for o in self.pending_orders if o["status"] == OrderStatus.PENDING.value
+        ]
 
     async def cancel_order(self, order_id: int) -> bool:
         """Cancel specific order"""
@@ -116,5 +118,7 @@ class OrderManager:
             "cancelled": len(
                 [o for o in self.orders if o["status"] == OrderStatus.CANCELLED.value]
             ),
-            "rejected": len([o for o in self.orders if o["status"] == OrderStatus.REJECTED.value]),
+            "rejected": len(
+                [o for o in self.orders if o["status"] == OrderStatus.REJECTED.value]
+            ),
         }

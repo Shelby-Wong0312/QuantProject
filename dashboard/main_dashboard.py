@@ -7,14 +7,12 @@ Cloud DE - Task DE-403
 import streamlit as st
 import plotly.graph_objects as go
 import plotly.express as px
-from plotly.subplots import make_subplots
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import json
 import time
 from pathlib import Path
-import asyncio
 import sys
 
 # Add project root to path
@@ -250,7 +248,11 @@ def create_risk_gauge(risk_score):
                     {"range": [30, 60], "color": "yellow"},
                     {"range": [60, 100], "color": "red"},
                 ],
-                "threshold": {"line": {"color": "red", "width": 4}, "thickness": 0.75, "value": 80},
+                "threshold": {
+                    "line": {"color": "red", "width": 4},
+                    "thickness": 0.75,
+                    "value": 80,
+                },
             },
         )
     )
@@ -272,7 +274,9 @@ def create_pnl_histogram(trades_df):
     )
 
     fig.add_vline(x=0, line_dash="dash", line_color="red", opacity=0.5)
-    fig.add_vline(x=trades_df["pnl"].mean(), line_dash="dash", line_color="yellow", opacity=0.5)
+    fig.add_vline(
+        x=trades_df["pnl"].mean(), line_dash="dash", line_color="yellow", opacity=0.5
+    )
 
     fig.update_layout(template="plotly_dark", height=350, showlegend=False)
 
@@ -327,10 +331,12 @@ def main():
         st.header("⚙️ Control Panel")
 
         # Time period selector
-        period = st.selectbox("Time Period", options=["1D", "1W", "1M", "3M", "YTD"], index=2)
+        period = st.selectbox(
+            "Time Period", options=["1D", "1W", "1M", "3M", "YTD"], index=2
+        )
 
         # Strategy selector
-        strategy = st.selectbox(
+        st.selectbox(
             "Strategy", options=["MPT Portfolio", "Day Trading", "Hybrid"], index=2
         )
 
@@ -390,7 +396,11 @@ def main():
         st.metric(
             "Max Drawdown",
             f"{portfolio_data['performance']['max_drawdown']:.2%}",
-            "Controlled" if portfolio_data["performance"]["max_drawdown"] > -0.1 else "Warning",
+            (
+                "Controlled"
+                if portfolio_data["performance"]["max_drawdown"] > -0.1
+                else "Warning"
+            ),
         )
 
     st.markdown("---")
@@ -452,7 +462,9 @@ def main():
         hide_index=True,
         column_config={
             "P&L": st.column_config.TextColumn("P&L", help="Profit and Loss"),
-            "P&L %": st.column_config.TextColumn("P&L %", help="Profit and Loss Percentage"),
+            "P&L %": st.column_config.TextColumn(
+                "P&L %", help="Profit and Loss Percentage"
+            ),
         },
     )
 

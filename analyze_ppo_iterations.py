@@ -11,8 +11,6 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from datetime import datetime
-import json
 
 
 class PPOIterationAnalyzer:
@@ -31,7 +29,9 @@ class PPOIterationAnalyzer:
             print("\n[1] Main PPO Model Analysis (ppo_3488_stocks.pt):")
             print("-" * 40)
 
-            checkpoint = torch.load(self.model_path, map_location="cpu", weights_only=False)
+            checkpoint = torch.load(
+                self.model_path, map_location="cpu", weights_only=False
+            )
 
             # 提取訓練信息
             episode_rewards = checkpoint.get("episode_rewards", [])
@@ -50,7 +50,6 @@ class PPOIterationAnalyzer:
 
             # Calculate actual iterations
             total_episodes = len(episode_rewards)
-            batch_size = 64
             n_epochs = 10
 
             # Gradient updates per episode
@@ -77,7 +76,9 @@ class PPOIterationAnalyzer:
                 early_avg = np.mean(episode_rewards[:window])
                 late_avg = np.mean(episode_rewards[-window:])
                 improvement = (
-                    ((late_avg - early_avg) / abs(early_avg)) * 100 if early_avg != 0 else 0
+                    ((late_avg - early_avg) / abs(early_avg)) * 100
+                    if early_avg != 0
+                    else 0
                 )
 
                 print("\nConvergence Analysis:")
@@ -108,7 +109,9 @@ class PPOIterationAnalyzer:
             print("\n[2] Simple PPO Model Analysis (ultra_simple_ppo_model.pt):")
             print("-" * 40)
 
-            model_state = torch.load(self.simple_model_path, map_location="cpu", weights_only=False)
+            model_state = torch.load(
+                self.simple_model_path, map_location="cpu", weights_only=False
+            )
 
             print(f"Model Layers: {len(model_state)}")
             total_params = sum(
@@ -161,7 +164,9 @@ class PPOIterationAnalyzer:
 
             # Calculate final performance
             final_performance = np.mean(episode_rewards[-100:])
-            total_return = np.sum(episode_rewards) / 100  # Simplified return calculation
+            total_return = (
+                np.sum(episode_rewards) / 100
+            )  # Simplified return calculation
 
             results.append(
                 {
@@ -181,11 +186,15 @@ class PPOIterationAnalyzer:
         print(df_results.to_string())
 
         print("\nStatistical Analysis:")
-        print(f"  - Avg Final Performance: {df_results['final_performance'].mean():.4f}")
+        print(
+            f"  - Avg Final Performance: {df_results['final_performance'].mean():.4f}"
+        )
         print(f"  - Performance Std Dev: {df_results['final_performance'].std():.4f}")
         print(f"  - Best Performance: {df_results['final_performance'].max():.4f}")
         print(f"  - Worst Performance: {df_results['final_performance'].min():.4f}")
-        print(f"  - Avg Convergence Episode: {df_results['convergence_episode'].mean():.0f}")
+        print(
+            f"  - Avg Convergence Episode: {df_results['convergence_episode'].mean():.0f}"
+        )
 
         return df_results
 
@@ -271,7 +280,9 @@ class PPOIterationAnalyzer:
 
         # 4. 獎勵分布
         fig.add_trace(
-            go.Histogram(x=episode_rewards, nbinsx=50, name="獎勵分布", marker_color="purple"),
+            go.Histogram(
+                x=episode_rewards, nbinsx=50, name="獎勵分布", marker_color="purple"
+            ),
             row=2,
             col=2,
         )
@@ -308,7 +319,9 @@ class PPOIterationAnalyzer:
             col=2,
         )
 
-        fig.update_layout(height=1200, title_text="PPO訓練迭代過程分析", showlegend=False)
+        fig.update_layout(
+            height=1200, title_text="PPO訓練迭代過程分析", showlegend=False
+        )
 
         return fig
 
@@ -321,7 +334,7 @@ class PPOIterationAnalyzer:
         simulation_results = self.simulate_multiple_trainings()
 
         # 創建可視化
-        fig = self.create_iteration_visualization() if model_data else None
+        self.create_iteration_visualization() if model_data else None
 
         # 生成HTML報告
         html_content = """

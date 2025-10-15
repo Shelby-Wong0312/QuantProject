@@ -43,7 +43,9 @@ class TradingEnvConfig:
 
     # Action space
     action_type: str = "discrete"  # 'discrete' or 'continuous'
-    discrete_action_levels: List[float] = field(default_factory=lambda: [0.25, 0.5, 0.75, 1.0])
+    discrete_action_levels: List[float] = field(
+        default_factory=lambda: [0.25, 0.5, 0.75, 1.0]
+    )
     allow_short_selling: bool = False
 
     # Reward configuration

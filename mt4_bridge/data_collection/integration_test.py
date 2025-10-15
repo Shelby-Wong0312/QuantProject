@@ -5,9 +5,7 @@ MT4 數據收集系統整合測試
 """
 
 import asyncio
-import logging
 import sys
-import os
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -61,7 +59,12 @@ class MockMT4Bridge:
             # 模擬連接
             self.is_connected = True
 
-        return {"balance": 10000.0, "equity": 10000.0, "margin": 0.0, "free_margin": 10000.0}
+        return {
+            "balance": 10000.0,
+            "equity": 10000.0,
+            "margin": 0.0,
+            "free_margin": 10000.0,
+        }
 
     def send_command(self, command, **kwargs):
         """模擬發送命令"""
@@ -160,7 +163,9 @@ class IntegrationTester:
             self.test_results[test_name] = {
                 "success": success,
                 "events_received": len(received_events),
-                "message": "事件系統兼容性測試通過" if success else "事件系統兼容性測試失敗",
+                "message": (
+                    "事件系統兼容性測試通過" if success else "事件系統兼容性測試失敗"
+                ),
             }
 
             self.logger.info(f"測試 {test_name} 結果: {'成功' if success else '失敗'}")
@@ -186,7 +191,10 @@ class IntegrationTester:
 
             # 測試手動添加 Tick
             test_tick = TickData(
-                symbol="EURUSD", timestamp=datetime.now(timezone.utc), bid=1.1000, ask=1.1002
+                symbol="EURUSD",
+                timestamp=datetime.now(timezone.utc),
+                bid=1.1000,
+                ask=1.1002,
             )
 
             # 創建回調來收集 Tick
@@ -204,7 +212,11 @@ class IntegrationTester:
             latest_tick = collector.get_latest_tick("EURUSD")
             recent_ticks = collector.get_recent_ticks("EURUSD", 10)
 
-            success = latest_tick is not None and len(recent_ticks) > 0 and len(received_ticks) > 0
+            success = (
+                latest_tick is not None
+                and len(recent_ticks) > 0
+                and len(received_ticks) > 0
+            )
 
             self.test_results[test_name] = {
                 "success": success,
@@ -212,7 +224,9 @@ class IntegrationTester:
                 "recent_ticks_count": len(recent_ticks),
                 "callbacks_triggered": len(received_ticks),
                 "message": (
-                    "Tick 收集器基本功能測試通過" if success else "Tick 收集器基本功能測試失敗"
+                    "Tick 收集器基本功能測試通過"
+                    if success
+                    else "Tick 收集器基本功能測試失敗"
                 ),
             }
 
@@ -272,7 +286,9 @@ class IntegrationTester:
                 "current_bar_symbol": current_bar.symbol if current_bar else None,
                 "completed_bars": len(completed_bars),
                 "message": (
-                    "OHLC 聚合器基本功能測試通過" if success else "OHLC 聚合器基本功能測試失敗"
+                    "OHLC 聚合器基本功能測試通過"
+                    if success
+                    else "OHLC 聚合器基本功能測試失敗"
                 ),
             }
 
@@ -308,7 +324,10 @@ class IntegrationTester:
 
             # 創建測試 Tick 數據
             test_tick = TickData(
-                symbol="EURUSD", timestamp=datetime.now(timezone.utc), bid=1.1000, ask=1.1002
+                symbol="EURUSD",
+                timestamp=datetime.now(timezone.utc),
+                bid=1.1000,
+                ask=1.1002,
             )
 
             # 存儲 Tick 數據
@@ -331,7 +350,11 @@ class IntegrationTester:
             self.test_results[test_name] = {
                 "success": success,
                 "retrieved_ticks": len(retrieved_ticks),
-                "message": "數據存儲基本功能測試通過" if success else "數據存儲基本功能測試失敗",
+                "message": (
+                    "數據存儲基本功能測試通過"
+                    if success
+                    else "數據存儲基本功能測試失敗"
+                ),
             }
 
             self.logger.info(f"測試 {test_name} 結果: {'成功' if success else '失敗'}")
@@ -411,7 +434,9 @@ class IntegrationTester:
                 "connected": stats.get("connected", False),
                 "events_received": len(received_events),
                 "statistics": stats,
-                "message": "MT4 數據饋送器測試通過" if success else "MT4 數據饋送器測試失敗",
+                "message": (
+                    "MT4 數據饋送器測試通過" if success else "MT4 數據饋送器測試失敗"
+                ),
             }
 
             self.logger.info(f"測試 {test_name} 結果: {'成功' if success else '失敗'}")
@@ -428,7 +453,9 @@ class IntegrationTester:
         """創建測試用的 DataFrame"""
         import pandas as pd
 
-        dates = [datetime.now(timezone.utc) - timedelta(minutes=i) for i in range(50, 0, -1)]
+        dates = [
+            datetime.now(timezone.utc) - timedelta(minutes=i) for i in range(50, 0, -1)
+        ]
         []
 
         for i, date in enumerate(dates):
@@ -479,7 +506,9 @@ class IntegrationTester:
         print("=" * 80)
 
         total_tests = len(self.test_results)
-        passed_tests = sum(1 for result in self.test_results.values() if result["success"])
+        passed_tests = sum(
+            1 for result in self.test_results.values() if result["success"]
+        )
 
         print(f"總測試數: {total_tests}")
         print(f"通過測試: {passed_tests}")

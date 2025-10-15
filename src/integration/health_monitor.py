@@ -4,14 +4,13 @@ Health Monitor - System health monitoring and alerting
 
 import asyncio
 import logging
-from typing import Dict, Any, List, Optional
-from datetime import datetime, timedelta
+from typing import Dict, Any
+from datetime import datetime
 from dataclasses import dataclass
 from enum import Enum
 import psutil
 import json
 from pathlib import Path
-import warnings
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +41,10 @@ class HealthMonitor:
     """
 
     def __init__(
-        self, components: Dict[str, Any], check_interval: int = 60, alert_threshold: int = 3
+        self,
+        components: Dict[str, Any],
+        check_interval: int = 60,
+        alert_threshold: int = 3,
     ):
         """
         Initialize health monitor
@@ -61,7 +63,11 @@ class HealthMonitor:
         self.failure_counts = {name: 0 for name in components}
 
         # System resource thresholds
-        self.resource_thresholds = {"cpu_percent": 80, "memory_percent": 85, "disk_percent": 90}
+        self.resource_thresholds = {
+            "cpu_percent": 80,
+            "memory_percent": 85,
+            "disk_percent": 90,
+        }
 
         # Component-specific health checks
         self.health_checks = {
@@ -156,11 +162,15 @@ class HealthMonitor:
         """Check data client health"""
         try:
             # Check connection status
-            is_connected = await client.is_connected() if hasattr(client, "is_connected") else True
+            is_connected = (
+                await client.is_connected() if hasattr(client, "is_connected") else True
+            )
 
             # Check data freshness
             last_update = getattr(client, "last_data_update", None)
-            data_age = (datetime.now() - last_update).seconds if last_update else float("inf")
+            data_age = (
+                (datetime.now() - last_update).seconds if last_update else float("inf")
+            )
 
             # Determine status
             if not is_connected:
@@ -300,7 +310,11 @@ class HealthMonitor:
             if not model_loaded:
                 status = HealthStatus.WARNING
                 message = "RL model not loaded"
-            elif win_rate < 0.3 and hasattr(agent, "trades_count") and agent.trades_count > 50:
+            elif (
+                win_rate < 0.3
+                and hasattr(agent, "trades_count")
+                and agent.trades_count > 50
+            ):
                 status = HealthStatus.WARNING
                 message = f"Low win rate: {win_rate:.1%}"
             else:
@@ -423,7 +437,11 @@ class HealthMonitor:
             memory_status = (
                 HealthStatus.CRITICAL
                 if memory_percent > self.resource_thresholds["memory_percent"]
-                else HealthStatus.WARNING if memory_percent > 75 else HealthStatus.HEALTHY
+                else (
+                    HealthStatus.WARNING
+                    if memory_percent > 75
+                    else HealthStatus.HEALTHY
+                )
             )
 
             disk_status = (
@@ -457,7 +475,9 @@ class HealthMonitor:
             return {}
 
     def _determine_overall_status(
-        self, component_health: Dict[str, ComponentHealth], resource_report: Dict[str, Any]
+        self,
+        component_health: Dict[str, ComponentHealth],
+        resource_report: Dict[str, Any],
     ) -> HealthStatus:
         """Determine overall system health status"""
         # Check component health
@@ -543,7 +563,9 @@ class HealthMonitor:
         }
 
         # Save to file
-        report_path = Path(f'logs/health/health_report_{datetime.now().strftime("%Y%m%d")}.jsonl')
+        report_path = Path(
+            f'logs/health/health_report_{datetime.now().strftime("%Y%m%d")}.jsonl'
+        )
         report_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(report_path, "a") as f:
@@ -560,7 +582,8 @@ class HealthMonitor:
             "timestamp": latest_report["timestamp"],
             "overall_status": latest_report["overall_status"].value,
             "component_summary": {
-                name: health.status.value for name, health in latest_report["components"].items()
+                name: health.status.value
+                for name, health in latest_report["components"].items()
             },
             "resource_summary": {
                 resource: data.get("status", "unknown")

@@ -31,7 +31,8 @@ def fix_config():
         'logger.warning(".env file not found in project directory!")',
     )
     s = s.replace(
-        'logger.error("API credentials not found!")', 'logger.error("API credentials not found!")'
+        'logger.error("API credentials not found!")',
+        'logger.error("API credentials not found!")',
     )
     # 偶爾有人愛加 "" + 純字串，幫你收斂
     s = re.sub(

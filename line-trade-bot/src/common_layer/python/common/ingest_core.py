@@ -1,6 +1,6 @@
 import time
 from decimal import Decimal
-from typing import Dict, Any, Tuple
+from typing import Dict, Any
 import datetime
 
 from . import db
@@ -95,7 +95,9 @@ def normalize_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
     return item
 
 
-def process_payload(payload: Dict[str, Any], *, formatter: str = "en") -> Dict[str, Any]:
+def process_payload(
+    payload: Dict[str, Any], *, formatter: str = "en"
+) -> Dict[str, Any]:
     item = normalize_payload(payload)
     db.put_event(item)
     try:
@@ -127,7 +129,11 @@ def process_payload(payload: Dict[str, Any], *, formatter: str = "en") -> Dict[s
 def format_status_zh(status: Dict[str, Any]) -> str:
     eq = status.get("equity")
     cash = status.get("cash")
-    upnl = status.get("unrealizedPnL") or status.get("unrealized_pnl") or status.get("upnl")
+    upnl = (
+        status.get("unrealizedPnL")
+        or status.get("unrealized_pnl")
+        or status.get("upnl")
+    )
     rpnl = status.get("realizedPnL") or status.get("realized_pnl") or status.get("rpnl")
     acct = status.get("accountId") or status.get("account") or "default"
     parts = [f"帳戶：{acct}"]

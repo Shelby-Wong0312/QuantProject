@@ -5,7 +5,7 @@ Neural network architectures for RL agents
 import torch
 import torch.nn as nn
 import numpy as np
-from typing import Dict, List, Tuple, Optional, Type
+from typing import Dict, List, Tuple, Type
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 from stable_baselines3.common.policies import ActorCriticPolicy
 from gymnasium import spaces
@@ -66,7 +66,9 @@ class TradingFeatureExtractor(BaseFeaturesExtractor):
             )
             self.lstm_projection = nn.Linear(lstm_hidden_size, features_dim)
 
-        logger.info(f"Initialized TradingFeatureExtractor with output dim {features_dim}")
+        logger.info(
+            f"Initialized TradingFeatureExtractor with output dim {features_dim}"
+        )
 
     def forward(self, observations: torch.Tensor) -> torch.Tensor:
         """
@@ -201,9 +203,14 @@ class TradingPolicy(ActorCriticPolicy):
         """
         # Set custom feature extractor
         kwargs["features_extractor_class"] = TradingFeatureExtractor
-        kwargs["features_extractor_kwargs"] = {"features_dim": 256, "use_lstm": use_lstm}
+        kwargs["features_extractor_kwargs"] = {
+            "features_dim": 256,
+            "use_lstm": use_lstm,
+        }
 
-        super().__init__(observation_space, action_space, lr_schedule, use_sde=use_sde, **kwargs)
+        super().__init__(
+            observation_space, action_space, lr_schedule, use_sde=use_sde, **kwargs
+        )
 
         logger.info("Initialized TradingPolicy")
 
@@ -223,7 +230,9 @@ class AttentionLayer(nn.Module):
         super().__init__()
 
         self.attention = nn.Sequential(
-            nn.Linear(feature_dim, feature_dim // 2), nn.Tanh(), nn.Linear(feature_dim // 2, 1)
+            nn.Linear(feature_dim, feature_dim // 2),
+            nn.Tanh(),
+            nn.Linear(feature_dim // 2, 1),
         )
 
     def forward(self, features: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
@@ -266,10 +275,15 @@ class EnsembleNetwork(nn.Module):
 
         # Create multiple actor-critic networks
         self.models = nn.ModuleList(
-            [TradingActorCriticNetwork(feature_dim, action_dim) for _ in range(n_models)]
+            [
+                TradingActorCriticNetwork(feature_dim, action_dim)
+                for _ in range(n_models)
+            ]
         )
 
-    def forward(self, features: torch.Tensor, return_std: bool = False) -> Dict[str, torch.Tensor]:
+    def forward(
+        self, features: torch.Tensor, return_std: bool = False
+    ) -> Dict[str, torch.Tensor]:
         """
         Forward pass through ensemble
 

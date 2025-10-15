@@ -4,7 +4,7 @@ Custom callbacks for RL training
 
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Optional, Any
+from typing import Optional
 from pathlib import Path
 import json
 import logging
@@ -20,7 +20,9 @@ class TradingMetricsCallback(BaseCallback):
     Callback for tracking trading-specific metrics during training
     """
 
-    def __init__(self, log_dir: Optional[Path] = None, log_freq: int = 1000, verbose: int = 0):
+    def __init__(
+        self, log_dir: Optional[Path] = None, log_freq: int = 1000, verbose: int = 0
+    ):
         super().__init__(verbose)
         self.log_dir = Path(log_dir) if log_dir else Path("./logs")
         self.log_dir.mkdir(parents=True, exist_ok=True)
@@ -95,7 +97,9 @@ class TradingMetricsCallback(BaseCallback):
                     if self.logger:
                         self.logger.record("trading/episode_return", episode_return)
                         self.logger.record("trading/n_trades", episode_data["n_trades"])
-                        self.logger.record("trading/sharpe_ratio", episode_data["sharpe_ratio"])
+                        self.logger.record(
+                            "trading/sharpe_ratio", episode_data["sharpe_ratio"]
+                        )
 
         # Periodic logging
         if self.n_calls % self.log_freq == 0 and len(self.episode_metrics) > 0:
@@ -146,7 +150,9 @@ class PortfolioCallback(BaseCallback):
     Callback for tracking portfolio state during training
     """
 
-    def __init__(self, save_path: Optional[Path] = None, save_freq: int = 10000, verbose: int = 0):
+    def __init__(
+        self, save_path: Optional[Path] = None, save_freq: int = 10000, verbose: int = 0
+    ):
         super().__init__(verbose)
         self.save_path = Path(save_path) if save_path else Path("./portfolio_history")
         self.save_path.mkdir(parents=True, exist_ok=True)
@@ -249,7 +255,9 @@ class EarlyStoppingCallback(BaseCallback):
         if self.n_calls % self.eval_freq == 0:
             # Evaluate current model
             eval_score = self._evaluate_model()
-            self.eval_history.append({"timestep": self.num_timesteps, "score": eval_score})
+            self.eval_history.append(
+                {"timestep": self.num_timesteps, "score": eval_score}
+            )
 
             # Check for improvement
             if eval_score > self.best_score + self.min_improvement:

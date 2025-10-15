@@ -8,7 +8,6 @@ MT4連接驗證腳本
 import sys
 import os
 import time
-import json
 from datetime import datetime
 from colorama import init, Fore, Style
 
@@ -18,7 +17,7 @@ init()
 # 添加項目路徑
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from mt4_bridge.connector import MT4Connector, create_default_connector
+from mt4_bridge.connector import create_default_connector
 from src.data_pipeline.mt4_data_collector import MT4DataPipeline, MarketData
 
 
@@ -169,7 +168,9 @@ def test_market_data():
             positions = response.get("data", [])
             print_success(f"找到 {len(positions)} 個持倉")
             for pos in positions[:3]:  # 顯示前3個
-                print(f"  - {pos.get('symbol')}: {pos.get('lots')} lots @ {pos.get('open_price')}")
+                print(
+                    f"  - {pos.get('symbol')}: {pos.get('lots')} lots @ {pos.get('open_price')}"
+                )
 
         connector.disconnect()
         return True

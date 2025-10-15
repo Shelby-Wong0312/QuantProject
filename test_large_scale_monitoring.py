@@ -20,7 +20,9 @@ sys.path.append(str(Path(__file__).parent))
 from data_pipeline.free_data_client import FreeDataClient
 
 # 配置日誌
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -181,7 +183,9 @@ class LargeScaleMonitoringTest:
         start_time = time.time()
 
         # 測試批量報價
-        quotes = self.client.get_batch_quotes(symbols, use_cache=False, show_progress=True)
+        quotes = self.client.get_batch_quotes(
+            symbols, use_cache=False, show_progress=True
+        )
 
         end_time = time.time()
         duration = end_time - start_time
@@ -207,7 +211,9 @@ class LargeScaleMonitoringTest:
         logger.info(
             f"Batch test completed: {success_count}/{len(symbols)} symbols in {duration:.2f}s"
         )
-        logger.info(f"Success rate: {success_rate:.1f}%, Throughput: {throughput:.1f} symbols/sec")
+        logger.info(
+            f"Success rate: {success_rate:.1f}%, Throughput: {throughput:.1f} symbols/sec"
+        )
 
         return results
 
@@ -225,17 +231,23 @@ class LargeScaleMonitoringTest:
 
         # 第一次請求（無緩存）
         start_time = time.time()
-        quotes1 = self.client.get_batch_quotes(symbols[:100], use_cache=False, show_progress=False)
+        quotes1 = self.client.get_batch_quotes(
+            symbols[:100], use_cache=False, show_progress=False
+        )
         first_request_time = time.time() - start_time
 
         # 第二次請求（使用緩存）
         start_time = time.time()
-        quotes2 = self.client.get_batch_quotes(symbols[:100], use_cache=True, show_progress=False)
+        quotes2 = self.client.get_batch_quotes(
+            symbols[:100], use_cache=True, show_progress=False
+        )
         cached_request_time = time.time() - start_time
 
         # 計算緩存效果
         cache_speedup = (
-            first_request_time / cached_request_time if cached_request_time > 0 else float("inf")
+            first_request_time / cached_request_time
+            if cached_request_time > 0
+            else float("inf")
         )
 
         results = {
@@ -244,7 +256,9 @@ class LargeScaleMonitoringTest:
             "first_request_time_seconds": first_request_time,
             "cached_request_time_seconds": cached_request_time,
             "cache_speedup_factor": cache_speedup,
-            "cache_hit_rate_percent": (len(quotes2) / len(quotes1)) * 100 if quotes1 else 0,
+            "cache_hit_rate_percent": (
+                (len(quotes2) / len(quotes1)) * 100 if quotes1 else 0
+            ),
             "timestamp": datetime.now().isoformat(),
         }
 
@@ -407,7 +421,9 @@ class LargeScaleMonitoringTest:
             "tests_completed": len(
                 [r for r in all_results.values() if r.get("status") != "failed"]
             ),
-            "tests_failed": len([r for r in all_results.values() if r.get("status") == "failed"]),
+            "tests_failed": len(
+                [r for r in all_results.values() if r.get("status") == "failed"]
+            ),
             "database_location": self.client.db_path,
             "timestamp": datetime.now().isoformat(),
             "detailed_results": all_results,
@@ -457,8 +473,12 @@ def main():
     if batch_test.get("status") != "failed":
         print("\nKEY PERFORMANCE METRICS:")
         print(f"- Success Rate: {batch_test.get('success_rate_percent', 0):.1f}%")
-        print(f"- Throughput: {batch_test.get('throughput_symbols_per_second', 0):.1f} symbols/sec")
-        print(f"- Avg Time per Symbol: {batch_test.get('average_time_per_symbol_ms', 0):.1f} ms")
+        print(
+            f"- Throughput: {batch_test.get('throughput_symbols_per_second', 0):.1f} symbols/sec"
+        )
+        print(
+            f"- Avg Time per Symbol: {batch_test.get('average_time_per_symbol_ms', 0):.1f} ms"
+        )
 
     stress_test = results["detailed_results"].get("stress_test", {})
     if stress_test.get("status") != "failed":

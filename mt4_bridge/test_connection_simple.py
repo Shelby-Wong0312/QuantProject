@@ -9,7 +9,6 @@ import io
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 import zmq
-import json
 from datetime import datetime
 
 

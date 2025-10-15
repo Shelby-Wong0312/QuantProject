@@ -5,7 +5,7 @@ ROI Calculation, Performance Tracking, Alert System
 
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Tuple, Optional, Union
+from typing import Dict, List, Optional, Union
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 import logging
@@ -66,7 +66,9 @@ class ROIMonitor:
             if isinstance(returns, pd.Series) and len(returns) > 1:
                 cumulative_return = (1 + returns).prod() - 1
             else:
-                cumulative_return = returns.iloc[0] if isinstance(returns, pd.Series) else returns
+                cumulative_return = (
+                    returns.iloc[0] if isinstance(returns, pd.Series) else returns
+                )
 
             # Subtract costs
             total_costs = costs.sum() if hasattr(costs, "sum") else costs
@@ -93,11 +95,15 @@ class ROIMonitor:
             returns.index = pd.to_datetime(dates)
 
         # Group by month and calculate monthly returns
-        monthly_returns = returns.groupby(pd.Grouper(freq="M")).apply(lambda x: (1 + x).prod() - 1)
+        monthly_returns = returns.groupby(pd.Grouper(freq="M")).apply(
+            lambda x: (1 + x).prod() - 1
+        )
 
         return monthly_returns * 100  # Convert to percentage
 
-    def check_targets(self, current_roi: float, period: str = "annual") -> Dict[str, bool]:
+    def check_targets(
+        self, current_roi: float, period: str = "annual"
+    ) -> Dict[str, bool]:
         """
         Check if ROI meets targets
 
@@ -112,10 +118,14 @@ class ROIMonitor:
 
         if period == "annual":
             results["meets_target"] = current_roi >= self.targets.annual_target
-            results["above_degradation"] = current_roi >= self.targets.degradation_threshold
+            results["above_degradation"] = (
+                current_roi >= self.targets.degradation_threshold
+            )
         else:  # monthly
             results["meets_target"] = current_roi >= self.targets.monthly_target
-            results["above_degradation"] = current_roi >= (self.targets.degradation_threshold / 12)
+            results["above_degradation"] = current_roi >= (
+                self.targets.degradation_threshold / 12
+            )
 
         return results
 
@@ -168,7 +178,9 @@ class ROIMonitor:
 
         # Check consecutive months below threshold
         if len(self.performance_history) >= self.targets.consecutive_months_limit:
-            recent_records = self.performance_history[-self.targets.consecutive_months_limit :]
+            recent_records = self.performance_history[
+                -self.targets.consecutive_months_limit :
+            ]
             if all(not record["above_degradation"] for record in recent_records):
                 self._add_alert(
                     "consecutive_degradation",
@@ -178,7 +190,12 @@ class ROIMonitor:
 
     def _add_alert(self, alert_type: str, date: datetime, message: str) -> None:
         """Add alert to alert list"""
-        alert = {"type": alert_type, "date": date, "message": message, "acknowledged": False}
+        alert = {
+            "type": alert_type,
+            "date": date,
+            "message": message,
+            "acknowledged": False,
+        }
         self.alerts.append(alert)
         self.logger.warning(f"ROI Alert: {message}")
 
@@ -197,7 +214,9 @@ class ROIMonitor:
 
         cutoff_date = datetime.now() - timedelta(days=period_days)
         recent_performance = [
-            record for record in self.performance_history if record["date"] >= cutoff_date
+            record
+            for record in self.performance_history
+            if record["date"] >= cutoff_date
         ]
 
         if not recent_performance:
@@ -213,11 +232,15 @@ class ROIMonitor:
             "max_roi": np.max(roi_values),
             "min_roi": np.min(roi_values),
             "current_roi": roi_values[-1] if roi_values else 0,
-            "meets_annual_target": np.mean([r["meets_annual_target"] for r in recent_performance]),
+            "meets_annual_target": np.mean(
+                [r["meets_annual_target"] for r in recent_performance]
+            ),
             "meets_monthly_target": np.mean(
                 [r["meets_monthly_target"] for r in recent_performance]
             ),
-            "above_degradation": np.mean([r["above_degradation"] for r in recent_performance]),
+            "above_degradation": np.mean(
+                [r["above_degradation"] for r in recent_performance]
+            ),
             "active_alerts": len([a for a in self.alerts if not a["acknowledged"]]),
         }
 
@@ -236,7 +259,9 @@ class ROIMonitor:
             return True
         return False
 
-    def calculate_sharpe_roi(self, returns: pd.Series, risk_free_rate: float = 0.02) -> float:
+    def calculate_sharpe_roi(
+        self, returns: pd.Series, risk_free_rate: float = 0.02
+    ) -> float:
         """
         Calculate risk-adjusted ROI (Sharpe-based)
 

@@ -3,8 +3,7 @@ Risk management utilities for RL trading
 """
 
 import numpy as np
-import pandas as pd
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Optional, Tuple
 from dataclasses import dataclass
 import logging
 
@@ -171,7 +170,9 @@ class RiskManager:
         # Cap at maximum position size
         return min(kelly, self.limits.max_position_size)
 
-    def update_metrics(self, trade_pnl: float, portfolio_value: float, peak_value: float):
+    def update_metrics(
+        self, trade_pnl: float, portfolio_value: float, peak_value: float
+    ):
         """
         Update risk metrics after a trade
 
@@ -198,7 +199,10 @@ class RiskManager:
             self.win_loss_history = self.win_loss_history[-1000:]
 
     def calculate_var(
-        self, portfolio_value: float, confidence_level: float = 0.95, time_horizon: int = 1
+        self,
+        portfolio_value: float,
+        confidence_level: float = 0.95,
+        time_horizon: int = 1,
     ) -> float:
         """
         Calculate Value at Risk (VaR)
@@ -252,7 +256,9 @@ class RiskManager:
 
             # Sortino ratio (uses downside deviation)
             if metrics["downside_deviation"] > 0:
-                metrics["sortino_ratio"] = (np.mean(returns) * 252) / metrics["downside_deviation"]
+                metrics["sortino_ratio"] = (np.mean(returns) * 252) / metrics[
+                    "downside_deviation"
+                ]
             else:
                 metrics["sortino_ratio"] = 0
 

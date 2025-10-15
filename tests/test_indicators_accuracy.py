@@ -6,13 +6,12 @@ Technical Indicators Accuracy Test
 import pandas as pd
 import numpy as np
 import sys
-import os
 from pathlib import Path
 import unittest
 import logging
-from typing import Dict, List, Tuple, Any
+from typing import Dict, Any
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -64,8 +63,12 @@ class TradingViewBenchmark:
         )
 
         # 確保 OHLC 邏輯正確
-        data["high"] = np.maximum.reduce([data["open"], data["high"], data["low"], data["close"]])
-        data["low"] = np.minimum.reduce([data["open"], data["high"], data["low"], data["close"]])
+        data["high"] = np.maximum.reduce(
+            [data["open"], data["high"], data["low"], data["close"]]
+        )
+        data["low"] = np.minimum.reduce(
+            [data["open"], data["high"], data["low"], data["close"]]
+        )
 
         return data
 
@@ -73,7 +76,10 @@ class TradingViewBenchmark:
     def get_tradingview_results() -> Dict[str, Any]:
         """TradingView 計算結果（手動驗證的基準值）"""
         return {
-            "SMA_20": {"last_value": 149.85, "tolerance": 0.1},  # 最後一個SMA(20)值  # 允許誤差
+            "SMA_20": {
+                "last_value": 149.85,
+                "tolerance": 0.1,
+            },  # 最後一個SMA(20)值  # 允許誤差
             "EMA_20": {"last_value": 149.92, "tolerance": 0.1},
             "RSI_14": {"last_value": 52.3, "tolerance": 1.0},
             "MACD": {
@@ -124,7 +130,9 @@ class IndicatorAccuracyTest(unittest.TestCase):
         }
 
         print(f"Test data shape: {cls.test_data.shape}")
-        print(f"Test data date range: {cls.test_data.index[0]} to {cls.test_data.index[-1]}")
+        print(
+            f"Test data date range: {cls.test_data.index[0]} to {cls.test_data.index[-1]}"
+        )
         print(
             f"Price range: ${cls.test_data['close'].min():.2f} - ${cls.test_data['close'].max():.2f}"
         )
@@ -139,7 +147,9 @@ class IndicatorAccuracyTest(unittest.TestCase):
 
         # 檢查結果長度
         self.assertEqual(
-            len(result), len(self.test_data), "SMA result length should match input data"
+            len(result),
+            len(self.test_data),
+            "SMA result length should match input data",
         )
 
         # 手動計算驗證
@@ -189,7 +199,10 @@ class IndicatorAccuracyTest(unittest.TestCase):
             err_msg="EMA calculation doesn't match manual calculation",
         )
 
-        self.test_results["EMA_20"] = {"last_value": float(result.iloc[-1]), "status": "PASS"}
+        self.test_results["EMA_20"] = {
+            "last_value": float(result.iloc[-1]),
+            "status": "PASS",
+        }
 
         print(f"PASS: EMA(20) last value: {result.iloc[-1]:.2f}")
 
@@ -244,16 +257,22 @@ class IndicatorAccuracyTest(unittest.TestCase):
         result = indicator.calculate(self.test_data)
 
         self.assertIsInstance(result, pd.DataFrame, "MACD should return DataFrame")
-        self.assertIn("macd", result.columns, "MACD DataFrame should have 'macd' column")
-        self.assertIn("signal", result.columns, "MACD DataFrame should have 'signal' column")
-        self.assertIn("histogram", result.columns, "MACD DataFrame should have 'histogram' column")
+        self.assertIn(
+            "macd", result.columns, "MACD DataFrame should have 'macd' column"
+        )
+        self.assertIn(
+            "signal", result.columns, "MACD DataFrame should have 'signal' column"
+        )
+        self.assertIn(
+            "histogram", result.columns, "MACD DataFrame should have 'histogram' column"
+        )
 
         # 手動計算 MACD
         ema_12 = self.test_data["close"].ewm(span=12, adjust=False).mean()
         ema_26 = self.test_data["close"].ewm(span=26, adjust=False).mean()
         manual_macd = ema_12 - ema_26
         manual_signal = manual_macd.ewm(span=9, adjust=False).mean()
-        manual_histogram = manual_macd - manual_signal
+        manual_macd - manual_signal
 
         # 比較結果
         np.testing.assert_array_almost_equal(
@@ -286,10 +305,14 @@ class IndicatorAccuracyTest(unittest.TestCase):
         indicator = self.indicators["BollingerBands"]
         result = indicator.calculate(self.test_data)
 
-        self.assertIsInstance(result, pd.DataFrame, "Bollinger Bands should return DataFrame")
+        self.assertIsInstance(
+            result, pd.DataFrame, "Bollinger Bands should return DataFrame"
+        )
         required_cols = ["upper_band", "middle_band", "lower_band"]
         for col in required_cols:
-            self.assertIn(col, result.columns, f"Bollinger Bands should have '{col}' column")
+            self.assertIn(
+                col, result.columns, f"Bollinger Bands should have '{col}' column"
+            )
 
         # 手動計算布林帶
         sma_20 = self.test_data["close"].rolling(window=20).mean()
@@ -297,7 +320,7 @@ class IndicatorAccuracyTest(unittest.TestCase):
 
         manual_upper = sma_20 + (std_20 * 2)
         manual_middle = sma_20
-        manual_lower = sma_20 - (std_20 * 2)
+        sma_20 - (std_20 * 2)
 
         # 比較結果
         np.testing.assert_array_almost_equal(
@@ -476,15 +499,27 @@ class IndicatorAccuracyTest(unittest.TestCase):
         # 如果有信號，檢查信號結構
         if signals:
             signal = signals[0]
-            self.assertTrue(hasattr(signal, "signal_type"), "Signal should have signal_type")
+            self.assertTrue(
+                hasattr(signal, "signal_type"), "Signal should have signal_type"
+            )
             self.assertTrue(hasattr(signal, "strength"), "Signal should have strength")
-            self.assertTrue(hasattr(signal, "confidence"), "Signal should have confidence")
+            self.assertTrue(
+                hasattr(signal, "confidence"), "Signal should have confidence"
+            )
 
             # 檢查數值範圍
-            self.assertGreaterEqual(signal.strength, 0, "Signal strength should be >= 0")
-            self.assertLessEqual(signal.strength, 100, "Signal strength should be <= 100")
-            self.assertGreaterEqual(signal.confidence, 0, "Signal confidence should be >= 0")
-            self.assertLessEqual(signal.confidence, 1, "Signal confidence should be <= 1")
+            self.assertGreaterEqual(
+                signal.strength, 0, "Signal strength should be >= 0"
+            )
+            self.assertLessEqual(
+                signal.strength, 100, "Signal strength should be <= 100"
+            )
+            self.assertGreaterEqual(
+                signal.confidence, 0, "Signal confidence should be >= 0"
+            )
+            self.assertLessEqual(
+                signal.confidence, 1, "Signal confidence should be <= 1"
+            )
 
         self.test_results["Signal_Generation"] = {
             "signals_generated": len(signals),

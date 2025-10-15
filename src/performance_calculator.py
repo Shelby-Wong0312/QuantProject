@@ -7,10 +7,8 @@ import pandas as pd
 import numpy as np
 import sqlite3
 import os
-from datetime import datetime, timedelta
 import json
 import yfinance as yf
-from typing import Dict, List, Tuple
 
 
 class PerformanceCalculator:
@@ -18,7 +16,9 @@ class PerformanceCalculator:
 
     def __init__(self):
         self.db_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "data",
+            "quant_trading.db",
         )
         self.risk_free_rate = 0.02  # 2% annual risk-free rate
 
@@ -30,7 +30,9 @@ class PerformanceCalculator:
             if spy.empty:
                 # If failed, create synthetic benchmark
                 dates = pd.date_range(start=start_date, end=end_date, freq="B")
-                prices = 100 * (1 + 0.10 / 252) ** np.arange(len(dates))  # 10% annual return
+                prices = 100 * (1 + 0.10 / 252) ** np.arange(
+                    len(dates)
+                )  # 10% annual return
                 spy = pd.DataFrame({"Close": prices}, index=dates)
             return spy["Close"]
         except Exception:
@@ -39,7 +41,9 @@ class PerformanceCalculator:
             prices = 100 * (1 + 0.10 / 252) ** np.arange(len(dates))
             return pd.Series(prices, index=dates, name="SPY")
 
-    def simple_moving_average_strategy(self, symbol="AAPL", short_window=50, long_window=200):
+    def simple_moving_average_strategy(
+        self, symbol="AAPL", short_window=50, long_window=200
+    ):
         """Implement a simple moving average crossover strategy"""
         conn = sqlite3.connect(self.db_path)
 
@@ -96,7 +100,9 @@ class PerformanceCalculator:
         total_return = (1 + returns).prod() - 1
         trading_days = 252
         n_years = len(returns) / trading_days
-        annualized_return = (1 + total_return) ** (1 / n_years) - 1 if n_years > 0 else 0
+        annualized_return = (
+            (1 + total_return) ** (1 / n_years) - 1 if n_years > 0 else 0
+        )
 
         # Risk metrics
         volatility = returns.std() * np.sqrt(trading_days)
@@ -105,7 +111,9 @@ class PerformanceCalculator:
         excess_returns = returns - self.risk_free_rate / trading_days
         returns_std = float(returns.std())
         sharpe_ratio = (
-            np.sqrt(trading_days) * excess_returns.mean() / returns_std if returns_std > 0 else 0
+            np.sqrt(trading_days) * excess_returns.mean() / returns_std
+            if returns_std > 0
+            else 0
         )
 
         # Sortino Ratio
@@ -116,7 +124,9 @@ class PerformanceCalculator:
             else 0.01
         )
         sortino_ratio = (
-            (annualized_return - self.risk_free_rate) / downside_std if downside_std > 0 else 0
+            (annualized_return - self.risk_free_rate) / downside_std
+            if downside_std > 0
+            else 0
         )
 
         # Maximum Drawdown
@@ -134,7 +144,9 @@ class PerformanceCalculator:
         var_95 = float(returns.quantile(0.05))
 
         # Calmar Ratio
-        calmar_ratio = annualized_return / abs(max_drawdown) if abs(max_drawdown) > 0.0001 else 0
+        calmar_ratio = (
+            annualized_return / abs(max_drawdown) if abs(max_drawdown) > 0.0001 else 0
+        )
 
         return {
             "total_return": total_return * 100,
@@ -234,8 +246,12 @@ class PerformanceCalculator:
 
         # Generate realistic daily returns with some volatility
         np.random.seed(42)  # For reproducibility
-        strategy_daily_returns = np.random.normal(0.0007, 0.015, total_days)  # ~18% annual return
-        spy_daily_returns = np.random.normal(0.0004, 0.012, total_days)  # ~10% annual return
+        strategy_daily_returns = np.random.normal(
+            0.0007, 0.015, total_days
+        )  # ~18% annual return
+        spy_daily_returns = np.random.normal(
+            0.0004, 0.012, total_days
+        )  # ~10% annual return
 
         # Add some market events (crashes and rallies)
         # 2011 European debt crisis
@@ -255,7 +271,7 @@ class PerformanceCalculator:
         spy_daily_returns[3024:3150] -= 0.0008
 
         # Adjust returns for transaction costs (0.1% per trade, ~200 trades per year)
-        transaction_cost_impact = 0.1 * 200 / 100  # 2% annual impact
+        0.1 * 200 / 100  # 2% annual impact
 
         return {
             "strategy_metrics": {

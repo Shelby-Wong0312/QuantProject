@@ -5,7 +5,6 @@ Stochastic Oscillator Strategy - Cloud Quant Task PHASE3-002
 """
 
 import pandas as pd
-import numpy as np
 from typing import Dict
 import logging
 

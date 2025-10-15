@@ -19,11 +19,9 @@ import subprocess
 import platform
 import argparse
 import socket
-from pathlib import Path
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict
 import json
 import time
-import winreg
 
 
 class MT4EnvironmentChecker:
@@ -105,7 +103,10 @@ class MT4EnvironmentChecker:
             registry_keys = [
                 (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\MetaQuotes\MetaTrader 4"),
                 (winreg.HKEY_CURRENT_USER, r"SOFTWARE\MetaQuotes\MetaTrader 4"),
-                (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\MetaQuotes\MetaTrader 4"),
+                (
+                    winreg.HKEY_LOCAL_MACHINE,
+                    r"SOFTWARE\WOW6432Node\MetaQuotes\MetaTrader 4",
+                ),
             ]
 
             for hkey, subkey in registry_keys:
@@ -225,7 +226,12 @@ class MT4EnvironmentChecker:
         print("\n🌐 檢查 Capital.com 伺服器連線...")
 
         # MT4 通常使用 443 port 進行連線
-        server_hosts = ["capital.com", "mt4.capital.com", "real.capital.com", "demo.capital.com"]
+        server_hosts = [
+            "capital.com",
+            "mt4.capital.com",
+            "real.capital.com",
+            "demo.capital.com",
+        ]
 
         connection_results = {}
 
@@ -257,14 +263,18 @@ class MT4EnvironmentChecker:
         print("\n🔄 檢查 MT4 程序狀態...")
 
         mt4_processes = (
-            ["terminal.exe", "metaeditor.exe"] if self.system == "Windows" else ["MetaTrader 4"]
+            ["terminal.exe", "metaeditor.exe"]
+            if self.system == "Windows"
+            else ["MetaTrader 4"]
         )
         process_status = {}
 
         try:
             if self.system == "Windows":
                 # Windows: 使用 tasklist
-                result = subprocess.run(["tasklist"], capture_output=True, text=True, shell=True)
+                result = subprocess.run(
+                    ["tasklist"], capture_output=True, text=True, shell=True
+                )
                 running_processes = result.stdout.lower()
 
                 for process in mt4_processes:
@@ -334,9 +344,7 @@ class MT4EnvironmentChecker:
         try:
             import sys
 
-            python_version = (
-                f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
-            )
+            python_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
             self.log(f"Python 版本: {python_version}", "info")
 
             # 檢查必要的套件
@@ -352,7 +360,10 @@ class MT4EnvironmentChecker:
                     self.log(f"缺少套件: {package}", "warning")
 
             if missing_packages:
-                self.log(f"請安裝缺少的套件: pip install {' '.join(missing_packages)}", "warning")
+                self.log(
+                    f"請安裝缺少的套件: pip install {' '.join(missing_packages)}",
+                    "warning",
+                )
                 return False
 
             return True
@@ -382,7 +393,9 @@ class MT4EnvironmentChecker:
     def save_report(self, report: Dict, filepath: str = None):
         """儲存檢查報告"""
         if filepath is None:
-            filepath = os.path.join(os.path.dirname(__file__), "mt4_env_check_report.json")
+            filepath = os.path.join(
+                os.path.dirname(__file__), "mt4_env_check_report.json"
+            )
 
         try:
             with open(filepath, "w", encoding="utf-8") as f:
@@ -410,13 +423,13 @@ class MT4EnvironmentChecker:
                 directories_ok = self.check_directory_structure()
 
             # 3. 檢查伺服器連線
-            servers_ok = self.check_capital_servers()
+            self.check_capital_servers()
 
             # 4. 檢查程序狀態
-            processes = self.check_mt4_processes()
+            self.check_mt4_processes()
 
             # 5. 檢查橋接需求
-            bridge_ok = self.check_bridge_requirements()
+            self.check_bridge_requirements()
 
         # 生成並儲存報告
         self.generate_report()
@@ -458,7 +471,9 @@ def main():
     """主函數"""
     parser = argparse.ArgumentParser(description="MT4 環境檢查腳本")
     parser.add_argument("--verbose", "-v", action="store_true", help="顯示詳細資訊")
-    parser.add_argument("--fix-directories", "-", action="store_true", help="自動修復缺失的目錄")
+    parser.add_argument(
+        "--fix-directories", "-", action="store_true", help="自動修復缺失的目錄"
+    )
 
     args = parser.parse_args()
 

@@ -6,11 +6,10 @@ Technical Indicators Performance Test
 import pandas as pd
 import numpy as np
 import sys
-import os
 from pathlib import Path
 import time
 import logging
-from typing import Dict, List, Tuple, Any
+from typing import Dict, Any
 import json
 from datetime import datetime
 import multiprocessing as mp
@@ -25,7 +24,6 @@ sys.path.append(str(project_root))
 
 # Import components
 from src.indicators.indicator_calculator import IndicatorCalculator, CalculationConfig
-from src.indicators.signal_generator import IndicatorSignalGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +41,9 @@ class PerformanceProfiler:
             "cpu_count": mp.cpu_count(),
             "cpu_percent": psutil.cpu_percent(interval=1),
             "memory_total_gb": round(psutil.virtual_memory().total / (1024**3), 2),
-            "memory_available_gb": round(psutil.virtual_memory().available / (1024**3), 2),
+            "memory_available_gb": round(
+                psutil.virtual_memory().available / (1024**3), 2
+            ),
             "python_version": sys.version.split()[0],
         }
 
@@ -195,7 +195,9 @@ class PerformanceTestSuite:
 
         for indicator_name, indicator in calculator.indicators.items():
             try:
-                result, metrics = self.profiler.profile_function(indicator.calculate, stock_data)
+                result, metrics = self.profiler.profile_function(
+                    indicator.calculate, stock_data
+                )
 
                 indicator_times[indicator_name] = {
                     "execution_time_ms": metrics["execution_time"] * 1000,
@@ -211,7 +213,9 @@ class PerformanceTestSuite:
 
         # 計算統計
         valid_times = [
-            r["execution_time_ms"] for r in indicator_times.values() if "execution_time_ms" in r
+            r["execution_time_ms"]
+            for r in indicator_times.values()
+            if "execution_time_ms" in r
         ]
 
         summary = {
@@ -224,7 +228,9 @@ class PerformanceTestSuite:
             "indicator_times": indicator_times,
         }
 
-        print(f"✓ Single stock test completed - Avg: {summary['avg_time_ms']:.2f}ms per indicator")
+        print(
+            f"✓ Single stock test completed - Avg: {summary['avg_time_ms']:.2f}ms per indicator"
+        )
         return summary
 
     def test_batch_calculation_performance(self) -> Dict[str, Any]:
@@ -284,7 +290,9 @@ class PerformanceTestSuite:
 
         # 生成固定測試數據
         test_stocks = 200
-        stocks_data = DataGenerator.generate_stock_universe(n_stocks=test_stocks, n_periods=252)
+        stocks_data = DataGenerator.generate_stock_universe(
+            n_stocks=test_stocks, n_periods=252
+        )
 
         scaling_results = {}
         worker_counts = [1, 2, 4, mp.cpu_count()]
@@ -344,7 +352,9 @@ class PerformanceTestSuite:
             initial_memory = process.memory_info().rss / (1024**2)  # MB
 
             # 生成數據
-            stocks_data = DataGenerator.generate_stock_universe(n_stocks=n_stocks, n_periods=252)
+            stocks_data = DataGenerator.generate_stock_universe(
+                n_stocks=n_stocks, n_periods=252
+            )
 
             data_memory = process.memory_info().rss / (1024**2) - initial_memory
 
@@ -364,7 +374,9 @@ class PerformanceTestSuite:
                 "calculation_memory_mb": calculation_memory,
                 "total_memory_mb": final_memory - initial_memory,
                 "memory_per_stock_mb": (final_memory - initial_memory) / n_stocks,
-                "memory_efficiency": calculation_memory / data_memory if data_memory > 0 else 0,
+                "memory_efficiency": (
+                    calculation_memory / data_memory if data_memory > 0 else 0
+                ),
             }
 
             print(
@@ -386,7 +398,9 @@ class PerformanceTestSuite:
         n_stocks = 4000
         print(f"Generating {n_stocks} stocks (this may take a few minutes)...")
 
-        stocks_data = DataGenerator.generate_stock_universe(n_stocks=n_stocks, n_periods=252)
+        stocks_data = DataGenerator.generate_stock_universe(
+            n_stocks=n_stocks, n_periods=252
+        )
 
         # 配置計算器以獲得最佳性能
         config = CalculationConfig(
@@ -443,15 +457,21 @@ class PerformanceTestSuite:
 
         try:
             # 運行各項測試
-            self.results["test_results"]["single_stock"] = self.test_single_stock_performance()
+            self.results["test_results"][
+                "single_stock"
+            ] = self.test_single_stock_performance()
             self.results["test_results"][
                 "batch_calculation"
             ] = self.test_batch_calculation_performance()
             self.results["test_results"][
                 "multiprocessing_scaling"
             ] = self.test_multiprocessing_scaling()
-            self.results["test_results"]["memory_efficiency"] = self.test_memory_efficiency()
-            self.results["test_results"]["large_scale"] = self.test_large_scale_performance()
+            self.results["test_results"][
+                "memory_efficiency"
+            ] = self.test_memory_efficiency()
+            self.results["test_results"][
+                "large_scale"
+            ] = self.test_large_scale_performance()
 
             # 生成性能報告
             self.generate_performance_report()
@@ -490,7 +510,9 @@ class PerformanceTestSuite:
                 large = self.results["test_results"]["large_scale"]
                 f.write("🚀 Large-Scale Performance (4000 stocks):\n")
                 f.write(f"  Execution Time: {large['execution_time_s']:.1f} seconds\n")
-                f.write(f"  Processing Speed: {large['stocks_per_second']:.1f} stocks/second\n")
+                f.write(
+                    f"  Processing Speed: {large['stocks_per_second']:.1f} stocks/second\n"
+                )
                 f.write(f"  Memory Usage: {large['peak_memory_mb']:.1f} MB\n")
                 f.write(f"  Success Rate: {large['success_rate']*100:.1f}%\n\n")
 

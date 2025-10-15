@@ -9,12 +9,11 @@ import sys
 import os
 import time
 import json
-from datetime import datetime
 
 # 添加父目錄到路徑
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from mt4_bridge.connector import MT4Connector, create_default_connector
+from mt4_bridge.connector import create_default_connector
 from mt4_bridge.data_collector import MT4DataCollector
 from mt4_bridge.signal_sender import MT4SignalSender
 from mt4_bridge.account_monitor import MT4AccountMonitor
@@ -86,7 +85,9 @@ def test_account_info():
         if positions is not None:
             print(f"\n當前持倉數量: {len(positions)}")
             for pos in positions[:3]:  # 顯示前3個持倉
-                print(f"  - {pos.get('symbol')}: {pos.get('type_str')} {pos.get('lots')} lots")
+                print(
+                    f"  - {pos.get('symbol')}: {pos.get('type_str')} {pos.get('lots')} lots"
+                )
             print("✓ 持倉信息獲取成功")
 
         connector.disconnect()

@@ -7,7 +7,7 @@
 import json
 import os
 import yfinance as yf
-from datetime import datetime, timedelta
+from datetime import datetime
 from tqdm import tqdm
 import time
 import re
@@ -30,7 +30,9 @@ class CapitalToYahooMapper:
                     cache = pickle.load(f)
                     self.mapped_stocks = cache.get("mapped", [])
                     self.unmapped_stocks = cache.get("unmapped", [])
-                    print(f"[CACHE] Loaded {len(self.mapped_stocks)} mapped stocks from cache")
+                    print(
+                        f"[CACHE] Loaded {len(self.mapped_stocks)} mapped stocks from cache"
+                    )
             except Exception:
                 pass
 
@@ -197,11 +199,17 @@ class CapitalToYahooMapper:
 
         # 7. 國際市場後綴
         # 英國
-        if any(x in str(capital_stock).upper() for x in ["GB", "GBP", "UK", "LONDON", "LSE"]):
+        if any(
+            x in str(capital_stock).upper()
+            for x in ["GB", "GBP", "UK", "LONDON", "LSE"]
+        ):
             add_candidate(f"{cleaned}.L")
 
         # 德國
-        if any(x in str(capital_stock).upper() for x in ["DE", "GERMANY", "FRANKFURT", "XETRA"]):
+        if any(
+            x in str(capital_stock).upper()
+            for x in ["DE", "GERMANY", "FRANKFURT", "XETRA"]
+        ):
             add_candidate(f"{cleaned}.DE")
 
         # 法國
@@ -213,15 +221,22 @@ class CapitalToYahooMapper:
             add_candidate(f"{cleaned}.HK")
 
         # 日本
-        if any(x in str(capital_stock).upper() for x in ["JP", "JAPAN", "TOKYO", "JPY"]):
+        if any(
+            x in str(capital_stock).upper() for x in ["JP", "JAPAN", "TOKYO", "JPY"]
+        ):
             add_candidate(f"{cleaned}.T")
 
         # 加拿大
-        if any(x in str(capital_stock).upper() for x in ["CA", "CANADA", "TORONTO", "TSX"]):
+        if any(
+            x in str(capital_stock).upper() for x in ["CA", "CANADA", "TORONTO", "TSX"]
+        ):
             add_candidate(f"{cleaned}.TO")
 
         # 澳大利亞
-        if any(x in str(capital_stock).upper() for x in ["AU", "AUSTRALIA", "ASX", "SYDNEY"]):
+        if any(
+            x in str(capital_stock).upper()
+            for x in ["AU", "AUSTRALIA", "ASX", "SYDNEY"]
+        ):
             add_candidate(f"{cleaned}.AX")
 
         # 新加坡
@@ -229,15 +244,24 @@ class CapitalToYahooMapper:
             add_candidate(f"{cleaned}.SI")
 
         # 瑞士
-        if any(x in str(capital_stock).upper() for x in ["CH", "SWISS", "ZURICH", "CHF"]):
+        if any(
+            x in str(capital_stock).upper() for x in ["CH", "SWISS", "ZURICH", "CHF"]
+        ):
             add_candidate(f"{cleaned}.SW")
 
         # 荷蘭
-        if any(x in str(capital_stock).upper() for x in ["NL", "NETHERLANDS", "AMSTERDAM"]):
+        if any(
+            x in str(capital_stock).upper() for x in ["NL", "NETHERLANDS", "AMSTERDAM"]
+        ):
             add_candidate(f"{cleaned}.AS")
 
         # 8. 特殊處理某些已知的符號
-        special_mappings = {"BRK.B": "BRK-B", "BF.B": "BF-B", "BRK.A": "BRK-A", "BF.A": "BF-A"}
+        special_mappings = {
+            "BRK.B": "BRK-B",
+            "BF.B": "BF-B",
+            "BRK.A": "BRK-A",
+            "BF.A": "BF-A",
+        }
 
         for old, new in special_mappings.items():
             if old in ticker:
@@ -263,7 +287,7 @@ class CapitalToYahooMapper:
             if not hist.empty:
                 return True, symbol
 
-        except Exception as e:
+        except Exception:
             pass
 
         return False, None
@@ -315,7 +339,9 @@ class CapitalToYahooMapper:
 
         # 處理剩餘股票
         batch_size = 10
-        for i in tqdm(range(0, len(stocks_to_process), batch_size), desc="Processing batches"):
+        for i in tqdm(
+            range(0, len(stocks_to_process), batch_size), desc="Processing batches"
+        ):
             batch = stocks_to_process[i : i + batch_size]
 
             for stock in batch:

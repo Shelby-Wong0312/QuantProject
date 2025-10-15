@@ -119,7 +119,12 @@ class TradingLogger:
         )
 
     def order_placed(
-        self, order_id: str, symbol: str, order_type: str, quantity: float, price: float = None
+        self,
+        order_id: str,
+        symbol: str,
+        order_type: str,
+        quantity: float,
+        price: float = None,
     ):
         """Log order placement"""
         self.logger.info(
@@ -134,7 +139,12 @@ class TradingLogger:
         )
 
     def strategy_signal(
-        self, strategy: str, symbol: str, signal: str, strength: float, metadata: Dict = None
+        self,
+        strategy: str,
+        symbol: str,
+        signal: str,
+        strength: float,
+        metadata: Dict = None,
     ):
         """Log strategy signal"""
         self.logger.debug(
@@ -148,7 +158,9 @@ class TradingLogger:
             },
         )
 
-    def error_occurred(self, error_type: str, message: str, context: Dict = None, exc_info=None):
+    def error_occurred(
+        self, error_type: str, message: str, context: Dict = None, exc_info=None
+    ):
         """Log error with context"""
         self.logger.error(
             f"{error_type}: {message}",
@@ -222,7 +234,9 @@ class LogAggregator:
             if level == "ERROR":
                 analysis["error_count"] += 1
                 error_type = log.get("error_type", "Unknown")
-                analysis["top_errors"][error_type] = analysis["top_errors"].get(error_type, 0) + 1
+                analysis["top_errors"][error_type] = (
+                    analysis["top_errors"].get(error_type, 0) + 1
+                )
             elif level == "WARNING":
                 analysis["warning_count"] += 1
             else:
@@ -244,7 +258,8 @@ def setup_logging():
 
     # Configure root logger
     logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
     # Create specialized loggers
@@ -285,7 +300,11 @@ class LogMonitor:
 
     def trigger_alert(self, rule_name: str, log_entry: Dict):
         """Trigger alert callbacks"""
-        alert = {"rule": rule_name, "timestamp": datetime.utcnow().isoformat(), "log": log_entry}
+        alert = {
+            "rule": rule_name,
+            "timestamp": datetime.utcnow().isoformat(),
+            "log": log_entry,
+        }
 
         for callback in self.alert_callbacks:
             try:
@@ -304,19 +323,22 @@ def setup_alert_rules(monitor: LogMonitor):
     # API connection failure
     monitor.add_alert_rule(
         "api_connection_failure",
-        lambda log: "Capital.com API" in log.get("message", "") and log.get("level") == "ERROR",
+        lambda log: "Capital.com API" in log.get("message", "")
+        and log.get("level") == "ERROR",
     )
 
     # High latency
     monitor.add_alert_rule(
         "high_latency",
-        lambda log: log.get("metric_name") == "latency" and log.get("metric_value", 0) > 2000,
+        lambda log: log.get("metric_name") == "latency"
+        and log.get("metric_value", 0) > 2000,
     )
 
     # Large drawdown
     monitor.add_alert_rule(
         "large_drawdown",
-        lambda log: log.get("metric_name") == "drawdown" and log.get("metric_value", 0) < -0.1,
+        lambda log: log.get("metric_name") == "drawdown"
+        and log.get("metric_value", 0) < -0.1,
     )
 
 

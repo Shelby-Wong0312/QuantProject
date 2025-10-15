@@ -17,7 +17,6 @@ from src.indicators import (
     RSI,
     MACD,
     BollingerBands,
-    SMA,
     IndicatorCalculator,
     CalculationConfig,
     IndicatorSignalGenerator,
@@ -44,8 +43,12 @@ def create_demo_data():
     )
 
     # 確保 OHLC 邏輯正確
-    data["high"] = np.maximum.reduce([data["open"], data["high"], data["low"], data["close"]])
-    data["low"] = np.minimum.reduce([data["open"], data["high"], data["low"], data["close"]])
+    data["high"] = np.maximum.reduce(
+        [data["open"], data["high"], data["low"], data["close"]]
+    )
+    data["low"] = np.minimum.reduce(
+        [data["open"], data["high"], data["low"], data["close"]]
+    )
 
     return data
 
@@ -161,7 +164,9 @@ def demo_performance_stats():
         symbol = f"PERF{i:02d}"
         stocks_data[symbol] = create_demo_data()
 
-    config = CalculationConfig(timeframes=["1d"], use_multiprocessing=False, cache_results=True)
+    config = CalculationConfig(
+        timeframes=["1d"], use_multiprocessing=False, cache_results=True
+    )
 
     calculator = IndicatorCalculator(config)
 
@@ -169,7 +174,7 @@ def demo_performance_stats():
     import time
 
     start_time = time.time()
-    results = calculator.calculate_all_indicators(stocks_data)
+    calculator.calculate_all_indicators(stocks_data)
     end_time = time.time()
 
     # 獲取性能統計

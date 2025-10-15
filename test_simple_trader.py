@@ -116,7 +116,9 @@ def test_signal_accuracy():
     print(f"   BUY signals: {buy_signals}")
     print(f"   SELL signals: {sell_signals}")
     print(f"   No signals: {no_signals}")
-    print(f"   Signal rate: {(buy_signals + sell_signals) / len(test_stocks) * 100:.1f}%")
+    print(
+        f"   Signal rate: {(buy_signals + sell_signals) / len(test_stocks) * 100:.1f}%"
+    )
 
     return True
 

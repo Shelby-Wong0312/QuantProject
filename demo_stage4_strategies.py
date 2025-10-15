@@ -161,7 +161,9 @@ def test_strategy(strategy, data: pd.DataFrame, strategy_name: str):
 
         risk_action = strategy.risk_management(test_position, data.tail(20))
         print("\nSuccess: Risk management tested")
-        print(f"  Position: {test_position.size} shares @ ${test_position.entry_price:.2f}")
+        print(
+            f"  Position: {test_position.size} shares @ ${test_position.entry_price:.2f}"
+        )
         print(f"  Current Price: ${data['close'].iloc[-1]:.2f}")
         print(f"  Risk Action: {risk_action['action']}")
         print(f"  Reason: {risk_action['reason']}")
@@ -209,7 +211,9 @@ def main():
         (create_trend_following_strategy(["AAPL"]), "Trend Following Strategy"),
     ]
 
-    print(f"\nTesting Traditional Strategies ({len(traditional_strategies)} strategies)")
+    print(
+        f"\nTesting Traditional Strategies ({len(traditional_strategies)} strategies)"
+    )
     for strategy, name in traditional_strategies:
         test_strategy(strategy, main_data, name)
 
@@ -253,13 +257,17 @@ def main():
             if signals:
                 avg_strength = np.mean([s.strength for s in signals])
                 buy_signals = len([s for s in signals if "BUY" in s.signal_type.value])
-                sell_signals = len([s for s in signals if "SELL" in s.signal_type.value])
+                sell_signals = len(
+                    [s for s in signals if "SELL" in s.signal_type.value]
+                )
 
                 print(
                     f"{name[:30]:30} | Signals: {len(signals):2} | Buy: {buy_signals:2} | Sell: {sell_signals:2} | Avg Strength: {avg_strength:.2f}"
                 )
             else:
-                print(f"{name[:30]:30} | Signals:  0 | Buy:  0 | Sell:  0 | Avg Strength: 0.00")
+                print(
+                    f"{name[:30]:30} | Signals:  0 | Buy:  0 | Sell:  0 | Avg Strength: 0.00"
+                )
 
         except Exception as e:
             print(f"{name[:30]:30} | Error: {str(e)[:20]}")
@@ -267,7 +275,9 @@ def main():
     # 總結
     print("\nStage 4 Strategy Development Summary")
     print("=" * 60)
-    print("✓ Traditional Strategies: 4 (Momentum, Mean Reversion, Breakout, Trend Following)")
+    print(
+        "✓ Traditional Strategies: 4 (Momentum, Mean Reversion, Breakout, Trend Following)"
+    )
     print(f"✓ ML Strategies: {len(ml_strategies)} (Random Forest, LSTM)")
     print("✓ All strategies include complete functionality:")
     print("   - generate_signals() - Signal generation")

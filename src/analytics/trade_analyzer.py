@@ -11,9 +11,9 @@ Provides comprehensive trade-level analysis including:
 
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime
 import sqlite3
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, Any
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -28,7 +28,11 @@ class TradeAnalyzer:
         self.metrics_cache = {}
 
     def load_trades(
-        self, start_date: str = None, end_date: str = None, symbol: str = None, strategy: str = None
+        self,
+        start_date: str = None,
+        end_date: str = None,
+        symbol: str = None,
+        strategy: str = None,
     ) -> pd.DataFrame:
         """Load trades with optional filtering"""
         try:
@@ -75,11 +79,15 @@ class TradeAnalyzer:
                 if trade["side"] == "buy":
                     # For buy trades: profit when price goes up
                     exit_price = trade.get("exit_price", trade["price"])
-                    trades_df.at[idx, "pnl"] = (exit_price - trade["price"]) * trade["quantity"]
+                    trades_df.at[idx, "pnl"] = (exit_price - trade["price"]) * trade[
+                        "quantity"
+                    ]
                 else:
                     # For sell trades: profit when price goes down
                     exit_price = trade.get("exit_price", trade["price"])
-                    trades_df.at[idx, "pnl"] = (trade["price"] - exit_price) * trade["quantity"]
+                    trades_df.at[idx, "pnl"] = (trade["price"] - exit_price) * trade[
+                        "quantity"
+                    ]
 
                 # Account for fees if available
                 if "fees" in trade and pd.notna(trade["fees"]):
@@ -136,7 +144,9 @@ class TradeAnalyzer:
         try:
             # Portfolio metrics
             total_pnl = trades_df["pnl"].sum()
-            final_equity = trades_df["equity"].iloc[-1] if not trades_df.empty else initial_capital
+            final_equity = (
+                trades_df["equity"].iloc[-1] if not trades_df.empty else initial_capital
+            )
             total_return = (final_equity / initial_capital - 1) * 100
 
             # Trade statistics
@@ -151,7 +161,9 @@ class TradeAnalyzer:
                     "winning_trades": winning_trades,
                     "losing_trades": losing_trades,
                     "breakeven_trades": breakeven_trades,
-                    "win_rate": (winning_trades / total_trades * 100) if total_trades > 0 else 0,
+                    "win_rate": (
+                        (winning_trades / total_trades * 100) if total_trades > 0 else 0
+                    ),
                     "total_pnl": total_pnl,
                     "total_return": total_return,
                     "initial_capital": initial_capital,
@@ -178,9 +190,13 @@ class TradeAnalyzer:
 
             # Profit factor
             if metrics["total_losses"] != 0:
-                metrics["profit_factor"] = abs(metrics["total_wins"] / metrics["total_losses"])
+                metrics["profit_factor"] = abs(
+                    metrics["total_wins"] / metrics["total_losses"]
+                )
             else:
-                metrics["profit_factor"] = float("in") if metrics["total_wins"] > 0 else 0
+                metrics["profit_factor"] = (
+                    float("in") if metrics["total_wins"] > 0 else 0
+                )
 
         except Exception as e:
             print(f"Error calculating basic metrics: {e}")
@@ -216,7 +232,9 @@ class TradeAnalyzer:
             start_dd = None
 
             for i, dd in enumerate(drawdown):
-                if dd < -0.001 and not in_drawdown:  # Start of drawdown (0.1% threshold)
+                if (
+                    dd < -0.001 and not in_drawdown
+                ):  # Start of drawdown (0.1% threshold)
                     in_drawdown = True
                     start_dd = i
                 elif dd >= -0.001 and in_drawdown:  # End of drawdown
@@ -228,21 +246,29 @@ class TradeAnalyzer:
             avg_drawdown_duration = np.mean(drawdown_periods) if drawdown_periods else 0
 
             # Sharpe ratio (assuming 0% risk-free rate)
-            sharpe_ratio = returns.mean() / daily_vol * np.sqrt(252) if daily_vol != 0 else 0
+            sharpe_ratio = (
+                returns.mean() / daily_vol * np.sqrt(252) if daily_vol != 0 else 0
+            )
 
             # Sortino ratio (downside deviation)
             downside_returns = returns[returns < 0]
             downside_vol = downside_returns.std() if len(downside_returns) > 0 else 0
-            sortino_ratio = returns.mean() / downside_vol * np.sqrt(252) if downside_vol != 0 else 0
+            sortino_ratio = (
+                returns.mean() / downside_vol * np.sqrt(252) if downside_vol != 0 else 0
+            )
 
             # Calmar ratio
-            calmar_ratio = (returns.mean() * 252) / abs(max_drawdown) if max_drawdown != 0 else 0
+            calmar_ratio = (
+                (returns.mean() * 252) / abs(max_drawdown) if max_drawdown != 0 else 0
+            )
 
             # Value at Risk (VaR) 95%
             var_95 = np.percentile(returns, 5) * initial_capital
 
             # Expected Shortfall (Conditional VaR)
-            es_95 = returns[returns <= np.percentile(returns, 5)].mean() * initial_capital
+            es_95 = (
+                returns[returns <= np.percentile(returns, 5)].mean() * initial_capital
+            )
 
             metrics.update(
                 {
@@ -279,13 +305,17 @@ class TradeAnalyzer:
             trades_df["month"] = trades_df["timestamp"].dt.month
 
             # Hourly performance
-            hourly_pnl = trades_df.groupby("hour")["pnl"].agg(["count", "mean", "sum"]).round(2)
+            hourly_pnl = (
+                trades_df.groupby("hour")["pnl"].agg(["count", "mean", "sum"]).round(2)
+            )
             best_hour = hourly_pnl["sum"].idxmax() if not hourly_pnl.empty else None
             worst_hour = hourly_pnl["sum"].idxmin() if not hourly_pnl.empty else None
 
             # Daily performance
             daily_pnl = (
-                trades_df.groupby("day_of_week")["pnl"].agg(["count", "mean", "sum"]).round(2)
+                trades_df.groupby("day_of_week")["pnl"]
+                .agg(["count", "mean", "sum"])
+                .round(2)
             )
             day_names = [
                 "Monday",
@@ -301,16 +331,24 @@ class TradeAnalyzer:
             # Symbol analysis
             if "symbol" in trades_df.columns:
                 symbol_performance = (
-                    trades_df.groupby("symbol")["pnl"].agg(["count", "mean", "sum"]).round(2)
+                    trades_df.groupby("symbol")["pnl"]
+                    .agg(["count", "mean", "sum"])
+                    .round(2)
                 )
-                symbol_performance = symbol_performance.sort_values("sum", ascending=False)
+                symbol_performance = symbol_performance.sort_values(
+                    "sum", ascending=False
+                )
 
                 patterns["symbol_performance"] = symbol_performance.to_dict()
                 patterns["best_symbol"] = (
-                    symbol_performance.index[0] if not symbol_performance.empty else None
+                    symbol_performance.index[0]
+                    if not symbol_performance.empty
+                    else None
                 )
                 patterns["worst_symbol"] = (
-                    symbol_performance.index[-1] if not symbol_performance.empty else None
+                    symbol_performance.index[-1]
+                    if not symbol_performance.empty
+                    else None
                 )
 
             # Trade size analysis
@@ -320,7 +358,9 @@ class TradeAnalyzer:
                     trades_df["trade_size"], q=5, labels=["XS", "S", "M", "L", "XL"]
                 )
                 size_performance = (
-                    trades_df.groupby(size_bins)["pnl"].agg(["count", "mean", "sum"]).round(2)
+                    trades_df.groupby(size_bins)["pnl"]
+                    .agg(["count", "mean", "sum"])
+                    .round(2)
                 )
                 patterns["size_performance"] = size_performance.to_dict()
 
@@ -350,10 +390,16 @@ class TradeAnalyzer:
                     "daily_performance": daily_pnl.to_dict(),
                     "best_hour": best_hour,
                     "worst_hour": worst_hour,
-                    "max_winning_streak": max(winning_streaks) if winning_streaks else 0,
+                    "max_winning_streak": (
+                        max(winning_streaks) if winning_streaks else 0
+                    ),
                     "max_losing_streak": max(losing_streaks) if losing_streaks else 0,
-                    "avg_winning_streak": np.mean(winning_streaks) if winning_streaks else 0,
-                    "avg_losing_streak": np.mean(losing_streaks) if losing_streaks else 0,
+                    "avg_winning_streak": (
+                        np.mean(winning_streaks) if winning_streaks else 0
+                    ),
+                    "avg_losing_streak": (
+                        np.mean(losing_streaks) if losing_streaks else 0
+                    ),
                 }
             )
 
@@ -376,7 +422,13 @@ class TradeAnalyzer:
             trades_df["year_month"] = trades_df["timestamp"].dt.to_period("M")
             monthly_data = (
                 trades_df.groupby("year_month")
-                .agg({"pnl": ["sum", "count", "mean"], "equity": "last", "returns": "sum"})
+                .agg(
+                    {
+                        "pnl": ["sum", "count", "mean"],
+                        "equity": "last",
+                        "returns": "sum",
+                    }
+                )
                 .round(4)
             )
 
@@ -426,14 +478,23 @@ class TradeAnalyzer:
             # Rank strategies by key metrics
             if not comparison_df.empty:
                 rankings = {}
-                key_metrics = ["total_return", "sharpe_ratio", "max_drawdown", "profit_factor"]
+                key_metrics = [
+                    "total_return",
+                    "sharpe_ratio",
+                    "max_drawdown",
+                    "profit_factor",
+                ]
 
                 for metric in key_metrics:
                     if metric in comparison_df.columns:
                         if metric == "max_drawdown":  # Lower is better
-                            rankings[f"{metric}_rank"] = comparison_df[metric].rank(ascending=True)
+                            rankings[f"{metric}_rank"] = comparison_df[metric].rank(
+                                ascending=True
+                            )
                         else:  # Higher is better
-                            rankings[f"{metric}_rank"] = comparison_df[metric].rank(ascending=False)
+                            rankings[f"{metric}_rank"] = comparison_df[metric].rank(
+                                ascending=False
+                            )
 
                 rankings_df = pd.DataFrame(rankings)
                 comparison["rankings"] = rankings_df.to_dict()
@@ -445,7 +506,10 @@ class TradeAnalyzer:
         return comparison
 
     def generate_comprehensive_analysis(
-        self, start_date: str = None, end_date: str = None, initial_capital: float = 10000
+        self,
+        start_date: str = None,
+        end_date: str = None,
+        initial_capital: float = 10000,
     ) -> Dict[str, Any]:
         """Generate comprehensive trading analysis"""
 
@@ -459,16 +523,22 @@ class TradeAnalyzer:
 
         try:
             # Basic metrics
-            analysis["basic_metrics"] = self.calculate_basic_metrics(trades_df, initial_capital)
+            analysis["basic_metrics"] = self.calculate_basic_metrics(
+                trades_df, initial_capital
+            )
 
             # Risk metrics
-            analysis["risk_metrics"] = self.calculate_risk_metrics(trades_df, initial_capital)
+            analysis["risk_metrics"] = self.calculate_risk_metrics(
+                trades_df, initial_capital
+            )
 
             # Trade patterns
             analysis["trade_patterns"] = self.analyze_trade_patterns(trades_df)
 
             # Monthly breakdown
-            analysis["monthly_returns"] = self.calculate_monthly_returns(trades_df, initial_capital)
+            analysis["monthly_returns"] = self.calculate_monthly_returns(
+                trades_df, initial_capital
+            )
 
             # Strategy comparison (if applicable)
             if "strategy" in trades_df.columns:
@@ -490,7 +560,9 @@ class TradeAnalyzer:
                     ),
                 },
                 "symbols_traded": (
-                    trades_df["symbol"].nunique() if "symbol" in trades_df.columns else 0
+                    trades_df["symbol"].nunique()
+                    if "symbol" in trades_df.columns
+                    else 0
                 ),
                 "analysis_timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             }
@@ -524,7 +596,9 @@ class TradeAnalyzer:
             clean_analysis = {}
             for key, value in analysis.items():
                 if isinstance(value, dict):
-                    clean_analysis[key] = {k: convert_for_json(v) for k, v in value.items()}
+                    clean_analysis[key] = {
+                        k: convert_for_json(v) for k, v in value.items()
+                    }
                 else:
                     clean_analysis[key] = convert_for_json(value)
 

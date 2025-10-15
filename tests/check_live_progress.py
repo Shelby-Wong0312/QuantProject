@@ -46,7 +46,9 @@ def check_progress():
         timestamp = datetime.now().strftime("%H:%M:%S")
 
         if new_stocks > 0 or new_records > 0:
-            print(f"[{timestamp}] [NEW] Added: {new_stocks} stocks, {new_records:,} records")
+            print(
+                f"[{timestamp}] [NEW] Added: {new_stocks} stocks, {new_records:,} records"
+            )
 
             # Show recently downloaded stocks
             cursor.execute(
@@ -80,7 +82,9 @@ def check_progress():
     print("\nMonitoring Results:")
     print(f"  New Stocks Added: {final_count - initial_count}")
     print(f"  New Records Added: {final_records - initial_records:,}")
-    print(f"  Current Progress: {final_count}/{total_stocks} ({final_count/total_stocks*100:.2f}%)")
+    print(
+        f"  Current Progress: {final_count}/{total_stocks} ({final_count/total_stocks*100:.2f}%)"
+    )
 
     if final_count - initial_count > 0:
         print("\n[SUCCESS] System is downloading data!")

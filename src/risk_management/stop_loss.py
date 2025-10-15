@@ -3,9 +3,7 @@ Stop Loss Management Module
 Fixed Stop Loss, Trailing Stop Loss, ATR Stop Loss
 """
 
-import numpy as np
-import pandas as pd
-from typing import Union, Optional, Dict, Tuple
+from typing import Optional, Dict
 from enum import Enum
 
 
@@ -25,7 +23,11 @@ class StopLoss:
         self.stops: Dict[str, Dict] = {}
 
     def set_fixed_stop(
-        self, symbol: str, entry_price: float, stop_price: float, position_type: str = "long"
+        self,
+        symbol: str,
+        entry_price: float,
+        stop_price: float,
+        position_type: str = "long",
     ) -> None:
         """
         Set fixed stop loss
@@ -45,7 +47,11 @@ class StopLoss:
         }
 
     def set_percentage_stop(
-        self, symbol: str, entry_price: float, stop_percentage: float, position_type: str = "long"
+        self,
+        symbol: str,
+        entry_price: float,
+        stop_percentage: float,
+        position_type: str = "long",
     ) -> None:
         """
         Set percentage-based stop loss
@@ -71,7 +77,11 @@ class StopLoss:
         }
 
     def set_trailing_stop(
-        self, symbol: str, entry_price: float, trail_amount: float, position_type: str = "long"
+        self,
+        symbol: str,
+        entry_price: float,
+        trail_amount: float,
+        position_type: str = "long",
     ) -> None:
         """
         Set trailing stop loss
@@ -204,7 +214,10 @@ class StopLoss:
 
     @staticmethod
     def trailing_stop_loss(
-        price: float, high: float, atr_multiplier: float = 2.0, atr: Optional[float] = None
+        price: float,
+        high: float,
+        atr_multiplier: float = 2.0,
+        atr: Optional[float] = None,
     ) -> float:
         """
         Calculate trailing stop loss price

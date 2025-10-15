@@ -10,8 +10,6 @@ from typing import Dict, List, Tuple, Any, Optional, Callable, Union
 import optuna
 from optuna.samplers import TPESampler, CmaEsSampler
 from optuna.pruners import MedianPruner, HyperbandPruner
-import joblib
-from concurrent.futures import ProcessPoolExecutor, as_completed
 import logging
 from datetime import datetime
 import json
@@ -63,7 +61,9 @@ class ParameterOptimizer:
         if pruner == "median":
             self.pruner = MedianPruner(n_startup_trials=10, n_warmup_steps=5)
         elif pruner == "hyperband":
-            self.pruner = HyperbandPruner(min_resource=1, max_resource=100, reduction_factor=3)
+            self.pruner = HyperbandPruner(
+                min_resource=1, max_resource=100, reduction_factor=3
+            )
         else:
             self.pruner = None
 
@@ -79,10 +79,16 @@ class ParameterOptimizer:
         self.best_params = None
         self.best_value = None
 
-        logger.info(f"Parameter optimizer initialized: {sampler} sampler, {pruner} pruner")
+        logger.info(
+            f"Parameter optimizer initialized: {sampler} sampler, {pruner} pruner"
+        )
 
     def grid_search(
-        self, strategy: Any, param_grid: Dict[str, List], objective_func: Callable, **kwargs
+        self,
+        strategy: Any,
+        param_grid: Dict[str, List],
+        objective_func: Callable,
+        **kwargs,
     ) -> Dict[str, Any]:
         """
         Perform grid search optimization
@@ -185,14 +191,20 @@ class ParameterOptimizer:
                 if isinstance(bounds, tuple) and len(bounds) == 2:
                     # Continuous parameter
                     if isinstance(bounds[0], int) and isinstance(bounds[1], int):
-                        params[param_name] = trial.suggest_int(param_name, bounds[0], bounds[1])
+                        params[param_name] = trial.suggest_int(
+                            param_name, bounds[0], bounds[1]
+                        )
                     else:
-                        params[param_name] = trial.suggest_float(param_name, bounds[0], bounds[1])
+                        params[param_name] = trial.suggest_float(
+                            param_name, bounds[0], bounds[1]
+                        )
                 elif isinstance(bounds, list):
                     # Categorical parameter
                     params[param_name] = trial.suggest_categorical(param_name, bounds)
                 else:
-                    raise ValueError(f"Invalid bounds for parameter {param_name}: {bounds}")
+                    raise ValueError(
+                        f"Invalid bounds for parameter {param_name}: {bounds}"
+                    )
 
             try:
                 score = objective_func(strategy, params, **kwargs)
@@ -226,10 +238,16 @@ class ParameterOptimizer:
         for trial in self.study.trials:
             if trial.state == optuna.trial.TrialState.COMPLETE:
                 self.optimization_history.append(
-                    {"params": trial.params, "score": trial.value, "iteration": trial.number + 1}
+                    {
+                        "params": trial.params,
+                        "score": trial.value,
+                        "iteration": trial.number + 1,
+                    }
                 )
 
-        logger.info(f"Bayesian optimization completed. Best score: {self.best_value:.4f}")
+        logger.info(
+            f"Bayesian optimization completed. Best score: {self.best_value:.4f}"
+        )
 
         return {
             "best_params": self.best_params,
@@ -264,10 +282,12 @@ class ParameterOptimizer:
         Returns:
             Best parameters and optimization results
         """
-        logger.info(f"Starting genetic algorithm with population size {population_size}")
+        logger.info(
+            f"Starting genetic algorithm with population size {population_size}"
+        )
 
         param_names = list(param_bounds.keys())
-        n_params = len(param_names)
+        len(param_names)
 
         # Initialize population
         population = []
@@ -303,7 +323,9 @@ class ParameterOptimizer:
                             best_individual = individual.copy()
 
                 except Exception as e:
-                    logger.error(f"Error evaluating individual in generation {generation}: {e}")
+                    logger.error(
+                        f"Error evaluating individual in generation {generation}: {e}"
+                    )
                     fitness_scores.append(
                         float("-in") if self.direction == "maximize" else float("inf")
                     )
@@ -404,7 +426,9 @@ class ParameterOptimizer:
         Returns:
             Pareto front and optimization results
         """
-        logger.info(f"Starting multi-objective optimization with {len(objective_funcs)} objectives")
+        logger.info(
+            f"Starting multi-objective optimization with {len(objective_funcs)} objectives"
+        )
 
         # Create multi-objective study
         study = optuna.create_study(
@@ -418,9 +442,13 @@ class ParameterOptimizer:
             for param_name, bounds in param_bounds.items():
                 if isinstance(bounds, tuple) and len(bounds) == 2:
                     if isinstance(bounds[0], int) and isinstance(bounds[1], int):
-                        params[param_name] = trial.suggest_int(param_name, bounds[0], bounds[1])
+                        params[param_name] = trial.suggest_int(
+                            param_name, bounds[0], bounds[1]
+                        )
                     else:
-                        params[param_name] = trial.suggest_float(param_name, bounds[0], bounds[1])
+                        params[param_name] = trial.suggest_float(
+                            param_name, bounds[0], bounds[1]
+                        )
                 elif isinstance(bounds, list):
                     params[param_name] = trial.suggest_categorical(param_name, bounds)
 
@@ -557,7 +585,9 @@ class ParameterOptimizer:
 
 
 def create_objective_function(
-    backtest_engine: Any, data: Dict[str, pd.DataFrame], target_metric: str = "sharpe_ratio"
+    backtest_engine: Any,
+    data: Dict[str, pd.DataFrame],
+    target_metric: str = "sharpe_ratio",
 ) -> Callable:
     """
     Create objective function for optimization
@@ -650,13 +680,22 @@ async def main():
 
     # Test Bayesian optimization
     print("\n2. Testing Bayesian Optimization...")
-    param_bounds = {"ma_short": (5, 50), "ma_long": (20, 200), "threshold": (0.005, 0.05)}
+    param_bounds = {
+        "ma_short": (5, 50),
+        "ma_long": (20, 200),
+        "threshold": (0.005, 0.05),
+    }
 
     bayes_results = optimizer.bayesian_optimization(
-        strategy=None, param_bounds=param_bounds, objective_func=simple_objective, n_trials=50
+        strategy=None,
+        param_bounds=param_bounds,
+        objective_func=simple_objective,
+        n_trials=50,
     )
 
-    print(f"Bayesian optimization completed. Best score: {bayes_results['best_value']:.4f}")
+    print(
+        f"Bayesian optimization completed. Best score: {bayes_results['best_value']:.4f}"
+    )
     print(f"Best parameters: {bayes_results['best_params']}")
 
     # Save results
@@ -667,7 +706,9 @@ async def main():
     print("\nOptimization Summary:")
     print(f"Best value: {summary['best_value']:.4f}")
     print(f"Total trials: {summary['total_trials']}")
-    print(f"Converged: {summary.get('convergence_analysis', {}).get('converged', 'Unknown')}")
+    print(
+        f"Converged: {summary.get('convergence_analysis', {}).get('converged', 'Unknown')}"
+    )
 
 
 if __name__ == "__main__":

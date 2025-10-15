@@ -8,7 +8,7 @@ paths = [
 ]
 
 for path in paths:
-    yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
     action = data.setdefault("action", {})
     action["max_dweight"] = 0.006
@@ -17,5 +17,7 @@ for path in paths:
     reward = data.setdefault("reward", {})
     reward["lambda_turnover"] = 0.004
 
-    path.write_text(yaml.safe_dump(data, sort_keys=False, allow_unicode=True), encoding="utf-8")
+    path.write_text(
+        yaml.safe_dump(data, sort_keys=False, allow_unicode=True), encoding="utf-8"
+    )
     print(f"patched: {path}")

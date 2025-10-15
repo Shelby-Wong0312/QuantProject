@@ -78,7 +78,18 @@ def show_dashboard():
 
     # Simulated activity (for demo)
     print("\n[LIVE SCANNING]")
-    stocks = ["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA", "META", "AMZN", "AMD", "SPY", "QQQ"]
+    stocks = [
+        "AAPL",
+        "MSFT",
+        "GOOGL",
+        "TSLA",
+        "NVDA",
+        "META",
+        "AMZN",
+        "AMD",
+        "SPY",
+        "QQQ",
+    ]
     for i in range(3):
         stock = random.choice(stocks)
         price = random.uniform(100, 500)

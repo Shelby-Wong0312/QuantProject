@@ -13,7 +13,6 @@ import pandas as pd
 import yfinance as yf
 from datetime import datetime, timedelta
 import json
-import pickle
 from typing import List, Dict, Tuple
 import warnings
 
@@ -277,7 +276,7 @@ class AutoTradingStrategy:
         best_action = np.argmax(action_votes)
 
         # 計算綜合信心分數
-        avg_confidence = np.mean(confidence_scores)
+        np.mean(confidence_scores)
         weighted_confidence = action_votes[best_action]
 
         return best_action, weighted_confidence
@@ -625,13 +624,11 @@ def main():
 
     # 運行回測
     print("\n[1] Running Backtesting...")
-    backtest_results = system.run_backtesting(
-        test_symbols, start_date="2024-01-01", end_date="2024-12-31"
-    )
+    system.run_backtesting(test_symbols, start_date="2024-01-01", end_date="2024-12-31")
 
     # 生成實時信號
     print("\n[2] Generating Live Signals...")
-    live_signals = system.generate_live_signals(test_symbols)
+    system.generate_live_signals(test_symbols)
 
     # 創建報告
     print("\n[3] Creating Report...")
@@ -646,7 +643,9 @@ def main():
     # 保存系統配置
     config = {
         "best_checkpoints": (
-            system.selector.best_checkpoints[:3] if system.selector.best_checkpoints else []
+            system.selector.best_checkpoints[:3]
+            if system.selector.best_checkpoints
+            else []
         ),
         "test_symbols": test_symbols,
         "timestamp": datetime.now().isoformat(),

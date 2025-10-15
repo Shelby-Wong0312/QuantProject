@@ -15,9 +15,11 @@
 """
 from __future__ import annotations
 
-import logging, os, threading, time
+import logging
+import os
+import threading
+import time
 from dataclasses import dataclass
-from datetime import datetime, timezone
 from typing import Any, Dict, Iterable, List, Optional
 
 from infra.publish_to_sns import publish_trade_event
@@ -97,7 +99,9 @@ def positions_as_text(positions: Iterable[Position]) -> str:
     lines: List[str] = []
     for p in positions:
         sign = "+" if p.quantity > 0 else ""
-        lines.append(f"{p.symbol} {sign}{_fmt_num(p.quantity,4)} @ { _fmt_num(p.avg_price,4) }")
+        lines.append(
+            f"{p.symbol} {sign}{_fmt_num(p.quantity,4)} @ { _fmt_num(p.avg_price,4) }"
+        )
     return "\n".join(lines) if lines else "No positions"
 
 

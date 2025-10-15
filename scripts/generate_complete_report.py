@@ -4,10 +4,8 @@ Combines validation results and statistics into comprehensive report
 """
 
 import pandas as pd
-import numpy as np
 import sqlite3
 import os
-import json
 from datetime import datetime
 
 
@@ -22,7 +20,9 @@ def generate_complete_report():
 
     # 1. Database Statistics
     db_path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "data",
+        "quant_trading.db",
     )
     conn = sqlite3.connect(db_path)
 
@@ -83,7 +83,9 @@ def generate_complete_report():
     # Check for zero volume
     cursor.execute("SELECT COUNT(*) FROM daily_data WHERE volume = 0")
     zero_volume = cursor.fetchone()[0]
-    print(f"Zero Volume Records: {zero_volume:,} ({zero_volume/total_records*100:.2f}%)")
+    print(
+        f"Zero Volume Records: {zero_volume:,} ({zero_volume/total_records*100:.2f}%)"
+    )
     print()
 
     # 3. Price Statistics
@@ -172,9 +174,9 @@ def generate_complete_report():
     )
     if os.path.exists(parquet_dir):
         parquet_files = [f for f in os.listdir(parquet_dir) if f.endswith(".parquet")]
-        total_size = sum(os.path.getsize(os.path.join(parquet_dir, f)) for f in parquet_files) / (
-            1024**2
-        )
+        total_size = sum(
+            os.path.getsize(os.path.join(parquet_dir, f)) for f in parquet_files
+        ) / (1024**2)
         print(f"Parquet Files: {len(parquet_files)}")
         print(f"Total Parquet Size: {total_size:.2f} MB")
         print(f"Average File Size: {total_size/len(parquet_files):.2f} MB")

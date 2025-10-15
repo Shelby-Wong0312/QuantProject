@@ -19,7 +19,9 @@ def test_alpaca_detailed():
     secret_key = os.getenv("ALPACA_SECRET_KEY")
 
     print(f"API Key ID: {api_key[:10]}..." if api_key else "API Key ID: NOT FOUND")
-    print(f"Secret Key: {secret_key[:10]}..." if secret_key else "Secret Key: NOT FOUND")
+    print(
+        f"Secret Key: {secret_key[:10]}..." if secret_key else "Secret Key: NOT FOUND"
+    )
 
     if not api_key or not secret_key:
         print("\n[ERROR] Missing credentials in .env file")
@@ -43,7 +45,7 @@ def test_alpaca_detailed():
             print(f"     Cash: ${float(account.cash):,.2f}")
 
             # Data client (no auth needed for free data)
-            data_client = StockHistoricalDataClient(api_key, secret_key)
+            StockHistoricalDataClient(api_key, secret_key)
             print("[OK] Data client ready")
 
             return True

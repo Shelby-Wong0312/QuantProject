@@ -6,7 +6,6 @@
 
 import json
 import yfinance as yf
-from datetime import datetime, timedelta
 import time
 
 
@@ -167,7 +166,9 @@ def main():
 
         # 進度顯示
         if (i + 1) % 50 == 0:
-            print(f"[PROGRESS] Processed {i+1}/{len(stocks_to_map)} - Mapped: {len(mapped)}")
+            print(
+                f"[PROGRESS] Processed {i+1}/{len(stocks_to_map)} - Mapped: {len(mapped)}"
+            )
             time.sleep(0.5)  # 避免請求過快
 
     # 保存結果

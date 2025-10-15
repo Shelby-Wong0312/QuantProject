@@ -66,7 +66,9 @@ class StrategyMT4Integration:
 
         # 開新倉
         if symbol not in self.positions:
-            result = self.bridge.place_order(symbol=symbol, order_type=action, volume=volume)
+            result = self.bridge.place_order(
+                symbol=symbol, order_type=action, volume=volume
+            )
 
             if result.get("success"):
                 self.positions[symbol] = {
@@ -109,7 +111,9 @@ class StrategyMT4Integration:
                 "open_positions": len(positions),
                 "unrealized_pnl": total_profit,
                 "margin_level": (
-                    account["equity"] / account["margin"] * 100 if account["margin"] > 0 else 0
+                    account["equity"] / account["margin"] * 100
+                    if account["margin"] > 0
+                    else 0
                 ),
             }
         return {}
@@ -192,10 +196,14 @@ class SimpleMT4Strategy:
 
                     if not has_position:
                         if current_price > sma * 1.001:  # 突破 SMA
-                            result = self.bridge.place_order(self.symbol, "BUY", self.volume)
+                            result = self.bridge.place_order(
+                                self.symbol, "BUY", self.volume
+                            )
                             print(f"買入信號: {result}")
                         elif current_price < sma * 0.999:  # 跌破 SMA
-                            result = self.bridge.place_order(self.symbol, "SELL", self.volume)
+                            result = self.bridge.place_order(
+                                self.symbol, "SELL", self.volume
+                            )
                             print(f"賣出信號: {result}")
 
             except Exception as e:

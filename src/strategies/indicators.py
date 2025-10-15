@@ -3,7 +3,6 @@
 
 import pandas as pd
 import pandas_ta as ta
-import numpy as np
 
 # --- 標準技術指標 ---
 
@@ -79,7 +78,11 @@ def get_candlestick_patterns(df_slice: pd.DataFrame) -> dict:
     # 使用pandas_ta的內建功能來檢測所有形態
     # cdl_pattern會返回一個包含所有形態檢測結果的DataFrame
     pattern_df = ta.cdl_pattern(
-        df_slice["Open"], df_slice["High"], df_slice["Low"], df_slice["Close"], name="all"
+        df_slice["Open"],
+        df_slice["High"],
+        df_slice["Low"],
+        df_slice["Close"],
+        name="all",
     )
 
     # 我們只取最新的（最後一根K線）的結果

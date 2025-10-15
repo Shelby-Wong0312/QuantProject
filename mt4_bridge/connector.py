@@ -6,12 +6,11 @@ MT4-Python橋接連接器 - ZeroMQ通訊主模組
 """
 
 import zmq
-import json
 import time
 import threading
 import logging
 from datetime import datetime
-from typing import Dict, Any, Optional, Callable, List
+from typing import Dict, Any, Optional, Callable
 from queue import Queue, Empty
 from enum import Enum
 
@@ -203,7 +202,9 @@ class MT4Connector:
         self._running = True
 
         # 心跳線程
-        self._heartbeat_thread = threading.Thread(target=self._heartbeat_worker, daemon=True)
+        self._heartbeat_thread = threading.Thread(
+            target=self._heartbeat_worker, daemon=True
+        )
         self._heartbeat_thread.start()
 
         # 數據監聽線程
@@ -275,7 +276,7 @@ class MT4Connector:
     def _process_received_data(self, data: Dict[str, Any]):
         """處理接收到的數據"""
         try:
-            msg_type = data.get("type")
+            data.get("type")
             topic = data.get("topic", "default")
 
             # 觸發回調函數
@@ -416,7 +417,9 @@ class MT4Connector:
         """獲取連接統計信息"""
         return {
             "state": self.state.value,
-            "last_heartbeat": self.last_heartbeat.isoformat() if self.last_heartbeat else None,
+            "last_heartbeat": (
+                self.last_heartbeat.isoformat() if self.last_heartbeat else None
+            ),
             "retry_count": self.retry_count,
             "subscribed_topics": list(self.data_callbacks.keys()),
             "data_queue_size": self.data_queue.qsize(),
@@ -433,7 +436,9 @@ class MT4ConnectorManager:
         self.connectors = {}  # {name: MT4Connector}
         self.default_connector = None
 
-    def add_connector(self, name: str, connector: MT4Connector, set_as_default: bool = False):
+    def add_connector(
+        self, name: str, connector: MT4Connector, set_as_default: bool = False
+    ):
         """添加連接器"""
         self.connectors[name] = connector
         if set_as_default or self.default_connector is None:
@@ -474,7 +479,9 @@ class MT4ConnectorManager:
 
     def get_all_stats(self) -> Dict[str, Dict[str, Any]]:
         """獲取所有連接器的統計信息"""
-        return {name: connector.get_stats() for name, connector in self.connectors.items()}
+        return {
+            name: connector.get_stats() for name, connector in self.connectors.items()
+        }
 
 
 # 全局連接器管理器實例

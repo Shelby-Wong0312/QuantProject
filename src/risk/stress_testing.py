@@ -7,14 +7,12 @@ Cloud Quant - Task Q-602
 import numpy as np
 import pandas as pd
 from scipy import stats
-from typing import List, Dict, Optional, Tuple, Any
-from datetime import datetime, timedelta
+from typing import List, Dict, Tuple
+from datetime import datetime
 import logging
 import json
 from pathlib import Path
 from dataclasses import dataclass
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +51,10 @@ class StressTesting:
     """
 
     def __init__(
-        self, portfolio_value: float, positions: Dict, historical_returns: pd.DataFrame = None
+        self,
+        portfolio_value: float,
+        positions: Dict,
+        historical_returns: pd.DataFrame = None,
     ):
         """
         初始化壓力測試
@@ -167,10 +168,14 @@ class StressTesting:
         portfolio_impact_pct = total_impact / self.portfolio_value
 
         # 計算VaR和CVaR
-        var_95, cvar_95 = self._calculate_var_cvar_for_scenario(scenario, position_impacts)
+        var_95, cvar_95 = self._calculate_var_cvar_for_scenario(
+            scenario, position_impacts
+        )
 
         # 計算最大潛在損失
-        max_loss = min(total_impact * scenario.volatility_multiplier, -self.portfolio_value)
+        max_loss = min(
+            total_impact * scenario.volatility_multiplier, -self.portfolio_value
+        )
 
         # 估算恢復時間
         recovery_days = int(scenario.duration_days * 2 * abs(portfolio_impact_pct))
@@ -223,7 +228,9 @@ class StressTesting:
 
         for i in range(n_simulations):
             # 生成隨機路徑
-            daily_returns = np.random.normal(portfolio_mean, portfolio_std, time_horizon)
+            daily_returns = np.random.normal(
+                portfolio_mean, portfolio_std, time_horizon
+            )
 
             # 計算累積收益
             cumulative_returns = np.cumprod(1 + daily_returns)
@@ -269,7 +276,9 @@ class StressTesting:
         var = np.percentile(returns, var_percentile)
 
         # Conditional Value at Risk (Expected Shortfall)
-        cvar = returns[returns <= var].mean() if len(returns[returns <= var]) > 0 else var
+        cvar = (
+            returns[returns <= var].mean() if len(returns[returns <= var]) > 0 else var
+        )
 
         return var, cvar
 
@@ -303,7 +312,9 @@ class StressTesting:
 
         return self.calculate_var_cvar(np.array(scenario_returns))
 
-    def _calculate_survival_probability(self, impact_pct: float, volatility_mult: float) -> float:
+    def _calculate_survival_probability(
+        self, impact_pct: float, volatility_mult: float
+    ) -> float:
         """
         計算投資組合生存概率
 
@@ -434,7 +445,9 @@ class StressTesting:
                 "average_impact": np.mean(impacts),
                 "median_impact": np.median(impacts),
                 "scenarios_with_loss_over_10pct": sum(1 for i in impacts if i <= -0.1),
-                "average_recovery_days": np.mean([r.recovery_days for r in self.test_results]),
+                "average_recovery_days": np.mean(
+                    [r.recovery_days for r in self.test_results]
+                ),
             }
 
         # 保存報告
@@ -496,7 +509,9 @@ class ExtremeEventSimulator:
             },
         }
 
-    def simulate_event(self, event_key: str, portfolio_value: float, positions: Dict) -> Dict:
+    def simulate_event(
+        self, event_key: str, portfolio_value: float, positions: Dict
+    ) -> Dict:
         """
         模擬歷史極端事件
 
@@ -617,7 +632,9 @@ class ExtremeEventSimulator:
             "left_tail_5pct": left_tail,
             "right_tail_95pct": right_tail,
             "extreme_loss_probability": extreme_loss_prob,
-            "tail_ratio": abs(left_tail / right_tail) if right_tail != 0 else float("inf"),
+            "tail_ratio": (
+                abs(left_tail / right_tail) if right_tail != 0 else float("inf")
+            ),
         }
 
 
@@ -683,7 +700,9 @@ if __name__ == "__main__":
 
     if "summary" in report:
         print(f"\nWorst Case Impact: {report['summary']['worst_case_impact']:.2%}")
-        print(f"Average Recovery Days: {report['summary']['average_recovery_days']:.0f}")
+        print(
+            f"Average Recovery Days: {report['summary']['average_recovery_days']:.0f}"
+        )
 
     print("\n" + "=" * 60)
     print("Stress Testing Complete!")

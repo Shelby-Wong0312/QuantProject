@@ -22,7 +22,9 @@ class LiveDataFeed:
         self.event_queue = event_queue
         self._running = False
         self.loop = asyncio.get_event_loop()
-        self.executor = ThreadPoolExecutor(max_workers=5)  # 用於在非同步環境中執行同步的requests
+        self.executor = ThreadPoolExecutor(
+            max_workers=5
+        )  # 用於在非同步環境中執行同步的requests
 
         # API 配置
         self.api_key = config.CAPITAL_API_KEY
@@ -45,7 +47,9 @@ class LiveDataFeed:
         logger.debug(f"[DataFeed] API Key: {self.api_key[:4]}...{self.api_key[-4:]}")
 
         try:
-            response = self.session.post(login_url, headers=headers, json=payload, timeout=15)
+            response = self.session.post(
+                login_url, headers=headers, json=payload, timeout=15
+            )
             if response.status_code == 200:
                 self.cst = response.headers.get("CST")
                 self.x_security_token = response.headers.get("X-SECURITY-TOKEN")
@@ -85,7 +89,9 @@ class LiveDataFeed:
         logger.info("實時數據源服務已啟動...")
 
         # 在執行器中運行同步的登入函式
-        login_successful = await self.loop.run_in_executor(self.executor, self._login_sync)
+        login_successful = await self.loop.run_in_executor(
+            self.executor, self._login_sync
+        )
 
         if not login_successful:
             logger.error("登入失敗，數據源服務無法啟動。")
@@ -96,7 +102,9 @@ class LiveDataFeed:
             try:
                 # 建立並行任務
                 tasks = [
-                    self.loop.run_in_executor(self.executor, self._get_market_data_sync, symbol)
+                    self.loop.run_in_executor(
+                        self.executor, self._get_market_data_sync, symbol
+                    )
                     for symbol in self.symbols
                 ]
                 results = await asyncio.gather(*tasks)
@@ -119,7 +127,9 @@ class LiveDataFeed:
                         )
 
                         if len(self.price_history[symbol]) >= 50:
-                            df = pd.DataFrame(list(self.price_history[symbol])).set_index("Date")
+                            df = pd.DataFrame(
+                                list(self.price_history[symbol])
+                            ).set_index("Date")
                             market_event = MarketEvent(
                                 symbol=symbol, timestamp=timestamp, ohlcv_data=df
                             )

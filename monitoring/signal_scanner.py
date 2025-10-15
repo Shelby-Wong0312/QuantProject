@@ -3,12 +3,9 @@
 Signal Scanner - Multi-timeframe Technical Analysis
 """
 
-import numpy as np
-import pandas as pd
 import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple, Any
-import time
+from datetime import datetime
+from typing import Dict, List, Any
 from dataclasses import dataclass
 import yaml
 from pathlib import Path
@@ -120,7 +117,9 @@ class SignalScanner:
 
         try:
             # 獲取歷史數據
-            hist_data = self.client.get_historical_data(symbol, period="3mo", interval=timeframe)
+            hist_data = self.client.get_historical_data(
+                symbol, period="3mo", interval=timeframe
+            )
 
             if hist_data is None or len(hist_data) < 21:
                 return signals
@@ -135,7 +134,7 @@ class SignalScanner:
             low_support = hist_data["Low"].rolling(window=lookback).min()
 
             # 當前價格
-            current_price = hist_data["Close"].iloc[-1]
+            hist_data["Close"].iloc[-1]
             current_high = hist_data["High"].iloc[-1]
             current_low = hist_data["Low"].iloc[-1]
             current_volume = hist_data["Volume"].iloc[-1]
@@ -157,7 +156,10 @@ class SignalScanner:
 
                 if volume_confirmed:
                     strength = min(
-                        1.0, (current_high - resistance_level) / resistance_level / threshold
+                        1.0,
+                        (current_high - resistance_level)
+                        / resistance_level
+                        / threshold,
                     )
                     signals.append(
                         Signal(
@@ -190,7 +192,9 @@ class SignalScanner:
                     volume_confirmed = current_volume > avg_volume * 1.5
 
                 if volume_confirmed:
-                    strength = min(1.0, (support_level - current_low) / support_level / threshold)
+                    strength = min(
+                        1.0, (support_level - current_low) / support_level / threshold
+                    )
                     signals.append(
                         Signal(
                             symbol=symbol,
@@ -202,7 +206,8 @@ class SignalScanner:
                             timeframe=timeframe,
                             metadata={
                                 "support_level": support_level,
-                                "breakout_magnitude": (support_level - current_low) / support_level,
+                                "breakout_magnitude": (support_level - current_low)
+                                / support_level,
                                 "volume_ratio": current_volume / avg_volume,
                             },
                         )
@@ -231,7 +236,9 @@ class SignalScanner:
 
         try:
             # 獲取歷史數據
-            hist_data = self.client.get_historical_data(symbol, period="2mo", interval=timeframe)
+            hist_data = self.client.get_historical_data(
+                symbol, period="2mo", interval=timeframe
+            )
 
             if hist_data is None or len(hist_data) < 21:
                 return signals
@@ -263,7 +270,9 @@ class SignalScanner:
                     hist_data["Close"].iloc[-1] - hist_data["Close"].iloc[-2]
                 ) / hist_data["Close"].iloc[-2]
                 direction = (
-                    "bullish" if price_change > 0 else "bearish" if price_change < 0 else "neutral"
+                    "bullish"
+                    if price_change > 0
+                    else "bearish" if price_change < 0 else "neutral"
                 )
 
                 signals.append(
@@ -307,7 +316,9 @@ class SignalScanner:
 
         try:
             # 獲取歷史數據
-            hist_data = self.client.get_historical_data(symbol, period="2mo", interval=timeframe)
+            hist_data = self.client.get_historical_data(
+                symbol, period="2mo", interval=timeframe
+            )
 
             if hist_data is None or len(hist_data) < 21:
                 return signals
@@ -388,7 +399,9 @@ class SignalScanner:
 
         try:
             # 獲取歷史數據
-            hist_data = self.client.get_historical_data(symbol, period="3mo", interval=timeframe)
+            hist_data = self.client.get_historical_data(
+                symbol, period="3mo", interval=timeframe
+            )
 
             if hist_data is None or len(hist_data) < 50:
                 return signals
@@ -478,7 +491,9 @@ class SignalScanner:
 
         try:
             # 獲取歷史數據
-            hist_data = self.client.get_historical_data(symbol, period="2mo", interval=timeframe)
+            hist_data = self.client.get_historical_data(
+                symbol, period="2mo", interval=timeframe
+            )
 
             if hist_data is None or len(hist_data) < 21:
                 return signals
@@ -487,7 +502,8 @@ class SignalScanner:
             hist_with_indicators = self.client.calculate_indicators(hist_data)
 
             if not all(
-                col in hist_with_indicators.columns for col in ["BB_Upper", "BB_Lower", "BB_Middle"]
+                col in hist_with_indicators.columns
+                for col in ["BB_Upper", "BB_Lower", "BB_Middle"]
             ):
                 return signals
 
@@ -512,7 +528,8 @@ class SignalScanner:
                             "price": current_price,
                             "bb_upper": bb_upper,
                             "bb_middle": bb_middle,
-                            "distance_from_upper": (current_price - bb_upper) / bb_upper,
+                            "distance_from_upper": (current_price - bb_upper)
+                            / bb_upper,
                         },
                     )
                 )
@@ -533,7 +550,8 @@ class SignalScanner:
                             "price": current_price,
                             "bb_lower": bb_lower,
                             "bb_middle": bb_middle,
-                            "distance_from_lower": (bb_lower - current_price) / bb_lower,
+                            "distance_from_lower": (bb_lower - current_price)
+                            / bb_lower,
                         },
                     )
                 )
@@ -543,7 +561,9 @@ class SignalScanner:
 
         return signals
 
-    def scan_symbol_comprehensive(self, symbol: str, timeframes: List[str] = None) -> List[Signal]:
+    def scan_symbol_comprehensive(
+        self, symbol: str, timeframes: List[str] = None
+    ) -> List[Signal]:
         """
         對單個股票進行全面信號掃描
 
@@ -572,7 +592,9 @@ class SignalScanner:
                 all_signals.extend(signals)
 
                 if signals:
-                    logger.debug(f"Found {len(signals)} signals for {symbol} on {timeframe}")
+                    logger.debug(
+                        f"Found {len(signals)} signals for {symbol} on {timeframe}"
+                    )
 
             except Exception as e:
                 logger.error(f"Error scanning {symbol} on {timeframe}: {e}")
@@ -619,7 +641,9 @@ class SignalScanner:
     def save_signals_to_db(self, signals: List[Signal]):
         """將信號保存到數據庫"""
         try:
-            db_path = self.config.get("system", {}).get("database_path", "data/market_data.db")
+            db_path = self.config.get("system", {}).get(
+                "database_path", "data/market_data.db"
+            )
 
             with sqlite3.connect(db_path) as conn:
                 # 創建信號表（如果不存在）
@@ -687,7 +711,9 @@ if __name__ == "__main__":
 
         if signals:
             for signal in signals:
-                print(f"  {signal.signal_type}: {signal.direction} (強度: {signal.strength:.2f})")
+                print(
+                    f"  {signal.signal_type}: {signal.direction} (強度: {signal.strength:.2f})"
+                )
 
             combined_strength = scanner.calculate_combined_signal_strength(signals)
             print(f"  組合信號強度: {combined_strength:.2f}")

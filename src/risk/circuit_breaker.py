@@ -45,7 +45,9 @@ class CircuitBreaker:
     Automatically pauses trading during extreme market conditions
     """
 
-    def __init__(self, initial_value: float = 100000, check_interval: int = 1):  # seconds
+    def __init__(
+        self, initial_value: float = 100000, check_interval: int = 1
+    ):  # seconds
         """
         Initialize circuit breaker
 
@@ -123,7 +125,9 @@ class CircuitBreaker:
 
         # Check each level
         triggered_level = None
-        for level, config in sorted(self.levels.items(), key=lambda x: x[1]["threshold"]):
+        for level, config in sorted(
+            self.levels.items(), key=lambda x: x[1]["threshold"]
+        ):
             if drawdown <= config["threshold"]:
                 triggered_level = level
 
@@ -135,7 +139,9 @@ class CircuitBreaker:
 
         return None
 
-    def _trigger_breaker(self, level: BreakerLevel, trigger_value: float, portfolio_value: float):
+    def _trigger_breaker(
+        self, level: BreakerLevel, trigger_value: float, portfolio_value: float
+    ):
         """
         Trigger circuit breaker
 
@@ -165,7 +171,9 @@ class CircuitBreaker:
         self.pause_start_time = datetime.now()
 
         if pause_duration > 0:
-            self.pause_end_time = self.pause_start_time + timedelta(minutes=pause_duration)
+            self.pause_end_time = self.pause_start_time + timedelta(
+                minutes=pause_duration
+            )
         else:
             self.pause_end_time = None  # Indefinite pause
 
@@ -245,7 +253,9 @@ class CircuitBreaker:
         Args:
             portfolio_callback: Function to get current portfolio value
         """
-        self.monitoring_task = asyncio.create_task(self._monitoring_loop(portfolio_callback))
+        self.monitoring_task = asyncio.create_task(
+            self._monitoring_loop(portfolio_callback)
+        )
         logger.info("Circuit breaker monitoring started")
 
     async def _monitoring_loop(self, portfolio_callback: Callable[[], float]):
@@ -323,11 +333,16 @@ class CircuitBreaker:
             "is_paused": self.is_paused,
             "trading_enabled": self.trading_enabled,
             "current_portfolio_value": self.current_portfolio_value,
-            "drawdown": (self.current_portfolio_value - self.initial_value) / self.initial_value,
+            "drawdown": (self.current_portfolio_value - self.initial_value)
+            / self.initial_value,
             "daily_high": self.daily_high,
             "daily_low": self.daily_low,
-            "pause_start": self.pause_start_time.isoformat() if self.pause_start_time else None,
-            "pause_end": self.pause_end_time.isoformat() if self.pause_end_time else None,
+            "pause_start": (
+                self.pause_start_time.isoformat() if self.pause_start_time else None
+            ),
+            "pause_end": (
+                self.pause_end_time.isoformat() if self.pause_end_time else None
+            ),
             "breaker_count": len(self.breaker_history),
         }
 

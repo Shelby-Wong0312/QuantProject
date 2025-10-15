@@ -68,7 +68,8 @@ def _align_frames(
     if common_index is None or len(common_index) == 0:
         return {}
     return {
-        symbol: normalized[symbol].reindex(common_index).dropna().copy() for symbol in normalized
+        symbol: normalized[symbol].reindex(common_index).dropna().copy()
+        for symbol in normalized
     }
 
 
@@ -77,10 +78,14 @@ def load_and_align(
 ) -> Dict[str, pd.DataFrame]:
     raw = _load_with_router(symbols, start, end, timeframe)
     if not raw:
-        raise AssertionError("No symbols returned data; check timeframe/start/end or connectivity.")
+        raise AssertionError(
+            "No symbols returned data; check timeframe/start/end or connectivity."
+        )
     aligned = _align_frames(raw, timeframe)
     if not aligned:
-        raise AssertionError("Unable to align data; check symbol coverage or timeframe overlap.")
+        raise AssertionError(
+            "Unable to align data; check symbol coverage or timeframe overlap."
+        )
     return aligned
 
 

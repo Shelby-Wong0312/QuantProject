@@ -75,7 +75,9 @@ def prepare_training_data(symbol="AAPL", days=30):
 
     df = pd.DataFrame(index=dates)
     df["close"] = prices
-    df["open"] = df["close"].shift(1).fillna(prices[0]) * (1 + np.random.normal(0, 0.001, n_steps))
+    df["open"] = df["close"].shift(1).fillna(prices[0]) * (
+        1 + np.random.normal(0, 0.001, n_steps)
+    )
     df["high"] = df[["open", "close"]].max(axis=1) * (
         1 + np.abs(np.random.normal(0, 0.002, n_steps))
     )
@@ -152,7 +154,9 @@ def evaluate_agent(trainer, env, n_episodes=10):
     results = trainer.evaluate(n_episodes)
 
     logger.info("Evaluation Results:")
-    logger.info(f"  Mean reward: {results['mean_reward']:.4f} ± {results['std_reward']:.4f}")
+    logger.info(
+        f"  Mean reward: {results['mean_reward']:.4f} ± {results['std_reward']:.4f}"
+    )
     logger.info(f"  Mean episode length: {results['mean_length']:.0f}")
 
     if "mean_win_rate" in results:
@@ -193,7 +197,9 @@ def backtest_strategy(trainer, test_data):
     while not done:
         # 獲取動作
         with torch.no_grad():
-            obs_tensor = torch.tensor(obs, dtype=torch.float32, device=trainer.config.device)
+            obs_tensor = torch.tensor(
+                obs, dtype=torch.float32, device=trainer.config.device
+            )
             obs_tensor = obs_tensor.unsqueeze(0)
             action, _, _, _ = trainer.model.get_action_and_value(obs_tensor)
             action = action.cpu().numpy()[0]
@@ -217,7 +223,9 @@ def backtest_strategy(trainer, test_data):
 
     # 計算夏普比率
     returns = pd.Series(portfolio_values).pct_change().dropna()
-    sharpe_ratio = np.sqrt(252) * returns.mean() / returns.std() if returns.std() > 0 else 0
+    sharpe_ratio = (
+        np.sqrt(252) * returns.mean() / returns.std() if returns.std() > 0 else 0
+    )
 
     # 計算最大回撤
     cumulative = (1 + returns).cumprod()
@@ -262,8 +270,12 @@ def plot_results(trainer, backtest_results):
     # 1. 訓練獎勵曲線
     if trainer.training_history:
         history_df = pd.DataFrame(trainer.training_history)
-        axes[0, 0].plot(history_df["timesteps"], history_df["mean_reward"], label="Mean", alpha=0.7)
-        axes[0, 0].plot(history_df["timesteps"], history_df["best_reward"], label="Best", alpha=0.7)
+        axes[0, 0].plot(
+            history_df["timesteps"], history_df["mean_reward"], label="Mean", alpha=0.7
+        )
+        axes[0, 0].plot(
+            history_df["timesteps"], history_df["best_reward"], label="Best", alpha=0.7
+        )
         axes[0, 0].set_xlabel("Timesteps")
         axes[0, 0].set_ylabel("Episode Reward")
         axes[0, 0].set_title("Training Progress")
@@ -273,10 +285,16 @@ def plot_results(trainer, backtest_results):
     # 2. 損失曲線
     if trainer.training_history:
         axes[0, 1].plot(
-            history_df["iteration"], history_df["pg_loss"], label="Policy Loss", alpha=0.7
+            history_df["iteration"],
+            history_df["pg_loss"],
+            label="Policy Loss",
+            alpha=0.7,
         )
         axes[0, 1].plot(
-            history_df["iteration"], history_df["value_loss"], label="Value Loss", alpha=0.7
+            history_df["iteration"],
+            history_df["value_loss"],
+            label="Value Loss",
+            alpha=0.7,
         )
         axes[0, 1].set_xlabel("Iteration")
         axes[0, 1].set_ylabel("Loss")
@@ -460,7 +478,9 @@ def main():
         if backtest_results["total_return"] > 0.2:
             print("✓ Achieved target return (>20%)!")
         else:
-            print(f"✗ Below target return (20%), got {backtest_results['total_return']:.2%}")
+            print(
+                f"✗ Below target return (20%), got {backtest_results['total_return']:.2%}"
+            )
 
         return True
 

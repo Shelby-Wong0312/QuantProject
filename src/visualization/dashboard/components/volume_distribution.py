@@ -3,7 +3,6 @@ Volume distribution visualization component
 """
 
 import plotly.graph_objects as go
-import plotly.express as px
 import numpy as np
 import pandas as pd
 from typing import Dict, Optional, List
@@ -43,7 +42,12 @@ def create_volume_distribution(agent_data: Optional[Dict] = None) -> go.Figure:
             .round(2)
         )
 
-        hourly_stats.columns = ["total_volume", "avg_volume", "trade_count", "avg_slippage"]
+        hourly_stats.columns = [
+            "total_volume",
+            "avg_volume",
+            "trade_count",
+            "avg_slippage",
+        ]
         hourly_stats = hourly_stats.reset_index()
 
         # Create figure
@@ -81,7 +85,7 @@ def create_volume_distribution(agent_data: Optional[Dict] = None) -> go.Figure:
         max_slippage = hourly_stats["avg_slippage"].abs().max()
         if max_slippage > 0:
             # Normalize slippage for color scale
-            normalized_slippage = hourly_stats["avg_slippage"] / max_slippage
+            hourly_stats["avg_slippage"] / max_slippage
 
             # Add slippage heatmap overlay
             for i, row in hourly_stats.iterrows():
@@ -122,7 +126,9 @@ def create_volume_distribution(agent_data: Optional[Dict] = None) -> go.Figure:
             yaxis2=dict(title="交易筆數", overlaying="y", side="right", showgrid=False),
             height=350,
             showlegend=True,
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            legend=dict(
+                orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+            ),
             hovermode="x unified",
             bargap=0.1,
         )
@@ -151,9 +157,9 @@ def extract_volume_data(agent_data: Dict) -> List[Dict]:
                     # Calculate slippage if available
                     slippage = 0
                     if "expected_price" in trade and "executed_price" in trade:
-                        slippage = (trade["executed_price"] - trade["expected_price"]) / trade[
-                            "expected_price"
-                        ]
+                        slippage = (
+                            trade["executed_price"] - trade["expected_price"]
+                        ) / trade["expected_price"]
 
                     volume_data.append(
                         {
@@ -188,7 +194,9 @@ def generate_mock_volume_data() -> Dict:
 
         for j in range(n_trades):
             # Select hour based on weights
-            hour = np.random.choice(list(hour_weights.keys()), p=list(hour_weights.values()))
+            hour = np.random.choice(
+                list(hour_weights.keys()), p=list(hour_weights.values())
+            )
 
             # Volume varies by hour
             base_volume = hour_weights[hour] * 5000
@@ -315,7 +323,10 @@ def create_empty_volume_chart() -> go.Figure:
     )
 
     fig.update_layout(
-        title="成交量時段分佈", height=350, xaxis=dict(visible=False), yaxis=dict(visible=False)
+        title="成交量時段分佈",
+        height=350,
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False),
     )
 
     return fig

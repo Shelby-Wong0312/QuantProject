@@ -12,14 +12,17 @@ import logging
 from datetime import datetime
 from pathlib import Path
 import argparse
-import json
 from typing import Optional
 
 # Add project root to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from src.core.trading_system import IntegratedTradingSystem, SystemConfig, SystemMode, StrategyType
-from src.core.paper_trading import PaperTradingSimulator
+from src.core.trading_system import (
+    IntegratedTradingSystem,
+    SystemConfig,
+    SystemMode,
+    StrategyType,
+)
 
 # Configure logging
 logging.basicConfig(
@@ -119,7 +122,9 @@ class TradingConsole:
             return
 
         # 需要API憑證
-        print("\n📝 Please configure your Capital.com API credentials in config/api_config.json")
+        print(
+            "\n📝 Please configure your Capital.com API credentials in config/api_config.json"
+        )
         print("Then restart the system.")
 
         # TODO: 實現實盤交易邏輯
@@ -210,7 +215,9 @@ class TradingConsole:
             return
 
         self.system.generate_report()
-        print(f"\n✅ Report generated: reports/system_report_{datetime.now():%Y%m%d_%H%M%S}.json")
+        print(
+            f"\n✅ Report generated: reports/system_report_{datetime.now():%Y%m%d_%H%M%S}.json"
+        )
 
     async def system_settings(self):
         """系統設置"""
@@ -319,9 +326,14 @@ async def main():
     Path("reports").mkdir(exist_ok=True)
 
     # 解析命令行參數
-    parser = argparse.ArgumentParser(description="Intelligent Quantitative Trading System")
+    parser = argparse.ArgumentParser(
+        description="Intelligent Quantitative Trading System"
+    )
     parser.add_argument(
-        "--mode", choices=["paper", "live", "backtest"], default="paper", help="Trading mode"
+        "--mode",
+        choices=["paper", "live", "backtest"],
+        default="paper",
+        help="Trading mode",
     )
     parser.add_argument(
         "--strategy",
@@ -329,7 +341,9 @@ async def main():
         default="hybrid",
         help="Trading strategy",
     )
-    parser.add_argument("--headless", action="store_true", help="Run without interactive console")
+    parser.add_argument(
+        "--headless", action="store_true", help="Run without interactive console"
+    )
 
     args = parser.parse_args()
 
@@ -349,7 +363,9 @@ async def main():
             "backtest": SystemMode.BACKTEST,
         }
 
-        config = SystemConfig(mode=mode_map[args.mode], strategy_type=strategy_map[args.strategy])
+        config = SystemConfig(
+            mode=mode_map[args.mode], strategy_type=strategy_map[args.strategy]
+        )
         # global trading_system  # removed by ci-hotfix
         trading_system = IntegratedTradingSystem(config)
         await trading_system.run()

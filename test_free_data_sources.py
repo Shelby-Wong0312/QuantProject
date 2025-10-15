@@ -6,8 +6,7 @@ Test all free data sources connectivity
 import os
 import sys
 import json
-import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from dotenv import load_dotenv
 
 # Load environment variables

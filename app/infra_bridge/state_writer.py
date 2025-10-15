@@ -14,7 +14,9 @@ _events = ddb.Table(EVENTS_TABLE)
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+    return (
+        datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+    )
 
 
 def write_summary(*, equity: float, cash: float, upnl: float, rpnl: float) -> None:

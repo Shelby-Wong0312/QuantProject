@@ -12,10 +12,9 @@ import io
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
 import json
-import numpy as np
 import pandas as pd
 import yfinance as yf
-from datetime import datetime, timedelta
+from datetime import datetime
 from tqdm import tqdm
 import warnings
 
@@ -45,7 +44,9 @@ def download_all_stocks_data():
     end_date = datetime.now()
     start_date = datetime(2010, 1, 1)
 
-    print(f"Download period: {start_date.strftime('%Y-%m-%d')} to {end_date.strftime('%Y-%m-%d')}")
+    print(
+        f"Download period: {start_date.strftime('%Y-%m-%d')} to {end_date.strftime('%Y-%m-%d')}"
+    )
 
     successful_downloads = []
     failed_downloads = []
@@ -77,13 +78,15 @@ def download_all_stocks_data():
                 else:
                     failed_downloads.append(symbol)
 
-            except Exception as e:
+            except Exception:
                 failed_downloads.append(symbol)
 
         # Show progress
         if (i + batch_size) % 500 == 0:
             print(f"\nProgress: {min(i+batch_size, len(symbols))}/{len(symbols)}")
-            print(f"Success: {len(successful_downloads)}, Failed: {len(failed_downloads)}")
+            print(
+                f"Success: {len(successful_downloads)}, Failed: {len(failed_downloads)}"
+            )
 
     # Save results
     result = {

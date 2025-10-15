@@ -8,7 +8,6 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import pandas as pd
-import numpy as np
 import sqlite3
 from src.indicators.momentum_indicators import RSI, MACD, Stochastic, WilliamsR, CCI
 import matplotlib.pyplot as plt
@@ -19,7 +18,9 @@ def test_indicators():
 
     # Get database path
     db_path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "data",
+        "quant_trading.db",
     )
     conn = sqlite3.connect(db_path)
 
@@ -112,7 +113,9 @@ def test_indicators():
     axes[0].set_ylabel("Price ($)")
     axes[0].legend(loc="upper left")
     axes[0].grid(True, alpha=0.3)
-    axes[0].set_title("AAPL Price and Momentum Indicators", fontsize=14, fontweight="bold")
+    axes[0].set_title(
+        "AAPL Price and Momentum Indicators", fontsize=14, fontweight="bold"
+    )
 
     # Plot RSI
     axes[1].plot(df.index, rsi_values, label="RSI", color="purple", linewidth=1)
@@ -127,8 +130,12 @@ def test_indicators():
 
     # Plot MACD
     axes[2].plot(df.index, macd_values["macd"], label="MACD", color="blue", linewidth=1)
-    axes[2].plot(df.index, macd_values["signal"], label="Signal", color="red", linewidth=1)
-    axes[2].bar(df.index, macd_values["histogram"], label="Histogram", color="gray", alpha=0.3)
+    axes[2].plot(
+        df.index, macd_values["signal"], label="Signal", color="red", linewidth=1
+    )
+    axes[2].bar(
+        df.index, macd_values["histogram"], label="Histogram", color="gray", alpha=0.3
+    )
     axes[2].axhline(y=0, color="black", linestyle="-", alpha=0.3)
     axes[2].set_ylabel("MACD")
     axes[2].legend(loc="upper left", fontsize=8)
@@ -147,8 +154,12 @@ def test_indicators():
     axes[3].grid(True, alpha=0.3)
 
     # Plot Williams %R
-    axes[4].plot(df.index, williams_values, label="Williams %R", color="orange", linewidth=1)
-    axes[4].axhline(y=-20, color="r", linestyle="--", alpha=0.5, label="Overbought (-20)")
+    axes[4].plot(
+        df.index, williams_values, label="Williams %R", color="orange", linewidth=1
+    )
+    axes[4].axhline(
+        y=-20, color="r", linestyle="--", alpha=0.5, label="Overbought (-20)"
+    )
     axes[4].axhline(y=-80, color="g", linestyle="--", alpha=0.5, label="Oversold (-80)")
     axes[4].fill_between(df.index, -20, 0, alpha=0.1, color="red")
     axes[4].fill_between(df.index, -100, -80, alpha=0.1, color="green")
@@ -159,8 +170,12 @@ def test_indicators():
 
     # Plot CCI
     axes[5].plot(df.index, cci_values, label="CCI", color="teal", linewidth=1)
-    axes[5].axhline(y=100, color="r", linestyle="--", alpha=0.5, label="Overbought (100)")
-    axes[5].axhline(y=-100, color="g", linestyle="--", alpha=0.5, label="Oversold (-100)")
+    axes[5].axhline(
+        y=100, color="r", linestyle="--", alpha=0.5, label="Overbought (100)"
+    )
+    axes[5].axhline(
+        y=-100, color="g", linestyle="--", alpha=0.5, label="Oversold (-100)"
+    )
     axes[5].axhline(y=0, color="black", linestyle="-", alpha=0.3)
     axes[5].fill_between(df.index, 100, cci_values.max(), alpha=0.1, color="red")
     axes[5].fill_between(df.index, cci_values.min(), -100, alpha=0.1, color="green")

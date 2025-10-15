@@ -5,9 +5,8 @@ Cloud Quant - Task Q-603
 """
 
 import numpy as np
-import pandas as pd
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 from dataclasses import dataclass
 from enum import Enum
 import logging
@@ -63,7 +62,10 @@ class RapidDeleveraging:
     """
 
     def __init__(
-        self, max_leverage: float = 2.0, target_leverage: float = 1.0, execution_speed: str = "fast"
+        self,
+        max_leverage: float = 2.0,
+        target_leverage: float = 1.0,
+        execution_speed: str = "fast",
     ):
         """
         Initialize deleveraging system
@@ -136,7 +138,9 @@ class RapidDeleveraging:
         current_leverage = self.calculate_portfolio_leverage(positions, account_equity)
 
         if current_leverage <= self.target_leverage:
-            logger.info(f"No deleveraging needed. Current leverage: {current_leverage:.2f}")
+            logger.info(
+                f"No deleveraging needed. Current leverage: {current_leverage:.2f}"
+            )
             return None
 
         # Calculate required reduction
@@ -148,7 +152,9 @@ class RapidDeleveraging:
         ranked_positions = self._rank_positions(positions, strategy)
 
         # Select positions to close
-        positions_to_close = self._select_positions_to_close(ranked_positions, required_reduction)
+        positions_to_close = self._select_positions_to_close(
+            ranked_positions, required_reduction
+        )
 
         # Create execution plan
         plan = DeleveragingPlan(
@@ -158,13 +164,17 @@ class RapidDeleveraging:
             positions_to_close=positions_to_close,
             estimated_proceeds=sum(p["estimated_proceeds"] for p in positions_to_close),
             estimated_time=self._estimate_execution_time(len(positions_to_close)),
-            risk_reduction=self._calculate_risk_reduction(positions_to_close, positions),
+            risk_reduction=self._calculate_risk_reduction(
+                positions_to_close, positions
+            ),
             strategy_used=strategy,
         )
 
         self.deleveraging_history.append(plan)
 
-        logger.warning(f"Deleveraging plan created: {len(positions_to_close)} positions to close")
+        logger.warning(
+            f"Deleveraging plan created: {len(positions_to_close)} positions to close"
+        )
         logger.warning(
             f"Current leverage: {current_leverage:.2f} -> Target: {self.target_leverage:.2f}"
         )
@@ -249,7 +259,10 @@ class RapidDeleveraging:
 
         # Losing positions
         if position.unrealized_pnl < 0:
-            score += abs(position.unrealized_pnl / position.market_value) * self.risk_weights["pnl"]
+            score += (
+                abs(position.unrealized_pnl / position.market_value)
+                * self.risk_weights["pnl"]
+            )
 
         # Low liquidity penalty
         score += (1 - position.liquidity_score) * self.risk_weights["liquidity"]
@@ -343,7 +356,9 @@ class RapidDeleveraging:
             if pos.symbol not in closed_symbols
         )
 
-        risk_reduction = (current_risk - remaining_risk) / current_risk if current_risk > 0 else 0
+        risk_reduction = (
+            (current_risk - remaining_risk) / current_risk if current_risk > 0 else 0
+        )
 
         return risk_reduction
 
@@ -400,7 +415,9 @@ class RapidDeleveraging:
         # Save execution report
         self._save_execution_report(plan, result)
 
-        logger.info(f"Deleveraging executed: {result['executed_count']} positions closed")
+        logger.info(
+            f"Deleveraging executed: {result['executed_count']} positions closed"
+        )
         logger.info(f"Total proceeds: ${result['total_proceeds']:,.2f}")
         logger.info(f"New leverage: {result['new_leverage']:.2f}")
 
@@ -421,10 +438,16 @@ class RapidDeleveraging:
 
         if np.random.random() < success_rate:
             # Add some slippage
-            actual_price = position["current_price"] * (1 - np.random.uniform(0.001, 0.003))
+            actual_price = position["current_price"] * (
+                1 - np.random.uniform(0.001, 0.003)
+            )
             proceeds = position["quantity"] * actual_price
 
-            return {"success": True, "proceeds": proceeds, "executed_price": actual_price}
+            return {
+                "success": True,
+                "proceeds": proceeds,
+                "executed_price": actual_price,
+            }
         else:
             return {"success": False, "error": "Execution failed"}
 
@@ -442,7 +465,9 @@ class RapidDeleveraging:
             Estimated new leverage
         """
         reduction_ratio = len(executed_positions) / len(plan.positions_to_close)
-        leverage_reduction = (plan.current_leverage - plan.target_leverage) * reduction_ratio
+        leverage_reduction = (
+            plan.current_leverage - plan.target_leverage
+        ) * reduction_ratio
         new_leverage = plan.current_leverage - leverage_reduction
 
         return new_leverage
@@ -524,7 +549,9 @@ if __name__ == "__main__":
     print("=" * 50)
 
     # Calculate current leverage
-    current_leverage = deleverager.calculate_portfolio_leverage(test_positions, account_equity)
+    current_leverage = deleverager.calculate_portfolio_leverage(
+        test_positions, account_equity
+    )
     print(f"Current Leverage: {current_leverage:.2f}x")
     print(f"Target Leverage: {deleverager.target_leverage:.2f}x")
 
@@ -542,7 +569,9 @@ if __name__ == "__main__":
 
         print("\nPositions to Close:")
         for pos in plan.positions_to_close[:5]:  # Show first 5
-            print(f"  {pos['symbol']}: {pos['quantity']} units @ ${pos['current_price']:.2f}")
+            print(
+                f"  {pos['symbol']}: {pos['quantity']} units @ ${pos['current_price']:.2f}"
+            )
 
         # Execute plan
         print("\nExecuting deleveraging...")

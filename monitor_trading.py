@@ -3,7 +3,6 @@ Monitor Live Trading System
 """
 
 import time
-from datetime import datetime
 from src.connectors.capital_com_api import CapitalComAPI
 import sqlite3
 
@@ -28,7 +27,9 @@ def monitor():
     try:
         conn = sqlite3.connect("data/live_trades.db")
         cursor = conn.cursor()
-        cursor.execute("SELECT COUNT(*) FROM trades WHERE date(timestamp) = date('now')")
+        cursor.execute(
+            "SELECT COUNT(*) FROM trades WHERE date(timestamp) = date('now')"
+        )
         today_trades = cursor.fetchone()[0]
         print(f"\n[TRADES] Today's trades: {today_trades}")
 

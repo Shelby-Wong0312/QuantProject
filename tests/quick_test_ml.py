@@ -33,7 +33,10 @@ except Exception as e:
 # Test 3: Hyperparameter Tuning
 print("\n3. Testing Hyperparameter Tuning...")
 try:
-    from src.optimization.hyperparameter_tuning import HyperparameterTuner, OptimizationConfig
+    from src.optimization.hyperparameter_tuning import (
+        HyperparameterTuner,
+        OptimizationConfig,
+    )
 
     opt_config = OptimizationConfig()
     tuner = HyperparameterTuner(opt_config)

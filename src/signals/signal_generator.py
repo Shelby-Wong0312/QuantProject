@@ -7,8 +7,7 @@ Cloud DE - Task RT-001
 import numpy as np
 import pandas as pd
 import torch
-import torch.nn as nn
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 import asyncio
@@ -24,10 +23,11 @@ warnings.filterwarnings("ignore")
 import sys
 import os
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.append(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+)
 
 from src.rl_trading.ppo_agent import ActorCritic
-from src.rl_trading.trading_env import TradingEnvironment
 from src.ml_models.lstm_price_predictor import LSTMPricePredictor
 from src.indicators.advanced_indicators import AdvancedIndicators
 
@@ -129,7 +129,9 @@ class SignalGenerator:
                 logger.warning(f"PPO model not found at {model_path}")
                 return None
 
-            checkpoint = torch.load(model_path, map_location=self.device, weights_only=False)
+            checkpoint = torch.load(
+                model_path, map_location=self.device, weights_only=False
+            )
 
             # 重建模型
             obs_dim = 11 * 20  # window_size * features
@@ -170,7 +172,9 @@ class SignalGenerator:
 
         # 2. LSTM 價格預測
         lstm_signal = (
-            self._get_lstm_signal(data) if self.lstm_predictor else {"action": "HOLD", "score": 50}
+            self._get_lstm_signal(data)
+            if self.lstm_predictor
+            else {"action": "HOLD", "score": 50}
         )
 
         # 3. 技術指標信號
@@ -363,10 +367,14 @@ class SignalGenerator:
         try:
             # 計算短期和長期動量
             returns_5d = (
-                (data["close"].iloc[-1] / data["close"].iloc[-5] - 1) if len(data) >= 5 else 0
+                (data["close"].iloc[-1] / data["close"].iloc[-5] - 1)
+                if len(data) >= 5
+                else 0
             )
             returns_20d = (
-                (data["close"].iloc[-1] / data["close"].iloc[-20] - 1) if len(data) >= 20 else 0
+                (data["close"].iloc[-1] / data["close"].iloc[-20] - 1)
+                if len(data) >= 20
+                else 0
             )
 
             # 成交量動量
@@ -496,7 +504,9 @@ class SignalGenerator:
             "atr": atr,
         }
 
-    def _prepare_ppo_observation(self, data: pd.DataFrame, current_position: float) -> np.ndarray:
+    def _prepare_ppo_observation(
+        self, data: pd.DataFrame, current_position: float
+    ) -> np.ndarray:
         """準備 PPO 模型的觀察數據"""
         # 獲取最近 20 個時間步的數據
         window_size = 20
@@ -563,7 +573,9 @@ class SignalGenerator:
         """獲取歷史信號"""
         cutoff_date = datetime.now() - timedelta(days=days)
 
-        filtered_signals = [s for s in self.signal_history if s.timestamp >= cutoff_date]
+        filtered_signals = [
+            s for s in self.signal_history if s.timestamp >= cutoff_date
+        ]
 
         if symbol:
             filtered_signals = [s for s in filtered_signals if s.symbol == symbol]
@@ -669,7 +681,10 @@ class SignalWebSocketServer:
                     # 廣播給所有客戶端
                     if self.clients:
                         await asyncio.gather(
-                            *[client.send(json.dumps(message)) for client in self.clients],
+                            *[
+                                client.send(json.dumps(message))
+                                for client in self.clients
+                            ],
                             return_exceptions=True,
                         )
 

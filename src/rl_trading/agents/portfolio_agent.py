@@ -8,7 +8,6 @@ import torch.nn as nn
 from typing import Dict, Any, Optional, Tuple, List
 from stable_baselines3 import PPO
 from stable_baselines3.common.policies import ActorCriticPolicy
-from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines3.common.callbacks import EvalCallback, CheckpointCallback
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 import logging
@@ -24,7 +23,11 @@ class PortfolioFeatureExtractor(BaseFeaturesExtractor):
     """
 
     def __init__(
-        self, observation_space, n_assets: int, features_per_asset: int = 20, hidden_dim: int = 256
+        self,
+        observation_space,
+        n_assets: int,
+        features_per_asset: int = 20,
+        hidden_dim: int = 256,
     ):
         # Output dimension after feature extraction
         super().__init__(observation_space, features_dim=hidden_dim)
@@ -42,10 +45,14 @@ class PortfolioFeatureExtractor(BaseFeaturesExtractor):
         )
 
         # Attention mechanism for assets
-        self.asset_attention = nn.MultiheadAttention(embed_dim=64, num_heads=4, dropout=0.1)
+        self.asset_attention = nn.MultiheadAttention(
+            embed_dim=64, num_heads=4, dropout=0.1
+        )
 
         # Portfolio state processing
-        portfolio_features = observation_space.shape[0] - (n_assets * features_per_asset)
+        portfolio_features = observation_space.shape[0] - (
+            n_assets * features_per_asset
+        )
         self.portfolio_encoder = nn.Sequential(
             nn.Linear(portfolio_features, 64), nn.ReLU(), nn.Linear(64, 32), nn.ReLU()
         )
@@ -216,7 +223,9 @@ class PortfolioAgent:
 
         # Add checkpoint callback
         checkpoint_callback = CheckpointCallback(
-            save_freq=50000, save_path=f"{save_path}/checkpoints", name_prefix="portfolio_model"
+            save_freq=50000,
+            save_path=f"{save_path}/checkpoints",
+            name_prefix="portfolio_model",
         )
         callbacks.append(checkpoint_callback)
 
@@ -297,7 +306,9 @@ class PortfolioAgent:
             "mean_return": np.mean([ep["total_return"] for ep in episode_results]),
             "std_return": np.std([ep["total_return"] for ep in episode_results]),
             "mean_sharpe": np.mean([ep["sharpe_ratio"] for ep in episode_results]),
-            "mean_max_drawdown": np.mean([ep["max_drawdown"] for ep in episode_results]),
+            "mean_max_drawdown": np.mean(
+                [ep["max_drawdown"] for ep in episode_results]
+            ),
             "mean_trades": np.mean([ep["trades"] for ep in episode_results]),
             "mean_win_rate": np.mean([ep["win_rate"] for ep in episode_results]),
         }

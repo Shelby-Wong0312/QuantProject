@@ -4,7 +4,7 @@ Feature Engineering Module for Financial Data
 
 import pandas as pd
 import numpy as np
-from typing import List, Optional, Dict, Any, Union
+from typing import List, Optional
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 import logging
 
@@ -104,7 +104,9 @@ class FeatureEngineer:
         # Price-volume features
         if "close" in result.columns:
             result["price_volume"] = result["close"] * result["volume"]
-            result["price_volume_sma"] = result["price_volume"].rolling(window=10).mean()
+            result["price_volume_sma"] = (
+                result["price_volume"].rolling(window=10).mean()
+            )
 
         # Volume change
         result["volume_change"] = result["volume"].pct_change()
@@ -136,17 +138,27 @@ class FeatureEngineer:
 
         # Log returns
         for period in periods:
-            result[f"log_return_{period}"] = np.log(result["close"] / result["close"].shift(period))
+            result[f"log_return_{period}"] = np.log(
+                result["close"] / result["close"].shift(period)
+            )
 
         # Cumulative returns
         result["cumulative_return"] = (1 + result["return_1"]).cumprod() - 1
 
         # Rolling statistics
         for period in [10, 20]:
-            result[f"return_mean_{period}"] = result["return_1"].rolling(window=period).mean()
-            result[f"return_std_{period}"] = result["return_1"].rolling(window=period).std()
-            result[f"return_skew_{period}"] = result["return_1"].rolling(window=period).skew()
-            result[f"return_kurt_{period}"] = result["return_1"].rolling(window=period).kurt()
+            result[f"return_mean_{period}"] = (
+                result["return_1"].rolling(window=period).mean()
+            )
+            result[f"return_std_{period}"] = (
+                result["return_1"].rolling(window=period).std()
+            )
+            result[f"return_skew_{period}"] = (
+                result["return_1"].rolling(window=period).skew()
+            )
+            result[f"return_kurt_{period}"] = (
+                result["return_1"].rolling(window=period).kurt()
+            )
 
         return result
 
@@ -165,7 +177,9 @@ class FeatureEngineer:
         # Historical volatility (different windows)
         for period in [5, 10, 20]:
             if "return_1" in result.columns:
-                result[f"volatility_{period}"] = result["return_1"].rolling(window=period).std()
+                result[f"volatility_{period}"] = (
+                    result["return_1"].rolling(window=period).std()
+                )
             else:
                 returns = result["close"].pct_change()
                 result[f"volatility_{period}"] = returns.rolling(window=period).std()
@@ -173,7 +187,10 @@ class FeatureEngineer:
         # Parkinson volatility (using high-low)
         if all(col in result.columns for col in ["high", "low"]):
             result["parkinson_vol"] = (
-                np.sqrt((1 / (4 * np.log(2))) * np.power(np.log(result["high"] / result["low"]), 2))
+                np.sqrt(
+                    (1 / (4 * np.log(2)))
+                    * np.power(np.log(result["high"] / result["low"]), 2)
+                )
                 .rolling(window=20)
                 .mean()
             )
@@ -183,7 +200,8 @@ class FeatureEngineer:
             result["garman_klass_vol"] = (
                 np.sqrt(
                     0.5 * np.power(np.log(result["high"] / result["low"]), 2)
-                    - (2 * np.log(2) - 1) * np.power(np.log(result["close"] / result["open"]), 2)
+                    - (2 * np.log(2) - 1)
+                    * np.power(np.log(result["close"] / result["open"]), 2)
                 )
                 .rolling(window=20)
                 .mean()
@@ -227,11 +245,17 @@ class FeatureEngineer:
         result["quarter"] = result.index.quarter
 
         # Trading session features (assuming US market hours)
-        result["is_market_open"] = ((result["hour"] >= 9) & (result["hour"] < 16)).astype(int)
+        result["is_market_open"] = (
+            (result["hour"] >= 9) & (result["hour"] < 16)
+        ).astype(int)
 
-        result["is_pre_market"] = ((result["hour"] >= 4) & (result["hour"] < 9)).astype(int)
+        result["is_pre_market"] = ((result["hour"] >= 4) & (result["hour"] < 9)).astype(
+            int
+        )
 
-        result["is_after_hours"] = ((result["hour"] >= 16) & (result["hour"] < 20)).astype(int)
+        result["is_after_hours"] = (
+            (result["hour"] >= 16) & (result["hour"] < 20)
+        ).astype(int)
 
         return result
 
@@ -319,7 +343,14 @@ class FeatureEngineer:
 
         # Default to all feature groups
         if feature_groups is None:
-            feature_groups = ["price", "volume", "returns", "volatility", "time", "technical"]
+            feature_groups = [
+                "price",
+                "volume",
+                "returns",
+                "volatility",
+                "time",
+                "technical",
+            ]
 
         # Create features based on groups
         if "price" in feature_groups:
@@ -343,7 +374,9 @@ class FeatureEngineer:
 
         # Store feature columns (excluding original OHLCV)
         original_cols = ["open", "high", "low", "close", "volume"]
-        self.feature_columns = [col for col in result.columns if col not in original_cols]
+        self.feature_columns = [
+            col for col in result.columns if col not in original_cols
+        ]
 
         return result
 

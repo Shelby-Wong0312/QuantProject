@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 # add repo/src to sys.path so "src.quantproject..." works when running "python -m rl3.train.ppo_baseline"
-import sys, pathlib, json, time, shutil
+import sys
+import pathlib
+import json
+import time
+import shutil
 from pathlib import Path
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -69,15 +73,22 @@ def make_env(cfg: Dict[str, Any]) -> PortfolioEnv:
         max_weight=act.get("max_weight", fields["max_weight"].default),
         max_dweight=act.get("max_dweight", fields["max_dweight"].default),
         dweight_threshold=float(thr),
-        gross_leverage_cap=risk_cfg.get("gross_leverage_cap", fields["gross_leverage_cap"].default),
+        gross_leverage_cap=risk_cfg.get(
+            "gross_leverage_cap", fields["gross_leverage_cap"].default
+        ),
         commission_bps=costs.get("commission_bps", fields["commission_bps"].default),
         slippage_alpha=costs.get("slippage_alpha", fields["slippage_alpha"].default),
         slippage_beta=costs.get("slippage_beta", fields["slippage_beta"].default),
-        participation_cap=costs.get("participation_cap", fields["participation_cap"].default),
-        reward_cost_bps=costs.get(
-            "reward_cost_bps", reward_cfg.get("cost_bps", fields["reward_cost_bps"].default)
+        participation_cap=costs.get(
+            "participation_cap", fields["participation_cap"].default
         ),
-        lambda_turnover=reward_cfg.get("lambda_turnover", fields["lambda_turnover"].default),
+        reward_cost_bps=costs.get(
+            "reward_cost_bps",
+            reward_cfg.get("cost_bps", fields["reward_cost_bps"].default),
+        ),
+        lambda_turnover=reward_cfg.get(
+            "lambda_turnover", fields["lambda_turnover"].default
+        ),
         reward_clip=reward_cfg.get("clip", fields["reward_clip"].default),
         dd_hard=risk_cfg.get("dd_hard", fields["dd_hard"].default),
     )
@@ -103,7 +114,12 @@ def main(yaml_path: str) -> None:
         else:
             print("[WARN] sb3-contrib not installed; falling back to PPO + MlpPolicy")
             policy_name = "MlpPolicy"
-            for key in ("lstm_hidden_size", "n_lstm_layers", "shared_lstm", "enable_critic_lstm"):
+            for key in (
+                "lstm_hidden_size",
+                "n_lstm_layers",
+                "shared_lstm",
+                "enable_critic_lstm",
+            ):
                 policy_kwargs.pop(key, None)
 
     config_payload = json.dumps(
@@ -111,7 +127,9 @@ def main(yaml_path: str) -> None:
             "symbols": cfg["symbols"],
             "features": cfg["obs"]["features"],
             "timeframe": cfg.get("timeframe", "5min"),
-            "window": cfg["obs"].get("window", EnvConfig.__dataclass_fields__["window"].default),
+            "window": cfg["obs"].get(
+                "window", EnvConfig.__dataclass_fields__["window"].default
+            ),
             "action": cfg.get("action", {}),
             "obs": cfg.get("obs", {}),
             "risk": cfg.get("risk", {}),
@@ -123,7 +141,9 @@ def main(yaml_path: str) -> None:
     )
     (log_dir / "config.json").write_text(config_payload, encoding="utf-8")
 
-    env_factory = lambda: make_env(cfg)
+    def env_factory():
+        return make_env(cfg)
+
     env_raw = DummyVecEnv([env_factory])
     vec_norm = VecNormalize(env_raw, norm_obs=True, norm_reward=False, clip_obs=10.0)
     env = VecCheckNan(vec_norm, raise_exception=True)

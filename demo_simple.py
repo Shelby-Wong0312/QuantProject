@@ -75,13 +75,13 @@ def demo_enhanced_system():
     # First request (build cache)
     print("First request (building cache)...")
     start_time = time.time()
-    quotes1 = client.get_batch_quotes(test_symbols[:3], use_cache=False, show_progress=False)
+    client.get_batch_quotes(test_symbols[:3], use_cache=False, show_progress=False)
     first_time = time.time() - start_time
 
     # Second request (use cache)
     print("Second request (using cache)...")
     start_time = time.time()
-    quotes2 = client.get_batch_quotes(test_symbols[:3], use_cache=True, show_progress=False)
+    client.get_batch_quotes(test_symbols[:3], use_cache=True, show_progress=False)
     cached_time = time.time() - start_time
 
     speedup = first_time / cached_time if cached_time > 0 else float("inf")
@@ -116,7 +116,9 @@ def demo_enhanced_system():
 
     print(f"Database: {client.db_path}")
     print(f"Cache duration: {client.cache_duration} seconds")
-    print(f"Alpha Vantage API: {'Configured' if client.alpha_vantage_key else 'Not configured'}")
+    print(
+        f"Alpha Vantage API: {'Configured' if client.alpha_vantage_key else 'Not configured'}"
+    )
     print(f"Batch processing: {client.batch_size} stocks/batch")
     print(f"Concurrent threads: {client.max_workers} threads")
     print("Support scale: 4000+ stocks")

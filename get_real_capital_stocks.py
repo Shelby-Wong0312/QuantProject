@@ -7,8 +7,6 @@
 import os
 import json
 import requests
-from typing import List, Dict
-import pandas as pd
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -27,7 +25,10 @@ class CapitalComAPI:
             self.base_url = "https://api-capital.backend-capital.com/api/v1"
 
         self.session = requests.Session()
-        self.headers = {"X-CAP-API-KEY": self.api_key, "Content-Type": "application/json"}
+        self.headers = {
+            "X-CAP-API-KEY": self.api_key,
+            "Content-Type": "application/json",
+        }
 
     def create_session(self):
         """創建交易會話"""
@@ -133,7 +134,8 @@ class CapitalComAPI:
                     or (
                         epic
                         and not any(
-                            x in epic.upper() for x in ["INDEX", "FX", "COMMODITY", "CRYPTO"]
+                            x in epic.upper()
+                            for x in ["INDEX", "FX", "COMMODITY", "CRYPTO"]
                         )
                     )
                 ):
@@ -457,7 +459,9 @@ def main():
 
         # 轉換為統一格式
         for ticker in predefined:
-            stocks.append({"ticker": ticker, "epic": ticker, "name": ticker, "type": "SHARES"})
+            stocks.append(
+                {"ticker": ticker, "epic": ticker, "name": ticker, "type": "SHARES"}
+            )
 
     # 去重
     unique_stocks = []

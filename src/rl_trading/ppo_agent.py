@@ -10,7 +10,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.distributions import Categorical
 import numpy as np
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, Tuple, Optional
 import logging
 from dataclasses import dataclass
 from collections import deque
@@ -42,7 +42,9 @@ class ActorCritic(nn.Module):
     同時輸出動作概率（Actor）和狀態價值（Critic）
     """
 
-    def __init__(self, obs_dim: int, action_dim: int, hidden_dim: int = 256, n_layers: int = 3):
+    def __init__(
+        self, obs_dim: int, action_dim: int, hidden_dim: int = 256, n_layers: int = 3
+    ):
         """
         初始化 Actor-Critic 網絡
 
@@ -59,7 +61,10 @@ class ActorCritic(nn.Module):
 
         # 共享特徵提取層
         self.feature_extractor = nn.Sequential(
-            nn.Linear(obs_dim, hidden_dim), nn.LayerNorm(hidden_dim), nn.ReLU(), nn.Dropout(0.1)
+            nn.Linear(obs_dim, hidden_dim),
+            nn.LayerNorm(hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(0.1),
         )
 
         # Actor 網絡（政策）
@@ -82,7 +87,9 @@ class ActorCritic(nn.Module):
         for i in range(n_layers - 1):
             critic_layers.extend(
                 [
-                    nn.Linear(hidden_dim, hidden_dim // 2 if i == n_layers - 2 else hidden_dim),
+                    nn.Linear(
+                        hidden_dim, hidden_dim // 2 if i == n_layers - 2 else hidden_dim
+                    ),
                     nn.LayerNorm(hidden_dim // 2 if i == n_layers - 2 else hidden_dim),
                     nn.ReLU(),
                     nn.Dropout(0.1),
@@ -212,7 +219,9 @@ class RolloutBuffer:
 
         self.ptr += 1
 
-    def compute_returns_and_advantages(self, last_value: float, gamma: float, gae_lambda: float):
+    def compute_returns_and_advantages(
+        self, last_value: float, gamma: float, gae_lambda: float
+    ):
         """
         計算回報和優勢函數 (GAE)
 
@@ -239,7 +248,9 @@ class RolloutBuffer:
                 next_non_terminal = 1.0 - dones[step]
                 next_value = values[step + 1]
 
-            delta = rewards[step] + gamma * next_value * next_non_terminal - values[step]
+            delta = (
+                rewards[step] + gamma * next_value * next_non_terminal - values[step]
+            )
             gae = delta + gamma * gae_lambda * next_non_terminal * gae
             self.advantages[self.path_start_idx + step] = gae
             self.returns[self.path_start_idx + step] = gae + values[step]
@@ -263,7 +274,8 @@ class RolloutBuffer:
         )
 
         return {
-            k: torch.tensor(v, dtype=torch.float32, device=self.device) for k, v in data.items()
+            k: torch.tensor(v, dtype=torch.float32, device=self.device)
+            for k, v in data.items()
         }
 
     def reset(self):
@@ -296,10 +308,14 @@ class PPOTrainer:
         action_dim = env.action_space.n
 
         # 創建模型
-        self.model = ActorCritic(obs_dim=obs_dim, action_dim=action_dim).to(self.config.device)
+        self.model = ActorCritic(obs_dim=obs_dim, action_dim=action_dim).to(
+            self.config.device
+        )
 
         # 優化器
-        self.optimizer = optim.Adam(self.model.parameters(), lr=self.config.learning_rate, eps=1e-5)
+        self.optimizer = optim.Adam(
+            self.model.parameters(), lr=self.config.learning_rate, eps=1e-5
+        )
 
         # 學習率調度器
         self.scheduler = optim.lr_scheduler.CosineAnnealingLR(
@@ -308,7 +324,9 @@ class PPOTrainer:
 
         # 緩衝區
         self.rollout_buffer = RolloutBuffer(
-            buffer_size=self.config.n_steps, obs_shape=obs_shape, device=self.config.device
+            buffer_size=self.config.n_steps,
+            obs_shape=obs_shape,
+            device=self.config.device,
         )
 
         # 訓練統計
@@ -322,7 +340,9 @@ class PPOTrainer:
         self.training_history = []
 
         logger.info(f"PPO Trainer initialized on {self.config.device}")
-        logger.info(f"Model parameters: {sum(p.numel() for p in self.model.parameters())}")
+        logger.info(
+            f"Model parameters: {sum(p.numel() for p in self.model.parameters())}"
+        )
 
     def collect_rollouts(self) -> bool:
         """
@@ -344,7 +364,9 @@ class PPOTrainer:
         while n_steps < self.config.n_steps:
             with torch.no_grad():
                 # 轉換觀察到張量
-                obs_tensor = torch.tensor(self.obs, dtype=torch.float32, device=self.config.device)
+                obs_tensor = torch.tensor(
+                    self.obs, dtype=torch.float32, device=self.config.device
+                )
                 obs_tensor = obs_tensor.unsqueeze(0)  # 添加 batch 維度
 
                 # 獲取動作和價值
@@ -386,7 +408,9 @@ class PPOTrainer:
 
         # 計算最後狀態的價值
         with torch.no_grad():
-            obs_tensor = torch.tensor(self.obs, dtype=torch.float32, device=self.config.device)
+            obs_tensor = torch.tensor(
+                self.obs, dtype=torch.float32, device=self.config.device
+            )
             obs_tensor = obs_tensor.unsqueeze(0)
             last_value = self.model.get_value(obs_tensor).cpu().numpy()[0]
 
@@ -437,7 +461,9 @@ class PPOTrainer:
                 advantages = batch["advantages"]
                 surr1 = ratio * advantages
                 surr2 = (
-                    torch.clamp(ratio, 1 - self.config.clip_ratio, 1 + self.config.clip_ratio)
+                    torch.clamp(
+                        ratio, 1 - self.config.clip_ratio, 1 + self.config.clip_ratio
+                    )
                     * advantages
                 )
                 pg_loss = -torch.min(surr1, surr2).mean()
@@ -458,7 +484,9 @@ class PPOTrainer:
                 # 優化
                 self.optimizer.zero_grad()
                 loss.backward()
-                nn.utils.clip_grad_norm_(self.model.parameters(), self.config.max_grad_norm)
+                nn.utils.clip_grad_norm_(
+                    self.model.parameters(), self.config.max_grad_norm
+                )
                 self.optimizer.step()
 
                 # 記錄
@@ -467,7 +495,9 @@ class PPOTrainer:
                 entropy_losses.append(entropy_loss.item())
 
                 # Clip fraction
-                clip_fraction = torch.mean((torch.abs(ratio - 1) > self.config.clip_ratio).float())
+                clip_fraction = torch.mean(
+                    (torch.abs(ratio - 1) > self.config.clip_ratio).float()
+                )
                 clip_fractions.append(clip_fraction.item())
 
         # 更新學習率
@@ -482,7 +512,9 @@ class PPOTrainer:
             "learning_rate": self.scheduler.get_last_lr()[0],
         }
 
-    def train(self, total_timesteps: int, log_interval: int = 10, save_interval: int = 100):
+    def train(
+        self, total_timesteps: int, log_interval: int = 10, save_interval: int = 100
+    ):
         """
         訓練主循環
 
@@ -586,7 +618,9 @@ class PPOTrainer:
 
             while not done:
                 with torch.no_grad():
-                    obs_tensor = torch.tensor(obs, dtype=torch.float32, device=self.config.device)
+                    obs_tensor = torch.tensor(
+                        obs, dtype=torch.float32, device=self.config.device
+                    )
                     obs_tensor = obs_tensor.unsqueeze(0)
                     action, _, _, _ = self.model.get_action_and_value(obs_tensor)
                     action = action.cpu().numpy()[0]

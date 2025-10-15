@@ -6,7 +6,6 @@ Cloud DE - Task DE-401
 
 import asyncio
 import sys
-import os
 from pathlib import Path
 import json
 from datetime import datetime
@@ -14,7 +13,13 @@ from datetime import datetime
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.api.capital_client import CapitalComClient, Environment, Order, OrderType, OrderSide
+from src.api.capital_client import (
+    CapitalComClient,
+    Environment,
+    Order,
+    OrderType,
+    OrderSide,
+)
 from src.api.auth_manager import AuthManager
 import logging
 
@@ -65,7 +70,9 @@ async def test_authentication():
 
     # Create client
     environment = (
-        Environment.DEMO if capital_creds.get("environment") == "demo" else Environment.LIVE
+        Environment.DEMO
+        if capital_creds.get("environment") == "demo"
+        else Environment.LIVE
     )
 
     client = CapitalComClient(
@@ -87,7 +94,11 @@ async def test_connection(client):
 
     if auth_success:
         print("✓ Authentication successful")
-        print(f"  CST Token: {client.cst_token[:20]}..." if client.cst_token else "  No CST token")
+        print(
+            f"  CST Token: {client.cst_token[:20]}..."
+            if client.cst_token
+            else "  No CST token"
+        )
         print(
             f"  Security Token: {client.x_security_token[:20]}..."
             if client.x_security_token
@@ -136,7 +147,9 @@ async def test_connection(client):
     if positions:
         print(f"✓ Found {len(positions)} open positions")
         for pos in positions[:3]:  # Show first 3
-            print(f"  {pos.symbol}: {pos.quantity} @ {pos.avg_price:.2f} (P&L: {pos.pnl:+.2f})")
+            print(
+                f"  {pos.symbol}: {pos.quantity} @ {pos.avg_price:.2f} (P&L: {pos.pnl:+.2f})"
+            )
     else:
         print("✓ No open positions")
 
@@ -158,7 +171,9 @@ async def test_connection(client):
             ws_test_complete.set()
 
     # Start WebSocket subscription in background
-    ws_task = asyncio.create_task(client.subscribe_price_stream(["EURUSD"], ws_callback))
+    ws_task = asyncio.create_task(
+        client.subscribe_price_stream(["EURUSD"], ws_callback)
+    )
 
     try:
         # Wait for some data or timeout
@@ -206,7 +221,9 @@ async def test_order_placement(client):
         new_position = next((p for p in positions if p.symbol == "EURUSD"), None)
 
         if new_position:
-            print(f"✓ Position opened: {new_position.quantity} @ {new_position.avg_price:.4f}")
+            print(
+                f"✓ Position opened: {new_position.quantity} @ {new_position.avg_price:.4f}"
+            )
 
             # Close the position
             # Note: This would need the position's deal ID, not shown here
@@ -276,6 +293,8 @@ async def main():
 
 if __name__ == "__main__":
     print("\nStarting Capital.com API connection test...")
-    print("Please ensure you have configured credentials in config/api_credentials.json")
+    print(
+        "Please ensure you have configured credentials in config/api_credentials.json"
+    )
 
     asyncio.run(main())

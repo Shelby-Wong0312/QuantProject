@@ -1,6 +1,5 @@
 import json
 import os
-import sys
 import urllib.request
 import urllib.error
 import time
@@ -44,7 +43,11 @@ def _post_json(url: str, payload: dict, timeout: int = 5) -> dict:
                     err_body = e2.read().decode("utf-8")  # type: ignore
                 except Exception:
                     err_body = str(e2)
-                return {"error": True, "status": getattr(e2, "code", status), "body": err_body}
+                return {
+                    "error": True,
+                    "status": getattr(e2, "code", status),
+                    "body": err_body,
+                }
         try:
             err_body = e.read().decode("utf-8")
         except Exception:

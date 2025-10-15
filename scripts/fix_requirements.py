@@ -11,7 +11,9 @@ def get_installed_version(package_name):
     """Get installed version of a package"""
     try:
         result = subprocess.run(
-            [sys.executable, "-m", "pip", "show", package_name], capture_output=True, text=True
+            [sys.executable, "-m", "pip", "show", package_name],
+            capture_output=True,
+            text=True,
         )
         if result.returncode == 0:
             for line in result.stdout.split("\n"):

@@ -7,32 +7,36 @@ Cloud Quant - Task SYS-001
 import asyncio
 import json
 import logging
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
 from pathlib import Path
 import pandas as pd
 import numpy as np
-import threading
 import queue
-from concurrent.futures import ThreadPoolExecutor, as_completed
-import time
+from concurrent.futures import ThreadPoolExecutor
 
 # Import internal modules
 import sys
 import os
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.append(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+)
 
 from src.portfolio.mpt_optimizer import MPTOptimizer
 from src.ml_models.xgboost_predictor import XGBoostPredictor
 from src.ml_models.lstm_price_predictor import LSTMPricePredictor
 from src.signals.signal_generator import SignalGenerator, TradingSignal
-from src.rl_trading.trading_env import TradingEnvironment
-from src.rl_trading.ppo_agent import PPOTrainer
 from src.data.data_manager import DataManager
-from src.api.capital_client import CapitalComClient, Environment, Order, OrderSide, OrderType
+from src.api.capital_client import (
+    CapitalComClient,
+    Environment,
+    Order,
+    OrderSide,
+    OrderType,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -115,7 +119,10 @@ class IntegratedTradingSystem:
 
         # 策略管理
         self.active_strategies = []
-        self.strategy_weights = {StrategyType.MPT_PORTFOLIO: 0.6, StrategyType.DAY_TRADING: 0.4}
+        self.strategy_weights = {
+            StrategyType.MPT_PORTFOLIO: 0.6,
+            StrategyType.DAY_TRADING: 0.4,
+        }
 
         # 執行隊列
         self.signal_queue = queue.Queue()
@@ -227,7 +234,9 @@ class IntegratedTradingSystem:
                     predictions[symbol] = df["close"].pct_change().mean() * 252
 
             # 準備 MPT 輸入
-            prices_df = pd.DataFrame({symbol: df["close"] for symbol, df in stock_data.items()})
+            prices_df = pd.DataFrame(
+                {symbol: df["close"] for symbol, df in stock_data.items()}
+            )
 
             expected_returns = pd.Series(predictions)
 
@@ -236,7 +245,9 @@ class IntegratedTradingSystem:
                 prices_df, expected_returns=expected_returns, target="sharpe"
             )
 
-            logger.info(f"MPT optimization complete - Sharpe: {portfolio['sharpe_ratio']:.2f}")
+            logger.info(
+                f"MPT optimization complete - Sharpe: {portfolio['sharpe_ratio']:.2f}"
+            )
 
             return portfolio["weights"]
 
@@ -269,7 +280,9 @@ class IntegratedTradingSystem:
                 if stock_data is not None and len(stock_data) > 100:
                     # 使用信號生成器
                     signal = self.signal_generator.generate_signal(
-                        stock_data.tail(200), symbol, self.state.current_positions.get(symbol, 0)
+                        stock_data.tail(200),
+                        symbol,
+                        self.state.current_positions.get(symbol, 0),
                     )
 
                     # 過濾強信號
@@ -294,7 +307,11 @@ class IntegratedTradingSystem:
         """
         logger.info("Combining multiple strategies...")
 
-        decisions = {"portfolio_allocation": {}, "trading_signals": [], "risk_metrics": {}}
+        decisions = {
+            "portfolio_allocation": {},
+            "trading_signals": [],
+            "risk_metrics": {},
+        }
 
         try:
             # 1. MPT 投資組合配置
@@ -345,7 +362,9 @@ class IntegratedTradingSystem:
         try:
             # 1. 執行投資組合調整
             if decisions["portfolio_allocation"]:
-                await self._execute_portfolio_rebalance(decisions["portfolio_allocation"])
+                await self._execute_portfolio_rebalance(
+                    decisions["portfolio_allocation"]
+                )
 
             # 2. 執行交易信號
             for signal in decisions["trading_signals"]:
@@ -422,7 +441,9 @@ class IntegratedTradingSystem:
         """模擬訂單執行"""
         # 簡化的模擬邏輯
         if order.side == OrderSide.BUY:
-            cost = order.quantity * (order.price or self._get_current_price(order.symbol))
+            cost = order.quantity * (
+                order.price or self._get_current_price(order.symbol)
+            )
             if self.state.cash_balance >= cost:
                 self.state.cash_balance -= cost
                 self.state.current_positions[order.symbol] = (
@@ -491,7 +512,9 @@ class IntegratedTradingSystem:
 
             # Win Rate
             winning_trades = sum(1 for r in returns if r > 0)
-            self.state.win_rate = winning_trades / len(returns) if len(returns) > 0 else 0
+            self.state.win_rate = (
+                winning_trades / len(returns) if len(returns) > 0 else 0
+            )
 
     def _record_trade(self, order: Order, order_id: str):
         """記錄交易"""
@@ -520,7 +543,10 @@ class IntegratedTradingSystem:
 
         # 設置活躍策略
         if self.config.strategy_type == StrategyType.HYBRID:
-            self.active_strategies = [StrategyType.MPT_PORTFOLIO, StrategyType.DAY_TRADING]
+            self.active_strategies = [
+                StrategyType.MPT_PORTFOLIO,
+                StrategyType.DAY_TRADING,
+            ]
         else:
             self.active_strategies = [self.config.strategy_type]
 
@@ -588,7 +614,9 @@ class IntegratedTradingSystem:
         }
 
         # 保存報告
-        report_path = Path("reports") / f"system_report_{datetime.now():%Y%m%d_%H%M%S}.json"
+        report_path = (
+            Path("reports") / f"system_report_{datetime.now():%Y%m%d_%H%M%S}.json"
+        )
         report_path.parent.mkdir(exist_ok=True)
 
         with open(report_path, "w") as f:
@@ -614,7 +642,9 @@ class IntegratedTradingSystem:
         # 生成最終報告
         final_report = self.generate_report()
 
-        logger.info(f"System shutdown complete. Final return: {final_report['total_return']:.2%}")
+        logger.info(
+            f"System shutdown complete. Final return: {final_report['total_return']:.2%}"
+        )
 
 
 class RiskManager:

@@ -4,9 +4,8 @@ Data Validation and Quality Checks
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, Any, Optional, Tuple
 import logging
-from datetime import datetime, timedelta
 
 
 logger = logging.getLogger(__name__)
@@ -65,7 +64,9 @@ class DataValidator:
         if not ohlc_valid:
             report["is_valid"] = False
             report["issues"].extend(ohlc_report["issues"])
-        report["statistics"]["invalid_ohlc_relationships"] = ohlc_report.get("invalid_count", 0)
+        report["statistics"]["invalid_ohlc_relationships"] = ohlc_report.get(
+            "invalid_count", 0
+        )
 
         # Missing data validation
         missing_valid, missing_report = self._validate_missing_data(df)
@@ -93,7 +94,9 @@ class DataValidator:
             volume_valid, volume_report = self._validate_volume(df)
             if not volume_valid:
                 report["warnings"].extend(volume_report["warnings"])
-            report["statistics"]["volume_issues"] = volume_report.get("volume_stats", {})
+            report["statistics"]["volume_issues"] = volume_report.get(
+                "volume_stats", {}
+            )
 
         # Calculate data quality score
         report["quality_score"] = self._calculate_quality_score(report)
@@ -136,7 +139,9 @@ class DataValidator:
 
         return report["is_valid"], report
 
-    def _validate_ohlc_relationships(self, df: pd.DataFrame) -> Tuple[bool, Dict[str, Any]]:
+    def _validate_ohlc_relationships(
+        self, df: pd.DataFrame
+    ) -> Tuple[bool, Dict[str, Any]]:
         """Validate OHLC price relationships"""
         {"is_valid": True, "issues": [], "invalid_count": 0}
 
@@ -161,7 +166,9 @@ class DataValidator:
         if invalid_count > 0:
             report["is_valid"] = False
             report["invalid_count"] = invalid_count
-            report["issues"].append(f"Found {invalid_count} rows with invalid OHLC relationships")
+            report["issues"].append(
+                f"Found {invalid_count} rows with invalid OHLC relationships"
+            )
 
             # Get sample of invalid rows
             invalid_indices = df_lower[invalid_mask].index[:5].tolist()
@@ -207,7 +214,11 @@ class DataValidator:
         time_diffs = df.index.to_series().diff()
 
         # Find the mode (most common) time difference
-        mode_diff = time_diffs.mode()[0] if len(time_diffs.mode()) > 0 else pd.Timedelta(hours=1)
+        mode_diff = (
+            time_diffs.mode()[0]
+            if len(time_diffs.mode()) > 0
+            else pd.Timedelta(hours=1)
+        )
 
         # Find gaps (more than 2x the mode difference)
         gap_threshold = mode_diff * 2
@@ -220,7 +231,11 @@ class DataValidator:
             gap_details = []
             for idx, gap in gaps.items():
                 gap_details.append(
-                    {"start": df.index[df.index.get_loc(idx) - 1], "end": idx, "duration": str(gap)}
+                    {
+                        "start": df.index[df.index.get_loc(idx) - 1],
+                        "end": idx,
+                        "duration": str(gap),
+                    }
                 )
 
             report["gaps"] = gap_details[:10]  # Store first 10 gaps
@@ -253,7 +268,9 @@ class DataValidator:
             outlier_counts[col] = len(outliers)
 
             if len(outliers) > 0:
-                report["warnings"].append(f"Found {len(outliers)} outliers in {col} returns")
+                report["warnings"].append(
+                    f"Found {len(outliers)} outliers in {col} returns"
+                )
 
         report["outlier_stats"] = outlier_counts
 
@@ -271,7 +288,9 @@ class DataValidator:
         # Check for negative volumes
         negative_volumes = (volume < 0).sum()
         if negative_volumes > 0:
-            report["warnings"].append(f"Found {negative_volumes} negative volume values")
+            report["warnings"].append(
+                f"Found {negative_volumes} negative volume values"
+            )
             report["volume_stats"]["negative_count"] = negative_volumes
 
         # Check for zero volumes
@@ -290,7 +309,9 @@ class DataValidator:
         volume_spikes = volume_returns[volume_returns.abs() > 10 * volume_std]
 
         if len(volume_spikes) > 0:
-            report["warnings"].append(f"Found {len(volume_spikes)} extreme volume spikes")
+            report["warnings"].append(
+                f"Found {len(volume_spikes)} extreme volume spikes"
+            )
             report["volume_stats"]["spike_count"] = len(volume_spikes)
 
         return report["is_valid"], report

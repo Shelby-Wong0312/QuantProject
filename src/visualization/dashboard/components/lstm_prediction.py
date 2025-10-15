@@ -104,7 +104,9 @@ def create_lstm_prediction_chart(symbol, timeframe):
             yaxis_title="價格",
             height=300,
             margin=dict(l=50, r=50, t=80, b=50),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            legend=dict(
+                orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+            ),
             hovermode="x unified",
         )
 

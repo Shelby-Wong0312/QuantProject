@@ -1,7 +1,6 @@
 # quant_project/data/data_cache.py
 # 數據緩存管理器
 
-import os
 import json
 import logging
 import pandas as pd
@@ -43,7 +42,9 @@ class DataCache:
         except Exception as e:
             logger.error(f"保存元數據失敗: {e}")
 
-    def _get_cache_key(self, symbol: str, resolution: str, start_date: str, end_date: str) -> str:
+    def _get_cache_key(
+        self, symbol: str, resolution: str, start_date: str, end_date: str
+    ) -> str:
         """生成緩存鍵"""
         key_string = f"{symbol}_{resolution}_{start_date}_{end_date}"
         return hashlib.md5(key_string.encode()).hexdigest()
@@ -86,7 +87,14 @@ class DataCache:
 
         return None
 
-    def set(self, symbol: str, resolution: str, start_date: str, end_date: str, data: pd.DataFrame):
+    def set(
+        self,
+        symbol: str,
+        resolution: str,
+        start_date: str,
+        end_date: str,
+        data: pd.DataFrame,
+    ):
         """
         將數據保存到緩存
 
@@ -186,5 +194,7 @@ class DataCache:
         # 按時間排序
         merged_df.sort_index(inplace=True)
 
-        logger.info(f"合併 {symbol} 數據: {len(data_list)} 個片段 -> {len(merged_df)} 筆記錄")
+        logger.info(
+            f"合併 {symbol} 數據: {len(data_list)} 個片段 -> {len(merged_df)} 筆記錄"
+        )
         return merged_df

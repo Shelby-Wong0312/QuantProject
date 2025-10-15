@@ -4,13 +4,14 @@ Ready for production use
 """
 
 import sys
-import os
 from pathlib import Path
 import time
 import logging
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s", datefmt="%H:%M:%S")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(message)s", datefmt="%H:%M:%S"
+)
 logger = logging.getLogger(__name__)
 
 # Add project root to path
@@ -29,7 +30,6 @@ def main():
         # 1. Import modules
         print("\n[1/4] Loading modules...")
         from monitoring.tiered_monitor import TieredMonitor, TierLevel
-        from data_pipeline.free_data_client import FreeDataClient
 
         print("   [OK] Modules loaded")
 
@@ -43,7 +43,16 @@ def main():
                 all_symbols = all_symbols[:4000]  # Use up to 4000 stocks
         else:
             # Demo list if no file
-            all_symbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "META", "NVDA", "JPM"]
+            all_symbols = [
+                "AAPL",
+                "MSFT",
+                "GOOGL",
+                "AMZN",
+                "TSLA",
+                "META",
+                "NVDA",
+                "JPM",
+            ]
 
         print(f"   [OK] Loaded {len(all_symbols)} stocks")
 
@@ -112,7 +121,9 @@ def main():
                 if details and "S_tier" in details:
                     s_tier = details["S_tier"]
                     if "symbol_count" in s_tier:
-                        print(f"         S-tier: {s_tier['symbol_count']} stocks monitored")
+                        print(
+                            f"         S-tier: {s_tier['symbol_count']} stocks monitored"
+                        )
 
             time.sleep(1)
 

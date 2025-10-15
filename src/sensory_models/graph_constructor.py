@@ -8,7 +8,6 @@ import pandas as pd
 import networkx as nx
 import torch
 from typing import Dict, List, Tuple, Optional, Any
-from sklearn.preprocessing import StandardScaler
 from scipy.stats import pearsonr, spearmanr
 import logging
 from dataclasses import dataclass
@@ -93,7 +92,9 @@ class StockGraphConstructor:
         logger.info("Initialized stock graph constructor")
 
     def build_graph(
-        self, price_data: Dict[str, pd.DataFrame], stock_info: Optional[Dict[str, Dict]] = None
+        self,
+        price_data: Dict[str, pd.DataFrame],
+        stock_info: Optional[Dict[str, Dict]] = None,
     ) -> nx.Graph:
         """
         構建股票關聯圖
@@ -112,7 +113,9 @@ class StockGraphConstructor:
         logger.info(f"Creating nodes for {len(symbols)} stocks")
         for symbol in symbols:
             node_attrs = self._create_node_attributes(
-                symbol, price_data[symbol], stock_info.get(symbol, {}) if stock_info else {}
+                symbol,
+                price_data[symbol],
+                stock_info.get(symbol, {}) if stock_info else {},
             )
             self.graph.add_node(symbol, **node_attrs)
             self.node_features[symbol] = node_attrs["features"]
@@ -156,13 +159,18 @@ class StockGraphConstructor:
             returns.skew(),  # 偏度
             returns.kurt(),  # 峰度
             price_df["volume"].mean(),  # 平均成交量
-            (price_df["high"] - price_df["low"]).mean() / price_df["close"].mean(),  # 平均振幅
+            (price_df["high"] - price_df["low"]).mean()
+            / price_df["close"].mean(),  # 平均振幅
             len(returns[returns > 0]) / len(returns),  # 上漲天數比例
         ]
 
         # 技術指標特徵
         sma_20 = price_df["close"].rolling(20).mean().iloc[-1]
-        sma_50 = price_df["close"].rolling(50).mean().iloc[-1] if len(price_df) >= 50 else sma_20
+        sma_50 = (
+            price_df["close"].rolling(50).mean().iloc[-1]
+            if len(price_df) >= 50
+            else sma_20
+        )
         features.extend(
             [
                 price_df["close"].iloc[-1] / sma_20 - 1,  # 相對20日均線
@@ -270,7 +278,9 @@ class StockGraphConstructor:
 
                     if self.graph.has_edge(symbol1, symbol2):
                         current_weight = self.graph[symbol1][symbol2]["weight"]
-                        self.graph[symbol1][symbol2]["weight"] = (current_weight + weight) / 2
+                        self.graph[symbol1][symbol2]["weight"] = (
+                            current_weight + weight
+                        ) / 2
                         self.graph[symbol1][symbol2]["same_sector"] = True
                     else:
                         self.graph.add_edge(
@@ -281,7 +291,9 @@ class StockGraphConstructor:
                             edge_type=RelationType.SECTOR_SIMILARITY.value,
                         )
 
-    def _add_market_cap_similarity_edges(self, symbols: List[str], stock_info: Dict[str, Dict]):
+    def _add_market_cap_similarity_edges(
+        self, symbols: List[str], stock_info: Dict[str, Dict]
+    ):
         """添加市值相似性邊"""
         # 獲取市值並分組
         market_caps = {}
@@ -307,8 +319,12 @@ class StockGraphConstructor:
                 if similarity > 0.5:  # 閾值
                     if self.graph.has_edge(symbol1, symbol2):
                         current_weight = self.graph[symbol1][symbol2]["weight"]
-                        self.graph[symbol1][symbol2]["weight"] = (current_weight + similarity) / 2
-                        self.graph[symbol1][symbol2]["market_cap_similarity"] = similarity
+                        self.graph[symbol1][symbol2]["weight"] = (
+                            current_weight + similarity
+                        ) / 2
+                        self.graph[symbol1][symbol2][
+                            "market_cap_similarity"
+                        ] = similarity
                     else:
                         self.graph.add_edge(
                             symbol1,
@@ -348,8 +364,12 @@ class StockGraphConstructor:
                 if similarity > 0.6:  # 閾值
                     if self.graph.has_edge(symbol1, symbol2):
                         current_weight = self.graph[symbol1][symbol2]["weight"]
-                        self.graph[symbol1][symbol2]["weight"] = (current_weight + similarity) / 2
-                        self.graph[symbol1][symbol2]["volatility_similarity"] = similarity
+                        self.graph[symbol1][symbol2]["weight"] = (
+                            current_weight + similarity
+                        ) / 2
+                        self.graph[symbol1][symbol2][
+                            "volatility_similarity"
+                        ] = similarity
                     else:
                         self.graph.add_edge(
                             symbol1,

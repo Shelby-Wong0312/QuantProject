@@ -3,14 +3,12 @@ Backtest Engine - Core backtesting framework
 Provides event-driven backtesting with realistic transaction costs and performance analysis
 """
 
-import numpy as np
 import pandas as pd
-from typing import Dict, List, Optional, Tuple, Any, Union
-from dataclasses import dataclass, field
+from typing import Dict, List, Optional, Any
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 import logging
 from pathlib import Path
-import asyncio
 
 # Add project root to path
 import sys
@@ -78,7 +76,9 @@ class BacktestEngine:
         self.daily_returns: List[float] = []
         self.trade_log: List[Dict] = []
 
-        logger.info(f"BacktestEngine initialized with ${config.initial_capital:,.2f} capital")
+        logger.info(
+            f"BacktestEngine initialized with ${config.initial_capital:,.2f} capital"
+        )
 
     def add_data(self, data: pd.DataFrame, symbol: str) -> None:
         """
@@ -177,9 +177,9 @@ class BacktestEngine:
 
                 # Calculate daily return
                 if i > 0:
-                    daily_return = (portfolio_value - portfolio_values[i - 1]) / portfolio_values[
-                        i - 1
-                    ]
+                    daily_return = (
+                        portfolio_value - portfolio_values[i - 1]
+                    ) / portfolio_values[i - 1]
                     returns.append(daily_return)
                 else:
                     returns.append(0)
@@ -239,14 +239,19 @@ class BacktestEngine:
         end_date = pd.to_datetime(self.config.end_date)
 
         # If no specific date range is set, use all available data
-        if self.config.start_date == "2020-01-01" and self.config.end_date == "2024-12-31":
+        if (
+            self.config.start_date == "2020-01-01"
+            and self.config.end_date == "2024-12-31"
+        ):
             # Use actual data range
             all_dates_list = sorted(all_dates)
             if all_dates_list:
                 start_date = all_dates_list[0]
                 end_date = all_dates_list[-1]
 
-        filtered_dates = [date for date in sorted(all_dates) if start_date <= date <= end_date]
+        filtered_dates = [
+            date for date in sorted(all_dates) if start_date <= date <= end_date
+        ]
 
         return filtered_dates
 
@@ -330,7 +335,9 @@ class BacktestEngine:
             logger.error(f"Error generating signals: {e}")
             return []
 
-    def _execute_signals(self, signals: List, market_data: Dict[str, Dict]) -> List[Dict]:
+    def _execute_signals(
+        self, signals: List, market_data: Dict[str, Dict]
+    ) -> List[Dict]:
         """Execute trading signals"""
         executed_trades = []
 
@@ -438,7 +445,9 @@ class BacktestEngine:
 
         # Summary statistics
         final_value = portfolio_values[-1]
-        total_return = (final_value - self.config.initial_capital) / self.config.initial_capital
+        total_return = (
+            final_value - self.config.initial_capital
+        ) / self.config.initial_capital
         years = len(returns) / 252
         annual_return = (1 + total_return) ** (1 / years) - 1 if years > 0 else 0
 
@@ -458,8 +467,8 @@ class BacktestEngine:
         if not self.results:
             return "No backtest results available. Run backtest first."
 
-        summary = self.results["summary"]
-        perf = self.results["performance"]
+        self.results["summary"]
+        self.results["performance"]
 
         """
 BACKTEST RESULTS SUMMARY
@@ -501,7 +510,9 @@ VaR (95%): {perf.get('var_95', 0):.2%}
 
         # Convert Series to dict
         if "portfolio_values" in results_copy:
-            results_copy["portfolio_values"] = results_copy["portfolio_values"].to_dict()
+            results_copy["portfolio_values"] = results_copy[
+                "portfolio_values"
+            ].to_dict()
         if "returns" in results_copy:
             results_copy["returns"] = results_copy["returns"].to_dict()
 

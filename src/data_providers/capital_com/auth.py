@@ -3,7 +3,6 @@ Capital.com Authentication Module
 """
 
 import requests
-import json
 from typing import Optional, Dict, Any
 from datetime import datetime, timedelta
 import logging
@@ -53,7 +52,10 @@ class CapitalComAuth:
             self.config.validate()
 
             # Prepare authentication payload
-            auth_payload = {"identifier": self.config.IDENTIFIER, "password": self.config.PASSWORD}
+            auth_payload = {
+                "identifier": self.config.IDENTIFIER,
+                "password": self.config.PASSWORD,
+            }
 
             # Add API key to headers
             headers = self.config.headers.copy()
@@ -81,7 +83,9 @@ class CapitalComAuth:
                     logger.error("Authentication response missing required tokens")
                     return False
             else:
-                logger.error(f"Authentication failed with status code: {response.status_code}")
+                logger.error(
+                    f"Authentication failed with status code: {response.status_code}"
+                )
                 logger.error(f"Response: {response.text}")
                 return False
 
@@ -123,7 +127,9 @@ class CapitalComAuth:
             url = f"{self.config.base_url}/api/v1/session"
             headers = self.get_authenticated_headers()
 
-            response = self._session.delete(url, headers=headers, timeout=self.config.TIMEOUT)
+            response = self._session.delete(
+                url, headers=headers, timeout=self.config.TIMEOUT
+            )
 
             if response.status_code == 200:
                 # Clear authentication tokens

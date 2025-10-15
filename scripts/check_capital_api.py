@@ -53,8 +53,8 @@ def main() -> int:
         return 3
 
     if resp.status_code == 200:
-        cst = resp.headers.get("CST", "<hidden>")
-        sec = resp.headers.get("X-SECURITY-TOKEN", "<hidden>")
+        resp.headers.get("CST", "<hidden>")
+        resp.headers.get("X-SECURITY-TOKEN", "<hidden>")
         print("OK: Capital.com connected (demo/live depends on CAPITAL_BASE_URL)")
         # Do not print tokens to stdout for safety.
         return 0

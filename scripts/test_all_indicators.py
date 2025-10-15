@@ -8,14 +8,13 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import pandas as pd
-import numpy as np
 import sqlite3
 from datetime import datetime
 import time
 
 # Import all indicators
-from src.indicators.trend_indicators import SMA, EMA, WMA, VWAP, MovingAverageCrossover
-from src.indicators.momentum_indicators import RSI, MACD, Stochastic, WilliamsR, CCI
+from src.indicators.trend_indicators import SMA, EMA, VWAP
+from src.indicators.momentum_indicators import RSI, MACD, Stochastic
 from src.indicators.volatility_indicators import (
     BollingerBands,
     ATR,
@@ -30,7 +29,9 @@ def test_stock_indicators(symbol="AAPL"):
 
     # Get database connection
     db_path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "data",
+        "quant_trading.db",
     )
     conn = sqlite3.connect(db_path)
 
@@ -239,11 +240,11 @@ def main():
 
     # Test single stock first
     print("\n1. Single Stock Test (AAPL)")
-    single_results = test_stock_indicators("AAPL")
+    test_stock_indicators("AAPL")
 
     # Test multiple stocks
     print("\n2. Multiple Stocks Test")
-    multi_results = test_multiple_stocks()
+    test_multiple_stocks()
 
     print("\n" + "=" * 80)
     print("TEST COMPLETE!")

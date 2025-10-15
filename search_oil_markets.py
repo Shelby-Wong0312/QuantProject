@@ -4,7 +4,6 @@ Search for Oil Markets on Capital.com
 
 import os
 import sys
-import json
 
 # Add project root to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))

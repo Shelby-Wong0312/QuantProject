@@ -9,12 +9,11 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import pandas as pd
-import numpy as np
 import sqlite3
 from datetime import datetime
 import json
 import time
-from typing import Dict, List
+from typing import Dict
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -28,7 +27,9 @@ class FastComprehensiveBacktest:
 
     def __init__(self):
         self.db_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "data",
+            "quant_trading.db",
         )
         self.initial_capital = 100000.0
         self.commission_rate = 0.001
@@ -104,7 +105,9 @@ class FastComprehensiveBacktest:
 
             # Final value
             final_value = (
-                cash + shares * df["close"].iloc[-1] if len(df) > 0 else self.initial_capital
+                cash + shares * df["close"].iloc[-1]
+                if len(df) > 0
+                else self.initial_capital
             )
             total_return = (final_value / self.initial_capital - 1) * 100
 
@@ -189,7 +192,9 @@ class FastComprehensiveBacktest:
         # Print top performers
         print("\nTOP 50 PERFORMING STOCKS WITH CCI-20:")
         print("-" * 80)
-        print(f"{'Rank':<6} {'Symbol':<10} {'Return':<12} {'Trades':<10} {'Final Value':<15}")
+        print(
+            f"{'Rank':<6} {'Symbol':<10} {'Return':<12} {'Trades':<10} {'Final Value':<15}"
+        )
         print("-" * 80)
 
         for i, row in enumerate(results_df.head(50).itertuples(), 1):
@@ -207,12 +212,18 @@ class FastComprehensiveBacktest:
         losing = results_df[results_df["return"] <= 0]
 
         print(f"Total stocks tested: {len(results_df)}")
-        print(f"Profitable stocks: {len(profitable)} ({len(profitable)/len(results_df)*100:.1f}%)")
+        print(
+            f"Profitable stocks: {len(profitable)} ({len(profitable)/len(results_df)*100:.1f}%)"
+        )
         print(f"Losing stocks: {len(losing)} ({len(losing)/len(results_df)*100:.1f}%)")
         print(f"\nAverage return: {results_df['return'].mean():.2f}%")
         print(f"Median return: {results_df['return'].median():.2f}%")
-        print(f"Best return: {results_df['return'].max():.2f}% ({results_df.iloc[0]['symbol']})")
-        print(f"Worst return: {results_df['return'].min():.2f}% ({results_df.iloc[-1]['symbol']})")
+        print(
+            f"Best return: {results_df['return'].max():.2f}% ({results_df.iloc[0]['symbol']})"
+        )
+        print(
+            f"Worst return: {results_df['return'].min():.2f}% ({results_df.iloc[-1]['symbol']})"
+        )
         print(f"\nAverage trades: {results_df['trades'].mean():.1f}")
         print(f"Total trades across all stocks: {results_df['trades'].sum()}")
 
@@ -251,7 +262,9 @@ class FastComprehensiveBacktest:
 
         print("-" * 80)
         print(f"Expected portfolio return: {expected_return:.2f}%")
-        print(f"Expected portfolio value: ${portfolio_value * (1 + expected_return/100):,.0f}")
+        print(
+            f"Expected portfolio value: ${portfolio_value * (1 + expected_return/100):,.0f}"
+        )
 
         # Save summary report
         summary = {

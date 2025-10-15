@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import gymnasium as gym
 from gymnasium import spaces
-from typing import Dict, List, Tuple, Optional, Any
+from typing import Dict, List, Tuple, Any
 from datetime import datetime
 import logging
 from dataclasses import dataclass
@@ -261,13 +261,17 @@ class PortfolioTradingEnvironment(gym.Env):
         # Moving averages
         ma_20 = window_data["close"].rolling(20).mean().iloc[-1]
         ma_50 = (
-            window_data["close"].rolling(50).mean().iloc[-1] if len(window_data) >= 50 else ma_20
+            window_data["close"].rolling(50).mean().iloc[-1]
+            if len(window_data) >= 50
+            else ma_20
         )
         features.append(current_price / ma_20 - 1)
         features.append(current_price / ma_50 - 1)
 
         # Momentum
-        features.append(window_data["close"].iloc[-1] / window_data["close"].iloc[0] - 1)
+        features.append(
+            window_data["close"].iloc[-1] / window_data["close"].iloc[0] - 1
+        )
 
         # Correlation with portfolio (placeholder)
         features.append(0.0)
@@ -290,7 +294,9 @@ class PortfolioTradingEnvironment(gym.Env):
         features.append(weights_squared)
 
         # Number of active positions
-        active_positions = sum(1 for pos in self.portfolio_state.positions.values() if pos > 0)
+        active_positions = sum(
+            1 for pos in self.portfolio_state.positions.values() if pos > 0
+        )
         features.append(active_positions / self.n_assets)
 
         # Portfolio returns statistics
@@ -304,7 +310,9 @@ class PortfolioTradingEnvironment(gym.Env):
             features.extend([0.0, 0.0, 0.0, 0.0])
 
         # Days since last rebalance
-        features.append((self.current_step % self.rebalance_frequency) / self.rebalance_frequency)
+        features.append(
+            (self.current_step % self.rebalance_frequency) / self.rebalance_frequency
+        )
 
         # Portfolio value relative to initial
         features.append(self.portfolio_state.total_value / self.initial_capital - 1)
@@ -375,7 +383,8 @@ class PortfolioTradingEnvironment(gym.Env):
                 if shares_to_trade > 0 and cost > self.portfolio_state.cash:
                     # Adjust shares to what we can afford
                     affordable_shares = int(
-                        self.portfolio_state.cash / (execution_price * (1 + self.transaction_cost))
+                        self.portfolio_state.cash
+                        / (execution_price * (1 + self.transaction_cost))
                     )
                     shares_to_trade = min(shares_to_trade, affordable_shares)
 
@@ -383,11 +392,15 @@ class PortfolioTradingEnvironment(gym.Env):
                 if shares_to_trade != 0:
                     if shares_to_trade > 0:
                         self.portfolio_state.cash -= (
-                            shares_to_trade * execution_price * (1 + self.transaction_cost)
+                            shares_to_trade
+                            * execution_price
+                            * (1 + self.transaction_cost)
                         )
                     else:
                         self.portfolio_state.cash += (
-                            abs(shares_to_trade) * execution_price * (1 - self.transaction_cost)
+                            abs(shares_to_trade)
+                            * execution_price
+                            * (1 - self.transaction_cost)
                         )
 
                     self.portfolio_state.positions[symbol] += shares_to_trade
@@ -397,7 +410,11 @@ class PortfolioTradingEnvironment(gym.Env):
                             "symbol": symbol,
                             "shares": shares_to_trade,
                             "price": execution_price,
-                            "cost": abs(shares_to_trade * execution_price * self.transaction_cost),
+                            "cost": abs(
+                                shares_to_trade
+                                * execution_price
+                                * self.transaction_cost
+                            ),
                             "timestamp": self.current_step,
                         }
                     )
@@ -424,7 +441,9 @@ class PortfolioTradingEnvironment(gym.Env):
         # Asset weights
         for symbol in self.symbols:
             if symbol in self.portfolio_state.positions and symbol in current_prices:
-                position_value = self.portfolio_state.positions[symbol] * current_prices[symbol]
+                position_value = (
+                    self.portfolio_state.positions[symbol] * current_prices[symbol]
+                )
                 self.portfolio_state.weights[symbol] = position_value / total_value
             else:
                 self.portfolio_state.weights[symbol] = 0.0
@@ -462,7 +481,9 @@ class PortfolioTradingEnvironment(gym.Env):
         if len(self.episode_returns) >= 20:
             recent_returns = np.array(self.episode_returns[-20:])
             if recent_returns.std() > 0:
-                sharpe = (recent_returns.mean() - self.risk_free_rate / 252) / recent_returns.std()
+                sharpe = (
+                    recent_returns.mean() - self.risk_free_rate / 252
+                ) / recent_returns.std()
                 reward += sharpe * 0.1
 
         # 3. Drawdown penalty
@@ -474,9 +495,13 @@ class PortfolioTradingEnvironment(gym.Env):
         # 4. Diversification bonus
         # Use Herfindahl index (lower is more diversified)
         weights_squared = sum(
-            w**2 for s, w in self.portfolio_state.weights.items() if s != "cash" and w > 0
+            w**2
+            for s, w in self.portfolio_state.weights.items()
+            if s != "cash" and w > 0
         )
-        diversification_score = 1 - weights_squared  # Higher score for more diversification
+        diversification_score = (
+            1 - weights_squared
+        )  # Higher score for more diversification
         reward += diversification_score * 0.05
 
         # 5. Transaction cost penalty (implicit in returns but emphasize)
@@ -583,9 +608,13 @@ class PortfolioTradingEnvironment(gym.Env):
         summary = {
             "total_return": total_return,
             "annualized_return": (
-                total_return * (252 / len(self.episode_returns)) if self.episode_returns else 0
+                total_return * (252 / len(self.episode_returns))
+                if self.episode_returns
+                else 0
             ),
-            "volatility": returns_array.std() * np.sqrt(252) if len(returns_array) > 1 else 0,
+            "volatility": (
+                returns_array.std() * np.sqrt(252) if len(returns_array) > 1 else 0
+            ),
             "sharpe_ratio": self._calculate_sharpe_ratio(returns_array),
             "max_drawdown": self._calculate_max_drawdown(),
             "total_trades": len(self.trade_history),

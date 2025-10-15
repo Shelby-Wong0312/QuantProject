@@ -180,7 +180,9 @@ class StateProcessor:
 
         # Additional derived features
         if "high" in market_data.columns and "low" in market_data.columns:
-            features["market_range"] = (current["high"] - current["low"]) / current["close"]
+            features["market_range"] = (current["high"] - current["low"]) / current[
+                "close"
+            ]
 
         return features
 
@@ -220,7 +222,9 @@ class StateProcessor:
 
         return features
 
-    def _process_sentiment_features(self, sentiment_data: Dict[str, Any]) -> Dict[str, float]:
+    def _process_sentiment_features(
+        self, sentiment_data: Dict[str, Any]
+    ) -> Dict[str, float]:
         """Process sentiment analysis features"""
         features = {}
 
@@ -251,12 +255,18 @@ class StateProcessor:
         features["sentiment_news_count"] = sentiment_data.get("news_count", 0)
 
         # Sentiment categories
-        features["sentiment_positive_ratio"] = sentiment_data.get("positive_ratio", 0.33)
-        features["sentiment_negative_ratio"] = sentiment_data.get("negative_ratio", 0.33)
+        features["sentiment_positive_ratio"] = sentiment_data.get(
+            "positive_ratio", 0.33
+        )
+        features["sentiment_negative_ratio"] = sentiment_data.get(
+            "negative_ratio", 0.33
+        )
 
         return features
 
-    def _process_portfolio_features(self, portfolio_state: Dict[str, float]) -> Dict[str, float]:
+    def _process_portfolio_features(
+        self, portfolio_state: Dict[str, float]
+    ) -> Dict[str, float]:
         """Process portfolio state features"""
         features = {}
 
@@ -266,10 +276,13 @@ class StateProcessor:
 
         # P&L information
         if self.config.include_pnl:
-            features["portfolio_unrealized_pnl"] = portfolio_state.get("unrealized_pnl", 0)
+            features["portfolio_unrealized_pnl"] = portfolio_state.get(
+                "unrealized_pnl", 0
+            )
             features["portfolio_realized_pnl"] = portfolio_state.get("realized_pnl", 0)
             features["portfolio_total_pnl"] = (
-                features["portfolio_unrealized_pnl"] + features["portfolio_realized_pnl"]
+                features["portfolio_unrealized_pnl"]
+                + features["portfolio_realized_pnl"]
             )
 
         # Cash and buying power
@@ -304,7 +317,9 @@ class StateProcessor:
             features["time_session_progress"] = 0
 
         # Is market open
-        features["time_market_open"] = float(market_open <= current_time <= market_close)
+        features["time_market_open"] = float(
+            market_open <= current_time <= market_close
+        )
 
         return features
 
@@ -356,7 +371,8 @@ class StateProcessor:
             features["portfolio_unrealized_pnl"] = np.random.randn() * 100
             features["portfolio_realized_pnl"] = np.random.randn() * 100
             features["portfolio_total_pnl"] = (
-                features["portfolio_unrealized_pnl"] + features["portfolio_realized_pnl"]
+                features["portfolio_unrealized_pnl"]
+                + features["portfolio_realized_pnl"]
             )
             features["portfolio_cash"] = 10000 + np.random.randn() * 1000
             features["portfolio_buying_power"] = features["portfolio_cash"]

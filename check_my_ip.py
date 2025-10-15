@@ -4,7 +4,6 @@
 """
 
 import requests
-import json
 
 
 def get_my_ip():

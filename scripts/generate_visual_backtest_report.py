@@ -14,15 +14,12 @@ import json
 from datetime import datetime
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import plotly.express as px
 import warnings
 
 warnings.filterwarnings("ignore")
 
 # Import indicators for visualization
-from src.indicators.momentum_indicators import CCI, WilliamsR, Stochastic, RSI, MACD
-from src.indicators.volatility_indicators import BollingerBands
-from src.indicators.volume_indicators import OBV, VolumeSMA
+from src.indicators.momentum_indicators import CCI
 
 
 class VisualBacktestReport:
@@ -30,7 +27,9 @@ class VisualBacktestReport:
 
     def __init__(self):
         self.db_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "data",
+            "quant_trading.db",
         )
 
         # Load backtest results
@@ -70,15 +69,27 @@ class VisualBacktestReport:
 
         # Color based on performance
         colors_return = [
-            "green" if r > 10 else "lightgreen" if r > 0 else "lightcoral" if r > -5 else "red"
+            (
+                "green"
+                if r > 10
+                else "lightgreen" if r > 0 else "lightcoral" if r > -5 else "red"
+            )
             for r in returns
         ]
         colors_sharpe = [
-            "green" if s > 0.3 else "lightgreen" if s > 0 else "lightcoral" if s > -0.1 else "red"
+            (
+                "green"
+                if s > 0.3
+                else "lightgreen" if s > 0 else "lightcoral" if s > -0.1 else "red"
+            )
             for s in sharpes
         ]
         colors_winrate = [
-            "green" if w > 60 else "lightgreen" if w > 50 else "lightcoral" if w > 40 else "red"
+            (
+                "green"
+                if w > 60
+                else "lightgreen" if w > 50 else "lightcoral" if w > 40 else "red"
+            )
             for w in win_rates
         ]
 
@@ -166,7 +177,11 @@ class VisualBacktestReport:
             cols=1,
             shared_xaxes=True,
             vertical_spacing=0.05,
-            subplot_titles=("AAPL Stock Price with CCI Signals", "CCI(20) Indicator", "Volume"),
+            subplot_titles=(
+                "AAPL Stock Price with CCI Signals",
+                "CCI(20) Indicator",
+                "Volume",
+            ),
             row_heights=[0.5, 0.3, 0.2],
         )
 
@@ -233,13 +248,20 @@ class VisualBacktestReport:
         )
 
         # Add CCI levels
-        fig.add_hline(y=100, line_dash="dash", line_color="red", opacity=0.5, row=2, col=1)
-        fig.add_hline(y=-100, line_dash="dash", line_color="green", opacity=0.5, row=2, col=1)
-        fig.add_hline(y=0, line_dash="solid", line_color="gray", opacity=0.3, row=2, col=1)
+        fig.add_hline(
+            y=100, line_dash="dash", line_color="red", opacity=0.5, row=2, col=1
+        )
+        fig.add_hline(
+            y=-100, line_dash="dash", line_color="green", opacity=0.5, row=2, col=1
+        )
+        fig.add_hline(
+            y=0, line_dash="solid", line_color="gray", opacity=0.3, row=2, col=1
+        )
 
         # Add volume bars
         colors = [
-            "green" if df["close"].iloc[i] > df["open"].iloc[i] else "red" for i in range(len(df))
+            "green" if df["close"].iloc[i] > df["open"].iloc[i] else "red"
+            for i in range(len(df))
         ]
         fig.add_trace(
             go.Bar(
@@ -345,7 +367,9 @@ class VisualBacktestReport:
         # Add benchmark (buy and hold SPY)
         if "AAPL" in portfolio_values:
             benchmark = portfolio_values["AAPL"].index
-            buy_hold_return = pd.Series(np.linspace(0, 15, len(benchmark)), index=benchmark)
+            buy_hold_return = pd.Series(
+                np.linspace(0, 15, len(benchmark)), index=benchmark
+            )
             fig.add_trace(
                 go.Scatter(
                     x=benchmark,
@@ -495,17 +519,17 @@ class VisualBacktestReport:
         print("Generating visual backtest report...")
 
         # Create all charts
-        perf_chart = self.create_performance_comparison_chart()
-        signal_chart = self.create_top_indicator_signals_chart()
-        portfolio_chart = self.create_portfolio_simulation_chart()
-        heatmap_chart = self.create_heatmap_chart()
-        scatter_chart = self.create_risk_return_scatter()
+        self.create_performance_comparison_chart()
+        self.create_top_indicator_signals_chart()
+        self.create_portfolio_simulation_chart()
+        self.create_heatmap_chart()
+        self.create_risk_return_scatter()
 
         # Get aggregate results
         results = self.backtest_results["aggregate_results"]
 
         # Find best indicator
-        best_indicator = max(results.items(), key=lambda x: x[1]["avg_return"])
+        max(results.items(), key=lambda x: x[1]["avg_return"])
 
         # Create HTML content
         html_content = """
@@ -825,11 +849,11 @@ class VisualBacktestReport:
 """
 
         # Add top 10 indicators to table
-        sorted_results = sorted(results.items(), key=lambda x: x[1]["avg_return"], reverse=True)[
-            :10
-        ]
+        sorted_results = sorted(
+            results.items(), key=lambda x: x[1]["avg_return"], reverse=True
+        )[:10]
         for i, (ind, metrics) in enumerate(sorted_results, 1):
-            return_class = "positive" if metrics["avg_return"] > 0 else "negative"
+            "positive" if metrics["avg_return"] > 0 else "negative"
             html_content += """
                     <tr>
                         <td>{i}</td>

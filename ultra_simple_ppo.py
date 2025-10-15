@@ -9,7 +9,6 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 import yfinance as yf
-from datetime import datetime, timedelta
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -17,7 +16,7 @@ warnings.filterwarnings("ignore")
 print("Starting Ultra Simple PPO Training...")
 
 # Download a few stocks that definitely work
-["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "SPY", "QQQ"]
+symbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "SPY", "QQQ"]
 print(f"Downloading {len(symbols)} stocks...")
 
 stock_data = {}

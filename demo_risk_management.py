@@ -114,7 +114,9 @@ def demo_stop_loss():
     trailing_triggered = stop_manager.update_trailing_stop(
         symbol + "_TRAIL", current_price, high_price
     )
-    print(f"Trailing Stop Updated with High ${high_price}, Triggered: {trailing_triggered}")
+    print(
+        f"Trailing Stop Updated with High ${high_price}, Triggered: {trailing_triggered}"
+    )
 
 
 def demo_roi_monitor():

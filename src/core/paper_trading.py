@@ -4,17 +4,13 @@ Paper Trading Simulator
 Cloud Quant - Task SYS-001
 """
 
-import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
-from enum import Enum
+from datetime import datetime
 import json
 import logging
-from pathlib import Path
 import asyncio
-from collections import defaultdict
 import uuid
 
 logger = logging.getLogger(__name__)
@@ -183,7 +179,9 @@ class PaperTradingSimulator:
         self.orders[order_id] = order
         self.daily_stats["orders_placed"] += 1
 
-        logger.info(f"Order placed: {order_id} - {side} {quantity} {symbol} @ {order_type}")
+        logger.info(
+            f"Order placed: {order_id} - {side} {quantity} {symbol} @ {order_type}"
+        )
 
         # 立即執行市價單
         if order_type == "MARKET":
@@ -238,10 +236,14 @@ class PaperTradingSimulator:
         # 更新帳戶
         if order.side == "BUY":
             self.account.cash_balance -= order.quantity * execution_price + commission
-            self._add_position(order.symbol, order.quantity, execution_price, commission)
+            self._add_position(
+                order.symbol, order.quantity, execution_price, commission
+            )
         else:
             self.account.cash_balance += order.quantity * execution_price - commission
-            self._reduce_position(order.symbol, order.quantity, execution_price, commission)
+            self._reduce_position(
+                order.symbol, order.quantity, execution_price, commission
+            )
 
         self.account.total_commission += commission
         self.daily_stats["commission_paid"] += commission
@@ -252,7 +254,9 @@ class PaperTradingSimulator:
 
         logger.info(f"Order executed: {order_id} - Filled @ ${execution_price:.2f}")
 
-    def _add_position(self, symbol: str, quantity: float, price: float, commission: float):
+    def _add_position(
+        self, symbol: str, quantity: float, price: float, commission: float
+    ):
         """增加持倉"""
         if symbol in self.positions:
             position = self.positions[symbol]
@@ -271,7 +275,9 @@ class PaperTradingSimulator:
                 total_commission=commission,
             )
 
-    def _reduce_position(self, symbol: str, quantity: float, price: float, commission: float):
+    def _reduce_position(
+        self, symbol: str, quantity: float, price: float, commission: float
+    ):
         """減少持倉"""
         if symbol not in self.positions:
             logger.warning(f"No position to reduce for {symbol}")
@@ -305,14 +311,19 @@ class PaperTradingSimulator:
     def update_market_prices(self, prices: Dict[str, float]):
         """更新市場價格"""
         for symbol, price in prices.items():
-            self.market_data_cache[symbol] = {"price": price, "timestamp": datetime.now()}
+            self.market_data_cache[symbol] = {
+                "price": price,
+                "timestamp": datetime.now(),
+            }
 
             # 更新持倉市值
             if symbol in self.positions:
                 position = self.positions[symbol]
                 position.current_price = price
                 position.market_value = position.quantity * price
-                position.unrealized_pnl = (price - position.avg_price) * position.quantity
+                position.unrealized_pnl = (
+                    price - position.avg_price
+                ) * position.quantity
 
     def _check_risk_limits(self, symbol: str, side: str, quantity: float) -> bool:
         """檢查風險限制"""
@@ -334,7 +345,9 @@ class PaperTradingSimulator:
                 return False
 
         # 檢查每日虧損
-        daily_loss_limit = self.account.initial_balance * self.risk_limits["max_daily_loss"]
+        daily_loss_limit = (
+            self.account.initial_balance * self.risk_limits["max_daily_loss"]
+        )
         if self.daily_stats["daily_pnl"] < -daily_loss_limit:
             logger.warning("Daily loss limit reached")
             return False
@@ -365,7 +378,9 @@ class PaperTradingSimulator:
             total_value += position.market_value
 
         self.account.portfolio_value = total_value
-        self.account.unrealized_pnl = sum(p.unrealized_pnl for p in self.positions.values())
+        self.account.unrealized_pnl = sum(
+            p.unrealized_pnl for p in self.positions.values()
+        )
         self.account.total_pnl = self.account.realized_pnl + self.account.unrealized_pnl
 
         return total_value
@@ -385,7 +400,9 @@ class PaperTradingSimulator:
             "unrealized_pnl": self.account.unrealized_pnl,
             "total_commission": self.account.total_commission,
             "total_trades": len(self.trade_history),
-            "winning_trades": sum(1 for t in self.trade_history if self._is_winning_trade(t)),
+            "winning_trades": sum(
+                1 for t in self.trade_history if self._is_winning_trade(t)
+            ),
             "win_rate": 0,
         }
 
@@ -396,7 +413,9 @@ class PaperTradingSimulator:
         if len(self.daily_returns) > 1:
             returns = np.array(self.daily_returns)
             metrics["sharpe_ratio"] = (
-                np.sqrt(252) * returns.mean() / returns.std() if returns.std() > 0 else 0
+                np.sqrt(252) * returns.mean() / returns.std()
+                if returns.std() > 0
+                else 0
             )
         else:
             metrics["sharpe_ratio"] = 0
@@ -480,7 +499,7 @@ class PaperTradingSimulator:
 
     def generate_report(self) -> str:
         """生成報告"""
-        metrics = self.get_performance_metrics()
+        self.get_performance_metrics()
 
         """
         ╔════════════════════════════════════════╗

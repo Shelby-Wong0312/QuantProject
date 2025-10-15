@@ -3,7 +3,6 @@ Training reward curve visualization component
 """
 
 import plotly.graph_objects as go
-import plotly.express as px
 import numpy as np
 import pandas as pd
 from typing import Dict, Optional, List
@@ -59,7 +58,9 @@ def create_reward_curve(agent_data: Optional[Dict] = None) -> go.Figure:
                     cmax=df["total_reward"].quantile(0.9),
                     opacity=0.5,
                     showscale=True,
-                    colorbar=dict(title="獎勵值", titleside="right", tickmode="linear", x=1.02),
+                    colorbar=dict(
+                        title="獎勵值", titleside="right", tickmode="linear", x=1.02
+                    ),
                 ),
                 name="單回合獎勵",
                 hovertemplate="回合: %{x}<br>獎勵: %{y:.2f}<br>交易次數: %{customdata}<extra></extra>",
@@ -103,13 +104,17 @@ def create_reward_curve(agent_data: Optional[Dict] = None) -> go.Figure:
         # Update layout
         fig.update_layout(
             title=dict(
-                text="訓練獎勵曲線<br><sup>RL Agent 學習進度追蹤</sup>", x=0.5, xanchor="center"
+                text="訓練獎勵曲線<br><sup>RL Agent 學習進度追蹤</sup>",
+                x=0.5,
+                xanchor="center",
             ),
             xaxis=dict(title="訓練回合", showgrid=True, gridcolor="lightgray"),
             yaxis=dict(title="回合總獎勵", showgrid=True, gridcolor="lightgray"),
             height=350,
             showlegend=True,
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            legend=dict(
+                orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+            ),
             hovermode="x unified",
         )
 
@@ -174,7 +179,9 @@ def generate_mock_reward_data() -> Dict:
         else:
             # Final improvement
             expected_reward = (
-                base_reward + improvement_rate * 500 + improvement_rate * 0.5 * (i - 400)
+                base_reward
+                + improvement_rate * 500
+                + improvement_rate * 0.5 * (i - 400)
             )
 
         # Add noise
@@ -333,7 +340,10 @@ def create_empty_reward_chart() -> go.Figure:
     )
 
     fig.update_layout(
-        title="訓練獎勵曲線", height=350, xaxis=dict(visible=False), yaxis=dict(visible=False)
+        title="訓練獎勵曲線",
+        height=350,
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False),
     )
 
     return fig

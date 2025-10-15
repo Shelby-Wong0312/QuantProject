@@ -7,14 +7,11 @@ No unnecessary complexity - just what works.
 
 import yfinance as yf
 import pandas as pd
-import numpy as np
 import time
 import logging
 import os
-import json
 import requests
-from datetime import datetime, timedelta
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
 from typing import Dict, List, Optional
 from dotenv import load_dotenv
 
@@ -64,7 +61,9 @@ class SimpleAutoTrader:
         # Stock universe - simple list of major stocks
         self.all_stocks = self._load_stock_universe()
 
-        logger.info(f"Simple Auto Trader initialized - monitoring {len(self.all_stocks)} stocks")
+        logger.info(
+            f"Simple Auto Trader initialized - monitoring {len(self.all_stocks)} stocks"
+        )
 
     def _load_stock_universe(self) -> List[str]:
         """Load stock universe - keep it simple"""
@@ -215,7 +214,10 @@ class SimpleAutoTrader:
     def login_to_capital(self) -> bool:
         """Login to Capital.com API"""
         try:
-            headers = {"X-CAP-API-KEY": self.api_key, "Content-Type": "application/json"}
+            headers = {
+                "X-CAP-API-KEY": self.api_key,
+                "Content-Type": "application/json",
+            }
             payload = {
                 "identifier": self.identifier,
                 "password": self.password,
@@ -223,7 +225,10 @@ class SimpleAutoTrader:
             }
 
             response = requests.post(
-                f"{self.base_url}/api/v1/session", headers=headers, json=payload, timeout=10
+                f"{self.base_url}/api/v1/session",
+                headers=headers,
+                json=payload,
+                timeout=10,
             )
 
             if response.status_code == 200:
@@ -245,7 +250,9 @@ class SimpleAutoTrader:
 
         try:
             # Batch download from yfinance
-            yf.download(symbols, period="1d", interval="1m", progress=False, threads=True)
+            yf.download(
+                symbols, period="1d", interval="1m", progress=False, threads=True
+            )
 
             if not data.empty:
                 # Handle single vs multiple symbols
@@ -301,7 +308,7 @@ class SimpleAutoTrader:
             current_price = close.iloc[-1]
             current_ma10 = ma_10.iloc[-1]
             current_ma20 = ma_20.iloc[-1]
-            current_ma50 = ma_50.iloc[-1]
+            ma_50.iloc[-1]
 
             # 3. Volume confirmation
             avg_volume = volume.rolling(20).mean().iloc[-1]
@@ -310,8 +317,10 @@ class SimpleAutoTrader:
 
             # 4. Price momentum
             price_change_1d = (current_price - close.iloc[-2]) / close.iloc[-2]
-            price_change_5d = (
-                (current_price - close.iloc[-6]) / close.iloc[-6] if len(close) >= 6 else 0
+            (
+                (current_price - close.iloc[-6]) / close.iloc[-6]
+                if len(close) >= 6
+                else 0
             )
 
             # SIMPLE SIGNAL LOGIC
@@ -361,7 +370,10 @@ class SimpleAutoTrader:
             }
 
             response = requests.post(
-                f"{self.base_url}/api/v1/positions", headers=headers, json=payload, timeout=10
+                f"{self.base_url}/api/v1/positions",
+                headers=headers,
+                json=payload,
+                timeout=10,
             )
 
             if response.status_code == 200:
@@ -394,7 +406,9 @@ class SimpleAutoTrader:
                         "take_profit": current_price * (1 + self.take_profit_pct),
                     }
                     self.total_trades += 1
-                    logger.info(f"BUY: {shares} shares of {symbol} at ${current_price:.2f}")
+                    logger.info(
+                        f"BUY: {shares} shares of {symbol} at ${current_price:.2f}"
+                    )
 
             elif signal == "SELL" and symbol in self.positions:
                 position = self.positions[symbol]
@@ -485,7 +499,9 @@ class SimpleAutoTrader:
         print(f"Total Trades: {self.total_trades}")
 
         win_rate = (
-            (self.profitable_trades / self.total_trades * 100) if self.total_trades > 0 else 0
+            (self.profitable_trades / self.total_trades * 100)
+            if self.total_trades > 0
+            else 0
         )
         print(f"Win Rate: {win_rate:.1f}%")
 

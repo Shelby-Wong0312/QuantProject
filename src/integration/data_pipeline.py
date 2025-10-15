@@ -5,13 +5,11 @@ Data Pipeline - Manages data flow between components
 import asyncio
 import logging
 from typing import Dict, Any, Optional, List, Callable
-from datetime import datetime, timedelta
+from datetime import datetime
 import pandas as pd
 import numpy as np
 from collections import deque
-import threading
 from concurrent.futures import ThreadPoolExecutor
-import queue
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +33,9 @@ class DataPipeline:
         self.buffer_size = buffer_size
 
         # Data buffers
-        self.market_data_buffers = {symbol: deque(maxlen=buffer_size) for symbol in symbols}
+        self.market_data_buffers = {
+            symbol: deque(maxlen=buffer_size) for symbol in symbols
+        }
 
         # Real-time subscriptions
         self.realtime_callbacks = {symbol: [] for symbol in symbols}
@@ -94,7 +94,11 @@ class DataPipeline:
         logger.info("Data pipeline stopped")
 
     async def get_historical_data(
-        self, symbol: str, start_date: datetime, end_date: datetime, interval: str = "1d"
+        self,
+        symbol: str,
+        start_date: datetime,
+        end_date: datetime,
+        interval: str = "1d",
     ) -> pd.DataFrame:
         """
         Get historical data with feature engineering
@@ -111,7 +115,10 @@ class DataPipeline:
         try:
             # Fetch raw data
             raw_data = await self.data_client.get_historical_data(
-                symbol=symbol, start_date=start_date, end_date=end_date, interval=interval
+                symbol=symbol,
+                start_date=start_date,
+                end_date=end_date,
+                interval=interval,
             )
 
             # Process and add features
@@ -160,7 +167,9 @@ class DataPipeline:
                 self.data_quality_metrics["total_received"] += 1
 
             # Subscribe to data client stream
-            await self.data_client.subscribe_stream(symbol=symbol, callback=stream_handler)
+            await self.data_client.subscribe_stream(
+                symbol=symbol, callback=stream_handler
+            )
 
         except Exception as e:
             logger.error(f"Error starting stream for {symbol}: {str(e)}")
@@ -230,7 +239,9 @@ class DataPipeline:
             except Exception as e:
                 logger.error(f"Error distributing data: {str(e)}")
 
-    def _process_market_data(self, symbol: str, raw_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _process_market_data(
+        self, symbol: str, raw_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Process raw market data and add technical indicators
 
@@ -303,7 +314,9 @@ class DataPipeline:
             high_low = df["high"] - df["low"]
             high_close = np.abs(df["high"] - df["close"].shift())
             low_close = np.abs(df["low"] - df["close"].shift())
-            true_range = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
+            true_range = pd.concat([high_low, high_close, low_close], axis=1).max(
+                axis=1
+            )
             indicators["ATR"] = true_range.rolling(window=14).mean().iloc[-1]
 
             # Volume MA
@@ -328,10 +341,14 @@ class DataPipeline:
             )
 
             # Volatility
-            features["volatility_20d"] = df["close"].pct_change().rolling(window=20).std().iloc[-1]
+            features["volatility_20d"] = (
+                df["close"].pct_change().rolling(window=20).std().iloc[-1]
+            )
 
             # Volume profile
-            features["volume_ratio"] = df["volume"].iloc[-1] / features.get("Volume_MA", 1)
+            features["volume_ratio"] = df["volume"].iloc[-1] / features.get(
+                "Volume_MA", 1
+            )
 
             # Price position
             features["price_position"] = (
@@ -457,7 +474,9 @@ class DataPipeline:
 
         return df[available_features]
 
-    def get_buffer_data(self, symbol: str, n_samples: Optional[int] = None) -> List[Dict]:
+    def get_buffer_data(
+        self, symbol: str, n_samples: Optional[int] = None
+    ) -> List[Dict]:
         """
         Get buffered data for a symbol
 
@@ -493,6 +512,7 @@ class DataPipeline:
             ),
             "avg_latency_ms": avg_latency,
             "buffer_sizes": {
-                symbol: len(buffer) for symbol, buffer in self.market_data_buffers.items()
+                symbol: len(buffer)
+                for symbol, buffer in self.market_data_buffers.items()
             },
         }

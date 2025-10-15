@@ -5,17 +5,16 @@ Indicator Calculator - Batch calculation engine for technical indicators
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Union, Tuple, Any
+from typing import Dict, List, Optional, Any
 import logging
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 import multiprocessing as mp
 from functools import partial
 import time
 from pathlib import Path
 import pickle
 import hashlib
-from dataclasses import dataclass, asdict
-from datetime import datetime
+from dataclasses import dataclass
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -104,7 +103,9 @@ class IndicatorCalculator:
             "stocks_processed": 0,
         }
 
-        logger.info(f"IndicatorCalculator initialized with {len(self.indicators)} indicators")
+        logger.info(
+            f"IndicatorCalculator initialized with {len(self.indicators)} indicators"
+        )
         logger.info(f"Timeframes: {self.config.timeframes}")
         logger.info(f"Max workers: {self.config.max_workers}")
 
@@ -119,7 +120,9 @@ class IndicatorCalculator:
         indicators["EMA_50"] = EMA(period=50)
         indicators["WMA_20"] = WMA(period=20)
         indicators["VWAP"] = VWAP()
-        indicators["GoldenCross"] = MovingAverageCrossover(fast_period=50, slow_period=200)
+        indicators["GoldenCross"] = MovingAverageCrossover(
+            fast_period=50, slow_period=200
+        )
 
         # 動量指標
         indicators["RSI_14"] = RSI(period=14)
@@ -143,7 +146,9 @@ class IndicatorCalculator:
         return indicators
 
     def calculate_all_indicators(
-        self, stocks_data: Dict[str, pd.DataFrame], timeframes: Optional[List[str]] = None
+        self,
+        stocks_data: Dict[str, pd.DataFrame],
+        timeframes: Optional[List[str]] = None,
     ) -> Dict[str, Dict[str, Dict[str, pd.DataFrame]]]:
         """
         批量計算所有股票的所有指標
@@ -193,7 +198,10 @@ class IndicatorCalculator:
         return results
 
     def _calculate_multiprocess(
-        self, stocks_data: Dict[str, pd.DataFrame], timeframes: List[str], batches: List[List[str]]
+        self,
+        stocks_data: Dict[str, pd.DataFrame],
+        timeframes: List[str],
+        batches: List[List[str]],
     ) -> Dict:
         """多進程批量計算"""
         logger.info(f"Using multiprocessing with {self.config.max_workers} workers")
@@ -239,7 +247,9 @@ class IndicatorCalculator:
 
         return calculator._calculate_batch(batch_data, timeframes)
 
-    def _calculate_batch(self, batch_data: Dict[str, pd.DataFrame], timeframes: List[str]) -> Dict:
+    def _calculate_batch(
+        self, batch_data: Dict[str, pd.DataFrame], timeframes: List[str]
+    ) -> Dict:
         """計算單個批次"""
         results = {}
 
@@ -292,12 +302,16 @@ class IndicatorCalculator:
                     if isinstance(result, pd.DataFrame):
                         timeframe_results[indicator_name] = result
                     elif isinstance(result, pd.Series):
-                        timeframe_results[indicator_name] = result.to_frame(indicator_name)
+                        timeframe_results[indicator_name] = result.to_frame(
+                            indicator_name
+                        )
 
                     self.stats["total_calculations"] += 1
 
                 except Exception as e:
-                    logger.error(f"Error calculating {indicator_name} for {symbol}: {e}")
+                    logger.error(
+                        f"Error calculating {indicator_name} for {symbol}: {e}"
+                    )
 
             results[timeframe] = timeframe_results
 
@@ -306,7 +320,9 @@ class IndicatorCalculator:
 
         return results
 
-    def _resample_data(self, data: pd.DataFrame, timeframe: str) -> Optional[pd.DataFrame]:
+    def _resample_data(
+        self, data: pd.DataFrame, timeframe: str
+    ) -> Optional[pd.DataFrame]:
         """重採樣數據到指定時間框架"""
         if timeframe == "1m":
             # 如果數據已經是分鐘級別，直接返回
@@ -344,7 +360,9 @@ class IndicatorCalculator:
             }
 
             # 只保留存在的列
-            available_rules = {col: rule for col, rule in agg_rules.items() if col in data.columns}
+            available_rules = {
+                col: rule for col, rule in agg_rules.items() if col in data.columns
+            }
 
             resampled = data.resample(freq_map[timeframe]).agg(available_rules)
 
@@ -431,10 +449,14 @@ class IndicatorCalculator:
 
             for timeframe, indicators in timeframes_data.items():
                 try:
-                    timeframe_signals = self._calculate_timeframe_signals(indicators, signal_config)
+                    timeframe_signals = self._calculate_timeframe_signals(
+                        indicators, signal_config
+                    )
                     signals[symbol][timeframe] = timeframe_signals
                 except Exception as e:
-                    logger.error(f"Error generating signals for {symbol} {timeframe}: {e}")
+                    logger.error(
+                        f"Error generating signals for {symbol} {timeframe}: {e}"
+                    )
 
         return signals
 
@@ -491,7 +513,10 @@ class IndicatorCalculator:
         if "BollingerBands" in indicators:
             bb_data = indicators["BollingerBands"]
             if isinstance(bb_data, pd.DataFrame):
-                if all(col in bb_data.columns for col in ["upper_band", "lower_band", "percent_b"]):
+                if all(
+                    col in bb_data.columns
+                    for col in ["upper_band", "lower_band", "percent_b"]
+                ):
                     signals["bb_buy"] = bb_data["percent_b"] < 0  # 價格低於下軌
                     signals["bb_sell"] = bb_data["percent_b"] > 1  # 價格高於上軌
 
@@ -522,10 +547,12 @@ class IndicatorCalculator:
         return {
             "total_calculations": self.stats["total_calculations"],
             "cache_hits": self.stats["cache_hits"],
-            "cache_hit_rate": self.stats["cache_hits"] / max(1, self.stats["total_calculations"]),
+            "cache_hit_rate": self.stats["cache_hits"]
+            / max(1, self.stats["total_calculations"]),
             "total_time": self.stats["total_time"],
             "stocks_processed": self.stats["stocks_processed"],
-            "avg_time_per_stock": self.stats["total_time"] / max(1, self.stats["stocks_processed"]),
+            "avg_time_per_stock": self.stats["total_time"]
+            / max(1, self.stats["stocks_processed"]),
         }
 
     def clear_cache(self):
@@ -578,7 +605,7 @@ class IndicatorCalculator:
                 indicator = indicator_class(**params)
 
                 # 計算指標
-                indicator_result = indicator.calculate(data)
+                indicator.calculate(data)
                 indicator.get_signals(data)
 
                 # 計算性能指標
@@ -637,7 +664,9 @@ class IndicatorCalculator:
             return np.mean(returns)
 
 
-def create_test_data(n_stocks: int = 100, n_periods: int = 1000) -> Dict[str, pd.DataFrame]:
+def create_test_data(
+    n_stocks: int = 100, n_periods: int = 1000
+) -> Dict[str, pd.DataFrame]:
     """創建測試數據"""
     stocks_data = {}
 
@@ -676,7 +705,9 @@ if __name__ == "__main__":
 
     # 初始化計算器
     config = CalculationConfig(
-        timeframes=["5m", "15m", "1h"], batch_size=5, use_multiprocessing=False  # 測試時關閉多進程
+        timeframes=["5m", "15m", "1h"],
+        batch_size=5,
+        use_multiprocessing=False,  # 測試時關閉多進程
     )
 
     calculator = IndicatorCalculator(config)

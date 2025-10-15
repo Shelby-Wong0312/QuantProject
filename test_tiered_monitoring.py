@@ -6,9 +6,8 @@ Tiered Monitoring System Test - 4000+ Stock Processing Capability Verification
 
 import time
 import json
-import threading
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List
 import pandas as pd
@@ -173,10 +172,12 @@ class TieredMonitoringTest:
             initial_scans = current_scans
             initial_signals = current_signals
 
-            logger.info(f"Minute stats - Scans: {scans_per_minute}, Signals: {signals_per_minute}")
+            logger.info(
+                f"Minute stats - Scans: {scans_per_minute}, Signals: {signals_per_minute}"
+            )
 
         # 計算總體性能
-        total_duration = time.time() - start_time
+        time.time() - start_time
         final_status = self.monitor.get_monitoring_status()
 
         result = {
@@ -278,7 +279,9 @@ class TieredMonitoringTest:
             "memory_percent": memory_percent,
             "total_stocks_tracked": total_stocks,
             "stock_info_objects": stock_tiers_size,
-            "memory_per_stock_bytes": (memory_info.rss / total_stocks) if total_stocks > 0 else 0,
+            "memory_per_stock_bytes": (
+                (memory_info.rss / total_stocks) if total_stocks > 0 else 0
+            ),
             "timestamp": datetime.now().isoformat(),
         }
 
@@ -302,7 +305,7 @@ class TieredMonitoringTest:
 
             try:
                 # 設置測試規模
-                test_symbols = self.setup_large_scale_test(size)
+                self.setup_large_scale_test(size)
 
                 # 測試短期性能
                 start_time = time.time()
@@ -334,7 +337,9 @@ class TieredMonitoringTest:
                     }
                 )
 
-                logger.info(f"Size {size}: {throughput:.1f} scans/sec, {memory_mb:.1f}MB")
+                logger.info(
+                    f"Size {size}: {throughput:.1f} scans/sec, {memory_mb:.1f}MB"
+                )
 
             except Exception as e:
                 logger.error(f"Scalability test failed at {size} symbols: {e}")
@@ -353,7 +358,8 @@ class TieredMonitoringTest:
             "test_type": "scalability_limits",
             "scalability_results": scalability_results,
             "max_successful_size": max(
-                [r["symbol_count"] for r in scalability_results if r["success"]], default=0
+                [r["symbol_count"] for r in scalability_results if r["success"]],
+                default=0,
             ),
             "timestamp": datetime.now().isoformat(),
         }
@@ -389,7 +395,9 @@ class TieredMonitoringTest:
             logger.info("\n" + "=" * 40)
             logger.info("2. MONITORING PERFORMANCE TEST")
             logger.info("=" * 40)
-            test_results["performance"] = self.test_monitoring_performance(test_duration_minutes)
+            test_results["performance"] = self.test_monitoring_performance(
+                test_duration_minutes
+            )
 
             # 3. 層級調整機制測試
             logger.info("\n" + "=" * 40)
@@ -444,7 +452,9 @@ class TieredMonitoringTest:
 
         try:
             # 檢查啟動性能
-            startup_time = test_results.get("startup", {}).get("startup_time_seconds", 999)
+            startup_time = test_results.get("startup", {}).get(
+                "startup_time_seconds", 999
+            )
             if startup_time > 30:
                 evaluation["bottlenecks"].append("Slow startup time")
 
@@ -548,7 +558,9 @@ def main():
         perf = results["test_results"]["performance"]
         print("\nKEY PERFORMANCE METRICS:")
         print(f"  Average Scans/Minute: {perf.get('average_scans_per_minute', 0):.1f}")
-        print(f"  Average Signals/Minute: {perf.get('average_signals_per_minute', 0):.1f}")
+        print(
+            f"  Average Signals/Minute: {perf.get('average_signals_per_minute', 0):.1f}"
+        )
         print(f"  Total Adjustments: {perf.get('total_adjustments', 0)}")
 
     if "memory_usage" in results["test_results"]:

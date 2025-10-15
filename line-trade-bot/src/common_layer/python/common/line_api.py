@@ -25,9 +25,9 @@ def _get_client() -> "LineBotApi":
     try:
         from .secrets import get_param, get_secret  # lazy import
 
-        token = get_param(os.environ.get("LINE_CHANNEL_ACCESS_TOKEN_PARAM", "")) or get_secret(
-            os.environ.get("LINE_CHANNEL_ACCESS_TOKEN_SECRET_ID", "")
-        )
+        token = get_param(
+            os.environ.get("LINE_CHANNEL_ACCESS_TOKEN_PARAM", "")
+        ) or get_secret(os.environ.get("LINE_CHANNEL_ACCESS_TOKEN_SECRET_ID", ""))
     except Exception:
         token = None
     if not token:
@@ -87,7 +87,8 @@ def get_profile(user_id: str) -> dict:
             "displayName": getattr(prof, "display_name", None)
             or getattr(prof, "displayName", None),
             "userId": getattr(prof, "user_id", None) or getattr(prof, "userId", None),
-            "pictureUrl": getattr(prof, "picture_url", None) or getattr(prof, "pictureUrl", None),
+            "pictureUrl": getattr(prof, "picture_url", None)
+            or getattr(prof, "pictureUrl", None),
             "statusMessage": getattr(prof, "status_message", None)
             or getattr(prof, "statusMessage", None),
         }

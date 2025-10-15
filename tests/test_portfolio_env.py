@@ -4,14 +4,13 @@ Unit tests for Portfolio Trading Environment
 
 import unittest
 import numpy as np
-import pandas as pd
 from pathlib import Path
 import sys
 
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.rl_trading.environments.portfolio_env import PortfolioTradingEnvironment, PortfolioState
+from src.rl_trading.environments.portfolio_env import PortfolioTradingEnvironment
 from src.rl_trading.agents.portfolio_agent import PortfolioAgent, PortfolioAgentFactory
 
 
@@ -106,7 +105,9 @@ class TestPortfolioEnvironment(unittest.TestCase):
         prices = {symbol: 100.0 for symbol in self.symbols}
 
         # Test rebalancing
-        target_weights = np.array([0.2, 0.2, 0.2, 0.2, 0.1, 0.1])  # 90% stocks, 10% cash
+        target_weights = np.array(
+            symbols=[0.2, 0.2, 0.2, 0.2, 0.1, 0.1]
+        )  # 90% stocks, 10% cash
         trades = self.env._rebalance_portfolio(target_weights, prices)
 
         # Check trades were executed
@@ -182,7 +183,7 @@ class TestPortfolioEnvironment(unittest.TestCase):
         self.assertEqual(len(portfolio_features), 10)
 
         # Test full observation
-        self.env._get_observation()
+        obs = self.env._get_observation()
         expected_dim = self.env.n_assets * self.env.features_per_asset + 10
         self.assertEqual(len(obs), expected_dim)
 
@@ -244,6 +245,7 @@ class TestPortfolioAgent(unittest.TestCase):
         self.env.reset()
 
         # Get prediction
+        obs = self.env._get_observation()
         action, states = self.agent.predict(obs, deterministic=True)
 
         # Check action properties
@@ -254,17 +256,23 @@ class TestPortfolioAgent(unittest.TestCase):
     def test_agent_factory(self):
         """Test agent factory methods"""
         # Conservative agent
-        conservative = PortfolioAgentFactory.create_conservative_agent(self.env, len(self.symbols))
+        conservative = PortfolioAgentFactory.create_conservative_agent(
+            self.env, len(self.symbols)
+        )
         self.assertEqual(conservative.config["learning_rate"], 1e-4)
         self.assertEqual(conservative.config["clip_range"], 0.1)
 
         # Aggressive agent
-        aggressive = PortfolioAgentFactory.create_aggressive_agent(self.env, len(self.symbols))
+        aggressive = PortfolioAgentFactory.create_aggressive_agent(
+            self.env, len(self.symbols)
+        )
         self.assertEqual(aggressive.config["learning_rate"], 5e-4)
         self.assertEqual(aggressive.config["clip_range"], 0.3)
 
         # Balanced agent
-        balanced = PortfolioAgentFactory.create_balanced_agent(self.env, len(self.symbols))
+        balanced = PortfolioAgentFactory.create_balanced_agent(
+            self.env, len(self.symbols)
+        )
         self.assertEqual(balanced.config["learning_rate"], 3e-4)
         self.assertEqual(balanced.config["clip_range"], 0.2)
 
@@ -275,7 +283,7 @@ class TestIntegration(unittest.TestCase):
     def test_training_loop(self):
         """Test basic training loop"""
         # Create small environment
-        ["AAPL", "GOOGL"]
+        symbols = ["AAPL", "GOOGL"]
         env = PortfolioTradingEnvironment(symbols=symbols, max_steps_per_episode=10)
 
         # Create agent
@@ -296,7 +304,7 @@ class TestIntegration(unittest.TestCase):
     def test_evaluation(self):
         """Test agent evaluation"""
         # Create environment
-        ["AAPL", "GOOGL", "MSFT"]
+        symbols = ["AAPL", "GOOGL", "MSFT"]
         env = PortfolioTradingEnvironment(symbols=symbols, max_steps_per_episode=20)
 
         # Create agent

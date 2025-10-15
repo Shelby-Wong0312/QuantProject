@@ -4,7 +4,6 @@ import os
 from typing import Dict, Iterable
 
 from pathlib import Path
-import time
 
 import pandas as pd
 import requests
@@ -31,7 +30,9 @@ class AlphaVantageBackend(IDataBackend):
         request_timeout: float = 30.0,
     ) -> None:
         self.cache_dir = (
-            Path(cache_dir) if cache_dir is not None else Path("data_cache") / "alphavantage"
+            Path(cache_dir)
+            if cache_dir is not None
+            else Path("data_cache") / "alphavantage"
         )
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.api_key = api_key or os.getenv("ALPHAVANTAGE_API_KEY")
@@ -87,7 +88,9 @@ class AlphaVantageBackend(IDataBackend):
         df = pd.DataFrame(rows).set_index("open_time").sort_index()
         return df
 
-    def _daily(self, symbol: str, start_ts: pd.Timestamp, end_ts: pd.Timestamp) -> pd.DataFrame:
+    def _daily(
+        self, symbol: str, start_ts: pd.Timestamp, end_ts: pd.Timestamp
+    ) -> pd.DataFrame:
         url = "https://www.alphavantage.co/query"
         params = {
             "function": "TIME_SERIES_DAILY_ADJUSTED",
@@ -130,7 +133,9 @@ class AlphaVantageBackend(IDataBackend):
         df = pd.DataFrame(rows).set_index("open_time").sort_index()
         return df
 
-    def get_bars(self, symbol: str, start: str, end: str, timeframe: str = "5min") -> pd.DataFrame:
+    def get_bars(
+        self, symbol: str, start: str, end: str, timeframe: str = "5min"
+    ) -> pd.DataFrame:
         if not self.api_key:
             return pd.DataFrame(columns=_COLS)
 
@@ -158,7 +163,9 @@ class AlphaVantageBackend(IDataBackend):
     def fetch_ohlcv(
         self, symbols: Iterable[str], start: str, end: str, timeframe: str = "5min"
     ) -> Dict[str, pd.DataFrame]:
-        return {symbol: self.get_bars(symbol, start, end, timeframe) for symbol in symbols}
+        return {
+            symbol: self.get_bars(symbol, start, end, timeframe) for symbol in symbols
+        }
 
 
 __all__ = ["AlphaVantageBackend"]

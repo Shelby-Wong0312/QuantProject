@@ -8,7 +8,7 @@ import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 import pandas as pd
-from typing import Dict, Tuple, Optional, Any
+from typing import Dict, Tuple, Optional
 import logging
 from dataclasses import dataclass
 from enum import IntEnum
@@ -122,7 +122,9 @@ class TradingEnvironment(gym.Env):
         df["returns"] = df["close"].pct_change()
 
         # 價格位置（在當日範圍內）
-        df["price_position"] = (df["close"] - df["low"]) / (df["high"] - df["low"] + 1e-10)
+        df["price_position"] = (df["close"] - df["low"]) / (
+            df["high"] - df["low"] + 1e-10
+        )
 
         # 成交量比率
         df["volume_ratio"] = df["volume"] / df["volume"].rolling(20).mean()
@@ -196,7 +198,9 @@ class TradingEnvironment(gym.Env):
         else:
             max_start = len(self.prices) - self.max_steps - self.window_size
             if max_start > self.episode_start_idx:
-                self.current_step = self.np_random.integers(self.episode_start_idx, max_start)
+                self.current_step = self.np_random.integers(
+                    self.episode_start_idx, max_start
+                )
 
         # 清空記錄
         self.history = []
@@ -234,7 +238,9 @@ class TradingEnvironment(gym.Env):
 
         # 計算獎勵
         current_portfolio_value = self._get_portfolio_value()
-        step_reward = (current_portfolio_value - prev_portfolio_value) * self.reward_scaling
+        step_reward = (
+            current_portfolio_value - prev_portfolio_value
+        ) * self.reward_scaling
 
         # 風險調整
         if self.state.position != 0:
@@ -282,13 +288,18 @@ class TradingEnvironment(gym.Env):
             # 計算可買數量
             available_cash = self.state.cash * 0.95  # 保留5%現金
             max_shares = min(
-                int(available_cash / (current_price * (1 + self.commission + self.slippage))),
+                int(
+                    available_cash
+                    / (current_price * (1 + self.commission + self.slippage))
+                ),
                 self.max_position - self.state.position,
             )
 
             if max_shares > 0:
                 # 執行買入
-                cost = max_shares * current_price * (1 + self.commission + self.slippage)
+                cost = (
+                    max_shares * current_price * (1 + self.commission + self.slippage)
+                )
                 self.state.cash -= cost
                 self.state.position += max_shares
                 self.state.entry_price = current_price
@@ -309,7 +320,11 @@ class TradingEnvironment(gym.Env):
                 # 賣出一半持倉
                 shares_to_sell = self.state.position // 2
                 if shares_to_sell > 0:
-                    revenue = shares_to_sell * current_price * (1 - self.commission - self.slippage)
+                    revenue = (
+                        shares_to_sell
+                        * current_price
+                        * (1 - self.commission - self.slippage)
+                    )
                     self.state.cash += revenue
                     self.state.position -= shares_to_sell
 
@@ -335,12 +350,16 @@ class TradingEnvironment(gym.Env):
                 shares = abs(self.state.position)
                 if self.state.position > 0:
                     # 平多倉
-                    revenue = shares * current_price * (1 - self.commission - self.slippage)
+                    revenue = (
+                        shares * current_price * (1 - self.commission - self.slippage)
+                    )
                     self.state.cash += revenue
                     pnl = (current_price - self.state.entry_price) * shares
                 else:
                     # 平空倉（如果支援做空）
-                    cost = shares * current_price * (1 + self.commission + self.slippage)
+                    cost = (
+                        shares * current_price * (1 + self.commission + self.slippage)
+                    )
                     self.state.cash -= cost
                     pnl = (self.state.entry_price - current_price) * shares
 
@@ -377,7 +396,9 @@ class TradingEnvironment(gym.Env):
         if self.state.position != 0:
             # 未實現盈虧
             current_price = self.prices[self.current_step]
-            unrealized_pnl = (current_price - self.state.entry_price) / self.state.entry_price
+            unrealized_pnl = (
+                current_price - self.state.entry_price
+            ) / self.state.entry_price
             position_info[:, 2] = unrealized_pnl
 
         # 持倉時間
@@ -411,7 +432,9 @@ class TradingEnvironment(gym.Env):
         if len(self.history) > 0:
             returns = pd.Series([h["reward"] for h in self.history])
             info["total_reward"] = returns.sum()
-            info["sharpe_ratio"] = np.sqrt(252) * returns.mean() / (returns.std() + 1e-10)
+            info["sharpe_ratio"] = (
+                np.sqrt(252) * returns.mean() / (returns.std() + 1e-10)
+            )
 
             values = [h["portfolio_value"] for h in self.history]
             peak = np.maximum.accumulate(values)

@@ -15,7 +15,11 @@ def _resp(status: int, body: Any = None) -> Dict[str, Any]:
         body = {"ok": status < 400}
     if not isinstance(body, str):
         body = json.dumps(body, ensure_ascii=False)
-    return {"statusCode": status, "headers": {"Content-Type": "application/json"}, "body": body}
+    return {
+        "statusCode": status,
+        "headers": {"Content-Type": "application/json"},
+        "body": body,
+    }
 
 
 def _verify_line_signature(headers: Dict[str, str], raw_body: bytes) -> bool:
@@ -23,9 +27,9 @@ def _verify_line_signature(headers: Dict[str, str], raw_body: bytes) -> bool:
     try:
         from common.secrets import get_param, get_secret
 
-        secret = get_param(os.environ.get("LINE_CHANNEL_SECRET_PARAM", "")) or get_secret(
-            os.environ.get("LINE_CHANNEL_SECRET_SECRET_ID", "")
-        )
+        secret = get_param(
+            os.environ.get("LINE_CHANNEL_SECRET_PARAM", "")
+        ) or get_secret(os.environ.get("LINE_CHANNEL_SECRET_SECRET_ID", ""))
     except Exception:
         secret = None
     if not secret:
@@ -89,7 +93,9 @@ def _extract_recipient(source: Dict[str, Any]) -> (str, str):
     return "", source.get("type", "")
 
 
-def _handle_text(text: str, reply_token: str, recipient_id: str, recipient_type: str) -> None:
+def _handle_text(
+    text: str, reply_token: str, recipient_id: str, recipient_type: str
+) -> None:
     raw = text.strip()
     if raw.startswith("/"):
         raw = raw[1:]

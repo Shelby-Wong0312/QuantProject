@@ -5,16 +5,14 @@ MT4數據收集器模組
 支援多種數據格式和存儲方案
 """
 
-import pandas as pd
 import numpy as np
 import sqlite3
-import json
 import logging
 from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Callable, Union
-from collections import deque, defaultdict
-from threading import Lock, Thread
-from dataclasses import dataclass, asdict
+from typing import Dict, List, Any, Optional, Callable
+from collections import defaultdict
+from threading import Lock
+from dataclasses import dataclass
 from enum import Enum
 import os
 
@@ -165,7 +163,14 @@ class DataStorage:
                     INSERT INTO tick_data (symbol, timestamp, bid, ask, spread, volume)
                     VALUES (?, ?, ?, ?, ?, ?)
                 """,
-                    (tick.symbol, tick.timestamp, tick.bid, tick.ask, tick.spread, tick.volume),
+                    (
+                        tick.symbol,
+                        tick.timestamp,
+                        tick.bid,
+                        tick.ask,
+                        tick.spread,
+                        tick.volume,
+                    ),
                 )
         except Exception as e:
             logger.error(f"保存Tick數據失敗: {e}")
@@ -196,7 +201,11 @@ class DataStorage:
             logger.error(f"保存OHLC數據失敗: {e}")
 
     def get_tick_data(
-        self, symbol: str, start_time: datetime = None, end_time: datetime = None, limit: int = None
+        self,
+        symbol: str,
+        start_time: datetime = None,
+        end_time: datetime = None,
+        limit: int = None,
     ) -> List[TickData]:
         """獲取Tick數據"""
         try:
@@ -566,7 +575,9 @@ class MT4DataCollector:
             if response and response.get("success"):
                 logger.info(f"已取消訂閱交易品種: {symbol}")
 
-    def add_tick_callback(self, callback: Callable[[TickData], None], symbols: List[str] = None):
+    def add_tick_callback(
+        self, callback: Callable[[TickData], None], symbols: List[str] = None
+    ):
         """
         添加Tick數據回調函數
 
@@ -682,7 +693,9 @@ class MT4DataCollector:
 
     def get_stats(self) -> Dict[str, Any]:
         """獲取數據收集統計信息"""
-        uptime = (datetime.now() - self.start_time).total_seconds() if self.start_time else 0
+        uptime = (
+            (datetime.now() - self.start_time).total_seconds() if self.start_time else 0
+        )
 
         return {
             "running": self._running,
@@ -716,7 +729,9 @@ class MT4DataCollector:
             List[float]: 指標值
         """
         # 獲取歷史數據
-        ohlc_data = self.get_latest_data(symbol, timeframe, limit=params.get("limit", 1000))
+        ohlc_data = self.get_latest_data(
+            symbol, timeframe, limit=params.get("limit", 1000)
+        )
         if not ohlc_data:
             return []
 

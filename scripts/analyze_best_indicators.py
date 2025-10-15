@@ -28,7 +28,9 @@ class DetailedAnalysis:
 
     def __init__(self):
         self.db_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "data",
+            "quant_trading.db",
         )
         self.initial_capital = 100000
         self.commission = 0.001
@@ -84,13 +86,21 @@ class DetailedAnalysis:
 
                     price = df["close"].iloc[i]
 
-                    if "buy" in signals.columns and signals["buy"].iloc[i] and position == 0:
+                    if (
+                        "buy" in signals.columns
+                        and signals["buy"].iloc[i]
+                        and position == 0
+                    ):
                         # Buy
                         shares = int(portfolio_value / (price * (1 + self.commission)))
                         position = shares
                         portfolio_value = 0
 
-                    elif "sell" in signals.columns and signals["sell"].iloc[i] and position > 0:
+                    elif (
+                        "sell" in signals.columns
+                        and signals["sell"].iloc[i]
+                        and position > 0
+                    ):
                         # Sell
                         portfolio_value = position * price * (1 - self.commission)
                         position = 0
@@ -104,9 +114,11 @@ class DetailedAnalysis:
                 # Count trades
                 num_buys = signals["buy"].sum() if "buy" in signals.columns else 0
 
-                results.append({"symbol": symbol, "return": total_return, "trades": num_buys})
+                results.append(
+                    {"symbol": symbol, "return": total_return, "trades": num_buys}
+                )
 
-            except Exception as e:
+            except Exception:
                 continue
 
         conn.close()
@@ -131,7 +143,11 @@ class DetailedAnalysis:
         top_indicators = [
             ("CCI_20", CCI(period=20), "Commodity Channel Index (20)"),
             ("Williams_R", WilliamsR(period=14), "Williams %R (14)"),
-            ("Stochastic", Stochastic(k_period=14, d_period=3), "Stochastic Oscillator (14,3)"),
+            (
+                "Stochastic",
+                Stochastic(k_period=14, d_period=3),
+                "Stochastic Oscillator (14,3)",
+            ),
             ("VolumeSMA", VolumeSMA(period=20), "Volume SMA (20)"),
             ("OBV", OBV(), "On-Balance Volume"),
         ]
@@ -172,7 +188,9 @@ class DetailedAnalysis:
 
         with open(report_path, "w") as f:
             json.dump(
-                {"analysis_date": datetime.now().isoformat(), "results": all_results}, f, indent=2
+                {"analysis_date": datetime.now().isoformat(), "results": all_results},
+                f,
+                indent=2,
             )
 
         print("\n" + "=" * 80)
@@ -186,7 +204,9 @@ class DetailedAnalysis:
                 symbol = stock["symbol"]
                 if symbol not in all_stocks:
                     all_stocks[symbol] = []
-                all_stocks[symbol].append({"indicator": indicator_code, "return": stock["return"]})
+                all_stocks[symbol].append(
+                    {"indicator": indicator_code, "return": stock["return"]}
+                )
 
         # Find stocks that appear in multiple indicators
         multi_indicator_stocks = {k: v for k, v in all_stocks.items() if len(v) > 1}
@@ -233,11 +253,11 @@ class DetailedAnalysis:
 def visualize_top_indicator():
     """Create visualization for the winning indicator (CCI)"""
 
-    import matplotlib.pyplot as plt
-
     # Get sample data for visualization
     db_path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "quant_trading.db"
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "data",
+        "quant_trading.db",
     )
     conn = sqlite3.connect(db_path)
 
@@ -294,7 +314,9 @@ def visualize_top_indicator():
     ax1.legend(loc="upper left")
     ax1.grid(True, alpha=0.3)
     ax1.set_title(
-        "CCI Strategy - AAPL (Winner: Most Profitable Indicator)", fontsize=14, fontweight="bold"
+        "CCI Strategy - AAPL (Winner: Most Profitable Indicator)",
+        fontsize=14,
+        fontweight="bold",
     )
 
     # Plot CCI

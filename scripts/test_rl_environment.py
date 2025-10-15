@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 
 from src.rl_trading.trading_env import TradingEnvironment, Actions
-from src.data.minute_data_pipeline import MinuteData, MinuteDataPipeline
+from src.data.minute_data_pipeline import MinuteDataPipeline
 
 
 def create_test_data(n_steps=1000):
@@ -52,7 +52,11 @@ def test_environment_basic():
 
     # 創建環境
     env = TradingEnvironment(
-        df=data, initial_balance=10000, commission=0.001, slippage=0.0005, window_size=20
+        df=data,
+        initial_balance=10000,
+        commission=0.001,
+        slippage=0.0005,
+        window_size=20,
     )
 
     # 測試重置
@@ -185,7 +189,9 @@ def test_minute_data_pipeline():
 
         # 添加特徵
         df_with_features = pipeline.add_features(df)
-        print(f"✓ Added {len(df_with_features.columns) - len(df.columns)} technical features")
+        print(
+            f"✓ Added {len(df_with_features.columns) - len(df.columns)} technical features"
+        )
 
         return df_with_features
     else:

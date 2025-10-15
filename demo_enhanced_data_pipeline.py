@@ -78,7 +78,9 @@ def demo_enhanced_data_pipeline():
         print(f"成功率: {summary.get('success_rate', 0):.1f}%")
 
         price_stats = summary.get("price_stats", {})
-        print(f"價格範圍: ${price_stats.get('min', 0):.2f} - ${price_stats.get('max', 0):.2f}")
+        print(
+            f"價格範圍: ${price_stats.get('min', 0):.2f} - ${price_stats.get('max', 0):.2f}"
+        )
         print(f"平均價格: ${price_stats.get('mean', 0):.2f}")
 
         volume_stats = summary.get("volume_stats", {})
@@ -92,13 +94,13 @@ def demo_enhanced_data_pipeline():
     # 第一次請求（建立緩存）
     print("第一次請求（建立緩存）...")
     start_time = time.time()
-    quotes1 = client.get_batch_quotes(test_symbols[:5], use_cache=False, show_progress=False)
+    client.get_batch_quotes(test_symbols[:5], use_cache=False, show_progress=False)
     first_time = time.time() - start_time
 
     # 第二次請求（使用緩存）
     print("第二次請求（使用緩存）...")
     start_time = time.time()
-    quotes2 = client.get_batch_quotes(test_symbols[:5], use_cache=True, show_progress=False)
+    client.get_batch_quotes(test_symbols[:5], use_cache=True, show_progress=False)
     cached_time = time.time() - start_time
 
     speedup = first_time / cached_time if cached_time > 0 else float("inf")

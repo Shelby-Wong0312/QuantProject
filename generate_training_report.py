@@ -10,10 +10,9 @@ import json
 import torch
 import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import yfinance as yf
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -32,7 +31,9 @@ class TrainingReportGenerator:
 
         # Load model checkpoint
         if os.path.exists(self.model_path):
-            checkpoint = torch.load(self.model_path, map_location="cpu", weights_only=False)
+            checkpoint = torch.load(
+                self.model_path, map_location="cpu", weights_only=False
+            )
             self.episode_rewards = checkpoint.get("episode_rewards", [])
             self.losses = checkpoint.get("losses", [])
             self.timestamp = checkpoint.get("timestamp", datetime.now().isoformat())
@@ -91,7 +92,9 @@ class TrainingReportGenerator:
         self.portfolio_values = portfolio_values
         self.trades = trades
         self.final_balance = current_balance
-        self.total_return = (current_balance - self.initial_balance) / self.initial_balance * 100
+        self.total_return = (
+            (current_balance - self.initial_balance) / self.initial_balance * 100
+        )
 
         print(f"Final Balance: ${current_balance:,.2f}")
         print(f"Total Return: {self.total_return:.2f}%")
@@ -197,7 +200,11 @@ class TrainingReportGenerator:
         fig.add_trace(
             go.Bar(
                 x=["Wins", "Losses", "Neutral"],
-                y=[len(wins), len(losses), len(self.episode_rewards) - len(wins) - len(losses)],
+                y=[
+                    len(wins),
+                    len(losses),
+                    len(self.episode_rewards) - len(wins) - len(losses),
+                ],
                 marker_color=["green", "red", "gray"],
                 name="Trade Outcomes",
             ),
@@ -209,7 +216,9 @@ class TrainingReportGenerator:
         window = 100
         rolling_mean = pd.Series(self.episode_rewards).rolling(window).mean()
         rolling_std = pd.Series(self.episode_rewards).rolling(window).std()
-        sharpe_ratio = (rolling_mean / (rolling_std + 1e-8)) * np.sqrt(252)  # Annualized
+        sharpe_ratio = (rolling_mean / (rolling_std + 1e-8)) * np.sqrt(
+            252
+        )  # Annualized
 
         fig.add_trace(
             go.Scatter(
@@ -226,7 +235,8 @@ class TrainingReportGenerator:
         # Update layout
         fig.update_layout(
             title=dict(
-                text="<b>PPO Trading Model - Training Performance Report</b>", font=dict(size=24)
+                text="<b>PPO Trading Model - Training Performance Report</b>",
+                font=dict(size=24),
             ),
             height=1200,
             showlegend=True,
@@ -277,7 +287,12 @@ class TrainingReportGenerator:
         # 1. P&L per trade
         colors = ["green" if p > 0 else "red" for p in df_trades["profit"]]
         fig.add_trace(
-            go.Bar(x=df_trades.index, y=df_trades["profit"], marker_color=colors, name="P&L"),
+            go.Bar(
+                x=df_trades.index,
+                y=df_trades["profit"],
+                marker_color=colors,
+                name="P&L",
+            ),
             row=1,
             col=1,
         )
@@ -298,7 +313,10 @@ class TrainingReportGenerator:
         # 3. Return distribution
         fig.add_trace(
             go.Histogram(
-                x=df_trades["return_pct"], nbinsx=30, name="Returns", marker_color="purple"
+                x=df_trades["return_pct"],
+                nbinsx=30,
+                name="Returns",
+                marker_color="purple",
             ),
             row=2,
             col=1,
@@ -339,22 +357,24 @@ class TrainingReportGenerator:
         self.simulate_portfolio_performance()
 
         # Create charts
-        performance_fig = self.create_performance_charts()
-        trade_fig = self.create_trade_analysis()
+        self.create_performance_charts()
+        self.create_trade_analysis()
 
         # Calculate statistics
-        win_rate = len([r for r in self.episode_rewards if r > 0]) / len(self.episode_rewards) * 100
-        avg_win = (
+        len([r for r in self.episode_rewards if r > 0]) / len(
+            self.episode_rewards
+        ) * 100
+        (
             np.mean([r for r in self.episode_rewards if r > 0])
             if any(r > 0 for r in self.episode_rewards)
             else 0
         )
-        avg_loss = (
+        (
             np.mean([r for r in self.episode_rewards if r < 0])
             if any(r < 0 for r in self.episode_rewards)
             else 0
         )
-        max_drawdown = self.calculate_max_drawdown()
+        self.calculate_max_drawdown()
 
         # Generate HTML
         html_content = """

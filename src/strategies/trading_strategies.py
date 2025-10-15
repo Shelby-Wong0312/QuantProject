@@ -3,8 +3,6 @@
 
 import logging
 from typing import Union
-import pandas as pd
-import numpy as np
 
 from .base_strategy import BaseStrategy
 from core.event import SignalEvent, MarketEvent
@@ -62,44 +60,66 @@ class ComprehensiveStrategy(BaseStrategy):
         if self.position == 0:
             if level3_buy:
                 self.position = 1
-                return self._create_signal("BUY", config.DEFAULT_TRADE_QUANTITY, "L3_Buy")
+                return self._create_signal(
+                    "BUY", config.DEFAULT_TRADE_QUANTITY, "L3_Buy"
+                )
             elif level3_sell:
                 self.position = -1
-                return self._create_signal("SELL", config.DEFAULT_TRADE_QUANTITY, "L3_Sell")
+                return self._create_signal(
+                    "SELL", config.DEFAULT_TRADE_QUANTITY, "L3_Sell"
+                )
             elif level2_buy:
                 self.position = 1
-                return self._create_signal("BUY", config.DEFAULT_TRADE_QUANTITY, "L2_Buy")
+                return self._create_signal(
+                    "BUY", config.DEFAULT_TRADE_QUANTITY, "L2_Buy"
+                )
             elif level2_sell:
                 self.position = -1
-                return self._create_signal("SELL", config.DEFAULT_TRADE_QUANTITY, "L2_Sell")
+                return self._create_signal(
+                    "SELL", config.DEFAULT_TRADE_QUANTITY, "L2_Sell"
+                )
             elif level1_buy:
                 self.position = 1
-                return self._create_signal("BUY", config.DEFAULT_TRADE_QUANTITY, "L1_Buy")
+                return self._create_signal(
+                    "BUY", config.DEFAULT_TRADE_QUANTITY, "L1_Buy"
+                )
             elif level1_sell:
                 self.position = -1
-                return self._create_signal("SELL", config.DEFAULT_TRADE_QUANTITY, "L1_Sell")
+                return self._create_signal(
+                    "SELL", config.DEFAULT_TRADE_QUANTITY, "L1_Sell"
+                )
 
         elif self.position == 1:  # 持有多倉
             if level1_sell or level2_sell or level3_sell:
                 self.position = 0
-                return self._create_signal("SELL", config.DEFAULT_TRADE_QUANTITY, "Close_Long")
+                return self._create_signal(
+                    "SELL", config.DEFAULT_TRADE_QUANTITY, "Close_Long"
+                )
 
         elif self.position == -1:  # 持有空倉
             if level1_buy or level2_buy or level3_buy:
                 self.position = 0
-                return self._create_signal("BUY", config.DEFAULT_TRADE_QUANTITY, "Close_Short")
+                return self._create_signal(
+                    "BUY", config.DEFAULT_TRADE_QUANTITY, "Close_Short"
+                )
 
         return None
 
     # 移植您原始的檢查邏輯
     def _check_level1(self, analysis):
-        latest, patterns = analysis["latest"], analysis["patterns"]
+        latest, _patterns = analysis["latest"], analysis["patterns"]
         p = self.p
         buy, sell = False, False
         try:
-            if latest[f'STOCHk_{p["kd_k"]}_{p["kd_d"]}_{p["kd_smooth"]}'] < p["kd_oversold"]:
+            if (
+                latest[f'STOCHk_{p["kd_k"]}_{p["kd_d"]}_{p["kd_smooth"]}']
+                < p["kd_oversold"]
+            ):
                 buy = True
-            if latest[f'STOCHk_{p["kd_k"]}_{p["kd_d"]}_{p["kd_smooth"]}'] > p["kd_overbought"]:
+            if (
+                latest[f'STOCHk_{p["kd_k"]}_{p["kd_d"]}_{p["kd_smooth"]}']
+                > p["kd_overbought"]
+            ):
                 sell = True
         except KeyError:
             pass

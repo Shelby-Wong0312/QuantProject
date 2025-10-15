@@ -7,7 +7,9 @@ from dataclasses import dataclass
 class BrokerParams:
     commission_bps: float = 1.0
     slippage_alpha: float = 0.10  # volatility-linked component (bps)
-    slippage_beta: float = 0.20  # participation-linked component (bps per unit turnover)
+    slippage_beta: float = (
+        0.20  # participation-linked component (bps per unit turnover)
+    )
     participation_cap: float = 0.10  # max notional per step as % of NAV
 
 

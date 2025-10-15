@@ -14,7 +14,10 @@ import sys
 
 sys.path.append(str(Path(__file__).parent.parent))
 
-from sensory_models.relation_analyzer import StockRelationAnalyzer, RelationFeatureExtractor
+from sensory_models.relation_analyzer import (
+    StockRelationAnalyzer,
+    RelationFeatureExtractor,
+)
 from rl_trading.environments.portfolio_env import PortfolioTradingEnvironment
 
 logger = logging.getLogger(__name__)
@@ -137,12 +140,17 @@ class GNNEnhancedPortfolioEnv(PortfolioTradingEnvironment):
 
             price_data = {}
             for symbol in self.symbols:
-                if symbol in self.market_data and len(self.market_data[symbol]) > start_idx:
-                    price_data[symbol] = self.market_data[symbol].iloc[start_idx:end_idx]
+                if (
+                    symbol in self.market_data
+                    and len(self.market_data[symbol]) > start_idx
+                ):
+                    price_data[symbol] = self.market_data[symbol].iloc[
+                        start_idx:end_idx
+                    ]
 
             if len(price_data) == len(self.symbols):
                 # Analyze relations
-                results = self.relation_analyzer.analyze_relations(price_data, save_results=False)
+                self.relation_analyzer.analyze_relations(price_data, save_results=False)
 
                 # Cache features
                 current_prices = {
@@ -150,8 +158,10 @@ class GNNEnhancedPortfolioEnv(PortfolioTradingEnvironment):
                     for symbol in self.symbols
                 }
 
-                self.cached_gnn_features = self.feature_extractor.extract_relation_features(
-                    self.symbols, current_prices
+                self.cached_gnn_features = (
+                    self.feature_extractor.extract_relation_features(
+                        self.symbols, current_prices
+                    )
                 )
             else:
                 logger.warning("Insufficient data for GNN update")
@@ -179,10 +189,14 @@ class GNNEnhancedPortfolioEnv(PortfolioTradingEnvironment):
         try:
             # Get correlation matrix from analyzer
             if "latest" in self.relation_analyzer.analysis_cache:
-                corr_matrix = self.relation_analyzer.analysis_cache["latest"]["correlation_matrix"]
+                corr_matrix = self.relation_analyzer.analysis_cache["latest"][
+                    "correlation_matrix"
+                ]
 
                 # Calculate portfolio correlation
-                weights = np.array([self.portfolio_state.weights.get(s, 0) for s in self.symbols])
+                weights = np.array(
+                    [self.portfolio_state.weights.get(s, 0) for s in self.symbols]
+                )
                 weights = weights[:-1]  # Exclude cash
 
                 # Portfolio correlation (weighted average of pairwise correlations)
@@ -192,7 +206,9 @@ class GNNEnhancedPortfolioEnv(PortfolioTradingEnvironment):
                 for i in range(len(self.symbols)):
                     for j in range(i + 1, len(self.symbols)):
                         if weights[i] > 0 and weights[j] > 0:
-                            portfolio_corr += weights[i] * weights[j] * corr_matrix[i, j]
+                            portfolio_corr += (
+                                weights[i] * weights[j] * corr_matrix[i, j]
+                            )
                             weight_sum += weights[i] * weights[j]
 
                 if weight_sum > 0:

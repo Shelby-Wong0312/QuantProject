@@ -12,7 +12,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from src.core.paper_trading import PaperTradingSimulator
 import pandas as pd
 import numpy as np
-from datetime import datetime
 
 
 async def run_paper_trading_demo():
@@ -129,7 +128,9 @@ async def run_paper_trading_demo():
     if metrics["positions_count"] > 0:
         print("\n🏦 Current Positions:")
         for symbol, position in simulator.positions.items():
-            print(f"  {symbol}: {position.quantity:.0f} shares @ ${position.avg_price:.2f}")
+            print(
+                f"  {symbol}: {position.quantity:.0f} shares @ ${position.avg_price:.2f}"
+            )
             print(f"    Market Value: ${position.market_value:,.2f}")
             print(f"    Unrealized P&L: ${position.unrealized_pnl:,.2f}")
 

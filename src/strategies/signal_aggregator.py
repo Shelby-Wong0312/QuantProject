@@ -6,7 +6,7 @@ Signal Aggregator - Cloud DE Task PHASE3-001
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 from datetime import datetime
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -102,7 +102,9 @@ class SignalAggregator:
                     all_signals[strategy.name] = pd.DataFrame()
 
         # 記錄信號
-        self.signal_history.append({"timestamp": datetime.now(), "signals": all_signals})
+        self.signal_history.append(
+            {"timestamp": datetime.now(), "signals": all_signals}
+        )
 
         return all_signals
 
@@ -173,15 +175,19 @@ class SignalAggregator:
             consensus["buy_votes"] / consensus["total_strategies"] >= self.min_agreement
         )
         consensus["sell"] = (
-            consensus["sell_votes"] / consensus["total_strategies"] >= self.min_agreement
+            consensus["sell_votes"] / consensus["total_strategies"]
+            >= self.min_agreement
         )
         consensus["confidence"] = (
-            consensus[["buy_votes", "sell_votes"]].max(axis=1) / consensus["total_strategies"]
+            consensus[["buy_votes", "sell_votes"]].max(axis=1)
+            / consensus["total_strategies"]
         )
 
         return consensus
 
-    def _weighted_voting_consensus(self, all_signals: Dict[str, pd.DataFrame]) -> pd.DataFrame:
+    def _weighted_voting_consensus(
+        self, all_signals: Dict[str, pd.DataFrame]
+    ) -> pd.DataFrame:
         """
         加權投票共識（基於策略歷史表現）
         """
@@ -214,11 +220,15 @@ class SignalAggregator:
 
             if "buy" in signals.columns:
                 signal_strength = signals.get("signal_strength", 1.0)
-                consensus["buy_score"] += signals["buy"].astype(float) * weight * signal_strength
+                consensus["buy_score"] += (
+                    signals["buy"].astype(float) * weight * signal_strength
+                )
 
             if "sell" in signals.columns:
                 signal_strength = signals.get("signal_strength", 1.0)
-                consensus["sell_score"] += signals["sell"].astype(float) * weight * signal_strength
+                consensus["sell_score"] += (
+                    signals["sell"].astype(float) * weight * signal_strength
+                )
 
         # 正規化分數
         consensus["buy_score"] /= consensus["total_weight"]
@@ -241,7 +251,9 @@ class SignalAggregator:
 
         return consensus
 
-    def _score_based_consensus(self, all_signals: Dict[str, pd.DataFrame]) -> pd.DataFrame:
+    def _score_based_consensus(
+        self, all_signals: Dict[str, pd.DataFrame]
+    ) -> pd.DataFrame:
         """
         基於分數的共識（考慮信號強度）
         """
@@ -271,11 +283,15 @@ class SignalAggregator:
             weight = self.strategy_weights.get(strategy_name, 0.1)
 
             if "buy" in signals.columns and "signal_strength" in signals.columns:
-                buy_score = signals["buy"].astype(float) * signals["signal_strength"] * weight
+                buy_score = (
+                    signals["buy"].astype(float) * signals["signal_strength"] * weight
+                )
                 buy_scores.append(buy_score)
 
             if "sell" in signals.columns and "signal_strength" in signals.columns:
-                sell_score = signals["sell"].astype(float) * signals["signal_strength"] * weight
+                sell_score = (
+                    signals["sell"].astype(float) * signals["signal_strength"] * weight
+                )
                 sell_scores.append(sell_score)
 
         # 計算平均分數
@@ -300,7 +316,9 @@ class SignalAggregator:
 
         return consensus
 
-    def _conservative_consensus(self, all_signals: Dict[str, pd.DataFrame]) -> pd.DataFrame:
+    def _conservative_consensus(
+        self, all_signals: Dict[str, pd.DataFrame]
+    ) -> pd.DataFrame:
         """
         保守共識（需要更多策略同意）
         """
@@ -309,7 +327,9 @@ class SignalAggregator:
         self.min_agreement = 0.6  # 恢復默認
         return result
 
-    def _aggressive_consensus(self, all_signals: Dict[str, pd.DataFrame]) -> pd.DataFrame:
+    def _aggressive_consensus(
+        self, all_signals: Dict[str, pd.DataFrame]
+    ) -> pd.DataFrame:
         """
         激進共識（較少策略同意即可）
         """
@@ -319,7 +339,10 @@ class SignalAggregator:
         return result
 
     def get_position_sizing(
-        self, consensus_signal: pd.DataFrame, portfolio_value: float, current_prices: pd.Series
+        self,
+        consensus_signal: pd.DataFrame,
+        portfolio_value: float,
+        current_prices: pd.Series,
     ) -> Dict:
         """
         基於共識信號計算持倉大小
@@ -360,7 +383,9 @@ class SignalAggregator:
         # 計算股數
         allocation = portfolio_value * final_allocation_pct
         current_price = (
-            current_prices.iloc[-1] if isinstance(current_prices, pd.Series) else current_prices
+            current_prices.iloc[-1]
+            if isinstance(current_prices, pd.Series)
+            else current_prices
         )
         shares = int(allocation / current_price)
 
@@ -435,12 +460,18 @@ class SignalAggregator:
 
         # 計算統計
         agreement_stats["avg_buy_agreement"] = np.mean(agreement_stats["buy_agreement"])
-        agreement_stats["avg_sell_agreement"] = np.mean(agreement_stats["sell_agreement"])
+        agreement_stats["avg_sell_agreement"] = np.mean(
+            agreement_stats["sell_agreement"]
+        )
         agreement_stats["max_buy_agreement"] = (
-            np.max(agreement_stats["buy_agreement"]) if agreement_stats["buy_agreement"] else 0
+            np.max(agreement_stats["buy_agreement"])
+            if agreement_stats["buy_agreement"]
+            else 0
         )
         agreement_stats["max_sell_agreement"] = (
-            np.max(agreement_stats["sell_agreement"]) if agreement_stats["sell_agreement"] else 0
+            np.max(agreement_stats["sell_agreement"])
+            if agreement_stats["sell_agreement"]
+            else 0
         )
 
         return agreement_stats

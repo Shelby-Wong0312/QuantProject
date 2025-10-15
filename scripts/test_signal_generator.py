@@ -11,10 +11,9 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta
 import time
 
-from src.signals.signal_generator import SignalGenerator, SignalStrength
+from src.signals.signal_generator import SignalGenerator
 from src.data.data_manager import DataManager
 
 
@@ -289,7 +288,7 @@ def main():
 
     # 1. 基本信號生成
     try:
-        signal = test_signal_generation()
+        test_signal_generation()
         results["basic_generation"] = True
     except Exception as e:
         print(f"✗ Basic generation test failed: {e}")

@@ -3,7 +3,7 @@ Capital.com API Configuration
 """
 
 import os
-from typing import Dict, Any
+from typing import Dict
 from dataclasses import dataclass
 
 

@@ -25,7 +25,8 @@ def _fake(n: int = 100):
         s: pd.DataFrame(
             {
                 "logret": np.log(prices[s]["close"]).diff().fillna(0.0),
-                "range_pct": (prices[s]["high"] - prices[s]["low"]) / prices[s]["close"],
+                "range_pct": (prices[s]["high"] - prices[s]["low"])
+                / prices[s]["close"],
             },
             index=prices[s].index,
         )
@@ -64,7 +65,9 @@ def test_env_step_shapes_and_costs():
     assert "reward_clip" in info
     assert "pnl_ret" in info
 
-    expected = info["portfolio_return"] - info["total_cost_rate"] - info["turnover_penalty"]
+    expected = (
+        info["portfolio_return"] - info["total_cost_rate"] - info["turnover_penalty"]
+    )
     recorded = info["per_step_return"]
     assert pytest.approx(recorded, rel=1e-9) == expected
     assert pytest.approx(info["pnl_ret"], rel=1e-9) == info["portfolio_return"]
@@ -114,7 +117,9 @@ def test_env_dd_hard_stop():
     assert info["drawdown"] <= -0.01
     assert pytest.approx(info["dd"], rel=1e-9) == info["drawdown"]
 
-    expected = info["portfolio_return"] - info["total_cost_rate"] - info["turnover_penalty"]
+    expected = (
+        info["portfolio_return"] - info["total_cost_rate"] - info["turnover_penalty"]
+    )
     recorded = info["per_step_return"]
     assert pytest.approx(recorded, rel=1e-9) == expected
     if abs(recorded) > info["reward_clip"]:
@@ -137,7 +142,10 @@ def test_reward_and_dd_ranges():
 
 def test_dweight_threshold_blocks_small_changes():
     env = _make_env(
-        dweight_threshold=0.05, max_dweight=0.2, reward_cost_bps=0.0, lambda_turnover=0.0
+        dweight_threshold=0.05,
+        max_dweight=0.2,
+        reward_cost_bps=0.0,
+        lambda_turnover=0.0,
     )
     env.reset()
 

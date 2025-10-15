@@ -180,7 +180,9 @@ def example_usage():
 
         # 3. 下單
         print("\n下買單...")
-        order_result = bridge.place_order(symbol="EURUSD", order_type="BUY", volume=0.01)
+        order_result = bridge.place_order(
+            symbol="EURUSD", order_type="BUY", volume=0.01
+        )
         print(f"下單結果: {order_result}")
 
     finally:

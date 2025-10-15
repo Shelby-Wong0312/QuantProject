@@ -6,8 +6,8 @@ MT4交易信號發送器模組
 """
 
 import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Union, Callable
+from datetime import datetime
+from typing import Dict, List, Any, Callable
 from dataclasses import dataclass, asdict
 from enum import Enum
 from threading import Lock
@@ -152,7 +152,10 @@ class RiskManager:
         self.total_positions = 0
 
     def validate_signal(
-        self, signal: TradingSignal, account_balance: float, current_positions: List[PositionInfo]
+        self,
+        signal: TradingSignal,
+        account_balance: float,
+        current_positions: List[PositionInfo],
     ) -> tuple[bool, str]:
         """
         驗證交易信號是否符合風險管理規則
@@ -175,7 +178,9 @@ class RiskManager:
                 return False, f"已達到最大回撤限制: {self.max_drawdown}"
 
             # 檢查單一品種持倉限制
-            symbol_positions = len([p for p in current_positions if p.symbol == signal.symbol])
+            symbol_positions = len(
+                [p for p in current_positions if p.symbol == signal.symbol]
+            )
             if symbol_positions >= self.max_positions_per_symbol:
                 return (
                     False,
@@ -194,7 +199,7 @@ class RiskManager:
                 )
 
             # 計算交易金額是否超過可用資金
-            position_value = signal.volume * signal.price * 100000  # 假設標準手
+            signal.volume * signal.price * 100000  # 假設標準手
             risk_amount = account_balance * (signal.risk_percent / 100)
 
             if risk_amount > account_balance * self.max_risk_per_trade:
@@ -228,8 +233,14 @@ class RiskManager:
 
             # 計算停損點數
             if signal.stop_loss > 0:
-                if signal.order_type in [OrderType.BUY, OrderType.BUY_LIMIT, OrderType.BUY_STOP]:
-                    stop_loss_pips = abs(signal.price - signal.stop_loss) * 10000  # 假設4位小數
+                if signal.order_type in [
+                    OrderType.BUY,
+                    OrderType.BUY_LIMIT,
+                    OrderType.BUY_STOP,
+                ]:
+                    stop_loss_pips = (
+                        abs(signal.price - signal.stop_loss) * 10000
+                    )  # 假設4位小數
                 else:
                     stop_loss_pips = abs(signal.stop_loss - signal.price) * 10000
 
@@ -278,7 +289,9 @@ class MT4SignalSender:
                 setattr(self.risk_manager, key, value)
                 logger.info(f"風險參數已更新: {key} = {value}")
 
-    def send_signal(self, signal: TradingSignal, validate_risk: bool = True) -> OrderResult:
+    def send_signal(
+        self, signal: TradingSignal, validate_risk: bool = True
+    ) -> OrderResult:
         """
         發送交易信號
 
@@ -297,7 +310,9 @@ class MT4SignalSender:
             # 檢查連接
             if not self.connector or not self.connector.is_connected():
                 result = OrderResult(
-                    signal_id=signal.signal_id, success=False, error_message="MT4連接器未連接"
+                    signal_id=signal.signal_id,
+                    success=False,
+                    error_message="MT4連接器未連接",
                 )
                 self._process_order_result(result)
                 return result
@@ -340,7 +355,9 @@ class MT4SignalSender:
 
         except Exception as e:
             logger.error(f"發送交易信號時發生錯誤: {e}")
-            result = OrderResult(signal_id=signal.signal_id, success=False, error_message=str(e))
+            result = OrderResult(
+                signal_id=signal.signal_id, success=False, error_message=str(e)
+            )
             self._process_order_result(result)
             return result
 
@@ -380,7 +397,9 @@ class MT4SignalSender:
                     success=False,
                     error_code=response.get("error_code", -1) if response else -1,
                     error_message=(
-                        response.get("error_message", "未知錯誤") if response else "連接超時"
+                        response.get("error_message", "未知錯誤")
+                        if response
+                        else "連接超時"
                     ),
                 )
                 self.orders_rejected += 1
@@ -390,7 +409,9 @@ class MT4SignalSender:
 
         except Exception as e:
             logger.error(f"發送進場訂單時發生錯誤: {e}")
-            result = OrderResult(signal_id=signal.signal_id, success=False, error_message=str(e))
+            result = OrderResult(
+                signal_id=signal.signal_id, success=False, error_message=str(e)
+            )
             self._process_order_result(result)
             return result
 
@@ -418,7 +439,9 @@ class MT4SignalSender:
                 "command": "CLOSE_ORDER",
                 "ticket": position.ticket,
                 "volume": (
-                    min(signal.volume, position.volume) if signal.volume > 0 else position.volume
+                    min(signal.volume, position.volume)
+                    if signal.volume > 0
+                    else position.volume
                 ),
                 "price": signal.price,
                 "max_slippage": signal.max_slippage,
@@ -443,7 +466,9 @@ class MT4SignalSender:
                     success=False,
                     error_code=response.get("error_code", -1) if response else -1,
                     error_message=(
-                        response.get("error_message", "未知錯誤") if response else "連接超時"
+                        response.get("error_message", "未知錯誤")
+                        if response
+                        else "連接超時"
                     ),
                 )
                 self.orders_rejected += 1
@@ -453,7 +478,9 @@ class MT4SignalSender:
 
         except Exception as e:
             logger.error(f"發送出場訂單時發生錯誤: {e}")
-            result = OrderResult(signal_id=signal.signal_id, success=False, error_message=str(e))
+            result = OrderResult(
+                signal_id=signal.signal_id, success=False, error_message=str(e)
+            )
             self._process_order_result(result)
             return result
 
@@ -476,7 +503,9 @@ class MT4SignalSender:
             response = self.connector.send_command(**modify_data)
 
             if response and response.get("success"):
-                result = OrderResult(signal_id=signal.signal_id, success=True, ticket=ticket)
+                result = OrderResult(
+                    signal_id=signal.signal_id, success=True, ticket=ticket
+                )
                 self.orders_filled += 1
             else:
                 result = OrderResult(
@@ -484,7 +513,9 @@ class MT4SignalSender:
                     success=False,
                     error_code=response.get("error_code", -1) if response else -1,
                     error_message=(
-                        response.get("error_message", "未知錯誤") if response else "連接超時"
+                        response.get("error_message", "未知錯誤")
+                        if response
+                        else "連接超時"
                     ),
                 )
                 self.orders_rejected += 1
@@ -494,7 +525,9 @@ class MT4SignalSender:
 
         except Exception as e:
             logger.error(f"發送修改訂單時發生錯誤: {e}")
-            result = OrderResult(signal_id=signal.signal_id, success=False, error_message=str(e))
+            result = OrderResult(
+                signal_id=signal.signal_id, success=False, error_message=str(e)
+            )
             self._process_order_result(result)
             return result
 
@@ -513,14 +546,18 @@ class MT4SignalSender:
             response = self.connector.send_command(**cancel_data)
 
             if response and response.get("success"):
-                result = OrderResult(signal_id=signal.signal_id, success=True, ticket=ticket)
+                result = OrderResult(
+                    signal_id=signal.signal_id, success=True, ticket=ticket
+                )
             else:
                 result = OrderResult(
                     signal_id=signal.signal_id,
                     success=False,
                     error_code=response.get("error_code", -1) if response else -1,
                     error_message=(
-                        response.get("error_message", "未知錯誤") if response else "連接超時"
+                        response.get("error_message", "未知錯誤")
+                        if response
+                        else "連接超時"
                     ),
                 )
 
@@ -529,7 +566,9 @@ class MT4SignalSender:
 
         except Exception as e:
             logger.error(f"發送取消訂單時發生錯誤: {e}")
-            result = OrderResult(signal_id=signal.signal_id, success=False, error_message=str(e))
+            result = OrderResult(
+                signal_id=signal.signal_id, success=False, error_message=str(e)
+            )
             self._process_order_result(result)
             return result
 
@@ -554,7 +593,9 @@ class MT4SignalSender:
         if result.success:
             logger.info(f"訂單執行成功: {result.signal_id}, 票號: {result.ticket}")
         else:
-            logger.error(f"訂單執行失敗: {result.signal_id}, 錯誤: {result.error_message}")
+            logger.error(
+                f"訂單執行失敗: {result.signal_id}, 錯誤: {result.error_message}"
+            )
 
     def _get_account_info(self) -> Dict[str, Any]:
         """獲取賬戶信息"""
@@ -643,7 +684,9 @@ class MT4SignalSender:
             executed_count = len(self.executed_orders)
 
         success_rate = (
-            (self.orders_filled / self.signals_sent * 100) if self.signals_sent > 0 else 0
+            (self.orders_filled / self.signals_sent * 100)
+            if self.signals_sent > 0
+            else 0
         )
 
         return {

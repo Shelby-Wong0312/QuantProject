@@ -8,7 +8,6 @@ import pandas as pd
 from scipy.optimize import minimize
 from typing import Dict, List, Tuple, Optional
 import logging
-from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +49,9 @@ class MPTOptimizer:
 
         logger.info("MPT Optimizer initialized")
 
-    def calculate_returns(self, prices: pd.DataFrame, method: str = "log") -> pd.DataFrame:
+    def calculate_returns(
+        self, prices: pd.DataFrame, method: str = "log"
+    ) -> pd.DataFrame:
         """
         計算資產收益率
 
@@ -123,12 +124,17 @@ class MPTOptimizer:
         Returns:
             負夏普比率
         """
-        p_return, p_risk = self.portfolio_performance(weights, expected_returns, cov_matrix)
+        p_return, p_risk = self.portfolio_performance(
+            weights, expected_returns, cov_matrix
+        )
         sharpe = (p_return - self.risk_free_rate) / p_risk
         return -sharpe  # 負值用於最小化
 
     def optimize_portfolio(
-        self, prices: pd.DataFrame, target: str = "sharpe", target_return: Optional[float] = None
+        self,
+        prices: pd.DataFrame,
+        target: str = "sharpe",
+        target_return: Optional[float] = None,
     ) -> Dict:
         """
         優化投資組合
@@ -159,24 +165,32 @@ class MPTOptimizer:
         # 根據不同目標設置優化函數
         if target == "sharpe":
             # 最大化夏普比率
-            objective = lambda w: self.negative_sharpe_ratio(w, expected_returns, cov_matrix)
+            def objective(w):
+                return self.negative_sharpe_ratio(w, expected_returns, cov_matrix)
 
         elif target == "min_variance":
             # 最小化風險
-            objective = lambda w: np.sqrt(np.dot(w.T, np.dot(cov_matrix, w)))
+            def objective(w):
+                return np.sqrt(np.dot(w.T, np.dot(cov_matrix, w)))
 
         elif target == "max_return":
             # 最大化收益
-            objective = lambda w: -np.dot(w, expected_returns)
+            def objective(w):
+                return -np.dot(w, expected_returns)
 
         elif target == "target_return":
             # 給定目標收益，最小化風險
             if target_return is None:
                 raise ValueError("target_return must be specified")
 
-            objective = lambda w: np.sqrt(np.dot(w.T, np.dot(cov_matrix, w)))
+            def objective(w):
+                return np.sqrt(np.dot(w.T, np.dot(cov_matrix, w)))
+
             constraints.append(
-                {"type": "eq", "fun": lambda w: np.dot(w, expected_returns) - target_return}
+                {
+                    "type": "eq",
+                    "fun": lambda w: np.dot(w, expected_returns) - target_return,
+                }
             )
 
         else:
@@ -215,7 +229,9 @@ class MPTOptimizer:
         }
 
         # 只保留權重 > 1% 的資產
-        significant_weights = {k: v for k, v in optimization_result["weights"].items() if v > 0.01}
+        significant_weights = {
+            k: v for k, v in optimization_result["weights"].items() if v > 0.01
+        }
         optimization_result["significant_weights"] = significant_weights
 
         logger.info(
@@ -267,7 +283,9 @@ class MPTOptimizer:
                 continue
 
         self.efficient_frontier = pd.DataFrame(efficient_portfolios)
-        logger.info(f"Calculated efficient frontier with {len(self.efficient_frontier)} portfolios")
+        logger.info(
+            f"Calculated efficient frontier with {len(self.efficient_frontier)} portfolios"
+        )
 
         return self.efficient_frontier
 
@@ -318,7 +336,8 @@ class MPTOptimizer:
             for asset in remaining_assets:
                 # 計算與已選資產的最大相關性
                 max_corr_with_selected = max(
-                    abs(corr_matrix.loc[asset, selected]) for selected in selected_assets
+                    abs(corr_matrix.loc[asset, selected])
+                    for selected in selected_assets
                 )
 
                 if max_corr_with_selected < min_corr:
@@ -335,7 +354,10 @@ class MPTOptimizer:
         return selected_assets
 
     def backtest_strategy(
-        self, prices: pd.DataFrame, rebalance_days: int = 30, initial_capital: float = 100000
+        self,
+        prices: pd.DataFrame,
+        rebalance_days: int = 30,
+        initial_capital: float = 100000,
     ) -> pd.DataFrame:
         """
         回測 MPT 策略
@@ -369,7 +391,9 @@ class MPTOptimizer:
             test_data = prices.iloc[i:test_end]
 
             # 計算投資組合收益
-            weights = np.array([opt_result["weights"].get(col, 0) for col in prices.columns])
+            weights = np.array(
+                [opt_result["weights"].get(col, 0) for col in prices.columns]
+            )
             portfolio_returns = (test_data.pct_change() @ weights).fillna(0)
 
             # 更新投資組合價值
@@ -380,7 +404,8 @@ class MPTOptimizer:
                         "date": test_data.index[j],
                         "portfolio_value": portfolio_value,
                         "return": ret,
-                        "cumulative_return": (portfolio_value - initial_capital) / initial_capital,
+                        "cumulative_return": (portfolio_value - initial_capital)
+                        / initial_capital,
                     }
                 )
 
