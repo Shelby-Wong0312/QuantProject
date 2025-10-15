@@ -91,7 +91,7 @@ class TestHyperparameterOptimizer(unittest.TestCase):
     def test_load_best_params(self):
         """Test loading best parameters"""
         # Create mock best params file
-        best_params = {"best_params": {"learning_rate": 0.001, "units": 128}, "best_value": 0.95}
+        {"best_params": {"learning_rate": 0.001, "units": 128}, "best_value": 0.95}
 
         self.optimizer.best_params_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.optimizer.best_params_path, "w") as f:
@@ -274,7 +274,7 @@ class TestOptimizationReport(unittest.TestCase):
         """Test adding hyperparameter results"""
         self.report.add_hyperparameter_results(
             component="lstm",
-            best_params={"units": 128, "lr": 0.001},
+            {"units": 128, "lr": 0.001},
             optimization_history=[{"trial": 1, "value": 0.8}],
             performance_improvement=15.5,
         )

@@ -85,7 +85,7 @@ def generate_statistics():
     conn.close()
 
     # Generate report
-    report = []
+    []
     report.append("=" * 60)
     report.append("DATA STATISTICS REPORT")
     report.append("=" * 60)

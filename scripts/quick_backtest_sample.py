@@ -55,7 +55,7 @@ for idx, row in enumerate(stocks_df.itertuples()):
     symbol = row.symbol
 
     # Get ALL historical data for this stock
-    query = f"""
+    query = """
         SELECT date, close_price as close, high_price as high, 
                low_price as low, open_price as open, volume
         FROM daily_data
@@ -75,7 +75,7 @@ for idx, row in enumerate(stocks_df.itertuples()):
         date_range = (df.index[-1] - df.index[0]).days / 365.25
 
         # Generate CCI signals
-        signals = cci.get_signals(df)
+        cci.get_signals(df)
 
         # Simple backtest
         initial_capital = 100000
@@ -151,7 +151,7 @@ else:
     )
     results_df.to_csv(csv_path, index=False)
 
-    print(f"\n1. TOP 20 PERFORMERS (15 YEARS):")
+    print("\n1. TOP 20 PERFORMERS (15 YEARS):")
     print("-" * 80)
     print(
         f"{'Rank':<5} {'Symbol':<8} {'Total Return':<15} {'Annual Return':<15} {'Years':<8} {'Trades':<8}"

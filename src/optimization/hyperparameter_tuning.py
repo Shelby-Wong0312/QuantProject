@@ -31,7 +31,7 @@ class SimpleBayesianOptimizer:
 
     def optimize(self, objective_func):
         """Run optimization"""
-        best_params = None
+        None
         best_score = -np.inf
 
         for i in range(self.n_iter):
@@ -49,7 +49,7 @@ class SimpleBayesianOptimizer:
 
             if score > best_score:
                 best_score = score
-                best_params = params
+                params
 
             if (i + 1) % 10 == 0:
                 print(f"  Iteration {i+1}/{self.n_iter}: Best Score = {best_score:.4f}")
@@ -287,7 +287,7 @@ class HyperparameterTuner:
         param_names = list(param_grid.keys())
         param_values = list(param_grid.values())
 
-        best_params = None
+        None
         best_score = -np.inf
 
         # Iterate through all combinations
@@ -299,7 +299,7 @@ class HyperparameterTuner:
 
             if score > best_score:
                 best_score = score
-                best_params = params
+                params
 
             self.optimization_history.append(
                 {"params": params, "score": score, "method": "grid_search"}
@@ -324,7 +324,7 @@ class HyperparameterTuner:
 
         search_space = self.create_search_space()
 
-        best_params = None
+        None
         best_score = -np.inf
 
         for i in range(n_iter):
@@ -354,7 +354,7 @@ class HyperparameterTuner:
 
             if score > best_score:
                 best_score = score
-                best_params = params
+                params
 
             self.optimization_history.append(
                 {"params": params, "score": score, "method": "random_search"}
@@ -550,7 +550,7 @@ class HyperparameterTuner:
         """
         analysis = self.analyze_optimization_results()
 
-        report = """
+        """
 ╔══════════════════════════════════════════════════════════╗
 ║     HYPERPARAMETER OPTIMIZATION REPORT                   ║
 ╚══════════════════════════════════════════════════════════╝
@@ -658,10 +658,10 @@ async def main():
     print("\nStarting hyperparameter optimization...")
     print("This will take a few minutes...")
 
-    best_params = await tuner.optimize_ml_parameters(sample_data)
+    await tuner.optimize_ml_parameters(sample_data)
 
     # Generate report
-    report = tuner.generate_optimization_report()
+    tuner.generate_optimization_report()
     print(report)
 
     # Save results

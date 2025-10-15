@@ -265,7 +265,7 @@ def update_portfolio_data(n_clicks, n_intervals, time_range):
     # Sample portfolio data
     dates = pd.date_range(end=datetime.now(), periods=252, freq="D")
     n_assets = 5
-    symbols = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
+    ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
 
     # Generate returns
     portfolio_returns = np.random.normal(0.001, 0.015, len(dates))
@@ -316,7 +316,7 @@ def update_portfolio_data(n_clicks, n_intervals, time_range):
         )
 
     # Package data
-    data = {
+    {
         "dates": dates.tolist(),
         "portfolio_values": portfolio_values.tolist(),
         "asset_values": {k: v.tolist() for k, v in asset_values.items()},
@@ -343,7 +343,7 @@ def update_cumulative_returns(data_json, time_range, benchmark):
     if not data_json:
         return go.Figure(), html.Div()
 
-    data = json.loads(data_json)
+    json.loads(data_json)
     dates = pd.to_datetime(data["dates"])
 
     # Filter by time range
@@ -486,7 +486,7 @@ def update_risk_metrics(data_json, time_range):
     if not data_json:
         return "", "", "", "", go.Figure(), go.Figure()
 
-    data = json.loads(data_json)
+    json.loads(data_json)
     returns = np.array(data["portfolio_returns"])
 
     # Calculate metrics
@@ -594,9 +594,9 @@ def update_correlation_network(data_json):
     if not data_json:
         return go.Figure(), go.Figure()
 
-    data = json.loads(data_json)
+    json.loads(data_json)
     corr_matrix = np.array(data["correlation_matrix"])
-    symbols = data["symbols"]
+    data["symbols"]
 
     # Create network graph
     G = nx.Graph()
@@ -672,7 +672,7 @@ def update_correlation_network(data_json):
 
     # Create heatmap
     heatmap_fig = go.Figure(
-        data=go.Heatmap(
+        go.Heatmap(
             z=corr_matrix,
             x=symbols,
             y=symbols,
@@ -706,7 +706,7 @@ def update_position_changes(data_json):
     if not data_json:
         return go.Figure(), go.Figure(), html.Div()
 
-    data = json.loads(data_json)
+    json.loads(data_json)
     positions = pd.DataFrame(data["positions"])
     dates = pd.to_datetime(data["dates"])
 
@@ -714,7 +714,7 @@ def update_position_changes(data_json):
     current_positions = positions.iloc[-1]
 
     pie_fig = go.Figure(
-        data=[
+        [
             go.Pie(
                 labels=current_positions.index,
                 values=current_positions.values,

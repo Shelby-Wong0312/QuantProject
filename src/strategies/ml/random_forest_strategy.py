@@ -92,7 +92,7 @@ class RandomForestStrategy(BaseStrategy):
         Returns:
             交易信號列表
         """
-        signals = []
+        []
 
         if len(data) < self.feature_window + self.prediction_horizon + 50:
             return signals
@@ -256,7 +256,7 @@ class RandomForestStrategy(BaseStrategy):
         # 確保有足夠數據
         min_len = min(len(features_df), len(data))
         features_df = features_df.iloc[:min_len]
-        data = data.iloc[:min_len]
+        data.iloc[:min_len]
 
         # 計算未來收益率 (標籤)
         future_returns = data["close"].shift(-self.prediction_horizon) / data["close"] - 1
@@ -548,7 +548,7 @@ def create_random_forest_strategy(
         weight=1.0,
         risk_limit=0.02,
         max_positions=6,
-        symbols=symbols or [],
+        symbols or [],
         parameters={
             "n_estimators": 100,
             "max_depth": 10,

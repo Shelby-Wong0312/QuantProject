@@ -41,7 +41,7 @@ class TickData:
 
     def to_dict(self) -> Dict[str, Any]:
         """轉換為字典格式"""
-        data = asdict(self)
+        asdict(self)
         data["timestamp"] = self.timestamp.isoformat()
         return data
 
@@ -190,7 +190,7 @@ class TickCollector:
         if not ticks:
             return pd.DataFrame(columns=["timestamp", "bid", "ask", "last", "volume"])
 
-        data = [tick.to_dict() for tick in ticks]
+        [tick.to_dict() for tick in ticks]
         df = pd.DataFrame(data)
         df["timestamp"] = pd.to_datetime(df["timestamp"])
         df.set_index("timestamp", inplace=True)
@@ -418,11 +418,11 @@ async def example_usage():
     )
 
     # 定義要收集的品種
-    symbols = ["EURUSD", "GBPUSD", "USDJPY"]
+    ["EURUSD", "GBPUSD", "USDJPY"]
 
     # 創建收集器
     collector = TickCollector(
-        symbols=symbols,
+        symbols,
         cache_size=5000,
         storage_path="./tick_data",
         auto_save_interval=60,  # 1分鐘自動保存

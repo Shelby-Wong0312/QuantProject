@@ -63,7 +63,7 @@ class DataManager:
 
         # 從API獲取數據
         logger.info(f"從Capital.com API獲取 {symbol} 數據...")
-        data = self.capital_loader.get_bars(symbol, resolution, start_date, end_date)
+        self.capital_loader.get_bars(symbol, resolution, start_date, end_date)
 
         # 保存到緩存
         if self.use_cache and self.cache and not data.empty:
@@ -111,7 +111,7 @@ class DataManager:
             for future in as_completed(future_to_symbol):
                 symbol = future_to_symbol[future]
                 try:
-                    data = future.result()
+                    future.result()
                     results[symbol] = data
                     logger.info(f"成功獲取 {symbol} 的數據 ({len(data)} 筆)")
                 except Exception as e:
@@ -164,7 +164,7 @@ class DataManager:
         start_date = (datetime.now() - timedelta(days=days_back)).strftime("%Y-%m-%d")
 
         # 強制從API獲取新數據
-        data = self.capital_loader.get_bars(symbol, resolution, start_date, end_date)
+        self.capital_loader.get_bars(symbol, resolution, start_date, end_date)
 
         if self.use_cache and self.cache and not data.empty:
             self.cache.set(symbol, resolution, start_date, end_date, data)

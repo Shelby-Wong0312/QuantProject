@@ -166,9 +166,9 @@ async def main():
                 monitor._add_stock_to_tier(symbol, TierLevel.B_TIER)
 
         # Get monitoring status
-        print(f"   [OK] Tiered monitoring system ready")
-        print(f"      S-tier: 10 stocks (real-time)")
-        print(f"      A-tier: 20 stocks (high-freq)")
+        print("   [OK] Tiered monitoring system ready")
+        print("      S-tier: 10 stocks (real-time)")
+        print("      A-tier: 20 stocks (high-freq)")
         print(f"      B-tier: {len(all_symbols) - 30} stocks (market scan)")
 
         # 5. Initialize signal scanner

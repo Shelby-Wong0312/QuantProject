@@ -84,7 +84,7 @@ class DashboardDataConnector:
         try:
             # Initialize data collector
             self.data_collector = RealtimeDataCollector(
-                symbols=["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN"]
+                ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN"]
             )
 
             # Initialize risk manager
@@ -111,7 +111,7 @@ class DashboardDataConnector:
         def on_message(ws, message):
             """Handle WebSocket message"""
             try:
-                data = json.loads(message)
+                json.loads(message)
                 self._process_websocket_data(data)
             except Exception as e:
                 logger.error(f"WebSocket message error: {e}")
@@ -284,7 +284,7 @@ class DashboardDataConnector:
         # Try to get from risk manager
         if self.risk_manager:
             try:
-                report = self.risk_manager.get_risk_report()
+                self.risk_manager.get_risk_report()
 
                 risk_metrics = {
                     "risk_score": 45,  # Default
@@ -307,7 +307,7 @@ class DashboardDataConnector:
         report_file = self.reports_dir / "stress_test_report.json"
         if report_file.exists():
             with open(report_file, "r") as f:
-                data = json.load(f)
+                json.load(f)
                 return self._parse_stress_test_report(data)
 
         # Return default metrics
@@ -422,7 +422,7 @@ class DashboardDataConnector:
     def _generate_sample_trades(self, limit: int) -> List[Dict]:
         """Generate sample trades for demonstration"""
         trades = []
-        symbols = ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN"]
+        ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN"]
 
         for i in range(limit):
             trade_time = datetime.now() - timedelta(hours=i * 2)

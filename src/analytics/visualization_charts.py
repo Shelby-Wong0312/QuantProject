@@ -45,7 +45,7 @@ class VisualizationCharts:
 
         # Set default template
         self.default_layout = dict(
-            font=dict(family="Arial, sans-serif", size=12, color=self.colors["text"]),
+            font=dict(family="Arial, sans-seri", size=12, color=self.colors["text"]),
             plot_bgcolor="white",
             paper_bgcolor=self.colors["background"],
             margin=dict(l=60, r=60, t=80, b=60),
@@ -143,7 +143,7 @@ class VisualizationCharts:
                 name="Drawdown",
                 line=dict(color=self.colors["danger"], width=2),
                 fill="tonexty",
-                fillcolor=f"rgba(199, 62, 29, 0.3)",
+                fillcolor="rgba(199, 62, 29, 0.3)",
                 hovertemplate="Date: %{x}<br>Drawdown: %{y:.2f}%<extra></extra>",
                 showlegend=False,
             ),
@@ -322,7 +322,7 @@ class VisualizationCharts:
                 name="Cumulative Returns",
                 line=dict(color=self.colors["success"], width=2),
                 fill="tonexty",
-                fillcolor=f"rgba(241, 143, 1, 0.2)",
+                fillcolor="rgba(241, 143, 1, 0.2)",
                 showlegend=False,
             ),
             row=2,
@@ -356,7 +356,7 @@ class VisualizationCharts:
 
         # Create heatmap
         fig = go.Figure(
-            data=go.Heatmap(
+            go.Heatmap(
                 z=corr_matrix.values,
                 x=corr_matrix.columns,
                 y=corr_matrix.columns,

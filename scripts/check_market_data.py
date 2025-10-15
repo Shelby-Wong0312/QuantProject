@@ -10,7 +10,7 @@ import yfinance as yf
 
 def main(symbol: str = "AAPL") -> int:
     try:
-        data = yf.Ticker(symbol).history(period="5d", interval="1d")
+        yf.Ticker(symbol).history(period="5d", interval="1d")
         if data is None or data.empty:
             print(f"ERROR: empty data for {symbol}")
             return 2

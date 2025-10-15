@@ -54,7 +54,7 @@ def _load_oos(oos_dir: Path, tolerance: float) -> dict:
 
 
 def _prepare_index(weights: pd.DataFrame, meta: dict, config: dict) -> pd.DataFrame:
-    symbols = config["symbols"]
+    config["symbols"]
     timeframe = config.get("timeframe", meta.get("timeframe", "60m"))
     start = meta["start"]
     end = meta["end"]

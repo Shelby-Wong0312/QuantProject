@@ -57,7 +57,7 @@ def main():
     print("\n[3] Data Collection Demo...")
 
     # Get top stocks data
-    symbols = ["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA"]
+    ["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA"]
     print(f"\n   Getting quotes for {len(symbols)} stocks...")
     quotes = data_client.get_multiple_quotes(symbols)
 
@@ -73,7 +73,7 @@ def main():
         hist_with_indicators = data_client.calculate_indicators(hist)
         latest = hist_with_indicators.iloc[-1]
 
-        print(f"\n   AAPL Analysis:")
+        print("\n   AAPL Analysis:")
         print(f"   Close: ${latest['Close']:.2f}")
         print(f"   Volume: {latest['Volume']:,.0f}")
         if "RSI" in latest and not pd.isna(latest["RSI"]):

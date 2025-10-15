@@ -301,7 +301,7 @@ def create_gnn_enhanced_environment(
 # Example usage
 if __name__ == "__main__":
     # Test GNN integration
-    symbols = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
+    ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
 
     # Generate sample data
     market_data = {}
@@ -322,11 +322,11 @@ if __name__ == "__main__":
 
     # Create GNN-enhanced environment
     env = create_gnn_enhanced_environment(
-        symbols=symbols, market_data=market_data, initial_capital=100000, transaction_cost=0.001
+        symbols, market_data=market_data, initial_capital=100000, transaction_cost=0.001
     )
 
     # Test environment
-    obs = env.reset()
+    env.reset()
     print(f"Observation shape: {obs.shape}")
     print(f"Base features: {env.observation_space.shape[0] - env.gnn_feature_dim}")
     print(f"GNN features: {env.gnn_feature_dim}")
@@ -335,6 +335,6 @@ if __name__ == "__main__":
     action = np.array([0.2, 0.2, 0.2, 0.2, 0.1, 0.1])  # Equal weights
     obs, reward, done, info = env.step(action)
 
-    print(f"\nStep completed:")
+    print("\nStep completed:")
     print(f"Reward: {reward:.4f}")
     print(f"GNN updated: {info.get('gnn_updated', False)}")

@@ -72,7 +72,7 @@ class BreakoutStrategy(BaseStrategy):
         Returns:
             交易信號列表
         """
-        signals = []
+        []
 
         if len(data) < max(self.channel_period, self.volume_period, self.ma_slow) + 10:
             return signals
@@ -461,7 +461,7 @@ def create_breakout_strategy(
         weight=1.0,
         risk_limit=0.025,  # 中等風險
         max_positions=6,
-        symbols=symbols or [],
+        symbols or [],
         parameters={
             "channel_period": 20,
             "breakout_threshold": 0.001,

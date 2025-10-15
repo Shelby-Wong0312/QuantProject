@@ -18,7 +18,7 @@ def load_capital_stocks():
 
     if os.path.exists("capital_real_stocks.json"):
         with open("capital_real_stocks.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
+            json.load(f)
             print(f"[LOAD] Found {len(data)} Capital.com stocks")
             return data
     else:
@@ -159,7 +159,7 @@ def validate_yahoo_symbol(symbol):
             return True, info.get("longName", info.get("shortName", symbol))
 
         # 備用方法：嘗試下載最近數據
-        data = yf.download(
+        yf.download(
             symbol,
             start=(datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d"),
             end=datetime.now().strftime("%Y-%m-%d"),
@@ -170,7 +170,7 @@ def validate_yahoo_symbol(symbol):
         if not data.empty:
             return True, symbol
 
-    except:
+    except Exception:
         pass
 
     return False, None
@@ -273,11 +273,11 @@ def save_mapping_results(mapped_stocks, unmapped_stocks):
     with open("capital_yahoo_simple_map.json", "w", encoding="utf-8") as f:
         json.dump(simple_mapping, f, indent=2)
 
-    print(f"\n[SAVED] Mapping results saved to:")
-    print(f"  - capital_to_yahoo_mapping.json (complete mapping)")
+    print("\n[SAVED] Mapping results saved to:")
+    print("  - capital_to_yahoo_mapping.json (complete mapping)")
     print(f"  - mapped_yahoo_symbols.txt ({len(mapped_stocks)} Yahoo symbols)")
     print(f"  - mapped_capital_symbols.txt ({len(mapped_stocks)} Capital symbols)")
-    print(f"  - capital_yahoo_simple_map.json (simple ticker mapping)")
+    print("  - capital_yahoo_simple_map.json (simple ticker mapping)")
 
 
 def main():

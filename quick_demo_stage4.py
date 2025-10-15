@@ -25,7 +25,7 @@ def generate_test_data(days=100):
         start_price *= 1 + change
         close_prices.append(start_price)
 
-    data = pd.DataFrame(
+    pd.DataFrame(
         {
             "timestamp": dates,
             "open": [p * (1 + np.random.normal(0, 0.005)) for p in close_prices],
@@ -95,7 +95,7 @@ def test_indicators():
     print("\nTesting Technical Indicators")
     print("=" * 40)
 
-    data = generate_test_data(60)
+    generate_test_data(60)
 
     try:
         from src.indicators.momentum_indicators import RSI, MACD
@@ -124,7 +124,7 @@ def test_signal_generation():
     print("\nTesting Signal Generation (Simplified)")
     print("=" * 40)
 
-    data = generate_test_data(100)
+    generate_test_data(100)
 
     # 測試動量策略信號生成
     try:

@@ -104,7 +104,7 @@ class StockRelationAnalyzer:
         logger.info(f"Analyzing relations for {len(price_data)} stocks")
 
         # 1. Build graph
-        graph = self.graph_constructor.build_graph(price_data, stock_info)
+        self.graph_constructor.build_graph(price_data, stock_info)
 
         # 2. Convert to PyTorch Geometric format
         node_features, edge_index, edge_attr = self.graph_constructor.to_pytorch_geometric()
@@ -116,7 +116,7 @@ class StockRelationAnalyzer:
         features = self.feature_extractor.extract_features(graph_data)
 
         # 5. Analyze correlations
-        symbols = list(price_data.keys())
+        list(price_data.keys())
         correlation_matrix = self.feature_extractor.get_correlation_matrix(
             torch.tensor(features["node_embeddings"]).to(self.device), symbols
         )
@@ -177,7 +177,7 @@ class StockRelationAnalyzer:
         edge_attr_sequence = []
 
         for data in historical_data:
-            graph = self.graph_constructor.build_graph(data)
+            self.graph_constructor.build_graph(data)
             node_features, edge_index, edge_attr = self.graph_constructor.to_pytorch_geometric()
 
             node_features_sequence.append(node_features)
@@ -197,7 +197,7 @@ class StockRelationAnalyzer:
         final_embeddings = outputs["node_embeddings"].cpu().numpy()
 
         # Calculate predicted correlations
-        symbols = list(historical_data[-1].keys())
+        list(historical_data[-1].keys())
         n_stocks = len(symbols)
 
         predicted_correlations = np.zeros((prediction_horizon, n_stocks, n_stocks))
@@ -309,7 +309,7 @@ class StockRelationAnalyzer:
 
         # Simple prediction: assume correlations decay over time
         current_corr = results["correlation_matrix"]
-        symbols = results["symbols"]
+        results["symbols"]
 
         predicted_correlations = np.zeros((5, len(symbols), len(symbols)))
         for h in range(5):

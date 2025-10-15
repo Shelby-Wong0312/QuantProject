@@ -33,7 +33,7 @@ def download_all_stocks_data():
 
     # Read Yahoo symbols list
     with open("yahoo_symbols_all.txt", "r") as f:
-        symbols = [line.strip() for line in f if line.strip()]
+        [line.strip() for line in f if line.strip()]
 
     print(f"Total stocks to download: {len(symbols)}")
 
@@ -123,7 +123,7 @@ def prepare_training_data(symbols):
                 df = pd.read_csv(file_path, index_col=0, parse_dates=True)
                 if len(df) > 100:
                     all_data[symbol] = df
-            except:
+            except Exception:
                 continue
 
     print(f"Successfully loaded data for {len(all_data)} stocks")
@@ -183,8 +183,8 @@ def start_ppo_training(stock_data):
         )
 
         print("\nTraining complete!")
-        print(f"Model saved at: models/ppo_all_stocks_15years/")
-        print(f"Training logs saved at: logs/ppo_all_stocks_15years/")
+        print("Model saved at: models/ppo_all_stocks_15years/")
+        print("Training logs saved at: logs/ppo_all_stocks_15years/")
 
         return True
 

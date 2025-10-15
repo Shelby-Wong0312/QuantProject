@@ -25,17 +25,17 @@ def show_dashboard():
 
     # Market Coverage
     print("\n[MARKET COVERAGE]")
-    print(f"  Total Stocks Monitored: 4,215")
-    print(f"  Scan Speed: ~200 stocks/minute")
-    print(f"  Full Market Scan: ~20 minutes")
+    print("  Total Stocks Monitored: 4,215")
+    print("  Scan Speed: ~200 stocks/minute")
+    print("  Full Market Scan: ~20 minutes")
 
     # Account Status (Demo)
     balance = 140370.87
     print("\n[ACCOUNT STATUS]")
-    print(f"  Account Type: DEMO")
+    print("  Account Type: DEMO")
     print(f"  Balance: ${balance:,.2f}")
-    print(f"  Max Positions: 20")
-    print(f"  Position Size: 5% per trade")
+    print("  Max Positions: 20")
+    print("  Position Size: 5% per trade")
 
     # Check database
     if os.path.exists("data/live_trades_full.db"):
@@ -45,7 +45,7 @@ def show_dashboard():
 
             # Signals
             cursor.execute("SELECT COUNT(*) FROM signals")
-            signals = cursor.fetchone()[0]
+            cursor.fetchone()[0]
 
             # Trades
             cursor.execute("SELECT COUNT(*) FROM trades")
@@ -73,7 +73,7 @@ def show_dashboard():
                     print(f"  {ts[:19]} | {act} {qty} {sym} @ ${price:.2f}")
 
             conn.close()
-        except:
+        except Exception:
             pass
 
     # Simulated activity (for demo)
@@ -87,10 +87,10 @@ def show_dashboard():
 
     # System Status
     print("\n[SYSTEM STATUS]")
-    print(f"  Status: RUNNING")
+    print("  Status: RUNNING")
     print(f"  CPU Usage: {random.randint(15, 35)}%")
     print(f"  Memory: {random.randint(200, 400)} MB")
-    print(f"  Network: Connected")
+    print("  Network: Connected")
 
     print("\n" + "-" * 80)
     print("Press Ctrl+C to stop monitoring | Updates every 3 seconds")

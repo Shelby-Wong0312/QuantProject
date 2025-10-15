@@ -42,12 +42,12 @@ class LargeScaleMonitoringTest:
         Returns:
             股票代碼清單
         """
-        symbols = []
+        []
 
         # 方法1：從tradeable_stocks.csv載入
         try:
             df = pd.read_csv("data/csv/tradeable_stocks.csv")
-            symbols = df["ticker"].tolist()
+            df["ticker"].tolist()
             logger.info(f"Loaded {len(symbols)} symbols from tradeable_stocks.csv")
         except FileNotFoundError:
             logger.warning("tradeable_stocks.csv not found, using default symbols")
@@ -55,7 +55,7 @@ class LargeScaleMonitoringTest:
         # 方法2：使用預設的測試股票清單
         if not symbols:
             # S&P 500主要股票
-            symbols = [
+            [
                 "AAPL",
                 "MSFT",
                 "GOOGL",
@@ -162,7 +162,7 @@ class LargeScaleMonitoringTest:
             symbols.extend(additional_symbols)
 
         if limit:
-            symbols = symbols[:limit]
+            symbols[:limit]
 
         logger.info(f"Using {len(symbols)} symbols for testing")
         return symbols
@@ -302,7 +302,7 @@ class LargeScaleMonitoringTest:
         """
         logger.info(f"Starting stress test up to {max_symbols} symbols")
 
-        symbols = self.load_test_symbols(max_symbols)
+        self.load_test_symbols(max_symbols)
         stress_results = []
 
         # 分階段測試
@@ -365,7 +365,7 @@ class LargeScaleMonitoringTest:
         logger.info("=" * 60)
 
         self.start_time = time.time()
-        symbols = self.load_test_symbols(symbol_limit)
+        self.load_test_symbols(symbol_limit)
 
         # 運行各項測試
         tests = [
@@ -455,7 +455,7 @@ def main():
     # 顯示關鍵性能指標
     batch_test = results["detailed_results"].get("batch_performance", {})
     if batch_test.get("status") != "failed":
-        print(f"\nKEY PERFORMANCE METRICS:")
+        print("\nKEY PERFORMANCE METRICS:")
         print(f"- Success Rate: {batch_test.get('success_rate_percent', 0):.1f}%")
         print(f"- Throughput: {batch_test.get('throughput_symbols_per_second', 0):.1f} symbols/sec")
         print(f"- Avg Time per Symbol: {batch_test.get('average_time_per_symbol_ms', 0):.1f} ms")
@@ -472,8 +472,8 @@ def main():
         )
         print(f"- Max Symbols Handled: {max_successful}")
 
-    print(f"\n[SUCCESS] Large-scale monitoring system test completed!")
-    print(f"System is ready for 4000+ stock monitoring")
+    print("\n[SUCCESS] Large-scale monitoring system test completed!")
+    print("System is ready for 4000+ stock monitoring")
 
 
 if __name__ == "__main__":

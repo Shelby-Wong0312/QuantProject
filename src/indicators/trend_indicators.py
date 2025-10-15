@@ -35,7 +35,7 @@ class SMA(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate buy/sell signals based on price crossing SMA"""
         sma = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
         signals["sma"] = sma
         signals["price"] = data["close"]
 
@@ -74,7 +74,7 @@ class EMA(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate buy/sell signals based on price crossing EMA"""
         ema = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
         signals["ema"] = ema
         signals["price"] = data["close"]
 
@@ -116,7 +116,7 @@ class WMA(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate buy/sell signals based on price crossing WMA"""
         wma = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
         signals["wma"] = wma
         signals["price"] = data["close"]
 
@@ -159,7 +159,7 @@ class VWAP(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate buy/sell signals based on price vs VWAP"""
         vwap = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
         signals["vwap"] = vwap
         signals["price"] = data["close"]
 
@@ -225,7 +225,7 @@ class MovingAverageCrossover(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate Golden Cross and Death Cross signals"""
         ma_data = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
 
         signals["fast_ma"] = ma_data["fast_ma"]
         signals["slow_ma"] = ma_data["slow_ma"]
@@ -261,7 +261,7 @@ class GoldenCross(MovingAverageCrossover):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Get only Golden Cross signals"""
         all_signals = super().get_signals(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
         signals["golden_cross"] = all_signals["golden_cross"]
         signals["buy"] = signals["golden_cross"]
         signals["sell"] = False
@@ -279,7 +279,7 @@ class DeathCross(MovingAverageCrossover):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Get only Death Cross signals"""
         all_signals = super().get_signals(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
         signals["death_cross"] = all_signals["death_cross"]
         signals["buy"] = False
         signals["sell"] = signals["death_cross"]

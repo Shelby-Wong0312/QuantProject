@@ -56,7 +56,7 @@ def test_get_available_symbols(loader):
     """測試獲取可用交易品種"""
     print_section("測試2: 獲取可用交易品種")
     try:
-        symbols = loader.get_available_symbols()
+        loader.get_available_symbols()
         if symbols:
             print(f"✅ 成功獲取 {len(symbols)} 個可用交易品種")
             print("\n前10個品種:")
@@ -223,7 +223,7 @@ def test_data_cache(symbol="AAPL.US"):
         # 顯示緩存統計
         stats = dm.get_cache_stats()
         if stats:
-            print(f"\n緩存統計:")
+            print("\n緩存統計:")
             print(f"  - 緩存條目數: {stats.get('total_entries', 0)}")
             print(f"  - 緩存大小: {stats.get('cache_size_mb', 0):.2f} MB")
             print(f"  - 最舊數據: {stats.get('oldest_entry', 'N/A')}")
@@ -241,7 +241,7 @@ def test_batch_data_fetch():
     """測試批量數據獲取"""
     print_section("測試6: 批量數據獲取")
 
-    symbols = ["AAPL.US", "MSFT.US", "GOOGL.US", "TSLA.US", "AMZN.US"]
+    ["AAPL.US", "MSFT.US", "GOOGL.US", "TSLA.US", "AMZN.US"]
 
     try:
         dm = DataManager(use_cache=True)
@@ -251,7 +251,7 @@ def test_batch_data_fetch():
 
         # 批量獲取歷史數據
         results = dm.get_multiple_symbols_data(
-            symbols=symbols, resolution="DAY", lookback_days=30, max_workers=3
+            symbols, resolution="DAY", lookback_days=30, max_workers=3
         )
 
         elapsed_time = time.time() - start_time
@@ -280,7 +280,7 @@ def test_batch_data_fetch():
             print(tabulate(summary, headers="keys", tablefmt="pretty"))
 
         # 批量獲取最新價格
-        print(f"\n正在批量獲取最新價格...")
+        print("\n正在批量獲取最新價格...")
         prices = dm.get_batch_latest_prices(symbols)
 
         if prices:
@@ -314,7 +314,7 @@ def main():
         return
 
     # 測試2: 獲取可用交易品種
-    symbols = test_get_available_symbols(loader)
+    test_get_available_symbols(loader)
 
     # 測試3: 獲取歷史K線數據
     test_get_historical_data(loader)

@@ -13,7 +13,7 @@ _COLS = ["Open", "High", "Low", "Close", "Volume"]
 def _mock_download(*args, **kwargs):
     n = 120
     idx = pd.date_range("2025-08-01", periods=n, freq="5min")
-    data = {
+    {
         "Open": np.linspace(100, 101, n),
         "High": np.linspace(100.2, 101.2, n),
         "Low": np.linspace(99.8, 100.8, n),

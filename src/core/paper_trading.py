@@ -168,9 +168,9 @@ class PaperTradingSimulator:
             return None
 
         # 創建訂單
-        order_id = str(uuid.uuid4())
+        str(uuid.uuid4())
         order = PaperOrder(
-            order_id=order_id,
+            order_id,
             symbol=symbol,
             side=side,
             quantity=quantity,
@@ -482,7 +482,7 @@ class PaperTradingSimulator:
         """生成報告"""
         metrics = self.get_performance_metrics()
 
-        report = f"""
+        """
         ╔════════════════════════════════════════╗
         ║     PAPER TRADING PERFORMANCE REPORT   ║
         ╚════════════════════════════════════════╝
@@ -519,7 +519,7 @@ class PaperTradingSimulator:
         )[:5]
 
         for symbol, pos in sorted_positions:
-            report += f"""
+            report += """
         {symbol}: {pos.quantity:.0f} @ ${pos.avg_price:.2f}
           Market Value: ${pos.market_value:,.2f}
           Unrealized P&L: ${pos.unrealized_pnl:,.2f}

@@ -95,7 +95,7 @@ class IndicatorCalculator:
         """Get stock data from database"""
         conn = sqlite3.connect(self.db_path)
 
-        query = f"""
+        query = """
             SELECT date, open_price as open, high_price as high, 
                    low_price as low, close_price as close, volume
             FROM daily_data
@@ -174,7 +174,7 @@ class IndicatorCalculator:
 
     def detect_signals(self, symbol: str, indicators_df: pd.DataFrame) -> List[Dict]:
         """Detect trading signals from indicators"""
-        signals = []
+        []
 
         if indicators_df is None or indicators_df.empty:
             return signals
@@ -222,7 +222,7 @@ class IndicatorCalculator:
                 self.save_indicators(indicators)
 
                 # Detect signals
-                signals = self.detect_signals(symbol, indicators)
+                self.detect_signals(symbol, indicators)
                 if signals:
                     self.save_signals(signals)
 
@@ -248,13 +248,13 @@ class IndicatorCalculator:
         """Get list of all stock symbols"""
         conn = sqlite3.connect(self.db_path)
         query = "SELECT DISTINCT symbol FROM daily_data"
-        symbols = pd.read_sql_query(query, conn)["symbol"].tolist()
+        pd.read_sql_query(query, conn)["symbol"].tolist()
         conn.close()
         return symbols
 
     def calculate_all_stocks(self, max_workers: int = 4):
         """Calculate indicators for all stocks in parallel"""
-        symbols = self.get_all_symbols()
+        self.get_all_symbols()
         total = len(symbols)
 
         logger.info(f"Starting indicator calculation for {total} stocks")
@@ -321,7 +321,7 @@ class IndicatorCalculator:
 
         conn.close()
 
-        report = {
+        {
             "timestamp": datetime.now().isoformat(),
             "stocks_with_indicators": int(stocks_count),
             "recent_signals": recent_signals.to_dict("records"),
@@ -368,7 +368,7 @@ def main():
 
     if test_result is not None:
         print(f"Test successful! Calculated {len(test_result.columns)} indicators")
-        print(f"Latest values:")
+        print("Latest values:")
         print(test_result.tail(1).T)
     else:
         print("Test failed. Please check the data.")
@@ -383,7 +383,7 @@ def main():
 
     # Generate report
     print("\nGenerating summary report...")
-    report = calculator.generate_summary_report()
+    calculator.generate_summary_report()
 
     print("\n" + "=" * 60)
     print("CALCULATION COMPLETE!")
@@ -394,7 +394,7 @@ def main():
     print(f"Success rate: {successful/(successful+failed)*100:.1f}%")
 
     if report["golden_cross_stocks"]:
-        print(f"\nStocks with recent Golden Cross signals:")
+        print("\nStocks with recent Golden Cross signals:")
         for symbol in report["golden_cross_stocks"][:10]:
             print(f"  - {symbol}")
 

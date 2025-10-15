@@ -296,9 +296,9 @@ class WalkForwardAnalyzer:
             ),
         }
 
-        logger.info(f"Monte Carlo simulation completed")
+        logger.info("Monte Carlo simulation completed")
         logger.info(
-            f"Probability of positive return: "
+            "Probability of positive return: "
             f"{monte_carlo_summary['probability_positive_return']:.1%}"
         )
 
@@ -718,7 +718,7 @@ class WalkForwardAnalyzer:
         if not self.summary_stats:
             return "No analysis results available"
 
-        summary = f"""
+        summary = """
 ================================================================
               WALK FORWARD ANALYSIS SUMMARY               
 ================================================================
@@ -790,7 +790,7 @@ async def main():
 
     cv_results = analyzer.cross_validation(
         strategy=DummyStrategy(),
-        data=sample_data,
+        sample_data,
         param_bounds=param_bounds,
         folds=3,  # Reduced for demo
     )
@@ -805,7 +805,7 @@ async def main():
     mc_results = analyzer.monte_carlo_simulation(
         strategy=DummyStrategy(),
         optimal_params=optimal_params,
-        data={symbol: df.head(100) for symbol, df in sample_data.items()},  # Reduced data
+        {symbol: df.head(100) for symbol, df in sample_data.items()},  # Reduced data
         n_simulations=100,  # Reduced for demo
     )
 

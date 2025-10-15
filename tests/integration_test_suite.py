@@ -37,7 +37,7 @@ class TestMLIntegration(unittest.TestCase):
     def _generate_test_data(self):
         """Generate test market data"""
         dates = pd.date_range(end=datetime.now(), periods=100, freq="D")
-        data = {}
+        {}
 
         for symbol in ["AAPL", "GOOGL", "MSFT"]:
             prices = 100 * np.exp(np.cumsum(np.random.normal(0.001, 0.02, len(dates))))
@@ -94,7 +94,7 @@ class TestMLIntegration(unittest.TestCase):
     def test_ensemble_signals(self):
         """Test ensemble signal combination"""
         symbol = "AAPL"
-        data = self.test_data[symbol]
+        self.test_data[symbol]
         features = self.strategy.extract_features(data)
 
         lstm_signal = self.strategy.generate_lstm_signal(features, symbol)
@@ -113,7 +113,7 @@ class TestMLIntegration(unittest.TestCase):
     def test_position_sizing(self):
         """Test position sizing calculation"""
         symbol = "AAPL"
-        data = self.test_data[symbol]
+        self.test_data[symbol]
         features = self.strategy.extract_features(data)
 
         # Generate signals
@@ -234,7 +234,7 @@ class TestBacktesting(unittest.TestCase):
             initial_capital=100000,
             start_date="2023-01-01",
             end_date="2024-01-01",
-            symbols=["AAPL", "GOOGL"],
+            ["AAPL", "GOOGL"],
             use_walk_forward=False,
         )
         self.backtester = MLBacktester(self.config)
@@ -295,7 +295,7 @@ class TestPaperTrading(unittest.TestCase):
         self.simulator.update_market_prices({"AAPL": 150})
 
         # Place buy order
-        order_id = asyncio.run(self.simulator.place_order("AAPL", "BUY", 100, "MARKET"))
+        asyncio.run(self.simulator.place_order("AAPL", "BUY", 100, "MARKET"))
 
         self.assertIsNotNone(order_id)
         self.assertIn("AAPL", self.simulator.positions)
@@ -310,7 +310,7 @@ class TestPaperTrading(unittest.TestCase):
 
         # Try to place order exceeding position limit (>10% of portfolio)
         large_quantity = 1000  # Would be $150,000, exceeding 10% limit
-        order_id = asyncio.run(self.simulator.place_order("AAPL", "BUY", large_quantity, "MARKET"))
+        asyncio.run(self.simulator.place_order("AAPL", "BUY", large_quantity, "MARKET"))
 
         # Order should be rejected
         self.assertIsNone(order_id)
@@ -375,7 +375,7 @@ class TestEndToEnd(unittest.TestCase):
         print("  [OK] Feature extraction completed")
 
         # 5. Generate trading signals
-        signals = asyncio.run(strategy.generate_trading_signals(test_data))
+        asyncio.run(strategy.generate_trading_signals(test_data))
         self.assertGreater(len(signals), 0)
         print(f"  [OK] Generated {len(signals)} trading signals")
 
@@ -462,7 +462,7 @@ class PerformanceBenchmark:
             )
 
         start = time.time()
-        signals = asyncio.run(strategy.generate_trading_signals(test_data))
+        asyncio.run(strategy.generate_trading_signals(test_data))
         signal_time = (time.time() - start) * 1000
 
         self.results["signal_generation"] = {
@@ -485,7 +485,7 @@ class PerformanceBenchmark:
         start = time.time()
         orders = []
         for symbol in prices.keys():
-            order_id = asyncio.run(simulator.place_order(symbol, "BUY", 100, "MARKET"))
+            asyncio.run(simulator.place_order(symbol, "BUY", 100, "MARKET"))
             orders.append(order_id)
 
         execution_time = (time.time() - start) * 1000
@@ -500,7 +500,7 @@ class PerformanceBenchmark:
 
     def generate_benchmark_report(self):
         """Generate performance benchmark report"""
-        report = {
+        {
             "timestamp": datetime.now().isoformat(),
             "benchmarks": self.results,
             "targets_met": {
@@ -576,7 +576,7 @@ def run_integration_tests():
     print(f"   Result: {'PASS' if order_pass else 'FAIL'}")
 
     # Generate report
-    report = benchmark.generate_benchmark_report()
+    benchmark.generate_benchmark_report()
 
     # Summary
     print("\n" + "=" * 70)

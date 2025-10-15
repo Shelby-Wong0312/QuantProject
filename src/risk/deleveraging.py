@@ -455,7 +455,7 @@ class RapidDeleveraging:
             plan: Executed plan
             result: Execution result
         """
-        report = {
+        {
             "timestamp": datetime.now().isoformat(),
             "strategy": plan.strategy_used.value,
             "initial_leverage": plan.current_leverage,
@@ -534,7 +534,7 @@ if __name__ == "__main__":
     )
 
     if plan:
-        print(f"\nDeleveraging Plan Created:")
+        print("\nDeleveraging Plan Created:")
         print(f"Positions to close: {len(plan.positions_to_close)}")
         print(f"Estimated proceeds: ${plan.estimated_proceeds:,.2f}")
         print(f"Estimated time: {plan.estimated_time:.1f} seconds")
@@ -548,7 +548,7 @@ if __name__ == "__main__":
         print("\nExecuting deleveraging...")
         result = deleverager.execute_deleveraging(plan)
 
-        print(f"\nExecution Result:")
+        print("\nExecution Result:")
         print(f"Status: {result['status']}")
         print(f"Executed: {result['executed_count']} positions")
         print(f"Failed: {result['failed_count']} positions")

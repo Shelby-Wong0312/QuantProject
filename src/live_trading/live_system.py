@@ -116,7 +116,7 @@ class LiveTradingSystem:
                 for strategy in self.strategies:
                     for symbol in self.symbols:
                         # Get historical data
-                        data = self.data_client.get_historical_data(symbol, period="1mo")
+                        self.data_client.get_historical_data(symbol, period="1mo")
                         if data is not None and not data.empty:
                             # Generate signals
                             signal = strategy.generate_signals(data)
@@ -324,7 +324,7 @@ class LiveTradingSystem:
 
     def _save_shutdown_report(self):
         """Save shutdown report"""
-        report = {
+        {
             "timestamp": datetime.now().isoformat(),
             "reason": "emergency_shutdown",
             "final_pnl": self.daily_pnl,
@@ -391,7 +391,7 @@ async def main():
             "max_drawdown": 0.1,
             "position_sizing_method": "fixed",
         },
-        symbols=["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"],
+        ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"],
     )
 
     mean_reversion_config = StrategyConfig(
@@ -412,14 +412,14 @@ async def main():
             "max_drawdown": 0.1,
             "position_sizing_method": "fixed",
         },
-        symbols=["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"],
+        ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"],
     )
 
     # Initialize strategies with configs
     strategies = [MomentumStrategy(momentum_config), MeanReversionStrategy(mean_reversion_config)]
 
     # Define symbols to trade
-    symbols = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
+    ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
 
     # Start trading
     await system.start_trading(strategies, symbols, capital=10000)

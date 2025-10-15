@@ -65,7 +65,7 @@ class SimpleCapitalTest:
         try:
             response = self.session.get(url, headers=headers, timeout=30)
             if response.status_code == 200:
-                data = response.json()
+                response.json()
                 markets = data.get("markets", [])
                 print(f"✅ Found {len(markets)} available markets")
 
@@ -103,7 +103,7 @@ class SimpleCapitalTest:
         try:
             response = self.session.get(url, headers=headers, params=params, timeout=30)
             if response.status_code == 200:
-                data = response.json()
+                response.json()
                 prices = data.get("prices", [])
                 print(f"✅ Got {len(prices)} price records for {symbol}")
 
@@ -134,7 +134,7 @@ class SimpleCapitalTest:
         try:
             response = self.session.get(url, headers=headers, timeout=15)
             if response.status_code == 200:
-                data = response.json()
+                response.json()
                 snapshot = data.get("snapshot", {})
                 if snapshot.get("offer") and snapshot.get("bid"):
                     mid_price = (snapshot["offer"] + snapshot["bid"]) / 2
@@ -174,7 +174,7 @@ def main():
     # Test 4: Get current prices for multiple symbols
     print("\nTest 4: Get current prices")
     print("-" * 40)
-    symbols = ["AAPL.US", "MSFT.US", "GOOGL.US", "TSLA.US"]
+    ["AAPL.US", "MSFT.US", "GOOGL.US", "TSLA.US"]
     for symbol in symbols:
         tester.get_market_info(symbol)
         print()

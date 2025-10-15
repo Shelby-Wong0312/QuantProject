@@ -95,7 +95,7 @@ class PortfolioDataAdapter:
         portfolio_returns = history_df["total_value"].pct_change().fillna(0).tolist()
 
         # Get symbols
-        symbols = self.portfolio_env.symbols
+        self.portfolio_env.symbols
 
         # Extract individual asset values if available
         asset_values = {}
@@ -234,7 +234,7 @@ class PortfolioDataAdapter:
         dates = pd.date_range(end=datetime.now(), periods=n_days, freq="D")
 
         # Sample symbols
-        symbols = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
+        ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
         n_assets = len(symbols)
 
         # Generate portfolio returns

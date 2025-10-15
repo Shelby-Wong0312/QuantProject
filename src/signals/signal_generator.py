@@ -231,7 +231,7 @@ class SignalGenerator:
 
         try:
             # 準備觀察數據
-            obs = self._prepare_ppo_observation(data, current_position)
+            self._prepare_ppo_observation(data, current_position)
             obs_tensor = torch.tensor(obs, dtype=torch.float32, device=self.device)
             obs_tensor = obs_tensor.unsqueeze(0)
 
@@ -303,7 +303,7 @@ class SignalGenerator:
             # 計算各種指標
             indicators = self.indicator_calculator.calculate_all(data)
 
-            signals = []
+            []
 
             # CCI 信號
             cci = indicators.get("CCI_20", 0)
@@ -645,7 +645,7 @@ class SignalWebSocketServer:
             for symbol in symbols:
                 # 獲取最新數據（這裡簡化處理）
                 # 實際應從數據源獲取
-                data = self._get_latest_data(symbol)
+                self._get_latest_data(symbol)
 
                 if data is not None:
                     # 生成信號
@@ -719,7 +719,7 @@ if __name__ == "__main__":
     # 生成信號
     signal = generator.generate_signal(test_data, "TEST")
 
-    print(f"\nGenerated Signal:")
+    print("\nGenerated Signal:")
     print(f"  Symbol: {signal.symbol}")
     print(f"  Action: {signal.action}")
     print(f"  Strength: {signal.strength:.2f}")

@@ -70,7 +70,7 @@ class MeanReversionStrategy(BaseStrategy):
         Returns:
             交易信號列表
         """
-        signals = []
+        []
 
         if len(data) < max(self.bb_period, self.zscore_period, self.ma_long) + 10:
             return signals
@@ -386,7 +386,7 @@ def create_mean_reversion_strategy(
         weight=1.0,
         risk_limit=0.015,  # 較低風險限制
         max_positions=8,  # 分散投資
-        symbols=symbols or [],
+        symbols or [],
         parameters={
             "bb_period": 20,
             "bb_std": 2.0,

@@ -63,7 +63,7 @@ class MLTradingSystem:
     def generate_market_data(self, periods=100):
         """Generate realistic market data for testing"""
 
-        data = {}
+        {}
         for symbol in self.symbols:
             # Generate price series with trend and volatility
             base_price = np.random.uniform(100, 400)
@@ -117,7 +117,7 @@ class MLTradingSystem:
     async def generate_ml_signals(self, market_data):
         """Generate trading signals using ML models"""
 
-        signals = {}
+        {}
 
         for symbol, data in market_data.items():
             # Skip if not enough data
@@ -132,7 +132,7 @@ class MLTradingSystem:
                 lstm_pred = self.lstm_model.predict(features)
                 lstm_signal = "BUY" if lstm_pred > 0.02 else "SELL" if lstm_pred < -0.02 else "HOLD"
                 lstm_confidence = abs(lstm_pred) * 10  # Scale to 0-1
-            except:
+            except Exception:
                 lstm_signal = "HOLD"
                 lstm_confidence = 0
 
@@ -141,7 +141,7 @@ class MLTradingSystem:
                 xgb_pred = self.xgboost.predict(features)
                 xgb_signal = "BUY" if xgb_pred > 0.5 else "SELL" if xgb_pred < -0.5 else "HOLD"
                 xgb_confidence = abs(xgb_pred)
-            except:
+            except Exception:
                 xgb_signal = "HOLD"
                 xgb_confidence = 0
 
@@ -151,7 +151,7 @@ class MLTradingSystem:
                 ppo_action = self.ppo_agent.get_action(state)
                 ppo_signal = ["SELL", "HOLD", "BUY"][ppo_action]
                 ppo_confidence = 0.7  # Default confidence for RL
-            except:
+            except Exception:
                 ppo_signal = "HOLD"
                 ppo_confidence = 0
 
@@ -226,8 +226,8 @@ class MLTradingSystem:
         print("=" * 70)
 
         print(f"\nInitial Capital: ${self.simulator.account.initial_balance:,.2f}")
-        print(f"Strategy: LSTM + XGBoost + PPO Ensemble")
-        print(f"Risk Management: Dynamic Stop Loss + Position Sizing")
+        print("Strategy: LSTM + XGBoost + PPO Ensemble")
+        print("Risk Management: Dynamic Stop Loss + Position Sizing")
 
         # Generate market data
         print("\n[1] Generating Market Data...")
@@ -240,7 +240,7 @@ class MLTradingSystem:
 
         # Generate ML signals
         print("\n[2] Generating ML/DL/RL Signals...")
-        signals = await self.generate_ml_signals(market_data)
+        await self.generate_ml_signals(market_data)
 
         print("\n   Signal Summary:")
         for symbol, signal_data in signals.items():
@@ -260,7 +260,7 @@ class MLTradingSystem:
         try:
             optimal_weights = self.optimizer.optimize(returns_matrix)
             print(f"   Optimal Weights: {dict(zip(self.symbols, optimal_weights))}")
-        except:
+        except Exception:
             # Equal weights fallback
             optimal_weights = [0.2] * len(self.symbols)
             print("   Using equal weights (optimization failed)")
@@ -281,7 +281,7 @@ class MLTradingSystem:
                 quantity = int(position_size / signal_data["price"])
 
                 if quantity > 0:
-                    order_id = await self.simulator.place_order(
+                    await self.simulator.place_order(
                         symbol=symbol, side="BUY", quantity=quantity, order_type="MARKET"
                     )
 
@@ -339,7 +339,7 @@ class MLTradingSystem:
         actual_pnl = metrics["portfolio_value"] - self.simulator.account.initial_balance
         actual_return = actual_pnl / self.simulator.account.initial_balance
 
-        print(f"\n📊 PORTFOLIO METRICS:")
+        print("\n📊 PORTFOLIO METRICS:")
         print(f"   Initial Capital: ${self.simulator.account.initial_balance:,.2f}")
         print(f"   Final Value: ${metrics['portfolio_value']:,.2f}")
         print(f"   Actual P&L: ${actual_pnl:+,.2f}")
@@ -347,24 +347,24 @@ class MLTradingSystem:
         print(f"   Cash Balance: ${metrics['cash_balance']:,.2f}")
         print(f"   Positions: {metrics['positions_count']}")
 
-        print(f"\n📈 TRADING STATISTICS:")
+        print("\n📈 TRADING STATISTICS:")
         print(f"   Total Trades: {metrics['total_trades']}")
         print(f"   Win Rate: {metrics['win_rate']:.2%}")
         print(f"   Commission Paid: ${metrics['total_commission']:,.2f}")
 
-        print(f"\n🤖 MODEL PERFORMANCE:")
-        print(f"   LSTM Accuracy: ~73% (from backtesting)")
-        print(f"   XGBoost F1-Score: ~0.71 (from backtesting)")
-        print(f"   PPO Reward: Positive (learning)")
+        print("\n🤖 MODEL PERFORMANCE:")
+        print("   LSTM Accuracy: ~73% (from backtesting)")
+        print("   XGBoost F1-Score: ~0.71 (from backtesting)")
+        print("   PPO Reward: Positive (learning)")
 
-        print(f"\n⚠️ RISK METRICS:")
+        print("\n⚠️ RISK METRICS:")
         print(f"   Max Drawdown: {metrics.get('max_drawdown', 0):.2%}")
         print(f"   Sharpe Ratio: {metrics.get('sharpe_ratio', 0):.2f}")
         print(f"   Stop Losses Triggered: {self.stop_loss.stop_losses_triggered}")
 
         # Save results
         self.simulator.save_state("reports/ml_strategy_demo.json")
-        print(f"\n✅ Results saved to reports/ml_strategy_demo.json")
+        print("\n✅ Results saved to reports/ml_strategy_demo.json")
 
         return metrics
 
@@ -382,11 +382,11 @@ async def main():
 
         # Show the truth about performance
         actual_pnl = metrics["portfolio_value"] - 100000
-        print(f"\n🔍 REALITY CHECK:")
-        print(f"   This is a DEMO with synthetic data")
+        print("\n🔍 REALITY CHECK:")
+        print("   This is a DEMO with synthetic data")
         print(f"   Actual P&L: ${actual_pnl:+,.2f}")
-        print(f"   Real returns depend on market conditions")
-        print(f"   Always backtest with historical data!")
+        print("   Real returns depend on market conditions")
+        print("   Always backtest with historical data!")
 
     except KeyboardInterrupt:
         print("\n\nDemo interrupted by user.")

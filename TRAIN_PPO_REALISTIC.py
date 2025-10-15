@@ -258,7 +258,7 @@ class DataLoader:
             for symbol in batch_symbols:
                 try:
                     # 單獨下載每個股票
-                    data = yf.download(
+                    yf.download(
                         symbol,
                         start=self.start_date,
                         end=datetime.now().strftime("%Y-%m-%d"),
@@ -460,7 +460,7 @@ class PPOTrainer:
             log_probs = []
             dones = []
 
-            obs = env.reset()
+            env.reset()
 
             for _ in range(self.config.n_steps):
                 obs_tensor = torch.FloatTensor(obs).to(self.config.device)
@@ -480,7 +480,7 @@ class PPOTrainer:
                 dones.append(done)
 
                 if done:
-                    obs = env.reset()
+                    env.reset()
 
             # 計算優勢和回報
             advantages, returns = self._compute_gae(rewards, values, dones)
@@ -632,10 +632,10 @@ def main():
     }
 
     torch.save(final_checkpoint, "ppo_realistic_final.pt")
-    print(f"\n[COMPLETE] Final model saved: ppo_realistic_final.pt")
+    print("\n[COMPLETE] Final model saved: ppo_realistic_final.pt")
 
     # 6. 生成訓練報告
-    report = {
+    {
         "training_date": datetime.now().isoformat(),
         "stocks_count": len(stock_data),
         "data_range": f"2010-01-01 to {datetime.now().date()}",

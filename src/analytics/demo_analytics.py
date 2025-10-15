@@ -67,7 +67,7 @@ class AnalyticsDemo:
         np.random.seed(42)  # For reproducible results
 
         # Define trading parameters
-        symbols = ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN", "NVDA", "META"]
+        ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN", "NVDA", "META"]
         strategies = ["momentum", "mean_reversion", "breakout", "ml_strategy"]
 
         start_date = datetime.now() - timedelta(days=90)

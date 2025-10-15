@@ -256,7 +256,7 @@ class IntegratedTradingSystem:
         """
         logger.info("Generating PPO-based trading signals...")
 
-        signals = []
+        []
 
         try:
             # 獲取活躍股票
@@ -413,7 +413,7 @@ class IntegratedTradingSystem:
             self._simulate_order(order)
         elif self.config.mode == SystemMode.LIVE and self.capital_client:
             # 實盤交易
-            order_id = await self.capital_client.place_order(order)
+            await self.capital_client.place_order(order)
             if order_id:
                 logger.info(f"Order placed: {order_id}")
                 self._record_trade(order, order_id)
@@ -570,7 +570,7 @@ class IntegratedTradingSystem:
 
     def generate_report(self) -> Dict[str, Any]:
         """生成性能報告"""
-        report = {
+        {
             "timestamp": datetime.now().isoformat(),
             "mode": self.config.mode.value,
             "strategy": self.config.strategy_type.value,

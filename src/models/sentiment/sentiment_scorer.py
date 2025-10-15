@@ -376,7 +376,7 @@ class SentimentScorer:
         Returns:
             DataFrame with trading signals
         """
-        signals = []
+        []
 
         for _, row in scores_df.iterrows():
             score = row.get("composite_score", row.get("score", 0))

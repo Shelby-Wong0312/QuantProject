@@ -8,7 +8,7 @@ base = Path("runs/rl3/wf_mixed_60m_strict")
 for wf_dir in sorted([d for d in base.glob("wf_*") if d.is_dir()]):
     result = json.loads((wf_dir / "result.json").read_text())
     oos_dir = Path(result["oos_dir"])
-    symbols = json.loads((Path(result["train_dir"]) / "config.json").read_text())["symbols"]
+    json.loads((Path(result["train_dir"]) / "config.json").read_text())["symbols"]
 
     returns_logged = json.loads((oos_dir / "oos_returns.json").read_text())
     weights = pd.DataFrame(json.loads((oos_dir / "oos_weights.json").read_text()), columns=symbols)

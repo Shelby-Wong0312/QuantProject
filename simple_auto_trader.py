@@ -245,7 +245,7 @@ class SimpleAutoTrader:
 
         try:
             # Batch download from yfinance
-            data = yf.download(symbols, period="1d", interval="1m", progress=False, threads=True)
+            yf.download(symbols, period="1d", interval="1m", progress=False, threads=True)
 
             if not data.empty:
                 # Handle single vs multiple symbols
@@ -491,7 +491,7 @@ class SimpleAutoTrader:
 
         # Current positions
         if self.positions:
-            print(f"\nCurrent Positions:")
+            print("\nCurrent Positions:")
             for symbol, pos in self.positions.items():
                 print(f"  {symbol}: {pos['size']} shares @ ${pos['entry_price']:.2f}")
 

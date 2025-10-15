@@ -108,7 +108,7 @@ def launch_dashboard(db_path=None):
         print("\\n" + "=" * 60)
         print("📊 QUANTTRADING ANALYTICS DASHBOARD")
         print("=" * 60)
-        print(f"🌐 Dashboard will be available at: http://localhost:8501")
+        print("🌐 Dashboard will be available at: http://localhost:8501")
         print("🔧 Using database:", db_path if db_path else "default")
         print("⚠️  Press Ctrl+C to stop the dashboard")
         print("=" * 60)

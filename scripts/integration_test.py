@@ -164,8 +164,8 @@ class SystemIntegrationTester:
             # Generate test data
             test_returns = pd.DataFrame(np.random.randn(100, 3) * 0.01)
             weights = optimizer.optimize(test_returns.values)
-            workflow_steps.append(("Portfolio Optimization", True, f"Optimal weights calculated"))
-            print(f"   [OK] Portfolio optimized")
+            workflow_steps.append(("Portfolio Optimization", True, "Optimal weights calculated"))
+            print("   [OK] Portfolio optimized")
         except Exception as e:
             workflow_steps.append(("Portfolio Optimization", False, str(e)))
             print(f"   [FAIL] {e}")
@@ -240,7 +240,7 @@ class SystemIntegrationTester:
         start = time.time()
         try:
             # Simulate data processing
-            data = pd.DataFrame(np.random.randn(10000, 10))
+            pd.DataFrame(np.random.randn(10000, 10))
             processed = data.rolling(20).mean()
             elapsed = time.time() - start
             performance_metrics["data_processing"] = {
@@ -342,7 +342,7 @@ class SystemIntegrationTester:
             validator = DataValidator()
 
             # Create data with missing values
-            data = pd.DataFrame(
+            pd.DataFrame(
                 {
                     "price": [100, np.nan, 102, 103, np.nan],
                     "volume": [1000, 2000, np.nan, 4000, 5000],
@@ -359,7 +359,7 @@ class SystemIntegrationTester:
                     "message": "Data cleaned successfully",
                 }
             )
-            print(f"   [OK] Missing data handled")
+            print("   [OK] Missing data handled")
         except Exception as e:
             recovery_tests.append({"test": "Missing Data", "passed": False, "message": str(e)})
             print(f"   [FAIL] {e}")
@@ -381,7 +381,7 @@ class SystemIntegrationTester:
                     "message": f'Breaker triggered: {triggered.name if triggered else "None"}',
                 }
             )
-            print(f"   [OK] Circuit breaker functional")
+            print("   [OK] Circuit breaker functional")
         except Exception as e:
             recovery_tests.append({"test": "Circuit Breaker", "passed": False, "message": str(e)})
             print(f"   [FAIL] {e}")
@@ -409,7 +409,7 @@ class SystemIntegrationTester:
                     "message": "Error caught and recovered",
                 }
             )
-            print(f"   [OK] Error recovery successful")
+            print("   [OK] Error recovery successful")
         except Exception as e:
             recovery_tests.append({"test": "Error Recovery", "passed": False, "message": str(e)})
             print(f"   [FAIL] {e}")
@@ -471,7 +471,7 @@ class SystemIntegrationTester:
         print(f"Duration: {duration:.2f} seconds")
 
         # Save report
-        report = {
+        {
             "timestamp": self.start_time.isoformat(),
             "duration": duration,
             "overall_success_rate": overall_success,

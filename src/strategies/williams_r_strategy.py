@@ -89,7 +89,7 @@ class WilliamsRStrategy:
         atr_values = self.atr_indicator.calculate(data)
 
         # 初始化信號
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
         signals["williams_r"] = williams_values
         signals["buy"] = False
         signals["sell"] = False

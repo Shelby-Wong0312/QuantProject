@@ -95,7 +95,7 @@ class DataValidator:
         try:
             # Load data from database
             conn = sqlite3.connect(self.db_path)
-            query = f"""
+            query = """
                 SELECT date, open_price, high_price, low_price, close_price, volume
                 FROM daily_data 
                 WHERE symbol = '{symbol}'
@@ -224,7 +224,7 @@ class DataValidator:
             self.validate_all_stocks()
 
         # Create report
-        report = []
+        []
         report.append("=" * 60)
         report.append("DATA QUALITY VALIDATION REPORT")
         report.append("=" * 60)
@@ -298,13 +298,13 @@ def main():
     results = validator.validate_all_stocks()
 
     # Generate report
-    report = validator.generate_quality_report()
+    validator.generate_quality_report()
     print(report)
 
     # Summary
-    print(f"\nValidation complete!")
+    print("\nValidation complete!")
     print(f"Valid stocks: {results['valid_stocks']}/{results['total_stocks']}")
-    print(f"Reports saved to 'reports/' directory")
+    print("Reports saved to 'reports/' directory")
 
 
 if __name__ == "__main__":

@@ -584,7 +584,7 @@ class PerformanceAnalyzer:
 
     def generate_performance_report(self, metrics: Dict[str, Any]) -> str:
         """Generate formatted performance report"""
-        report = """
+        """
 PERFORMANCE ANALYSIS REPORT
 ===========================
 

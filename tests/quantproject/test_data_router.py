@@ -11,7 +11,7 @@ _COLS = ["open", "high", "low", "close", "volume"]
 
 def _df(rows=5, start="2025-08-01"):
     idx = pd.date_range(start, periods=rows, freq="5min", tz="UTC")
-    data = {
+    {
         "open": range(rows),
         "high": range(1, rows + 1),
         "low": range(rows),

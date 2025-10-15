@@ -190,12 +190,12 @@ async def test_order_placement(client):
         order_type=OrderType.MARKET,
     )
 
-    print(f"Placing test order: BUY 0.01 EURUSD at MARKET")
+    print("Placing test order: BUY 0.01 EURUSD at MARKET")
 
-    order_id = await client.place_order(test_order)
+    await client.place_order(test_order)
 
     if order_id:
-        print(f"✓ Order placed successfully")
+        print("✓ Order placed successfully")
         print(f"  Order ID: {order_id}")
 
         # Wait a moment
@@ -259,7 +259,7 @@ async def main():
             with open("reports/api_test_report.json", "w") as f:
                 json.dump(test_report, f, indent=2)
 
-            print(f"\nTest report saved to: reports/api_test_report.json")
+            print("\nTest report saved to: reports/api_test_report.json")
         else:
             print("\n❌ Some tests failed")
 

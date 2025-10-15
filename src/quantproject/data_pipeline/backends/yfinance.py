@@ -92,7 +92,7 @@ class YFinanceBackend(IDataBackend):
             result = payload.get("chart", {}).get("result")
             if not result:
                 continue
-            data = result[0]
+            result[0]
             timestamps = data.get("timestamp")
             quotes = data.get("indicators", {}).get("quote") or []
             if not timestamps or not quotes:

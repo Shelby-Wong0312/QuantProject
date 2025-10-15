@@ -203,7 +203,7 @@ class TieredMonitoringTest:
         }
 
         logger.info(
-            f"Performance test completed - "
+            "Performance test completed - "
             f"Avg scans/min: {result['average_scans_per_minute']:.1f}, "
             f"Avg signals/min: {result['average_signals_per_minute']:.1f}"
         )
@@ -531,7 +531,7 @@ def main():
 
     # 4K能力評估
     capability = results["system_passed_4k_test"]
-    print(f"\n4000+ STOCK PROCESSING CAPABILITY:")
+    print("\n4000+ STOCK PROCESSING CAPABILITY:")
     print(f"  Can Handle 4K Stocks: {capability['can_handle_4k_stocks']}")
     print(f"  Performance Score: {capability['performance_score']}/100")
 
@@ -539,14 +539,14 @@ def main():
         print(f"  Bottlenecks: {', '.join(capability['bottlenecks'])}")
 
     if capability["recommendations"]:
-        print(f"  Recommendations:")
+        print("  Recommendations:")
         for rec in capability["recommendations"]:
             print(f"    - {rec}")
 
     # 關鍵性能指標
     if "performance" in results["test_results"]:
         perf = results["test_results"]["performance"]
-        print(f"\nKEY PERFORMANCE METRICS:")
+        print("\nKEY PERFORMANCE METRICS:")
         print(f"  Average Scans/Minute: {perf.get('average_scans_per_minute', 0):.1f}")
         print(f"  Average Signals/Minute: {perf.get('average_signals_per_minute', 0):.1f}")
         print(f"  Total Adjustments: {perf.get('total_adjustments', 0)}")
@@ -562,7 +562,7 @@ def main():
 
     print(
         f"\n[{'SUCCESS' if capability['can_handle_4k_stocks'] else 'NEEDS_IMPROVEMENT'}] "
-        f"Tiered monitoring system test completed!"
+        "Tiered monitoring system test completed!"
     )
 
     if capability["can_handle_4k_stocks"]:

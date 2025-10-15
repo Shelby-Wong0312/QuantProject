@@ -392,7 +392,7 @@ def train_ppo_simple(stock_data):
     print("訓練完成！")
     print(f"最終平均獎勵: {log_data['final_avg_reward']:.4f}")
     print(f"最佳獎勵: {best_reward:.4f}")
-    print(f"模型保存在: models/ppo_simple/")
+    print("模型保存在: models/ppo_simple/")
     print("=" * 80)
 
 

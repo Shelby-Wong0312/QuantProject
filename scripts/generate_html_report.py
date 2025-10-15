@@ -41,7 +41,7 @@ class HTMLReportGenerator:
         stats = self._get_overview_stats(conn)
 
         # Generate HTML content
-        html_content = f"""
+        html_content = """
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -461,7 +461,7 @@ class HTMLReportGenerator:
                 if row["records"] > 3900
                 else '<span class="badge badge-warning">數據不完整</span>'
             )
-            html += f"""
+            html += """
                 <tr>
                     <td>{idx + 1}</td>
                     <td><strong>{row['symbol']}</strong></td>
@@ -530,7 +530,7 @@ class HTMLReportGenerator:
             change_color = "green" if row["change"] >= 0 else "red"
             change_symbol = "▲" if row["change"] >= 0 else "▼"
 
-            html += f"""
+            html += """
                 <tr>
                     <td>{row['date']}</td>
                     <td><strong>{row['symbol']}</strong></td>
@@ -596,7 +596,7 @@ class HTMLReportGenerator:
                 if passed
                 else '<span class="badge badge-danger">✗ 失敗</span>'
             )
-            html += f"""
+            html += """
                 <tr>
                     <td>{check_name}</td>
                     <td>{status}</td>
@@ -653,7 +653,7 @@ class HTMLReportGenerator:
             conn,
         )
 
-        js_code = f"""
+        js_code = """
         // Yearly distribution chart
         var yearlyTrace = {{
             x: {yearly_data['year'].tolist()},

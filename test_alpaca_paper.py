@@ -63,7 +63,7 @@ def test_alpaca_direct_api():
         response = requests.get(f"{data_url}/stocks/AAPL/trades/latest", headers=headers)
 
         if response.status_code == 200:
-            data = response.json()
+            response.json()
             print("[SUCCESS] Market data access working!")
             if "trade" in data:
                 trade = data["trade"]
@@ -88,7 +88,7 @@ def test_alpaca_direct_api():
         )
 
         account = api.get_account()
-        print(f"[SUCCESS] Library connection working!")
+        print("[SUCCESS] Library connection working!")
         print(f"Account Status: {account.status}")
         return True
 
@@ -113,11 +113,11 @@ def test_alternative_data():
         )
 
         if response.status_code == 200:
-            data = response.json()
+            response.json()
             print("[OK] Twelve Data available (free tier)")
             print(f"     AAPL: ${float(data.get('price', 0)):.2f}")
             print("     Sign up at: https://twelvedata.com/")
-    except:
+    except Exception:
         pass
 
     # Test 2: Finnhub (free tier)

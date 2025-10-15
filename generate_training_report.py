@@ -357,7 +357,7 @@ class TrainingReportGenerator:
         max_drawdown = self.calculate_max_drawdown()
 
         # Generate HTML
-        html_content = f"""
+        html_content = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -738,7 +738,7 @@ def main():
 
         webbrowser.open(f"file://{os.path.abspath(report_path)}")
         print("Report opened in browser")
-    except:
+    except Exception:
         print("Please open the HTML file manually")
 
 

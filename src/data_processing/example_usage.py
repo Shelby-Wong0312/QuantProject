@@ -122,7 +122,7 @@ def example_technical_indicators():
     print("=" * 60)
 
     # Create clean sample data
-    data = create_sample_data()
+    create_sample_data()
     cleaner = DataCleaner()
     clean_data = cleaner.clean_ohlcv_data(data)
 
@@ -153,7 +153,7 @@ def example_feature_engineering():
     print("=" * 60)
 
     # Create clean sample data
-    data = create_sample_data()
+    create_sample_data()
     cleaner = DataCleaner()
     clean_data = cleaner.clean_ohlcv_data(data)
 
@@ -230,7 +230,7 @@ def example_data_validation():
     print("=" * 60)
 
     # Create sample data with various issues
-    data = create_sample_data()
+    create_sample_data()
 
     # Add more issues
     data.loc[data.sample(n=100).index, "close"] = np.nan

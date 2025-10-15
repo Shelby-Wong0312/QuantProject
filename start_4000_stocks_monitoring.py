@@ -179,7 +179,7 @@ async def main():
         s = dist.get("S_tier", dist.get("s_tier", 0))
         a = dist.get("A_tier", dist.get("a_tier", 0))
         b = dist.get("B_tier", dist.get("b_tier", 0))
-        print(f"   ✓ 分層監控系統就緒")
+        print("   ✓ 分層監控系統就緒")
         print(f"      S層: {s} 檔 (實時監控)")
         print(f"      A層: {a} 檔 (高頻監控)")
         print(f"      B層: {b} 檔 (全市場掃描)")

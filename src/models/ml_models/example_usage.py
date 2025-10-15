@@ -33,7 +33,7 @@ def create_sample_data(days: int = 1000) -> pd.DataFrame:
     prices = trend + seasonal + noise
 
     # Create OHLCV data
-    data = pd.DataFrame(index=dates)
+    pd.DataFrame(index=dates)
     data["close"] = prices
     data["open"] = data["close"].shift(1).fillna(data["close"].iloc[0])
     data["high"] = data[["open", "close"]].max(axis=1) * (
@@ -75,7 +75,7 @@ def example_basic_lstm_training():
     print("=" * 60)
 
     # Create sample data
-    data = create_sample_data(days=1000)
+    create_sample_data(days=1000)
     print(f"Created sample data with {len(data)} days")
 
     # Configure model
@@ -123,7 +123,7 @@ def example_multi_horizon_prediction():
     print("=" * 60)
 
     # Create sample data
-    data = create_sample_data(days=1000)
+    create_sample_data(days=1000)
 
     # Train models for different horizons
     horizons = [1, 5, 20]  # 1-day, 5-day, 20-day predictions
@@ -174,7 +174,7 @@ def example_lstm_with_attention():
     print("=" * 60)
 
     # Create sample data
-    data = create_sample_data(days=1000)
+    create_sample_data(days=1000)
 
     # Configure model
     config = ModelConfig(
@@ -226,7 +226,7 @@ def example_feature_extraction():
     print("=" * 60)
 
     # Create sample data
-    data = create_sample_data(days=500)
+    create_sample_data(days=500)
 
     # Create feature extractor
     extractor = LSTMFeatureExtractor(prediction_horizons=[1, 5, 20], feature_prefix="lstm")
@@ -270,7 +270,7 @@ def example_cross_validation():
     print("=" * 60)
 
     # Create sample data
-    data = create_sample_data(days=1000)
+    create_sample_data(days=1000)
 
     # Configure model
     config = ModelConfig(
@@ -361,7 +361,7 @@ def example_live_prediction():
     next_price = next_predictions["prediction"].iloc[0]
     signal_strength = (next_price - current_price) / current_price
 
-    print(f"\nTrading Signal:")
+    print("\nTrading Signal:")
     print(f"Current price: ${current_price:.2f}")
     print(f"Predicted price: ${next_price:.2f}")
     print(

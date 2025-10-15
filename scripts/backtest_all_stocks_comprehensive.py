@@ -67,7 +67,7 @@ class ComprehensiveBacktest:
         conn = sqlite3.connect(self.db_path)
 
         # Get stock data
-        query = f"""
+        query = """
             SELECT date, open_price as open, high_price as high, 
                    low_price as low, close_price as close, volume
             FROM daily_data
@@ -87,7 +87,7 @@ class ComprehensiveBacktest:
             df = df.sort_index()
 
             # Generate signals
-            signals = indicator.get_signals(df)
+            indicator.get_signals(df)
 
             # Run backtest
             portfolio = {
@@ -372,7 +372,7 @@ class ComprehensiveBacktest:
         )
 
         # Save comprehensive report
-        report = {
+        {
             "test_date": datetime.now().isoformat(),
             "total_stocks": len(all_stocks),
             "total_tests": len(results_df),
@@ -399,7 +399,7 @@ class ComprehensiveBacktest:
             json.dump(report, f, indent=2)
 
         print(f"\nDetailed report saved to: {report_path}")
-        print(f"Raw data saved to: all_stocks_backtest_raw.csv")
+        print("Raw data saved to: all_stocks_backtest_raw.csv")
 
         # Create list of recommended stocks
         print("\n" + "=" * 80)

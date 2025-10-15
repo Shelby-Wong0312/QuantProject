@@ -53,7 +53,7 @@ class TestGraphConstructor(unittest.TestCase):
 
     def test_graph_construction(self):
         """Test basic graph construction"""
-        graph = self.constructor.build_graph(self.price_data)
+        self.constructor.build_graph(self.price_data)
 
         # Check nodes
         self.assertEqual(len(graph.nodes()), len(self.symbols))
@@ -71,7 +71,7 @@ class TestGraphConstructor(unittest.TestCase):
 
     def test_pytorch_conversion(self):
         """Test conversion to PyTorch Geometric format"""
-        graph = self.constructor.build_graph(self.price_data)
+        self.constructor.build_graph(self.price_data)
         node_features, edge_index, edge_attr = self.constructor.to_pytorch_geometric()
 
         # Check shapes
@@ -86,7 +86,7 @@ class TestGraphConstructor(unittest.TestCase):
 
     def test_graph_statistics(self):
         """Test graph statistics calculation"""
-        graph = self.constructor.build_graph(self.price_data)
+        self.constructor.build_graph(self.price_data)
         stats = self.constructor.get_graph_statistics()
 
         self.assertIn("num_nodes", stats)

@@ -91,7 +91,7 @@ def search_oil_markets():
         print(f"\nChecking {epic}...")
         details = api.get_market_details(epic)
         if details:
-            print(f"  [FOUND] Market exists!")
+            print("  [FOUND] Market exists!")
             if "instrument" in details:
                 inst = details["instrument"]
                 print(f"  Name: {inst.get('name', 'N/A')}")
@@ -101,7 +101,7 @@ def search_oil_markets():
                 print(f"  Bid: {snapshot.get('bid', 'N/A')}")
                 print(f"  Offer: {snapshot.get('offer', 'N/A')}")
         else:
-            print(f"  [NOT FOUND]")
+            print("  [NOT FOUND]")
 
     return all_oil_markets
 

@@ -734,7 +734,7 @@ async def main():
 
     # Print summary
     summary = selector.get_selection_summary()
-    print(f"\nSelection Summary:")
+    print("\nSelection Summary:")
     print(f"Total strategies evaluated: {summary['total_strategies_evaluated']}")
     print(f"Selected strategies: {len(summary['selected_strategies'])}")
 

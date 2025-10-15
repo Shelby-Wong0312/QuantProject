@@ -45,7 +45,7 @@ def get_my_ip():
     try:
         response = requests.get("https://ipinfo.io/json", timeout=5)
         if response.status_code == 200:
-            data = response.json()
+            response.json()
             ip = data["ip"]
             print(f"\n[OK] Your Public IP: {ip}")
             print(f"   位置: {data.get('city', '')}, {data.get('country', '')}")
@@ -120,7 +120,7 @@ def main():
         print("5. 選擇以下其中一個選項：")
         print("\n   選項A（推薦用於測試）:")
         print("   - Enable IP Allowlist")
-        print(f"   ✅ 添加: 0.0.0.0/0")
+        print("   ✅ 添加: 0.0.0.0/0")
         print("      (這會允許所有IP，Paper Trading安全)")
         print("\n   選項B（更安全）:")
         print("   - Enable IP Allowlist")

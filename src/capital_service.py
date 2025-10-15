@@ -55,7 +55,7 @@ class CapitalService:
                 try:
                     error_data = response.json()
                     return False, f"登入失敗: {error_data.get('errorCode', 'Unknown error')}"
-                except:
+                except Exception:
                     return False, f"登入失敗: Status {response.status_code}"
         except Exception as e:
             return False, f"登入時發生錯誤: {str(e)}"

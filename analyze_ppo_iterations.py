@@ -57,7 +57,7 @@ class PPOIterationAnalyzer:
             updates_per_episode = n_epochs  # Simplified calculation
             total_iterations = total_episodes * updates_per_episode
 
-            print(f"\nIteration Statistics:")
+            print("\nIteration Statistics:")
             print(f"  - Total Episodes: {total_episodes}")
             print(f"  - Updates per Episode: {updates_per_episode}")
             print(f"  - Total Iterations: {total_iterations:,}")
@@ -65,7 +65,7 @@ class PPOIterationAnalyzer:
 
             # Analyze reward changes
             rewards_array = np.array(episode_rewards)
-            print(f"\nReward Statistics:")
+            print("\nReward Statistics:")
             print(f"  - Min Reward: {np.min(rewards_array):.4f}")
             print(f"  - Max Reward: {np.max(rewards_array):.4f}")
             print(f"  - Mean Reward: {np.mean(rewards_array):.4f}")
@@ -80,7 +80,7 @@ class PPOIterationAnalyzer:
                     ((late_avg - early_avg) / abs(early_avg)) * 100 if early_avg != 0 else 0
                 )
 
-                print(f"\nConvergence Analysis:")
+                print("\nConvergence Analysis:")
                 print(f"  - First {window} avg: {early_avg:.4f}")
                 print(f"  - Last {window} avg: {late_avg:.4f}")
                 print(f"  - Improvement: {improvement:.2f}%")
@@ -115,8 +115,8 @@ class PPOIterationAnalyzer:
                 p.numel() for p in model_state.values() if isinstance(p, torch.Tensor)
             )
             print(f"Total Parameters: {total_params:,}")
-            print(f"Training Episodes: 100 (fixed)")
-            print(f"Total Iterations: 100")
+            print("Training Episodes: 100 (fixed)")
+            print("Total Iterations: 100")
 
         # 3. Iteration difference analysis
         print("\n[3] Iteration Result Differences:")
@@ -180,7 +180,7 @@ class PPOIterationAnalyzer:
         print(f"\n{n_simulations} Training Results Comparison:")
         print(df_results.to_string())
 
-        print(f"\nStatistical Analysis:")
+        print("\nStatistical Analysis:")
         print(f"  - Avg Final Performance: {df_results['final_performance'].mean():.4f}")
         print(f"  - Performance Std Dev: {df_results['final_performance'].std():.4f}")
         print(f"  - Best Performance: {df_results['final_performance'].max():.4f}")
@@ -324,7 +324,7 @@ class PPOIterationAnalyzer:
         fig = self.create_iteration_visualization() if model_data else None
 
         # 生成HTML報告
-        html_content = f"""
+        html_content = """
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -461,7 +461,7 @@ class PPOIterationAnalyzer:
         # 添加模擬結果表格
         if simulation_results is not None:
             for _, row in simulation_results.iterrows():
-                html_content += f"""
+                html_content += """
                 <tr>
                     <td>第{row['run']}次</td>
                     <td>{row['final_performance']:.4f}</td>
@@ -472,7 +472,7 @@ class PPOIterationAnalyzer:
                 </tr>
 """
 
-        html_content += f"""
+        html_content += """
             </tbody>
         </table>
         
@@ -564,7 +564,7 @@ def main():
 
         webbrowser.open(f"file://{os.path.abspath(report_path)}")
         print("Report opened in browser")
-    except:
+    except Exception:
         print("Please open the HTML file manually")
 
 

@@ -60,7 +60,7 @@ class MetricsCallback(BaseCallback):
         if cfg_path.exists():
             try:
                 cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
-                symbols = cfg.get("symbols", [])
+                cfg.get("symbols", [])
                 timeframe = cfg.get("timeframe", timeframe)
             except Exception:
                 pass

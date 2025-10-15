@@ -59,7 +59,7 @@ def quick_test():
         dm = DataManager(use_cache=True)
 
         # 獲取多個股票的最新價格
-        symbols = ["AAPL.US", "MSFT.US", "GOOGL.US"]
+        ["AAPL.US", "MSFT.US", "GOOGL.US"]
         prices = dm.get_batch_latest_prices(symbols)
 
         print("\n最新價格:")

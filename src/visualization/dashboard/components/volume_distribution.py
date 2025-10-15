@@ -277,7 +277,7 @@ def add_volume_insights(fig: go.Figure, hourly_stats: pd.DataFrame):
 
     # Create insights text
     insights_text = (
-        f"<b>成交量分佈洞察</b><br>"
+        "<b>成交量分佈洞察</b><br>"
         f"早盤佔比: {morning_pct:.1f}%<br>"
         f"午盤佔比: {afternoon_pct:.1f}%<br>"
         f"最佳交易時段: {optimal_hours}"

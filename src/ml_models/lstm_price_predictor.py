@@ -175,9 +175,9 @@ class LSTMPricePredictor:
         """
         # 提取收盤價
         if isinstance(prices, pd.DataFrame):
-            data = prices["close"].values.reshape(-1, 1)
+            prices["close"].values.reshape(-1, 1)
         else:
-            data = prices.reshape(-1, 1)
+            prices.reshape(-1, 1)
 
         # 標準化
         scaled_data = self.scaler.fit_transform(data)
@@ -320,9 +320,9 @@ class LSTMPricePredictor:
 
         # 準備數據
         if isinstance(prices, pd.DataFrame):
-            data = prices["close"].values.reshape(-1, 1)
+            prices["close"].values.reshape(-1, 1)
         else:
-            data = prices.reshape(-1, 1)
+            prices.reshape(-1, 1)
 
         # 使用最後 seq_length 天的數據
         recent_data = data[-self.seq_length :]

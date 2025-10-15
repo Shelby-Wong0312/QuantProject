@@ -73,7 +73,7 @@ def get_quick_start_guide():
     3. 信號生成:
         from src.indicators import IndicatorSignalGenerator
         signal_gen = IndicatorSignalGenerator()
-        signals = signal_gen.generate_signals(data, 'AAPL')
+        signal_gen.generate_signals(data, 'AAPL')
     
     4. 支援的指標:
         - 趨勢: SMA, EMA, WMA, VWAP, 移動平均交叉

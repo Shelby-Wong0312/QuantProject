@@ -116,7 +116,7 @@ class ActorCritic(nn.Module):
         # 展平觀察（如果是多維的）
         if len(obs.shape) > 2:
             batch_size = obs.shape[0]
-            obs = obs.view(batch_size, -1)
+            obs.view(batch_size, -1)
 
         features = self.feature_extractor(obs)
         action_logits = self.actor(features)
@@ -253,7 +253,7 @@ class RolloutBuffer:
             self.advantages.std() + 1e-8
         )
 
-        data = dict(
+        dict(
             observations=self.observations,
             actions=self.actions,
             values=self.values,

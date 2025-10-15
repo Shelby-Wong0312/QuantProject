@@ -43,7 +43,7 @@ def execute_wti_trade():
     account = api.get_accounts()
     if account and "accounts" in account and len(account["accounts"]) > 0:
         acc = account["accounts"][0]
-        print(f"\n[ACCOUNT INFO]")
+        print("\n[ACCOUNT INFO]")
         print(f"Balance: ${acc.get('balance', {}).get('balance', 0):,.2f}")
         print(f"Available: ${acc.get('balance', {}).get('available', 0):,.2f}")
         print(f"P&L: ${acc.get('balance', {}).get('profitLoss', 0):,.2f}")
@@ -104,7 +104,7 @@ def execute_wti_trade():
         return False
 
     # Get current price
-    print(f"\n[MARKET INFO]")
+    print("\n[MARKET INFO]")
     print(f"Symbol: {found_symbol}")
     print(f"Name: {market_info.get('instrumentName', 'N/A')}")
 
@@ -121,7 +121,7 @@ def execute_wti_trade():
         print(f"[WARNING] Could not get current price, using estimate: ${offer:.2f}")
 
     # Execute trade
-    print(f"\n[4/4] Placing BUY order for 1000 units of WTI Crude Oil...")
+    print("\n[4/4] Placing BUY order for 1000 units of WTI Crude Oil...")
     print(f"Estimated cost: ${offer * 1000:,.2f}")
 
     # Place the order
@@ -131,7 +131,7 @@ def execute_wti_trade():
 
     if order_result:
         print("\n[SUCCESS] Order placed successfully!")
-        print(f"\nOrder Details:")
+        print("\nOrder Details:")
         print(f"Deal Reference: {order_result.get('dealReference', 'N/A')}")
         print(f"Status: {order_result.get('dealStatus', 'N/A')}")
 
@@ -149,7 +149,7 @@ def execute_wti_trade():
             # Find our WTI position
             for pos in positions["positions"]:
                 if found_symbol in pos.get("market", {}).get("epic", ""):
-                    print(f"\nWTI Position:")
+                    print("\nWTI Position:")
                     print(f"  Size: {pos.get('position', {}).get('size', 0)}")
                     print(f"  Direction: {pos.get('position', {}).get('direction', 'N/A')}")
                     print(f"  Entry Price: ${pos.get('position', {}).get('level', 0):.2f}")

@@ -209,7 +209,7 @@ class MT4BridgeConfig:
         try:
             if os.path.exists(self.config_file):
                 with open(self.config_file, "r", encoding="utf-8") as f:
-                    data = json.load(f)
+                    json.load(f)
 
                 # 載入各模組配置
                 if "zeromq" in data:

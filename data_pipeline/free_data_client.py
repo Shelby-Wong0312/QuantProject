@@ -140,7 +140,7 @@ class FreeDataClient:
             )
 
             if response.status_code == 200:
-                data = response.json()
+                response.json()
                 if "price" in data:
                     price = float(data["price"])
                     logger.debug(f"Got {symbol} price from Twelve Data: ${price:.2f}")
@@ -220,7 +220,7 @@ class FreeDataClient:
             self.alpha_vantage_calls += 1
 
             if response.status_code == 200:
-                data = response.json()
+                response.json()
 
                 # Cache the result
                 self.cache[cache_key] = (data, time.time())
@@ -332,7 +332,7 @@ class FreeDataClient:
         if use_cache:
             cached_quotes = self._get_cached_quotes(symbols)
             all_quotes.update(cached_quotes)
-            symbols = [s for s in symbols if s not in cached_quotes]
+            [s for s in symbols if s not in cached_quotes]
 
         if not symbols:
             logger.info("All quotes retrieved from cache")
@@ -394,7 +394,7 @@ class FreeDataClient:
             time.sleep(self.request_delay * batch_id)  # 避免過載
 
             # Method 1: Yahoo Finance batch download
-            data = yf.download(symbols, period="1d", interval="1m", progress=False, threads=True)
+            yf.download(symbols, period="1d", interval="1m", progress=False, threads=True)
 
             if not data.empty:
                 current_time = datetime.now()
@@ -453,7 +453,7 @@ class FreeDataClient:
             with sqlite3.connect(self.db_path) as conn:
                 placeholders = ",".join("?" * len(symbols))
                 cursor = conn.execute(
-                    f"""SELECT symbol, price, volume, change_percent, timestamp 
+                    """SELECT symbol, price, volume, change_percent, timestamp 
                         FROM real_time_quotes 
                         WHERE symbol IN ({placeholders}) 
                         AND timestamp > ?""",
@@ -525,7 +525,7 @@ class FreeDataClient:
                 vix_hist = vix.history(period="1d")
                 if not vix_hist.empty:
                     vix_data = float(vix_hist["Close"].iloc[-1])
-            except:
+            except Exception:
                 pass
 
             return {

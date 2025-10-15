@@ -457,7 +457,7 @@ class RealisticChineseReport:
         trades_table = self.generate_trades_table()
 
         # 生成HTML
-        html_content = f"""
+        html_content = """
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -887,7 +887,7 @@ class RealisticChineseReport:
             action_class = "buy" if trade["action"] == "買入" else "sell"
             pnl_class = "positive" if trade["pnl"] > 0 else "negative" if trade["pnl"] < 0 else ""
 
-            table_html += f"""
+            table_html += """
                 <tr>
                     <td>{trade['id']}</td>
                     <td>{trade['episode']}</td>
@@ -930,7 +930,7 @@ def main():
 
         webbrowser.open(f"file://{os.path.abspath(report_path)}")
         print("Report opened in browser")
-    except:
+    except Exception:
         print("Please open the HTML file manually")
 
 

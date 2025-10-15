@@ -48,7 +48,7 @@ def test_environment_basic():
     print("=" * 50)
 
     # 創建測試數據
-    data = create_test_data(1000)
+    create_test_data(1000)
 
     # 創建環境
     env = TradingEnvironment(
@@ -57,14 +57,14 @@ def test_environment_basic():
 
     # 測試重置
     obs, info = env.reset()
-    print(f"✓ Environment reset successful")
+    print("✓ Environment reset successful")
     print(f"  Observation shape: {obs.shape}")
     print(f"  Initial portfolio value: ${info['portfolio_value']:.2f}")
 
     # 測試步進
     action = env.action_space.sample()
     obs, reward, terminated, truncated, info = env.step(action)
-    print(f"✓ Step execution successful")
+    print("✓ Step execution successful")
     print(f"  Action taken: {Actions(action).name}")
     print(f"  Reward: {reward:.4f}")
     print(f"  Portfolio value: ${info['portfolio_value']:.2f}")
@@ -78,7 +78,7 @@ def test_trading_logic():
     print("Testing Trading Logic")
     print("=" * 50)
 
-    data = create_test_data(500)
+    create_test_data(500)
     env = TradingEnvironment(df=data, initial_balance=10000)
 
     obs, info = env.reset()
@@ -107,7 +107,7 @@ def test_trading_logic():
 
     final_value = info["portfolio_value"]
     total_return = (final_value - initial_value) / initial_value * 100
-    print(f"\n✓ Trading logic test complete")
+    print("\n✓ Trading logic test complete")
     print(f"  Total return: {total_return:.2f}%")
     print(f"  Total trades: {info['total_trades']}")
     print(f"  Win rate: {info['win_rate']:.2%}")
@@ -121,7 +121,7 @@ def test_random_agent():
     print("Testing Random Agent")
     print("=" * 50)
 
-    data = create_test_data(2000)
+    create_test_data(2000)
     env = TradingEnvironment(df=data, initial_balance=10000)
 
     # 運行一個完整 episode
@@ -147,7 +147,7 @@ def test_random_agent():
         if step_count >= 1000:
             break
 
-    print(f"✓ Random agent test complete")
+    print("✓ Random agent test complete")
     print(f"  Steps: {step_count}")
     print(f"  Total reward: {total_reward:.4f}")
     print(f"  Final portfolio: ${info['portfolio_value']:.2f}")
@@ -166,13 +166,13 @@ def test_minute_data_pipeline():
     pipeline = MinuteDataPipeline()
 
     # 測試下載
-    symbols = ["AAPL"]
+    ["AAPL"]
     end_date = datetime.now()
     start_date = end_date - timedelta(days=5)
 
     print(f"Downloading {symbols[0]} data...")
     results = pipeline.download_data(
-        symbols=symbols, start_date=start_date, end_date=end_date, interval="5min"
+        symbols, start_date=start_date, end_date=end_date, interval="5min"
     )
 
     if results and symbols[0] in results:
@@ -180,7 +180,7 @@ def test_minute_data_pipeline():
         print(f"✓ Downloaded {len(df)} records")
 
         # 驗證數據
-        report = pipeline.validate_data(df)
+        pipeline.validate_data(df)
         print(f"✓ Data quality score: {report['quality_score']:.2f}%")
 
         # 添加特徵
@@ -199,7 +199,7 @@ def test_gym_compatibility():
     print("Testing Gymnasium Compatibility")
     print("=" * 50)
 
-    data = create_test_data(1000)
+    create_test_data(1000)
     env = TradingEnvironment(df=data)
 
     # 使用 gymnasium 的環境檢查器
@@ -222,7 +222,7 @@ def run_performance_test():
 
     import time
 
-    data = create_test_data(5000)
+    create_test_data(5000)
     env = TradingEnvironment(df=data)
 
     # 測試步進速度
@@ -240,15 +240,15 @@ def run_performance_test():
     elapsed = time.time() - start_time
     steps_per_second = n_steps / elapsed
 
-    print(f"✓ Performance test complete")
+    print("✓ Performance test complete")
     print(f"  Steps per second: {steps_per_second:.0f}")
     print(f"  Time per step: {elapsed/n_steps*1000:.2f} ms")
 
     # 檢查是否達到要求
     if steps_per_second > 1000:
-        print(f"  ✓ Meets performance requirement (>1000 steps/s)")
+        print("  ✓ Meets performance requirement (>1000 steps/s)")
     else:
-        print(f"  ✗ Below performance requirement (>1000 steps/s)")
+        print("  ✗ Below performance requirement (>1000 steps/s)")
 
     return steps_per_second
 

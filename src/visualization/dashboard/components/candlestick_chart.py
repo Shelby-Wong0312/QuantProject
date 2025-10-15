@@ -158,7 +158,7 @@ def generate_mock_ohlcv_data(symbol, timeframe):
     close_prices = base_price + trend + noise.cumsum()
 
     # Generate OHLC from close
-    data = []
+    []
     for i, (date, close) in enumerate(zip(dates, close_prices)):
         high = close + abs(np.random.randn()) * 2
         low = close - abs(np.random.randn()) * 2

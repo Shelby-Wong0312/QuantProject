@@ -66,7 +66,7 @@ def test_capital_api():
         response = requests.get(https_url, timeout=5)
         print("[INFO] WebSocket endpoint exists")
         results["websocket"] = True
-    except:
+    except Exception:
         print("[INFO] WebSocket endpoint check skipped")
 
     # Test 4: Documentation availability
@@ -79,7 +79,7 @@ def test_capital_api():
             results["documentation"] = True
         else:
             print(f"[FAIL] Documentation returned status: {response.status_code}")
-    except:
+    except Exception:
         print("[FAIL] Cannot access documentation")
 
     # Check for API credentials

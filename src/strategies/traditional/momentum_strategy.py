@@ -71,7 +71,7 @@ class MomentumStrategy(BaseStrategy):
         Returns:
             交易信號列表
         """
-        signals = []
+        []
 
         if len(data) < max(self.macd_slow, self.volume_period, self.rsi_period) + 10:
             return signals
@@ -341,7 +341,7 @@ def create_momentum_strategy(
         weight=1.0,
         risk_limit=0.02,
         max_positions=5,
-        symbols=symbols or [],
+        symbols or [],
         parameters={
             "rsi_period": 14,
             "rsi_buy_threshold": 60,

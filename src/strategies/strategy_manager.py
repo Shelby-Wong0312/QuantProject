@@ -243,7 +243,7 @@ class StrategyManager:
                 strategy_name = future_to_strategy[future]
 
                 try:
-                    signals = future.result()
+                    future.result()
                     if signals:
                         all_signals[strategy_name] = signals
                         # Add signals to history
@@ -296,7 +296,7 @@ class StrategyManager:
             start_time = time.time()
 
             # Execute strategy
-            signals = strategy.calculate_signals(market_data)
+            strategy.calculate_signals(market_data)
 
             # Validate signals
             valid_signals = []
@@ -576,5 +576,5 @@ class StrategyManager:
         """Destructor to ensure proper cleanup"""
         try:
             self.shutdown()
-        except:
+        except Exception:
             pass

@@ -158,7 +158,7 @@ class VisualBacktestReport:
         # Calculate CCI and signals
         cci_indicator = CCI(period=20)
         cci_values = cci_indicator.calculate(df)
-        signals = cci_indicator.get_signals(df)
+        cci_indicator.get_signals(df)
 
         # Create subplots
         fig = make_subplots(
@@ -275,11 +275,11 @@ class VisualBacktestReport:
         conn = sqlite3.connect(self.db_path)
 
         # Get multiple stocks for portfolio
-        symbols = ["AAPL", "MSFT", "V", "WMT", "META"]
+        ["AAPL", "MSFT", "V", "WMT", "META"]
         portfolio_values = {}
 
         for symbol in symbols:
-            query = f"""
+            query = """
                 SELECT date, open_price as open, high_price as high, 
                        low_price as low, close_price as close, volume
                 FROM daily_data
@@ -298,7 +298,7 @@ class VisualBacktestReport:
 
                 # Simulate CCI strategy
                 cci = CCI(period=20)
-                signals = cci.get_signals(df)
+                cci.get_signals(df)
 
                 # Simple backtest
                 capital = 100000
@@ -321,7 +321,7 @@ class VisualBacktestReport:
 
                 portfolio_values[symbol] = pd.Series(values, index=df.index)
 
-            except:
+            except Exception:
                 continue
 
         conn.close()
@@ -394,7 +394,7 @@ class VisualBacktestReport:
 
         # Create heatmap
         fig = go.Figure(
-            data=go.Heatmap(
+            go.Heatmap(
                 z=matrix,
                 x=stocks,
                 y=indicators,
@@ -508,7 +508,7 @@ class VisualBacktestReport:
         best_indicator = max(results.items(), key=lambda x: x[1]["avg_return"])
 
         # Create HTML content
-        html_content = f"""
+        html_content = """
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -830,7 +830,7 @@ class VisualBacktestReport:
         ]
         for i, (ind, metrics) in enumerate(sorted_results, 1):
             return_class = "positive" if metrics["avg_return"] > 0 else "negative"
-            html_content += f"""
+            html_content += """
                     <tr>
                         <td>{i}</td>
                         <td><strong>{ind}</strong></td>
@@ -862,7 +862,7 @@ class VisualBacktestReport:
         )
 
         # Add Plotly charts
-        html_content += f"""
+        html_content += """
         // Performance Comparison Chart
         var perfChart = {perf_chart.to_json()};
         Plotly.newPlot('perfChart', perfChart.data, perfChart.layout);
@@ -915,7 +915,7 @@ if __name__ == "__main__":
     print("\n" + "=" * 80)
     print("REPORT GENERATED SUCCESSFULLY!")
     print("=" * 80)
-    print(f"\nOpen the report in your browser:")
+    print("\nOpen the report in your browser:")
     print(f"   {report_path}")
 
     # Auto-open in browser

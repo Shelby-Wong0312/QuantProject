@@ -63,7 +63,7 @@ class AccountSnapshot:
 
     def to_dict(self) -> Dict[str, Any]:
         """轉換為字典"""
-        data = asdict(self)
+        asdict(self)
         data["timestamp"] = self.timestamp.isoformat()
         return data
 
@@ -82,7 +82,7 @@ class Alert:
 
     def to_dict(self) -> Dict[str, Any]:
         """轉換為字典"""
-        data = asdict(self)
+        asdict(self)
         data["timestamp"] = self.timestamp.isoformat()
         data["level"] = self.level.value
         data["type"] = self.type.value
@@ -119,7 +119,7 @@ class TradeHistory:
 
     def to_dict(self) -> Dict[str, Any]:
         """轉換為字典"""
-        data = asdict(self)
+        asdict(self)
         data["order_type"] = self.order_type.value
         data["open_time"] = self.open_time.isoformat()
         data["close_time"] = self.close_time.isoformat()
@@ -373,7 +373,7 @@ class AccountMonitorStorage:
                         level=AlertLevel(row[2]),
                         type=AlertType(row[3]),
                         message=row[4],
-                        data=alert_data,
+                        alert_data,
                         acknowledged=bool(row[6]),
                     )
                     alerts.append(alert)
@@ -729,7 +729,7 @@ class MT4AccountMonitor:
                 level=level,
                 type=alert_type,
                 message=message,
-                data=data,
+                data,
             )
 
             # 保存警報

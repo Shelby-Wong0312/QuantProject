@@ -66,7 +66,7 @@ def main():
             with open(checkpoint_file, "r") as f:
                 validated = json.load(f)
             print(f"[OK] Resumed from checkpoint: {len(validated)} already validated")
-        except:
+        except Exception:
             validated = {}
 
     # Get pending tickers
@@ -137,7 +137,7 @@ def main():
         except Exception as e:
             validated[ticker] = {"valid": False, "reason": str(e)}
             stats["errors"] += 1
-            status = f"[X] Error"
+            status = "[X] Error"
 
         # Progress update
         current_total = len(validated)
@@ -155,7 +155,7 @@ def main():
             rate = (idx + 1) / elapsed if elapsed > 0 else 0
             eta = (len(pending) - idx - 1) / rate if rate > 0 else 0
 
-            print(f"\n[STATS] Progress Report:")
+            print("\n[STATS] Progress Report:")
             print(f"  Validated: {current_total}/{total_count} ({progress:.1f}%)")
             print(
                 f"  Valid: {stats['valid']} | Tradable: {stats['tradable']} | Invalid: {stats['invalid']}"
@@ -201,18 +201,18 @@ def main():
             f.write(f"{ticker}\n")
 
     # Print summary
-    print(f"[STATS] FINAL RESULTS:")
+    print("[STATS] FINAL RESULTS:")
     print(f"  Total Validated: {len(validated)}")
     print(f"  Valid: {final_valid} ({final_report['valid_rate']})")
     print(f"  Tradable: {final_tradable} ({final_report['tradable_rate']})")
     print(f"  Invalid: {final_report['invalid']}")
-    print(f"\n[FILES] Reports saved:")
-    print(f"  - FINAL_VALIDATION_REPORT.json")
-    print(f"  - TRADABLE_TICKERS.txt")
-    print(f"  - batch_validation_checkpoint.json")
+    print("\n[FILES] Reports saved:")
+    print("  - FINAL_VALIDATION_REPORT.json")
+    print("  - TRADABLE_TICKERS.txt")
+    print("  - batch_validation_checkpoint.json")
 
     if tradable_list:
-        print(f"\n[TOP] Sample tradable tickers:")
+        print("\n[TOP] Sample tradable tickers:")
         for ticker in tradable_list[:10]:
             info = validated[ticker]
             print(f"  - {ticker}: {info.get('name', 'N/A')}")

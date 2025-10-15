@@ -45,7 +45,7 @@ class DashboardDataLoader:
         try:
             self.data_cleaner = DataCleaner()
             self.feature_engineer = FeatureEngineer()
-        except:
+        except Exception:
             self.data_cleaner = None
             self.feature_engineer = None
 
@@ -192,7 +192,7 @@ class DashboardDataLoader:
         if self.feature_engineer:
             try:
                 return self.feature_engineer.engineer_features(market_data)
-            except:
+            except Exception:
                 pass
 
         # Fallback to simple calculations
@@ -222,7 +222,7 @@ class DashboardDataLoader:
         returns = np.random.normal(0.0002, 0.02, len(dates))
         prices = base_price * np.exp(np.cumsum(returns))
 
-        data = []
+        []
         for i, (date, close) in enumerate(zip(dates, prices)):
             high = close * (1 + abs(np.random.normal(0, 0.01)))
             low = close * (1 - abs(np.random.normal(0, 0.01)))
@@ -294,7 +294,7 @@ class DashboardDataLoader:
             symbol, datetime.now() - timedelta(days=30), datetime.now()
         )
 
-        signals = []
+        []
         for i in range(5, len(market_data), 10):
             signal_type = np.random.choice(["BUY", "SELL"])
             signals.append(

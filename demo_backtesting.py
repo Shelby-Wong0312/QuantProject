@@ -42,7 +42,7 @@ class SimpleMAStrategy(BaseStrategy):
         prev_slow = slow_ma.iloc[-2] if len(slow_ma) > 1 else current_slow
 
         current_price = data["close"].iloc[-1]
-        signals = []
+        []
 
         # Determine symbol from data or use first symbol in config
         symbol = (
@@ -199,7 +199,7 @@ def demo_simple_backtest():
 
     # Generate sample data
     print("Generating sample data...")
-    data = {"AAPL": generate_sample_data("AAPL", 365), "GOOGL": generate_sample_data("GOOGL", 365)}
+    {"AAPL": generate_sample_data("AAPL", 365), "GOOGL": generate_sample_data("GOOGL", 365)}
 
     # Create strategy
     config = StrategyConfig(
@@ -208,7 +208,7 @@ def demo_simple_backtest():
         weight=1.0,
         risk_limit=0.02,
         max_positions=5,
-        symbols=["AAPL", "GOOGL"],
+        ["AAPL", "GOOGL"],
         parameters={"fast_period": 20, "slow_period": 50},
     )
 
@@ -229,7 +229,7 @@ def demo_simple_backtest():
 
     # Performance metrics
     perf = results["performance"]
-    print(f"\nPerformance Metrics:")
+    print("\nPerformance Metrics:")
     print(f"Sharpe Ratio: {perf.get('sharpe_ratio', 0):.2f}")
     print(f"Max Drawdown: {perf.get('max_drawdown', 0):.2%}")
     print(f"Win Rate: {perf.get('win_rate', 0):.2%}")
@@ -256,11 +256,11 @@ def demo_advanced_backtest():
     engine = BacktestEngine(config)
 
     # Add multiple symbols
-    symbols = ["AAPL", "GOOGL", "MSFT", "AMZN"]
+    ["AAPL", "GOOGL", "MSFT", "AMZN"]
     print(f"Adding data for {len(symbols)} symbols...")
 
     for symbol in symbols:
-        data = generate_sample_data(symbol, 400)
+        generate_sample_data(symbol, 400)
         engine.add_data(data, symbol)
 
     # Create strategy
@@ -270,7 +270,7 @@ def demo_advanced_backtest():
         weight=1.0,
         risk_limit=0.015,  # Tighter risk limit
         max_positions=10,
-        symbols=symbols,
+        symbols,
         parameters={"fast_period": 15, "slow_period": 40},
     )
 
@@ -292,13 +292,13 @@ def demo_advanced_backtest():
     print(f"Years Tested: {summary['years']:.1f}")
 
     perf = results["performance"]
-    print(f"\nRisk Metrics:")
+    print("\nRisk Metrics:")
     print(f"Volatility: {perf.get('volatility_pct', 0):.2f}%")
     print(f"Sharpe Ratio: {perf.get('sharpe_ratio', 0):.2f}")
     print(f"Sortino Ratio: {perf.get('sortino_ratio', 0):.2f}")
     print(f"Max Drawdown: {perf.get('max_drawdown_pct', 0):.2f}%")
 
-    print(f"\nTrading Statistics:")
+    print("\nTrading Statistics:")
     print(f"Total Trades: {perf.get('total_trades', 0)}")
     print(f"Win Rate: {perf.get('win_rate_pct', 0):.1f}%")
     print(f"Profit Factor: {perf.get('profit_factor', 0):.2f}")
@@ -307,7 +307,7 @@ def demo_advanced_backtest():
     # Show trades summary
     trades = results["trades"]
     if trades:
-        print(f"\nRecent Trades (last 5):")
+        print("\nRecent Trades (last 5):")
         for trade in trades[-5:]:
             pnl = trade.get("pnl", 0)
             pnl_str = f"${pnl:.2f}" if pnl >= 0 else f"-${abs(pnl):.2f}"
@@ -340,7 +340,7 @@ def main():
         print("* Risk analysis completed")
         print("* Trading statistics generated")
 
-        print(f"\nFramework Features Demonstrated:")
+        print("\nFramework Features Demonstrated:")
         print("- Event-driven backtesting engine")
         print("- Portfolio management with P&L tracking")
         print("- Comprehensive performance analysis")

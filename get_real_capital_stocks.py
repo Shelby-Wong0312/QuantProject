@@ -40,7 +40,7 @@ class CapitalComAPI:
             response = self.session.post(endpoint, json=payload, headers=self.headers)
 
             if response.status_code == 200:
-                data = response.json()
+                response.json()
                 self.cst = response.headers.get("CST")
                 self.x_security_token = response.headers.get("X-SECURITY-TOKEN")
 
@@ -48,7 +48,7 @@ class CapitalComAPI:
                 self.headers["CST"] = self.cst
                 self.headers["X-SECURITY-TOKEN"] = self.x_security_token
 
-                print(f"[AUTH] Session created successfully")
+                print("[AUTH] Session created successfully")
                 return True
             else:
                 print(f"[AUTH] Failed to create session: {response.status_code}")
@@ -61,7 +61,7 @@ class CapitalComAPI:
 
     def get_all_markets(self, search_term=""):
         """獲取所有可交易市場"""
-        print(f"[API] Fetching markets...")
+        print("[API] Fetching markets...")
 
         endpoint = f"{self.base_url}/markets"
         params = {}
@@ -72,7 +72,7 @@ class CapitalComAPI:
             response = self.session.get(endpoint, headers=self.headers, params=params)
 
             if response.status_code == 200:
-                data = response.json()
+                response.json()
                 markets = data.get("markets", [])
                 print(f"[API] Found {len(markets)} markets")
                 return markets
@@ -444,7 +444,7 @@ def main():
         # 獲取市場導航
         navigation = api.get_market_navigation()
         if navigation:
-            print(f"[API] Market navigation retrieved")
+            print("[API] Market navigation retrieved")
 
         # 搜索股票
         stocks = api.search_us_stocks()
@@ -479,8 +479,8 @@ def main():
         for stock in unique_stocks:
             f.write(f"{stock['ticker']}\n")
 
-    print(f"[SAVED] Stock list saved to capital_real_stocks.json")
-    print(f"[SAVED] Ticker list saved to capital_real_tickers.txt")
+    print("[SAVED] Stock list saved to capital_real_stocks.json")
+    print("[SAVED] Ticker list saved to capital_real_tickers.txt")
 
     # 顯示樣本
     print("\nSample stocks:")

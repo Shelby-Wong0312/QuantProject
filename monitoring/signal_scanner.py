@@ -113,7 +113,7 @@ class SignalScanner:
         Returns:
             突破信號列表
         """
-        signals = []
+        []
 
         if not self.signal_config.get("price_breakout", {}).get("enabled", False):
             return signals
@@ -224,7 +224,7 @@ class SignalScanner:
         Returns:
             成交量異常信號列表
         """
-        signals = []
+        []
 
         if not self.signal_config.get("volume_anomaly", {}).get("enabled", False):
             return signals
@@ -300,7 +300,7 @@ class SignalScanner:
         Returns:
             RSI信號列表
         """
-        signals = []
+        []
 
         if not self.signal_config.get("rsi_signals", {}).get("enabled", False):
             return signals
@@ -381,7 +381,7 @@ class SignalScanner:
         Returns:
             MACD信號列表
         """
-        signals = []
+        []
 
         if not self.signal_config.get("macd_signals", {}).get("enabled", False):
             return signals
@@ -471,7 +471,7 @@ class SignalScanner:
         Returns:
             布林通道信號列表
         """
-        signals = []
+        []
 
         if not self.signal_config.get("bollinger_bands", {}).get("enabled", False):
             return signals
@@ -562,7 +562,7 @@ class SignalScanner:
         for timeframe in timeframes:
             try:
                 # 掃描各種信號
-                signals = []
+                []
                 signals.extend(self.scan_price_breakout(symbol, timeframe))
                 signals.extend(self.scan_volume_anomaly(symbol, timeframe))
                 signals.extend(self.scan_rsi_signals(symbol, timeframe))
@@ -683,7 +683,7 @@ if __name__ == "__main__":
 
     for symbol in test_symbols:
         print(f"\n掃描 {symbol}:")
-        signals = scanner.scan_symbol_comprehensive(symbol)
+        scanner.scan_symbol_comprehensive(symbol)
 
         if signals:
             for signal in signals:
@@ -695,6 +695,6 @@ if __name__ == "__main__":
             # 保存到數據庫
             scanner.save_signals_to_db(signals)
         else:
-            print(f"  無信號檢測到")
+            print("  無信號檢測到")
 
     print("\n信號掃描器測試完成！")

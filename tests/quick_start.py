@@ -55,7 +55,7 @@ async def run_paper_trading_demo():
     ]
 
     for symbol, side, quantity in trades:
-        order_id = await simulator.place_order(
+        await simulator.place_order(
             symbol=symbol, side=side, quantity=quantity, order_type="MARKET"
         )
         print(f"📝 Order placed: {side} {quantity} {symbol}")
@@ -98,7 +98,7 @@ async def run_paper_trading_demo():
     ]
 
     for symbol, side, quantity in sell_trades:
-        order_id = await simulator.place_order(
+        await simulator.place_order(
             symbol=symbol, side=side, quantity=quantity, order_type="MARKET"
         )
         print(f"📝 Order placed: {side} {quantity} {symbol}")
@@ -110,24 +110,24 @@ async def run_paper_trading_demo():
 
     metrics = simulator.get_performance_metrics()
 
-    print(f"\n📊 Portfolio Metrics:")
+    print("\n📊 Portfolio Metrics:")
     print(f"  Total Return: {metrics['total_return']:.2%}")
     print(f"  Portfolio Value: ${metrics['portfolio_value']:,.2f}")
     print(f"  Cash Balance: ${metrics['cash_balance']:,.2f}")
     print(f"  Positions Count: {metrics['positions_count']}")
 
-    print(f"\n💰 P&L Summary:")
+    print("\n💰 P&L Summary:")
     print(f"  Total P&L: ${metrics['total_pnl']:,.2f}")
     print(f"  Realized P&L: ${metrics['realized_pnl']:,.2f}")
     print(f"  Unrealized P&L: ${metrics['unrealized_pnl']:,.2f}")
 
-    print(f"\n📈 Trading Statistics:")
+    print("\n📈 Trading Statistics:")
     print(f"  Total Trades: {metrics['total_trades']}")
     print(f"  Win Rate: {metrics['win_rate']:.2%}")
     print(f"  Commission Paid: ${metrics['total_commission']:,.2f}")
 
     if metrics["positions_count"] > 0:
-        print(f"\n🏦 Current Positions:")
+        print("\n🏦 Current Positions:")
         for symbol, position in simulator.positions.items():
             print(f"  {symbol}: {position.quantity:.0f} shares @ ${position.avg_price:.2f}")
             print(f"    Market Value: ${position.market_value:,.2f}")
@@ -135,7 +135,7 @@ async def run_paper_trading_demo():
 
     # 保存狀態
     simulator.save_state("reports/paper_trading_state.json")
-    print(f"\n💾 State saved to reports/paper_trading_state.json")
+    print("\n💾 State saved to reports/paper_trading_state.json")
 
     print("\n✅ Paper Trading Demo Complete!")
 
@@ -171,7 +171,7 @@ async def run_signal_generation_demo():
         noise = np.random.normal(0, params["volatility"], 200).cumsum()
         prices = 100 + trend + noise
 
-        data = pd.DataFrame(
+        pd.DataFrame(
             {
                 "open": prices + np.random.normal(0, 0.1, 200),
                 "high": prices + abs(np.random.normal(0, 0.2, 200)),

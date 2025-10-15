@@ -65,7 +65,7 @@ class StochasticStrategy:
             "position_size_pct": 0.08,  # 較小倉位（高頻交易）
         }
 
-        logger.info(f"Stochastic Strategy initialized (High-frequency: ~98 trades)")
+        logger.info("Stochastic Strategy initialized (High-frequency: ~98 trades)")
 
     def calculate_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """
@@ -81,7 +81,7 @@ class StochasticStrategy:
         sma_values = self.sma_filter.calculate(data)
 
         # 初始化信號
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
         signals["k_value"] = stoch_values["k"]
         signals["d_value"] = stoch_values["d"]
         signals["buy"] = False

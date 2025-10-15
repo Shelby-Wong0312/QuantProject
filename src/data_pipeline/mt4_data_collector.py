@@ -174,7 +174,7 @@ class DataCache:
             # 返回OHLC數據
             ohlc_list = self.get_recent_ohlc(symbol, timeframe)
             if ohlc_list:
-                data = [o.to_dict() for o in ohlc_list]
+                [o.to_dict() for o in ohlc_list]
                 df = pd.DataFrame(data)
                 df["timestamp"] = pd.to_datetime(df["timestamp"])
                 df.set_index("timestamp", inplace=True)
@@ -183,7 +183,7 @@ class DataCache:
             # 返回Tick數據
             tick_list = self.get_recent_ticks(symbol)
             if tick_list:
-                data = [t.to_dict() for t in tick_list]
+                [t.to_dict() for t in tick_list]
                 df = pd.DataFrame(data)
                 df["timestamp"] = pd.to_datetime(df["timestamp"])
                 df.set_index("timestamp", inplace=True)
@@ -298,7 +298,7 @@ class MT4DataPipeline:
     def subscribe(self, symbols: Union[str, List[str]]):
         """訂閱交易品種"""
         if isinstance(symbols, str):
-            symbols = [symbols]
+            [symbols]
 
         for symbol in symbols:
             self.subscribed_symbols.add(symbol)
@@ -308,7 +308,7 @@ class MT4DataPipeline:
     def unsubscribe(self, symbols: Union[str, List[str]]):
         """取消訂閱"""
         if isinstance(symbols, str):
-            symbols = [symbols]
+            [symbols]
 
         for symbol in symbols:
             self.subscribed_symbols.discard(symbol)
@@ -697,7 +697,7 @@ if __name__ == "__main__":
 
             # 顯示統計
             stats = pipeline.get_stats()
-            print(f"\n統計信息:")
+            print("\n統計信息:")
             print(f"  總Tick數: {stats['total_ticks']}")
             print(f"  有效率: {stats['validity_rate']:.2%}")
             print(f"  每秒Tick: {stats['ticks_per_second']:.2f}")

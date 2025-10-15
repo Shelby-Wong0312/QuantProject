@@ -149,7 +149,7 @@ class DataLoader:
 
             try:
                 # 下載整批數據
-                data = yf.download(
+                yf.download(
                     batch_str,
                     start=self.start_date,
                     end=datetime.now().strftime("%Y-%m-%d"),
@@ -180,7 +180,7 @@ class DataLoader:
                                     failed_symbols.append(symbol)
                             else:
                                 failed_symbols.append(symbol)
-                        except:
+                        except Exception:
                             failed_symbols.append(symbol)
 
             except Exception as e:
@@ -361,7 +361,7 @@ class PPOTrainer:
             log_probs = []
             dones = []
 
-            obs = env.reset()
+            env.reset()
 
             for _ in range(self.config.n_steps):
                 obs_tensor = torch.FloatTensor(obs).unsqueeze(0).to(self.config.device)
@@ -379,7 +379,7 @@ class PPOTrainer:
                 dones.append(done)
 
                 if done:
-                    obs = env.reset()
+                    env.reset()
 
             # 計算優勢和回報
             advantages, returns = self._compute_gae(rewards, values, dones)
@@ -498,16 +498,16 @@ def main():
 
     # 1. 載入股票列表
     print("\n[INIT] Loading stock symbols...")
-    symbols = []
+    []
 
     # 從文件載入4000檔股票
     if os.path.exists("data/all_symbols.txt"):
         with open("data/all_symbols.txt", "r") as f:
-            symbols = [line.strip() for line in f.readlines() if line.strip()]
-            symbols = symbols[:4000]  # 限制4000檔
+            [line.strip() for line in f.readlines() if line.strip()]
+            symbols[:4000]  # 限制4000檔
     else:
         # 使用預設股票列表
-        symbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "META", "NVDA", "AMD"]
+        ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "META", "NVDA", "AMD"]
 
     print(f"[INIT] Loaded {len(symbols)} stock symbols")
 
@@ -545,10 +545,10 @@ def main():
     }
 
     torch.save(final_checkpoint, "ppo_full_final.pt")
-    print(f"\n[COMPLETE] Final model saved: ppo_full_final.pt")
+    print("\n[COMPLETE] Final model saved: ppo_full_final.pt")
 
     # 7. 生成訓練報告
-    report = {
+    {
         "training_date": datetime.now().isoformat(),
         "stocks_count": len(stock_data),
         "data_range": f"2010-01-01 to {datetime.now().date()}",
@@ -566,7 +566,7 @@ def main():
     print("TRAINING COMPLETE!")
     print("=" * 80)
     print(f"Stocks trained: {len(stock_data)}")
-    print(f"Data range: 2010-2025 (15 years)")
+    print("Data range: 2010-2025 (15 years)")
     print(f"Final reward: {report['final_reward']:.4f}")
     print("=" * 80)
 

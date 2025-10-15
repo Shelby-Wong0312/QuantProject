@@ -19,7 +19,7 @@ def load_capital_stocks():
     # 從capital_real_stocks.json載入
     if os.path.exists("capital_real_stocks.json"):
         with open("capital_real_stocks.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
+            json.load(f)
             for item in data:
                 ticker = item.get("ticker", "")
                 epic = item.get("epic", "")
@@ -56,7 +56,7 @@ def validate_yahoo_finance(symbol):
     """驗證符號在Yahoo Finance是否有效"""
     try:
         # 嘗試下載最近的數據
-        data = yf.download(
+        yf.download(
             symbol,
             start=(datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d"),
             end=datetime.now().strftime("%Y-%m-%d"),
@@ -142,9 +142,9 @@ def save_validated_list(valid_symbols):
         for item in valid_symbols:
             f.write(f"{item['capital_ticker']}\n")
 
-    print(f"\n[SAVED] validated_stocks_mapping.json - Complete mapping")
-    print(f"[SAVED] validated_yahoo_symbols.txt - Yahoo Finance symbols")
-    print(f"[SAVED] validated_capital_symbols.txt - Capital.com symbols")
+    print("\n[SAVED] validated_stocks_mapping.json - Complete mapping")
+    print("[SAVED] validated_yahoo_symbols.txt - Yahoo Finance symbols")
+    print("[SAVED] validated_capital_symbols.txt - Capital.com symbols")
 
 
 def add_reliable_stocks():

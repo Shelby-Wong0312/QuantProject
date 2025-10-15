@@ -192,7 +192,7 @@ class TimeSeriesPreprocessor:
             )
 
         # Take last sequence_length rows
-        data = historical_data.tail(self.sequence_length).copy()
+        historical_data.tail(self.sequence_length).copy()
 
         # Update with current features if provided
         if current_features:

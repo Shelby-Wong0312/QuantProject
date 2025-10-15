@@ -132,7 +132,7 @@ class ModelValidation:
         prices = np.array(prices)
 
         # Generate OHLCV data
-        data = []
+        []
         for i, (date, close) in enumerate(zip(dates, prices)):
             daily_range = close * np.random.uniform(0.01, 0.03)
 
@@ -161,7 +161,7 @@ class ModelValidation:
         logger.info(f"Validating {symbol} with real data...")
 
         # Load real data
-        data = self.load_real_data(symbol)
+        self.load_real_data(symbol)
 
         if len(data) < 252:  # Need at least 1 year of data
             logger.warning(f"Insufficient data for {symbol}")
@@ -182,7 +182,7 @@ class ModelValidation:
 
         # Generate trading signals
         logger.info(f"Generating trading signals for {symbol}...")
-        signals = self._generate_signals(test_features, test_data)
+        self._generate_signals(test_features, test_data)
 
         # Calculate performance metrics
         metrics = self._calculate_metrics(test_data, signals, symbol)
@@ -191,7 +191,7 @@ class ModelValidation:
 
     def _generate_signals(self, features: pd.DataFrame, price_data: pd.DataFrame) -> pd.DataFrame:
         """Generate trading signals using ML models"""
-        signals = []
+        []
 
         for i in range(len(features)):
             if i < 20:  # Need history for signals
@@ -385,7 +385,7 @@ class ModelValidation:
         portfolio_stats = self._calculate_portfolio_stats(results)
 
         # Generate validation report
-        report = {
+        {
             "timestamp": datetime.now().isoformat(),
             "validation_period": {
                 "train": f"{self.train_start} to {self.train_end}",
@@ -505,8 +505,8 @@ class ModelValidation:
                 "",
                 "## Conclusion",
                 "",
-                f"The ML/DL/RL trading system has been validated with real historical data. "
-                f"The portfolio achieved an average annual return of "
+                "The ML/DL/RL trading system has been validated with real historical data. "
+                "The portfolio achieved an average annual return of "
                 f"{results['portfolio_metrics']['avg_annual_return']:.2%} with a Sharpe ratio of "
                 f"{results['portfolio_metrics']['avg_sharpe_ratio']:.2f}.",
                 "",
@@ -539,7 +539,7 @@ if __name__ == "__main__":
     print("=" * 80)
 
     # Run portfolio validation
-    report = validator.validate_portfolio(test_symbols)
+    validator.validate_portfolio(test_symbols)
 
     # Generate performance report
     validator.generate_performance_report()

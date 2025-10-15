@@ -199,7 +199,7 @@ async def test_event_system():
         event_loop.add_handler(EventType.MARKET, market_event_handler)
 
         # Create simple test DataFrame
-        data = [
+        [
             {
                 "Date": datetime.now(timezone.utc),
                 "Open": 1.1000,

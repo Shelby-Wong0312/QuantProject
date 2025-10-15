@@ -79,7 +79,7 @@ class CapitalHistoryLoader:
         try:
             response = self.session.get(url, headers=headers, params=params, timeout=30)
             if response.status_code == 200:
-                data = response.json()
+                response.json()
                 prices = data.get("prices", [])
 
                 if not prices:
@@ -126,9 +126,9 @@ class CapitalHistoryLoader:
         try:
             response = self.session.get(url, headers=headers, timeout=30)
             if response.status_code == 200:
-                data = response.json()
+                response.json()
                 markets = data.get("markets", [])
-                symbols = [market["epic"] for market in markets]
+                [market["epic"] for market in markets]
                 logger.info(f"獲取到 {len(symbols)} 個可用交易品種")
                 return symbols
             else:

@@ -29,7 +29,7 @@ def load_stock_data(symbols: list = None, days: int = 1000):
 
     # 如果沒有指定，使用預設股票池
     if symbols is None:
-        symbols = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "META", "NVDA", "JPM", "JNJ", "V"]
+        ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "META", "NVDA", "JPM", "JNJ", "V"]
 
     prices_dict = {}
 
@@ -94,7 +94,7 @@ def test_mpt_optimization(prices_df):
     print(f"      Expected return: {sharpe_portfolio['expected_return']:.2%}")
     print(f"      Risk: {sharpe_portfolio['risk']:.2%}")
     print(f"      Sharpe ratio: {sharpe_portfolio['sharpe_ratio']:.2f}")
-    print(f"      Top holdings:")
+    print("      Top holdings:")
     for symbol, weight in list(sharpe_portfolio["significant_weights"].items())[:5]:
         print(f"        {symbol}: {weight:.1%}")
 
@@ -186,7 +186,7 @@ def test_lstm_prediction(prices_df):
             result = lstm.predict(prices_df[[symbol]])
             all_predictions[symbol] = result["expected_return"]
             print(f"   {symbol}: {result['expected_return']:.2%}")
-        except:
+        except Exception:
             all_predictions[symbol] = 0.0
 
     return lstm, all_predictions
@@ -299,7 +299,7 @@ def main():
     print(f"Test Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     # 1. Load data
-    symbols = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]  # Simplified stock pool
+    ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]  # Simplified stock pool
     prices_df = load_stock_data(symbols, days=500)
 
     # 2. Test MPT

@@ -77,23 +77,23 @@ def check_progress():
     conn.close()
 
     print("-" * 40)
-    print(f"\nMonitoring Results:")
+    print("\nMonitoring Results:")
     print(f"  New Stocks Added: {final_count - initial_count}")
     print(f"  New Records Added: {final_records - initial_records:,}")
     print(f"  Current Progress: {final_count}/{total_stocks} ({final_count/total_stocks*100:.2f}%)")
 
     if final_count - initial_count > 0:
-        print(f"\n[SUCCESS] System is downloading data!")
+        print("\n[SUCCESS] System is downloading data!")
         speed = (final_count - initial_count) / 0.5  # stocks per minute
         eta = (total_stocks - final_count) / speed / 60 if speed > 0 else 0
         print(f"   Speed: {speed:.1f} stocks/minute")
         print(f"   ETA: {eta:.1f} hours")
     else:
-        print(f"\n[WARNING] No new data detected")
-        print(f"   Possible reasons:")
-        print(f"   1. Download process not running")
-        print(f"   2. Network connection issues")
-        print(f"   3. API rate limits")
+        print("\n[WARNING] No new data detected")
+        print("   Possible reasons:")
+        print("   1. Download process not running")
+        print("   2. Network connection issues")
+        print("   3. API rate limits")
 
 
 if __name__ == "__main__":

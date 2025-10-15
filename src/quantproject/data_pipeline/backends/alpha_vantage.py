@@ -56,7 +56,7 @@ class AlphaVantageBackend(IDataBackend):
         try:
             resp = requests.get(url, params=params, timeout=self.timeout)
             resp.raise_for_status()
-            data = resp.json()
+            resp.json()
         except Exception:
             return pd.DataFrame(columns=_COLS)
 
@@ -99,7 +99,7 @@ class AlphaVantageBackend(IDataBackend):
         try:
             resp = requests.get(url, params=params, timeout=self.timeout)
             resp.raise_for_status()
-            data = resp.json()
+            resp.json()
         except Exception:
             return pd.DataFrame(columns=_COLS)
 

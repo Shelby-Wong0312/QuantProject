@@ -180,7 +180,7 @@ class TradeAnalyzer:
             if metrics["total_losses"] != 0:
                 metrics["profit_factor"] = abs(metrics["total_wins"] / metrics["total_losses"])
             else:
-                metrics["profit_factor"] = float("inf") if metrics["total_wins"] > 0 else 0
+                metrics["profit_factor"] = float("in") if metrics["total_wins"] > 0 else 0
 
         except Exception as e:
             print(f"Error calculating basic metrics: {e}")

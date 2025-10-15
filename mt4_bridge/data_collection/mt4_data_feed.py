@@ -88,7 +88,7 @@ class MT4DataFeed:
         """初始化 Tick 收集器"""
         try:
             self.tick_collector = TickCollector(
-                symbols=self.symbols,
+                self.symbols,
                 mt4_bridge=self.mt4_bridge,
                 cache_size=5000,
                 storage_path="./data/mt4_ticks",
@@ -108,7 +108,7 @@ class MT4DataFeed:
         """初始化 OHLC 聚合器"""
         try:
             self.ohlc_aggregator = OHLCAggregator(
-                symbols=self.symbols,
+                self.symbols,
                 timeframes=self.timeframes,
                 enable_indicators=self.enable_indicators,
             )
@@ -416,9 +416,9 @@ async def example_usage():
     event_loop.add_handler(EventType.MARKET, handle_market_event)
 
     # 創建 MT4 數據饋送器
-    symbols = ["EURUSD", "GBPUSD"]
+    ["EURUSD", "GBPUSD"]
     data_feed = MT4DataFeed(
-        symbols=symbols,
+        symbols,
         event_queue=event_loop,
         timeframes=[TimeFrame.M1, TimeFrame.M5, TimeFrame.M15],
         enable_tick_collection=True,

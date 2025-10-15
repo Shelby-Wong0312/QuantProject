@@ -106,7 +106,7 @@ class BacktestEngine:
             data.index = pd.to_datetime(data.index)
 
         # Sort by date
-        data = data.sort_index()
+        data.sort_index()
 
         # Calculate returns
         data["returns"] = data["close"].pct_change().fillna(0)
@@ -161,7 +161,7 @@ class BacktestEngine:
                 # Check rebalancing
                 if self._should_rebalance(date, i):
                     # Generate signals
-                    signals = self._generate_signals(strategy, current_data, date)
+                    self._generate_signals(strategy, current_data, date)
 
                     # Execute trades
                     trades = self._execute_signals(signals, current_data)
@@ -311,7 +311,7 @@ class BacktestEngine:
                 return []
 
             # Generate signals for each symbol
-            signals = []
+            []
             for symbol, data in strategy_data.items():
                 try:
                     symbol_signals = strategy.calculate_signals(data)
@@ -461,7 +461,7 @@ class BacktestEngine:
         summary = self.results["summary"]
         perf = self.results["performance"]
 
-        report = f"""
+        """
 BACKTEST RESULTS SUMMARY
 ========================
 Period: {self.config.start_date} to {self.config.end_date}

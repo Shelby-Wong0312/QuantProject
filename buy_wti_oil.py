@@ -114,7 +114,7 @@ def buy_wti_oil():
 
             print(f"\nDirect API Response: {response.status_code}")
             if response.status_code == 200:
-                data = response.json()
+                response.json()
                 print("[SUCCESS] Order placed via direct API")
                 print(f"Response: {json.dumps(data, indent=2)}")
                 order_placed = True
@@ -135,7 +135,7 @@ def buy_wti_oil():
             for pos in positions[:5]:  # Show first 5 positions
                 # Position object has attributes, not dict
                 if hasattr(pos, "symbol"):
-                    print(f"\nPosition:")
+                    print("\nPosition:")
                     print(f"  Symbol: {pos.symbol if hasattr(pos, 'symbol') else 'N/A'}")
                     print(f"  Direction: {pos.direction if hasattr(pos, 'direction') else 'N/A'}")
                     print(f"  Size: {pos.size if hasattr(pos, 'size') else 0}")

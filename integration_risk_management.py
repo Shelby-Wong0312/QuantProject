@@ -251,7 +251,7 @@ def demo_integrated_system():
 
     # Simulate some trades
     np.random.seed(42)
-    symbols = ["AAPL", "GOOGL", "MSFT", "TSLA", "NVDA"]
+    ["AAPL", "GOOGL", "MSFT", "TSLA", "NVDA"]
 
     for i in range(20):
         # Pick random symbol and price
@@ -303,7 +303,7 @@ def demo_integrated_system():
 
     roi_status = system.get_roi_status()
     if "error" not in roi_status:
-        print(f"\nROI Status:")
+        print("\nROI Status:")
         print(f"Average ROI: {roi_status['average_roi']:.2f}%")
         print(f"Active Alerts: {roi_status['active_alerts']}")
 

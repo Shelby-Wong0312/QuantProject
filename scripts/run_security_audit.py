@@ -325,7 +325,7 @@ class SecurityAuditor:
 
     def generate_markdown_report(self, severity_groups: Dict):
         """Generate markdown security report"""
-        report = []
+        []
         report.append("# Security Audit Report")
         report.append(f"## Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         report.append("## Cloud Security - TASK SEC-001")
@@ -412,7 +412,7 @@ class SecurityAuditor:
         )
 
         print(f"\nSecurity Score: {score}/100 {status}")
-        print(f"\nVulnerabilities Found:")
+        print("\nVulnerabilities Found:")
         print(f"  HIGH:   {self.results['summary']['high_severity']}")
         print(f"  MEDIUM: {self.results['summary']['medium_severity']}")
         print(f"  LOW:    {self.results['summary']['low_severity']}")

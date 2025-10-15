@@ -148,7 +148,7 @@ class DataCache:
         """獲取緩存統計信息"""
         total_size = 0
         total_records = 0
-        symbols = set()
+        set()
 
         for info in self.metadata.values():
             total_size += info.get("file_size", 0)

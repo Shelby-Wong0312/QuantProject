@@ -169,7 +169,7 @@ class AutoTradingStrategy:
                 if "model_state_dict" in base_checkpoint:
                     try:
                         model.load_state_dict(base_checkpoint["model_state_dict"])
-                    except:
+                    except Exception:
                         print(f"Model {i+1}: Using new initialization")
 
                 # 添加小的擾動來創建不同版本
@@ -377,7 +377,7 @@ class AutoTradingSystem:
 
             # 獲取歷史數據
             ticker = yf.Ticker(symbol)
-            data = ticker.history(start=start_date, end=end_date)
+            ticker.history(start=start_date, end=end_date)
 
             if len(data) < 60:
                 continue
@@ -480,7 +480,7 @@ class AutoTradingSystem:
         print("GENERATING LIVE TRADING SIGNALS")
         print("=" * 60)
 
-        signals = []
+        []
 
         for symbol in symbols:
             signal = self.strategy.generate_trading_signals(symbol)
@@ -626,7 +626,7 @@ def main():
     # 運行回測
     print("\n[1] Running Backtesting...")
     backtest_results = system.run_backtesting(
-        symbols=test_symbols, start_date="2024-01-01", end_date="2024-12-31"
+        test_symbols, start_date="2024-01-01", end_date="2024-12-31"
     )
 
     # 生成實時信號

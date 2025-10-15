@@ -275,7 +275,7 @@ class CapitalComAPI:
             if not self.authenticate():
                 return None
         
-        data = self._make_request('GET', '/api/v1/accounts')
+        self._make_request('GET', '/api/v1/accounts')
         if data:
             return data.get('accounts', [])
         return None
@@ -294,7 +294,7 @@ class CapitalComAPI:
             if not self.authenticate():
                 return None
         
-        data = self._make_request('GET', f'/api/v1/markets/{symbol}')
+        self._make_request('GET', f'/api/v1/markets/{symbol}')
         
         if data and 'snapshot' in data:
             snapshot = data['snapshot']
@@ -321,7 +321,7 @@ class CapitalComAPI:
             if not self.authenticate():
                 return None
         
-        data = self._make_request('GET', '/api/v1/positions')
+        self._make_request('GET', '/api/v1/positions')
         
         if data and 'positions' in data:
             positions = []
@@ -384,7 +384,7 @@ class CapitalComAPI:
         if take_profit:
             order_data["profitLevel"] = take_profit
         
-        data = self._make_request('POST', '/api/v1/positions', order_data)
+        self._make_request('POST', '/api/v1/positions', order_data)
         
         if data and 'dealReference' in data:
             logger.info(f"Order placed: {data['dealReference']}")
@@ -406,7 +406,7 @@ class CapitalComAPI:
             if not self.authenticate():
                 return False
         
-        data = self._make_request('DELETE', f'/api/v1/positions/{position_id}')
+        self._make_request('DELETE', f'/api/v1/positions/{position_id}')
         return data is not None
     
     def get_historical_prices(self, symbol: str, resolution: str = 'DAY',
@@ -431,7 +431,7 @@ class CapitalComAPI:
             "max": max_results
         }
         
-        data = self._make_request('GET', f'/api/v1/prices/{symbol}')
+        self._make_request('GET', f'/api/v1/prices/{symbol}')
         
         if data and 'prices' in data:
             return data['prices']
@@ -457,7 +457,7 @@ class CapitalComAPI:
             "limit": limit
         }
         
-        data = self._make_request('GET', '/api/v1/markets')
+        self._make_request('GET', '/api/v1/markets')
         
         if data and 'markets' in data:
             return data['markets']
@@ -473,7 +473,7 @@ class CapitalComAPI:
         if not self.is_authenticated():
             return False
         
-        data = self._make_request('GET', '/api/v1/ping')
+        self._make_request('GET', '/api/v1/ping')
         return data is not None
     
     def logout(self) -> bool:
@@ -484,7 +484,7 @@ class CapitalComAPI:
             True if successful
         """
         if self.security_token:
-            data = self._make_request('DELETE', '/api/v1/session')
+            self._make_request('DELETE', '/api/v1/session')
             self.cst = None
             self.security_token = None
             self.session_expires = None

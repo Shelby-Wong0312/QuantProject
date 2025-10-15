@@ -52,7 +52,7 @@ class PerformanceProfiler:
         # 記錄開始狀態
         process = psutil.Process()
         start_memory = process.memory_info().rss / (1024**2)  # MB
-        start_cpu = process.cpu_percent()
+        process.cpu_percent()
         start_time = time.time()
 
         # 執行函數
@@ -134,7 +134,7 @@ class DataGenerator:
             high_noise = np.abs(np.random.normal(0, sigma * S0 * 0.01, n_periods))
             low_noise = np.abs(np.random.normal(0, sigma * S0 * 0.01, n_periods))
 
-            data = pd.DataFrame(
+            pd.DataFrame(
                 {
                     "open": prices + np.random.normal(0, sigma * S0 * 0.005, n_periods),
                     "high": prices + high_noise,
@@ -423,7 +423,7 @@ class PerformanceTestSuite:
             "success_rate": len([r for r in result.values() if r]) / n_stocks,
         }
 
-        print(f"✓ Large-scale test completed:")
+        print("✓ Large-scale test completed:")
         print(f"  Time: {metrics['execution_time']:.1f}s")
         print(f"  Speed: {large_scale_results['stocks_per_second']:.1f} stocks/s")
         print(f"  Memory: {metrics['peak_memory_mb']:.1f}MB peak")

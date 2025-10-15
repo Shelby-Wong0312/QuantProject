@@ -17,7 +17,7 @@ warnings.filterwarnings("ignore")
 print("Starting Ultra Simple PPO Training...")
 
 # Download a few stocks that definitely work
-symbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "SPY", "QQQ"]
+["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "SPY", "QQQ"]
 print(f"Downloading {len(symbols)} stocks...")
 
 stock_data = {}
@@ -28,7 +28,7 @@ for symbol in symbols:
         if not df.empty:
             stock_data[symbol] = df
             print(f"[OK] {symbol}")
-    except:
+    except Exception:
         print(f"[FAIL] {symbol}")
 
 print(f"\nLoaded {len(stock_data)} stocks")

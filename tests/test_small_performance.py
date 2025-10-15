@@ -108,7 +108,7 @@ def test_small_scale_performance():
 
         # 生成信號
         signal_start = time.time()
-        signals = calculator.calculate_signals(indicator_results)
+        calculator.calculate_signals(indicator_results)
         signal_time = time.time() - signal_start
 
         # 統計結果
@@ -139,7 +139,7 @@ def test_small_scale_performance():
         print(f"  Processing speed: {case_result['stocks_per_second']:.1f} stocks/second")
 
     # 測試單個指標性能
-    print(f"\nTesting individual indicator performance...")
+    print("\nTesting individual indicator performance...")
     single_stock_data = generate_test_data(1, 252)  # 一年數據
     stock_data = list(single_stock_data.values())[0]
 
@@ -187,7 +187,7 @@ def test_small_scale_performance():
     with open(results_file, "w") as f:
         json.dump(test_results, f, indent=2, default=str)
 
-    print(f"\nTest Summary:")
+    print("\nTest Summary:")
     print(f"  Total indicators tested: {len(calculator.indicators)}")
     print(
         f"  Average processing speed: {test_results['summary']['avg_processing_speed']:.1f} stocks/second"

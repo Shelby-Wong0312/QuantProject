@@ -226,7 +226,7 @@ class PortfolioTradingEnvironment(gym.Env):
         if symbol not in self.market_data:
             return [0.0] * self.features_per_asset
 
-        data = self.market_data[symbol]
+        self.market_data[symbol]
 
         # Get current and historical prices
         end_idx = self.current_step + self.lookback_window

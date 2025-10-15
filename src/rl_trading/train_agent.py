@@ -132,7 +132,7 @@ if __name__ == "__main__":
     parser.add_argument("--n-epochs", type=int, default=10, help="Number of epochs per update")
     parser.add_argument("--gamma", type=float, default=0.99, help="Discount factor")
     parser.add_argument("--n-envs", type=int, default=4, help="Number of parallel environments")
-    parser.add_argument("--ent-coef", type=float, default=0.01, help="Entropy coefficient")
+    parser.add_argument("--ent-coe", type=float, default=0.01, help="Entropy coefficient")
     parser.add_argument("--clip-range", type=float, default=0.2, help="PPO clip range")
 
     # Training settings

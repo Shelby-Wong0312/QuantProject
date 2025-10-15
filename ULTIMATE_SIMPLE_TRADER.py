@@ -93,7 +93,7 @@ class SimpleAutoTrader:
                 self.session_token = response.headers.get("X-SECURITY-TOKEN")
                 print("[OK] Capital.com connected")
                 return True
-        except:
+        except Exception:
             pass
 
         print("[INFO] Capital.com not connected, using simulation")
@@ -202,7 +202,7 @@ class SimpleAutoTrader:
             )
             if response.status_code == 200:
                 print(f"[CAPITAL.COM] Order success: {symbol}")
-        except:
+        except Exception:
             pass
 
     def check_positions(self):
@@ -221,14 +221,14 @@ class SimpleAutoTrader:
                     print(f"[TAKE PROFIT] {symbol} @ ${current:.2f}")
                     self.positions.pop(symbol)
 
-            except:
+            except Exception:
                 pass
 
     def scan_market(self):
         """Scan market for signals"""
         print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Scanning {len(self.stocks)} stocks...")
 
-        signals = []
+        []
         with ThreadPoolExecutor(max_workers=20) as executor:
             futures = [executor.submit(self.get_signals, symbol) for symbol in self.stocks]
             for future in futures:

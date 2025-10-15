@@ -28,7 +28,7 @@ print("=" * 80)
 # Load mapped symbols
 def load_symbols():
     """Load all successfully mapped Yahoo symbols"""
-    symbols = []
+    []
     try:
         with open("yahoo_symbols_all.txt", "r") as f:
             for line in f:
@@ -36,10 +36,10 @@ def load_symbols():
                 if symbol and not symbol.startswith("#"):
                     symbols.append(symbol)
         print(f"Loaded {len(symbols)} symbols from mapping file")
-    except:
+    except Exception:
         print("Warning: Could not load yahoo_symbols_all.txt")
         # Use backup list
-        symbols = [
+        [
             "AAPL",
             "MSFT",
             "GOOGL",
@@ -122,7 +122,7 @@ class StockDataLoader:
                 df = pd.read_csv(cache_file, index_col=0, parse_dates=True)
                 if len(df) > 100:
                     return df
-            except:
+            except Exception:
                 pass
 
         # Download if not cached
@@ -132,7 +132,7 @@ class StockDataLoader:
             if not df.empty and len(df) > 100:
                 df.to_csv(cache_file)
                 return df
-        except:
+        except Exception:
             pass
 
         return None
@@ -217,7 +217,7 @@ def extract_features(df, idx, window=50):
 
         return np.array(features[:50], dtype=np.float32)
 
-    except:
+    except Exception:
         return None
 
 
@@ -297,7 +297,7 @@ def main():
 
     # Step 1: Load symbols
     print("\n[Step 1/4] Loading symbols...")
-    symbols = load_symbols()
+    load_symbols()
 
     # Step 2: Load stock data
     print("\n[Step 2/4] Loading stock data...")
@@ -344,7 +344,7 @@ def main():
     print(f"Trained on {len(stock_data)} stocks")
     print(f"Total episodes: {len(rewards)}")
     print(f"Final avg reward: {np.mean(rewards[-100:]):.2f}")
-    print(f"Model saved to: models/ppo_3488_stocks.pt")
+    print("Model saved to: models/ppo_3488_stocks.pt")
     print("=" * 80)
 
     # Save training summary

@@ -25,7 +25,7 @@ def _post_json(url: str, payload: dict, timeout: int = 5) -> dict:
 
     def _attempt():
         with urllib.request.urlopen(req, timeout=timeout) as resp:
-            data = resp.read()
+            resp.read()
             if not data:
                 return {"status": resp.status}
             return json.loads(data.decode("utf-8"))
@@ -90,7 +90,7 @@ def get_profile(user_id: str) -> dict:
     )
     try:
         with urllib.request.urlopen(req, timeout=5) as resp:
-            data = resp.read()
+            resp.read()
             return json.loads(data.decode("utf-8"))
     except Exception as e:
         return {"error": True, "message": str(e)}

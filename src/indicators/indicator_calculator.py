@@ -331,7 +331,7 @@ class IndicatorCalculator:
         try:
             # 確保索引是 datetime
             if not isinstance(data.index, pd.DatetimeIndex):
-                data = data.copy()
+                data.copy()
                 data.index = pd.to_datetime(data.index)
 
             # OHLCV 重採樣規則
@@ -424,7 +424,7 @@ class IndicatorCalculator:
             "williams_overbought": -20,
         }
 
-        signals = {}
+        {}
 
         for symbol, timeframes_data in indicators_data.items():
             signals[symbol] = {}
@@ -455,7 +455,7 @@ class IndicatorCalculator:
         if base_index is None:
             return pd.DataFrame()
 
-        signals = pd.DataFrame(index=base_index)
+        pd.DataFrame(index=base_index)
 
         # RSI 信號
         if "RSI_14" in indicators:
@@ -559,7 +559,7 @@ class IndicatorCalculator:
         if indicator_name not in self.indicators:
             raise ValueError(f"Unknown indicator: {indicator_name}")
 
-        best_params = None
+        None
         best_score = float("-inf")
         results = []
 
@@ -579,7 +579,7 @@ class IndicatorCalculator:
 
                 # 計算指標
                 indicator_result = indicator.calculate(data)
-                signals = indicator.get_signals(data)
+                indicator.get_signals(data)
 
                 # 計算性能指標
                 performance = self._calculate_performance(data, signals, metric)
@@ -588,7 +588,7 @@ class IndicatorCalculator:
 
                 if performance > best_score:
                     best_score = performance
-                    best_params = params
+                    params
 
             except Exception as e:
                 logger.debug(f"Parameter optimization error for {params}: {e}")
@@ -695,7 +695,7 @@ if __name__ == "__main__":
 
     # 生成信號
     print("\nGenerating trading signals...")
-    signals = calculator.calculate_signals(results)
+    calculator.calculate_signals(results)
 
     # 顯示示例結果
     if results:

@@ -142,7 +142,7 @@ class TestDataPipeline(unittest.TestCase):
         self.mock_client = AsyncMock()
         self.symbols = ["AAPL", "GOOGL"]
         self.pipeline = DataPipeline(
-            symbols=self.symbols, data_client=self.mock_client, buffer_size=100
+            self.symbols, data_client=self.mock_client, buffer_size=100
         )
 
     async def test_get_historical_data(self):

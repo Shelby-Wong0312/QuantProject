@@ -496,7 +496,7 @@ if __name__ == "__main__":
         print(f"Price: {price:>6.2f} | Stop: {new_stop:>6.2f} | Triggered: {triggered}")
 
         if triggered:
-            print(f"\n*** STOP LOSS TRIGGERED! ***")
+            print("\n*** STOP LOSS TRIGGERED! ***")
             print(f"Reason: {reason}")
             break
 

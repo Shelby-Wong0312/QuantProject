@@ -403,7 +403,7 @@ class StressTesting:
         Returns:
             報告字典
         """
-        report = {
+        {
             "timestamp": datetime.now().isoformat(),
             "portfolio_value": self.portfolio_value,
             "position_count": len(self.positions),
@@ -678,7 +678,7 @@ if __name__ == "__main__":
     # 生成報告
     print("\n4. Generating Report:")
     print("-" * 40)
-    report = stress_test.generate_report("reports/stress_test_report.json")
+    stress_test.generate_report("reports/stress_test_report.json")
     print(f"Report saved with {len(report['results'])} scenarios tested")
 
     if "summary" in report:

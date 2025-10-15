@@ -313,7 +313,7 @@ def quick_download():
     print("=" * 80)
 
     # Remove duplicates
-    symbols = list(set(MAJOR_STOCKS))
+    list(set(MAJOR_STOCKS))
     print(f"Downloading {len(symbols)} major stocks...")
 
     # Create data directory
@@ -337,7 +337,7 @@ def quick_download():
             print(
                 f"\nDownloading batch {i//batch_size + 1}/{(len(symbols)-1)//batch_size + 1}: {batch_str}"
             )
-            data = yf.download(
+            yf.download(
                 batch_str,
                 start=start_date,
                 end=end_date,
@@ -363,7 +363,7 @@ def quick_download():
                         df.to_csv(os.path.join(data_dir, f"{symbol}.csv"))
                     else:
                         failed_symbols.append(symbol)
-                except:
+                except Exception:
                     failed_symbols.append(symbol)
 
         except Exception as e:
@@ -420,7 +420,7 @@ def main():
                     print(f"✓ {symbol}", end=" ")
                     if len(stock_data) >= 50:
                         break
-            except:
+            except Exception:
                 pass
         print()
 

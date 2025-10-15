@@ -76,7 +76,7 @@ class UnifiedPPOMonitor:
                 try:
                     self.model.load_state_dict(checkpoint["model_state_dict"])
                     print("[SUCCESS] Model loaded from checkpoint")
-                except:
+                except Exception:
                     print("[WARNING] Using new model initialization")
         else:
             print("[WARNING] Model file not found, using new initialization")
@@ -204,7 +204,7 @@ class UnifiedPPOMonitor:
             ticker = yf.Ticker(symbol)
             end_date = datetime.now()
             start_date = end_date - timedelta(days=60)
-            data = ticker.history(start=start_date, end=end_date)
+            ticker.history(start=start_date, end=end_date)
 
             if data.empty or len(data) < 30:
                 return {

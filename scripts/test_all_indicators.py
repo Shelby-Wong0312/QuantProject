@@ -35,7 +35,7 @@ def test_stock_indicators(symbol="AAPL"):
     conn = sqlite3.connect(db_path)
 
     # Get stock data
-    query = f"""
+    query = """
         SELECT date, open_price as open, high_price as high, 
                low_price as low, close_price as close, volume
         FROM daily_data
@@ -234,7 +234,7 @@ def main():
     print("TECHNICAL INDICATORS COMPREHENSIVE TEST")
     print("=" * 80)
     print(f"Test Date: {datetime.now()}")
-    print(f"Total Indicators: 16 types")
+    print("Total Indicators: 16 types")
     print("-" * 80)
 
     # Test single stock first

@@ -108,7 +108,7 @@ class LSTMPredictor(BaseStrategy):
         Returns:
             交易信號列表
         """
-        signals = []
+        []
 
         if len(data) < self.sequence_length + self.prediction_steps + 100:
             return signals
@@ -705,7 +705,7 @@ def create_lstm_strategy(
         weight=1.0,
         risk_limit=0.025,
         max_positions=5,
-        symbols=symbols or [],
+        symbols or [],
         parameters={
             "sequence_length": 60,
             "lstm_units": [50, 50],

@@ -84,7 +84,7 @@ class VolumeSMAStrategy:
         ema_short = self.price_ema.calculate(data)
 
         # 初始化信號
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
         signals["volume_ratio"] = data["volume"] / volume_sma_values
         signals["buy"] = False
         signals["sell"] = False

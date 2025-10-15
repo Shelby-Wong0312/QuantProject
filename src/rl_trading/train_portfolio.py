@@ -81,7 +81,7 @@ def create_train_test_envs(args):
 
     # Create environments
     train_env = PortfolioTradingEnvironment(
-        symbols=args.symbols,
+        args.symbols,
         initial_capital=args.initial_capital,
         transaction_cost=args.transaction_cost,
         slippage=args.slippage,
@@ -91,7 +91,7 @@ def create_train_test_envs(args):
     train_env.set_market_data(train_data)
 
     test_env = PortfolioTradingEnvironment(
-        symbols=args.symbols,
+        args.symbols,
         initial_capital=args.initial_capital,
         transaction_cost=args.transaction_cost,
         slippage=args.slippage,

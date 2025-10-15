@@ -81,9 +81,9 @@ def main():
             else:
                 monitor._add_stock_to_tier(symbol, TierLevel.B_TIER)
 
-        print(f"   [OK] Monitoring system ready")
-        print(f"        S-tier: 40 stocks (real-time)")
-        print(f"        A-tier: 100 stocks (1-min updates)")
+        print("   [OK] Monitoring system ready")
+        print("        S-tier: 40 stocks (real-time)")
+        print("        A-tier: 100 stocks (1-min updates)")
         print(f"        B-tier: {len(all_symbols)-140} stocks (5-min scans)")
 
         # 4. Start monitoring

@@ -142,7 +142,7 @@ class MLBacktester:
         end_date = pd.to_datetime(self.config.end_date)
         dates = pd.date_range(start=start_date, end=end_date, freq="D")
 
-        data = {}
+        {}
 
         for symbol in self.config.symbols:
             # Generate price series with trend, seasonality, and volatility
@@ -316,7 +316,7 @@ class MLBacktester:
             # Check if rebalance needed
             if date in rebalance_dates:
                 # Generate signals
-                signals = await strategy.generate_trading_signals(current_data)
+                await strategy.generate_trading_signals(current_data)
 
                 # Execute trades
                 execution_results = await strategy.execute_trades(signals, self.simulator)
@@ -427,7 +427,7 @@ class MLBacktester:
 
                 # Generate and execute signals periodically
                 if np.random.random() < 0.05:  # 5% chance each day (simplified)
-                    signals = await strategy.generate_trading_signals(current_data)
+                    await strategy.generate_trading_signals(current_data)
                     execution_results = await strategy.execute_trades(signals, self.simulator)
 
                     for trade in execution_results.get("executed_trades", []):
@@ -564,7 +564,7 @@ class MLBacktester:
         Returns:
             Report dictionary
         """
-        report = {
+        {
             "backtest_configuration": {
                 "initial_capital": self.config.initial_capital,
                 "start_date": self.config.start_date,
@@ -712,7 +712,7 @@ async def main():
         initial_capital=100000,
         start_date="2010-01-01",
         end_date="2024-12-31",
-        symbols=["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "META", "NVDA", "JPM", "V", "JNJ"],
+        ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "META", "NVDA", "JPM", "V", "JNJ"],
         rebalance_frequency="monthly",
         use_walk_forward=True,
         train_period_months=36,
@@ -733,10 +733,10 @@ async def main():
 
     # Generate report
     print("\nGenerating backtest report...")
-    report = backtester.generate_report(result)
+    backtester.generate_report(result)
 
     print("\nBacktest completed successfully!")
-    print(f"Report saved to: reports/backtest_report.json")
+    print("Report saved to: reports/backtest_report.json")
 
     return result
 

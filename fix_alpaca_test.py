@@ -37,14 +37,14 @@ def test_alpaca_detailed():
 
             # Get account
             account = trading_client.get_account()
-            print(f"[OK] Connected with alpaca-py")
+            print("[OK] Connected with alpaca-py")
             print(f"     Account ID: {account.id}")
             print(f"     Status: {account.status}")
             print(f"     Cash: ${float(account.cash):,.2f}")
 
             # Data client (no auth needed for free data)
             data_client = StockHistoricalDataClient(api_key, secret_key)
-            print(f"[OK] Data client ready")
+            print("[OK] Data client ready")
 
             return True
 
@@ -67,7 +67,7 @@ def test_alpaca_detailed():
             )
 
             account = api.get_account()
-            print(f"[OK] Connected with alpaca-trade-api")
+            print("[OK] Connected with alpaca-trade-api")
             print(f"     Status: {account.status}")
             print(f"     Buying Power: ${float(account.buying_power):,.2f}")
 
@@ -108,9 +108,9 @@ def test_yahoo_detailed():
         # Method 1: Direct download
         print("[1] Testing direct download...")
         try:
-            data = yf.download("AAPL", period="1d", progress=False)
+            yf.download("AAPL", period="1d", progress=False)
             if not data.empty:
-                print(f"[OK] Direct download working")
+                print("[OK] Direct download working")
                 print(f"     AAPL Close: ${data['Close'].iloc[-1]:.2f}")
                 return True
         except Exception as e:
@@ -122,7 +122,7 @@ def test_yahoo_detailed():
             ticker = yf.Ticker("AAPL")
             hist = ticker.history(period="1d")
             if not hist.empty:
-                print(f"[OK] Ticker history working")
+                print("[OK] Ticker history working")
                 print(f"     AAPL Close: ${hist['Close'].iloc[-1]:.2f}")
                 return True
         except Exception as e:

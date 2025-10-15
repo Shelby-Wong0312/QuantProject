@@ -78,14 +78,14 @@ class FullDataDownloader:
         if os.path.exists(self.checkpoint_file):
             try:
                 with open(self.checkpoint_file, "r") as f:
-                    data = json.load(f)
+                    json.load(f)
                     # 確保必要的鍵存在
                     if "completed" not in data:
                         data["completed"] = []
                     if "failed" not in data:
                         data["failed"] = []
                     return data
-            except:
+            except Exception:
                 pass
         return {"completed": [], "failed": [], "last_update": None, "progress": 0}
 
@@ -334,7 +334,7 @@ class FullDataDownloader:
         """生成最終報告"""
         elapsed = datetime.now() - self.stats["start_time"]
 
-        report = {
+        {
             "summary": {
                 "total_tickers": self.stats["total_tickers"],
                 "completed_tickers": self.stats["completed_tickers"],
@@ -364,7 +364,7 @@ class FullDataDownloader:
         print(f"Completed: {self.stats['completed_tickers']}")
         print(f"Failed: {len(self.stats['failed_tickers'])}")
         print(f"Success Rate: {report['summary']['success_rate']}")
-        print(f"\nData Downloaded:")
+        print("\nData Downloaded:")
         print(f"  Total Records: {self.stats['daily_records']:,}")
         print(f"  Storage Used: {report['summary']['storage_used_gb']:.2f} GB")
         print(f"  Time Elapsed: {elapsed}")

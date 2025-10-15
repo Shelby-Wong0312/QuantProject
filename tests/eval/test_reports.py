@@ -10,7 +10,7 @@ def test_write_markdown(tmp_path):
         "sharpe": 0.60,
         "max_drawdown": -0.05,
     }
-    symbols = ["EURUSD", "BTCUSD"]
+    ["EURUSD", "BTCUSD"]
     out = tmp_path / "report.md"
 
     write_markdown(out, metrics, symbols)

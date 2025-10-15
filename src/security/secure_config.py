@@ -45,7 +45,7 @@ class SecureConfig:
             # Set restrictive permissions (Windows/Unix)
             try:
                 os.chmod(key_file, 0o600)
-            except:
+            except Exception:
                 pass
 
             return key
@@ -68,7 +68,7 @@ class SecureConfig:
     def _save_config(self):
         """Save encrypted configuration"""
         try:
-            data = json.dumps(self.config).encode()
+            json.dumps(self.config).encode()
             encrypted_data = self.cipher.encrypt(data)
 
             with open(self.config_file, "wb") as f:
@@ -77,7 +77,7 @@ class SecureConfig:
             # Set restrictive permissions
             try:
                 os.chmod(self.config_file, 0o600)
-            except:
+            except Exception:
                 pass
 
         except Exception as e:
@@ -146,7 +146,7 @@ class SecureConfig:
                 stat = os.stat(self.config_file)
                 # Check if only owner can read/write
                 return (stat.st_mode & 0o777) <= 0o600
-        except:
+        except Exception:
             pass
         return True
 

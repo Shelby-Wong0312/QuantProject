@@ -234,7 +234,7 @@ class StreamlitAnalyticsApp:
             if "strategy" in trades_df.columns:
                 return sorted(trades_df["strategy"].dropna().unique().tolist())
             return ["Default Strategy"]
-        except:
+        except Exception:
             return ["Default Strategy"]
 
     def get_available_symbols(self) -> List[str]:
@@ -244,7 +244,7 @@ class StreamlitAnalyticsApp:
             if "symbol" in trades_df.columns:
                 return sorted(trades_df["symbol"].dropna().unique().tolist())
             return ["DEMO"]
-        except:
+        except Exception:
             return ["DEMO"]
 
     @st.cache_data(ttl=30)  # Cache for 30 seconds
@@ -283,7 +283,7 @@ class StreamlitAnalyticsApp:
         with col1:
             total_return = metrics.get("total_return", 0)
             st.markdown(
-                f"""
+                """
             <div class="metric-container">
                 <div class="metric-value">{total_return:.2f}%</div>
                 <div class="metric-label">Total Return</div>
@@ -295,7 +295,7 @@ class StreamlitAnalyticsApp:
         with col2:
             sharpe_ratio = risk_metrics.get("sharpe_ratio", 0)
             st.markdown(
-                f"""
+                """
             <div class="metric-container">
                 <div class="metric-value">{sharpe_ratio:.2f}</div>
                 <div class="metric-label">Sharpe Ratio</div>
@@ -307,7 +307,7 @@ class StreamlitAnalyticsApp:
         with col3:
             win_rate = metrics.get("win_rate", 0)
             st.markdown(
-                f"""
+                """
             <div class="metric-container">
                 <div class="metric-value">{win_rate:.1f}%</div>
                 <div class="metric-label">Win Rate</div>
@@ -319,7 +319,7 @@ class StreamlitAnalyticsApp:
         with col4:
             max_dd = risk_metrics.get("max_drawdown", 0)
             st.markdown(
-                f"""
+                """
             <div class="metric-container">
                 <div class="metric-value">{max_dd:.2f}%</div>
                 <div class="metric-label">Max Drawdown</div>
@@ -454,7 +454,7 @@ class StreamlitAnalyticsApp:
                 # Offer download
                 st.download_button(
                     label="📄 Download HTML Report",
-                    data=report_html,
+                    report_html,
                     file_name=f"trading_report_{start_date}_{end_date}.html",
                     mime="text/html",
                 )
@@ -475,7 +475,7 @@ class StreamlitAnalyticsApp:
 
                     st.download_button(
                         label="💾 Download CSV Data",
-                        data=csv_data,
+                        csv_data,
                         file_name=f"trades_data_{start_date}_{end_date}.csv",
                         mime="text/csv",
                     )

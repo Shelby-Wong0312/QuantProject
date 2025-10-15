@@ -129,7 +129,7 @@ class BaseAgent(ABC):
         episode_metrics = []
 
         for episode in range(n_episodes):
-            obs = eval_env.reset()
+            eval_env.reset()
             done = False
             episode_reward = 0
             episode_length = 0
@@ -281,7 +281,7 @@ class BaseAgent(ABC):
         results = []
 
         for episode in range(n_episodes):
-            obs = test_env.reset()
+            test_env.reset()
             done = False
 
             episode_data = {

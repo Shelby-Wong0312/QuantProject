@@ -22,7 +22,7 @@ class TestPortfolioEnvironment(unittest.TestCase):
         """Set up test environment"""
         self.symbols = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
         self.env = PortfolioTradingEnvironment(
-            symbols=self.symbols,
+            self.symbols,
             initial_capital=100000,
             transaction_cost=0.001,
             slippage=0.0005,
@@ -45,7 +45,7 @@ class TestPortfolioEnvironment(unittest.TestCase):
 
     def test_reset(self):
         """Test environment reset"""
-        obs = self.env.reset()
+        self.env.reset()
 
         # Check observation shape
         self.assertEqual(obs.shape[0], self.env.state_dim)
@@ -83,7 +83,7 @@ class TestPortfolioEnvironment(unittest.TestCase):
 
     def test_step_without_rebalance(self):
         """Test step when rebalancing is not allowed"""
-        obs = self.env.reset()
+        self.env.reset()
 
         # First step (rebalance allowed)
         action = np.array([0.2, 0.2, 0.2, 0.2, 0.1, 0.1])  # Allocate to stocks
@@ -147,7 +147,7 @@ class TestPortfolioEnvironment(unittest.TestCase):
 
     def test_episode_completion(self):
         """Test full episode execution"""
-        obs = self.env.reset()
+        self.env.reset()
 
         episode_rewards = []
         done = False
@@ -182,7 +182,7 @@ class TestPortfolioEnvironment(unittest.TestCase):
         self.assertEqual(len(portfolio_features), 10)
 
         # Test full observation
-        obs = self.env._get_observation()
+        self.env._get_observation()
         expected_dim = self.env.n_assets * self.env.features_per_asset + 10
         self.assertEqual(len(obs), expected_dim)
 
@@ -213,7 +213,7 @@ class TestPortfolioAgent(unittest.TestCase):
         """Set up test environment"""
         self.symbols = ["AAPL", "GOOGL", "MSFT"]
         self.env = PortfolioTradingEnvironment(
-            symbols=self.symbols, initial_capital=100000, max_steps_per_episode=20
+            self.symbols, initial_capital=100000, max_steps_per_episode=20
         )
 
         self.agent = PortfolioAgent(
@@ -241,7 +241,7 @@ class TestPortfolioAgent(unittest.TestCase):
 
     def test_prediction(self):
         """Test agent prediction"""
-        obs = self.env.reset()
+        self.env.reset()
 
         # Get prediction
         action, states = self.agent.predict(obs, deterministic=True)
@@ -275,7 +275,7 @@ class TestIntegration(unittest.TestCase):
     def test_training_loop(self):
         """Test basic training loop"""
         # Create small environment
-        symbols = ["AAPL", "GOOGL"]
+        ["AAPL", "GOOGL"]
         env = PortfolioTradingEnvironment(symbols=symbols, max_steps_per_episode=10)
 
         # Create agent
@@ -296,7 +296,7 @@ class TestIntegration(unittest.TestCase):
     def test_evaluation(self):
         """Test agent evaluation"""
         # Create environment
-        symbols = ["AAPL", "GOOGL", "MSFT"]
+        ["AAPL", "GOOGL", "MSFT"]
         env = PortfolioTradingEnvironment(symbols=symbols, max_steps_per_episode=20)
 
         # Create agent

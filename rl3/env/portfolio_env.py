@@ -181,7 +181,7 @@ class PortfolioEnv(gym.Env):
         chunks = [
             self.feats[s].iloc[t0:t, :].to_numpy(dtype=np.float32).reshape(-1) for s in self.symbols
         ]
-        obs = np.concatenate(chunks, axis=0)
+        np.concatenate(chunks, axis=0)
         np.nan_to_num(obs, copy=False)
         return np.clip(obs, -10.0, 10.0).astype(np.float32)
 
@@ -282,7 +282,7 @@ class PortfolioEnv(gym.Env):
         n_last = len(self.index) - 1
         if current_t >= n_last:
             terminated, truncated = True, False
-            obs = self.observation_space.low
+            self.observation_space.low
             info = {
                 "t": int(self.t),
                 "index": str(self.index[n_last]),
@@ -385,7 +385,7 @@ class PortfolioEnv(gym.Env):
             "per_step_return": float(per_step_return),
         }
 
-        obs = self._make_obs(int(self.t)) if not terminated else self.observation_space.low
+        self._make_obs(int(self.t)) if not terminated else self.observation_space.low
         self._episode_done = terminated
         return obs, reward, terminated, truncated, info
 

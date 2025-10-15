@@ -31,7 +31,7 @@ class CapitalToYahooMapper:
                     self.mapped_stocks = cache.get("mapped", [])
                     self.unmapped_stocks = cache.get("unmapped", [])
                     print(f"[CACHE] Loaded {len(self.mapped_stocks)} mapped stocks from cache")
-            except:
+            except Exception:
                 pass
 
     def save_cache(self):
@@ -390,11 +390,11 @@ class CapitalToYahooMapper:
         with open("capital_yahoo_simple_map.json", "w", encoding="utf-8") as f:
             json.dump(simple_map, f, indent=2)
 
-        print(f"[SAVED] Files created:")
-        print(f"  - capital_yahoo_full_mapping.json")
+        print("[SAVED] Files created:")
+        print("  - capital_yahoo_full_mapping.json")
         print(f"  - yahoo_symbols_all.txt ({len(self.mapped_stocks)} symbols)")
         print(f"  - capital_symbols_all.txt ({len(self.mapped_stocks)} symbols)")
-        print(f"  - capital_yahoo_simple_map.json")
+        print("  - capital_yahoo_simple_map.json")
 
 
 def main():

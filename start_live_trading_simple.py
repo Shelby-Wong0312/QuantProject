@@ -82,7 +82,7 @@ async def main():
         print(f"[OK] Loaded {len(strategies)} strategies")
 
         # Define symbols to trade
-        symbols = ["AAPL", "MSFT", "GOOGL"]
+        ["AAPL", "MSFT", "GOOGL"]
         print(f"[OK] Monitoring {len(symbols)} symbols: {', '.join(symbols)}")
 
         # Start trading with smaller capital for testing

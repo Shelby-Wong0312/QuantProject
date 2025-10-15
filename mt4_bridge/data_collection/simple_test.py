@@ -133,7 +133,7 @@ async def test_event_compatibility():
 
         # Create test DataFrame
         dates = [datetime.now(timezone.utc) - timedelta(minutes=i) for i in range(10, 0, -1)]
-        data = []
+        []
 
         for i, date in enumerate(dates):
             data.append(

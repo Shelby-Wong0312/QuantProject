@@ -51,7 +51,7 @@ class RSI(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate overbought/oversold signals"""
         rsi = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
         signals["rsi"] = rsi
 
         # Overbought when RSI > 70, Oversold when RSI < 30
@@ -111,7 +111,7 @@ class MACD(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate MACD crossover signals"""
         macd_data = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
 
         signals["macd"] = macd_data["macd"]
         signals["signal"] = macd_data["signal"]
@@ -166,7 +166,7 @@ class Stochastic(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate Stochastic signals"""
         stoch_data = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
 
         signals["k"] = stoch_data["k"]
         signals["d"] = stoch_data["d"]
@@ -217,7 +217,7 @@ class WilliamsR(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate Williams %R signals"""
         williams_r = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
         signals["williams_r"] = williams_r
 
         # Overbought when > -20, Oversold when < -80
@@ -265,7 +265,7 @@ class CCI(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate CCI signals"""
         cci = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
         signals["cci"] = cci
 
         # Overbought when > 100, Oversold when < -100

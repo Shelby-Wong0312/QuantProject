@@ -15,14 +15,14 @@ def get_public_ip():
         response = requests.get("https://api.ipify.org?format=json", timeout=5)
         if response.status_code == 200:
             return response.json()["ip"]
-    except:
+    except Exception:
         pass
 
     try:
         response = requests.get("https://httpbin.org/ip", timeout=5)
         if response.status_code == 200:
             return response.json()["origin"]
-    except:
+    except Exception:
         pass
 
     return None
@@ -86,10 +86,10 @@ def main():
             print("\n5. If it says 'Disabled':")
             print("   - Click to ENABLE it")
             print("   - Add one of these:")
-            print(f"\n   OPTION A (Your IP only):")
+            print("\n   OPTION A (Your IP only):")
             print(f"   {ip}/32")
-            print(f"\n   OPTION B (Allow all - safe for paper trading):")
-            print(f"   0.0.0.0/0")
+            print("\n   OPTION B (Allow all - safe for paper trading):")
+            print("   0.0.0.0/0")
             print("\n6. Click 'Save' or 'Update'")
             print("7. Wait 1-2 minutes")
             print("8. Run this script again")

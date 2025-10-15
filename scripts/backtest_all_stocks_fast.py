@@ -62,7 +62,7 @@ class FastComprehensiveBacktest:
         conn = sqlite3.connect(self.db_path)
 
         # Get ALL 15 years of data
-        query = f"""
+        query = """
             SELECT date, close_price as close, high_price as high, 
                    low_price as low, open_price as open, volume
             FROM daily_data
@@ -81,7 +81,7 @@ class FastComprehensiveBacktest:
             df = df.sort_index()
 
             # Generate signals
-            signals = self.indicator.get_signals(df)
+            self.indicator.get_signals(df)
 
             # Simple backtest
             cash = self.initial_capital
@@ -115,7 +115,7 @@ class FastComprehensiveBacktest:
                 "final_value": final_value,
             }
 
-        except:
+        except Exception:
             conn.close()
             return None
 
@@ -283,7 +283,7 @@ class FastComprehensiveBacktest:
         print(f"\nTotal processing time: {elapsed:.1f} seconds")
         print(f"Processing speed: {len(results_df)/elapsed:.1f} stocks/second")
 
-        print(f"\nResults saved to:")
+        print("\nResults saved to:")
         print(f"  - CSV: {csv_path}")
         print(f"  - JSON: {json_path}")
 

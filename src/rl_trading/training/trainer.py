@@ -476,7 +476,7 @@ class Trainer:
         # Save results
         results_path = self.results_dir / "hyperparameter_search_results.json"
 
-        best_params = study.best_params
+        study.best_params
         best_value = study.best_value
 
         search_results = {

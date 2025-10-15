@@ -70,7 +70,7 @@ def generate_sample_data(symbol: str = "AAPL", days: int = 200) -> pd.DataFrame:
         prices.append(prices[-1] * (1 + r))
 
     # 生成OHLC
-    data = []
+    []
     for i, (date, close) in enumerate(zip(dates, prices)):
         # 生成日內波動
         day_volatility = np.random.uniform(0.005, 0.025)
@@ -115,7 +115,7 @@ def test_strategy(strategy, data: pd.DataFrame, strategy_name: str):
 
     try:
         # 生成信號
-        signals = strategy.calculate_signals(data)
+        strategy.calculate_signals(data)
 
         print(f"Success: Generated {len(signals)} signals")
 
@@ -139,7 +139,7 @@ def test_strategy(strategy, data: pd.DataFrame, strategy_name: str):
             position_size = strategy.calculate_position_size(
                 test_signal, portfolio_value, test_signal.price
             )
-            print(f"\nSuccess: Position sizing calculated")
+            print("\nSuccess: Position sizing calculated")
             print(f"  Portfolio Value: ${portfolio_value:,.0f}")
             print(f"  Suggested Position: {position_size:.0f} shares")
             print(f"  Position Value: ${abs(position_size * test_signal.price):,.0f}")
@@ -160,7 +160,7 @@ def test_strategy(strategy, data: pd.DataFrame, strategy_name: str):
         )
 
         risk_action = strategy.risk_management(test_position, data.tail(20))
-        print(f"\nSuccess: Risk management tested")
+        print("\nSuccess: Risk management tested")
         print(f"  Position: {test_position.size} shares @ ${test_position.entry_price:.2f}")
         print(f"  Current Price: ${data['close'].iloc[-1]:.2f}")
         print(f"  Risk Action: {risk_action['action']}")
@@ -168,7 +168,7 @@ def test_strategy(strategy, data: pd.DataFrame, strategy_name: str):
 
         # 策略信息
         strategy_info = strategy.get_strategy_info()
-        print(f"\nStrategy Info:")
+        print("\nStrategy Info:")
         print(f"  Name: {strategy_info['name']}")
         print(f"  Status: {strategy_info['status']}")
         print(f"  Risk Limit: {strategy_info['risk_limit']:.1%}")
@@ -192,7 +192,7 @@ def main():
     test_data = {}
 
     for symbol in test_symbols:
-        data = generate_sample_data(symbol, days=300)
+        generate_sample_data(symbol, days=300)
         test_data[symbol] = data
         print(
             f"  {symbol}: {len(data)} days data, price range ${data['close'].min():.2f} - ${data['close'].max():.2f}"
@@ -235,11 +235,11 @@ def main():
         for strategy, name in ml_strategies:
             test_strategy(strategy, main_data, name)
     else:
-        print(f"\nWarning: ML strategies not available")
+        print("\nWarning: ML strategies not available")
         print("   Install dependencies: pip install scikit-learn tensorflow")
 
     # 策略性能對比
-    print(f"\nStrategy Performance Comparison")
+    print("\nStrategy Performance Comparison")
     print("=" * 60)
 
     all_strategies = traditional_strategies + ml_strategies
@@ -247,7 +247,7 @@ def main():
 
     for strategy, name in all_strategies:
         try:
-            signals = strategy.calculate_signals(main_data)
+            strategy.calculate_signals(main_data)
             signal_counts[name] = len(signals)
 
             if signals:
@@ -265,23 +265,23 @@ def main():
             print(f"{name[:30]:30} | Error: {str(e)[:20]}")
 
     # 總結
-    print(f"\nStage 4 Strategy Development Summary")
+    print("\nStage 4 Strategy Development Summary")
     print("=" * 60)
-    print(f"✓ Traditional Strategies: 4 (Momentum, Mean Reversion, Breakout, Trend Following)")
+    print("✓ Traditional Strategies: 4 (Momentum, Mean Reversion, Breakout, Trend Following)")
     print(f"✓ ML Strategies: {len(ml_strategies)} (Random Forest, LSTM)")
-    print(f"✓ All strategies include complete functionality:")
-    print(f"   - generate_signals() - Signal generation")
-    print(f"   - calculate_position_size() - Position sizing")
-    print(f"   - risk_management() - Risk management")
-    print(f"✓ Strategy Features:")
-    print(f"   - Momentum: RSI + MACD + Volume confirmation")
-    print(f"   - Mean Reversion: Bollinger Bands + Z-Score + Time limits")
-    print(f"   - Breakout: Channel breakout + ATR stops + Volume surge")
-    print(f"   - Trend Following: Multi-MA + ADX + Dynamic trailing stops")
-    print(f"   - Random Forest: Technical features + Ensemble learning")
-    print(f"   - LSTM: Time series neural network + Ensemble prediction")
+    print("✓ All strategies include complete functionality:")
+    print("   - generate_signals() - Signal generation")
+    print("   - calculate_position_size() - Position sizing")
+    print("   - risk_management() - Risk management")
+    print("✓ Strategy Features:")
+    print("   - Momentum: RSI + MACD + Volume confirmation")
+    print("   - Mean Reversion: Bollinger Bands + Z-Score + Time limits")
+    print("   - Breakout: Channel breakout + ATR stops + Volume surge")
+    print("   - Trend Following: Multi-MA + ADX + Dynamic trailing stops")
+    print("   - Random Forest: Technical features + Ensemble learning")
+    print("   - LSTM: Time series neural network + Ensemble prediction")
 
-    print(f"\nStage 4 Complete! All strategies ready for use!")
+    print("\nStage 4 Complete! All strategies ready for use!")
 
 
 if __name__ == "__main__":

@@ -167,7 +167,7 @@ class TradingConsole:
             print("\n❌ No active trading system.")
             return
 
-        report = self.system.generate_report()
+        self.system.generate_report()
 
         print("\n" + "=" * 60)
         print("PERFORMANCE REPORT")
@@ -209,7 +209,7 @@ class TradingConsole:
             print("\n❌ No active trading system.")
             return
 
-        report = self.system.generate_report()
+        self.system.generate_report()
         print(f"\n✅ Report generated: reports/system_report_{datetime.now():%Y%m%d_%H%M%S}.json")
 
     async def system_settings(self):

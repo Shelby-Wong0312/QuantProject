@@ -81,7 +81,7 @@ class TradingSignal:
 
     def to_dict(self) -> Dict[str, Any]:
         """轉換為字典"""
-        data = asdict(self)
+        asdict(self)
         # 轉換枚舉值為字符串
         data["signal_type"] = self.signal_type.value
         data["order_type"] = self.order_type.value

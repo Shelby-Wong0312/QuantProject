@@ -41,13 +41,13 @@ def demo_enhanced_data_pipeline():
     quotes = client.get_batch_quotes(test_symbols, show_progress=True)
     duration = time.time() - start_time
 
-    print(f"\n📈 批量報價結果:")
+    print("\n📈 批量報價結果:")
     print(f"   成功獲取: {len(quotes)}/{len(test_symbols)} 股票")
     print(f"   處理時間: {duration:.2f} 秒")
     print(f"   平均速度: {len(quotes)/duration:.1f} 股票/秒")
 
     # 顯示報價詳情
-    print(f"\n💰 實時報價:")
+    print("\n💰 實時報價:")
     for symbol, data in list(quotes.items())[:5]:
         print(f"   {symbol}: ${data['price']:.2f} (成交量: {data['volume']:,})")
 
@@ -61,7 +61,7 @@ def demo_enhanced_data_pipeline():
     print(f"交易時段: {overview.get('session_type')}")
 
     if "indices" in overview:
-        print(f"\n📊 主要指數:")
+        print("\n📊 主要指數:")
         for index, data in overview["indices"].items():
             if data:
                 print(f"   {index}: ${data.get('price', 0):.2f}")
@@ -102,7 +102,7 @@ def demo_enhanced_data_pipeline():
     cached_time = time.time() - start_time
 
     speedup = first_time / cached_time if cached_time > 0 else float("inf")
-    print(f"\n⚡ 緩存效能:")
+    print("\n⚡ 緩存效能:")
     print(f"   首次請求: {first_time:.2f} 秒")
     print(f"   緩存請求: {cached_time:.2f} 秒")
     print(f"   加速倍數: {speedup:.1f}x")
@@ -121,7 +121,7 @@ def demo_enhanced_data_pipeline():
         hist_with_indicators = client.calculate_indicators(hist_data)
         latest = hist_with_indicators.iloc[-1]
 
-        print(f"\n📊 AAPL技術指標 (最新):")
+        print("\n📊 AAPL技術指標 (最新):")
         print(f"   RSI: {latest.get('RSI', 0):.2f}")
         print(f"   MACD: {latest.get('MACD', 0):.4f}")
         print(f"   SMA_20: ${latest.get('SMA_20', 0):.2f}")
@@ -142,7 +142,7 @@ def demo_enhanced_data_pipeline():
     large_quotes = client.get_batch_quotes(large_symbols, show_progress=True)
     large_duration = time.time() - start_time
 
-    print(f"\n🚀 大規模處理結果:")
+    print("\n🚀 大規模處理結果:")
     print(f"   處理股票數: {len(large_symbols)}")
     print(f"   成功獲取: {len(large_quotes)}")
     print(f"   處理時間: {large_duration:.2f} 秒")
@@ -158,10 +158,10 @@ def demo_enhanced_data_pipeline():
     print(f"✅ Alpha Vantage API: {'已配置' if client.alpha_vantage_key else '未配置'}")
     print(f"✅ 批次處理: {client.batch_size} 股票/批")
     print(f"✅ 並發線程: {client.max_workers} 線程")
-    print(f"✅ 支援規模: 4000+ 股票")
+    print("✅ 支援規模: 4000+ 股票")
 
-    print(f"\n🎉 演示完成！系統已準備好進行大規模股票監控")
-    print(f"📊 數據已保存到本地數據庫，可重複使用")
+    print("\n🎉 演示完成！系統已準備好進行大規模股票監控")
+    print("📊 數據已保存到本地數據庫，可重複使用")
 
 
 if __name__ == "__main__":

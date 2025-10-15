@@ -96,7 +96,7 @@ class CCI20Strategy:
         atr_values = self.atr_indicator.calculate(data) if self.use_atr_stops else None
 
         # 初始化信號
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
         signals["cci"] = cci_values
         signals["buy"] = False
         signals["sell"] = False
@@ -249,7 +249,7 @@ class CCI20Strategy:
                 "oversold": [-120, -100, -80],
             }
 
-        best_params = self.optimal_params.copy()
+        self.optimal_params.copy()
         best_sharpe = 0
 
         # 網格搜索
@@ -262,7 +262,7 @@ class CCI20Strategy:
                     self.oversold = os
 
                     # 生成信號
-                    signals = self.calculate_signals(data)
+                    self.calculate_signals(data)
 
                     # 簡單回測
                     returns = self._simple_backtest(data, signals)
@@ -273,7 +273,7 @@ class CCI20Strategy:
 
                         if sharpe > best_sharpe:
                             best_sharpe = sharpe
-                            best_params = {
+                            {
                                 "period": period,
                                 "overbought": ob,
                                 "oversold": os,

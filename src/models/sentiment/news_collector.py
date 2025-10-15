@@ -121,7 +121,7 @@ class RSSNewsSource(NewsSource):
                             source=source_name,
                             url=entry.link,
                             published_date=published,
-                            symbols=mentioned_symbols,
+                            mentioned_symbols,
                             author=entry.get("author"),
                             metadata={"feed_source": feed_url},
                         )
@@ -179,7 +179,7 @@ class FinancialNewsAPI(NewsSource):
                 source="Financial News API",
                 url=f"https://example.com/news/{article_data['symbol']}",
                 published_date=datetime.now() - timedelta(hours=np.random.randint(1, 24)),
-                symbols=[article_data["symbol"]],
+                [article_data["symbol"]],
                 sentiment_score=article_data["sentiment"],
             )
             articles.append(article)

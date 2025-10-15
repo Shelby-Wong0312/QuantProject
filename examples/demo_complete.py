@@ -93,7 +93,7 @@ print("\n[PHASE 4: INTEGRATED SIGNALS]")
 print("-" * 50)
 
 print("Combined Strategy Signals:")
-signals = [
+[
     {"symbol": "AAPL", "signal": "STRONG BUY", "strength": 85, "risk": 35},
     {"symbol": "GOOGL", "signal": "BUY", "strength": 65, "risk": 40},
     {"symbol": "MSFT", "signal": "HOLD", "strength": 50, "risk": 30},
@@ -179,7 +179,7 @@ print("9. WebSocket Streaming (Configured)")
 print("10. Multi-Strategy Portfolio Management")
 
 # Save report
-report = {
+{
     "timestamp": datetime.now().isoformat(),
     "system_status": "OPERATIONAL",
     "strategies": {"mpt_portfolio": "ACTIVE", "day_trading_ppo": "ACTIVE", "hybrid": "ACTIVE"},

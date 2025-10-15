@@ -275,7 +275,7 @@ class PortfolioAgent:
         episode_results = []
 
         for episode in range(n_episodes):
-            obs = eval_env.reset()
+            eval_env.reset()
             done = False
             episode_data = {"returns": [], "weights_history": [], "trades": 0}
 

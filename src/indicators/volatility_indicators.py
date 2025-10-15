@@ -59,7 +59,7 @@ class BollingerBands(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate Bollinger Band breakout signals"""
         bb_data = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
 
         signals["upper_band"] = bb_data["upper_band"]
         signals["middle_band"] = bb_data["middle_band"]
@@ -120,7 +120,7 @@ class ATR(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate volatility-based signals"""
         atr = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
 
         signals["atr"] = atr
         signals["atr_percent"] = (atr / data["close"]) * 100
@@ -200,7 +200,7 @@ class KeltnerChannel(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate Keltner Channel signals"""
         kc_data = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
 
         signals["upper_channel"] = kc_data["upper_channel"]
         signals["middle_line"] = kc_data["middle_line"]
@@ -274,7 +274,7 @@ class DonchianChannel(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate Donchian Channel breakout signals"""
         dc_data = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
 
         signals["upper_channel"] = dc_data["upper_channel"]
         signals["middle_channel"] = dc_data["middle_channel"]

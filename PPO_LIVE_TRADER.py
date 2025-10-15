@@ -166,7 +166,7 @@ class PPOLiveTrader:
                     # Try to load as state dict directly
                     try:
                         self.model.load_state_dict(checkpoint)
-                    except:
+                    except Exception:
                         print(f"[INFO] Checkpoint keys: {checkpoint.keys()}")
                         print("[WARNING] Could not load model weights, using random initialization")
             else:
@@ -186,7 +186,7 @@ class PPOLiveTrader:
         try:
             if os.path.exists("capital_yahoo_full_mapping.json"):
                 with open("capital_yahoo_full_mapping.json", "r", encoding="utf-8") as f:
-                    data = json.load(f)
+                    json.load(f)
                 mapped = data.get("mapped") if isinstance(data, dict) else None
                 if isinstance(mapped, list):
                     for item in mapped:
@@ -205,7 +205,7 @@ class PPOLiveTrader:
         try:
             if os.path.exists("capital_yahoo_simple_map.json"):
                 with open("capital_yahoo_simple_map.json", "r", encoding="utf-8") as f:
-                    data = json.load(f)
+                    json.load(f)
                 if isinstance(data, dict):
                     for cap, yh in data.items():
                         cap_u = str(cap).upper()
@@ -425,7 +425,7 @@ class PPOLiveTrader:
             return 0  # Hold if no features
 
         # Convert to tensor
-        obs = torch.FloatTensor(features).unsqueeze(0).to(self.device)
+        torch.FloatTensor(features).unsqueeze(0).to(self.device)
 
         # Get action from PPO model
         action = self.model.get_action(obs)

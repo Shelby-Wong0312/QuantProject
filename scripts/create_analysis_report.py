@@ -68,7 +68,7 @@ def create_html_report():
     transactions_df.to_csv(csv_path, index=False, encoding="utf-8-sig")
 
     # Create HTML report
-    html_content = f"""<!DOCTYPE html>
+    html_content = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -249,7 +249,7 @@ def create_html_report():
 
     # Add top stocks to table
     for idx, row in top_stocks_df.iterrows():
-        html_content += f"""
+        html_content += """
                     <tr>
                         <td>{idx + 1}</td>
                         <td><strong>{row['symbol']}</strong></td>
@@ -280,7 +280,7 @@ def create_html_report():
 
     # Add recent transactions (first 100)
     for idx, row in transactions_df.head(100).iterrows():
-        html_content += f"""
+        html_content += """
                     <tr>
                         <td>{row['date']}</td>
                         <td><strong>{row['symbol']}</strong></td>
@@ -291,7 +291,7 @@ def create_html_report():
                         <td>{int(row['volume']):,}</td>
                     </tr>"""
 
-    html_content += f"""
+    html_content += """
                 </tbody>
             </table>
             <a href="../data_exports/transactions.csv" class="download-btn">Download Full Transaction Data (CSV)</a>
@@ -354,7 +354,7 @@ def create_html_report():
     print("=" * 60)
     print("ANALYSIS REPORT GENERATION COMPLETE")
     print("=" * 60)
-    print(f"\nFiles created:")
+    print("\nFiles created:")
     print(f"1. HTML Report: {html_path}")
     print(f"2. Transaction Data: {csv_path}")
     print(f"3. Sample Data: {full_csv_path}")
@@ -378,5 +378,5 @@ if __name__ == "__main__":
 
         webbrowser.open(f"file:///{os.path.abspath(report_path)}")
         print("\nReport opened in browser!")
-    except:
+    except Exception:
         print(f"\nPlease open the report manually: {report_path}")

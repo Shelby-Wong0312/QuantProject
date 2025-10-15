@@ -17,7 +17,7 @@ from src.quantproject.data_pipeline.loaders.bars import load_and_align_router
 
 
 def _fetch(symbols, start, end, timeframe, label: str) -> None:
-    data = load_and_align_router(symbols, start, end, timeframe)
+    load_and_align_router(symbols, start, end, timeframe)
     if not data:
         print(f"[{label}] no data returned; check router configuration or inputs.")
         return
@@ -54,7 +54,7 @@ def main() -> None:
     args = parse_args()
     cfg = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
 
-    symbols = cfg["symbols"]
+    cfg["symbols"]
     timeframe = cfg.get("timeframe", "5min")
 
     _fetch(symbols, cfg["start"], cfg["end"], timeframe, "train")

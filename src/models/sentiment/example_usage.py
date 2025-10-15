@@ -30,15 +30,15 @@ def example_news_collection():
     collector = NewsCollector()
 
     # Collect news for specific symbols
-    symbols = ["AAPL", "GOOGL", "MSFT"]
+    ["AAPL", "GOOGL", "MSFT"]
     news_df = collector.collect_news_sync(
-        symbols=symbols, start_date=datetime.now() - timedelta(days=3), end_date=datetime.now()
+        symbols, start_date=datetime.now() - timedelta(days=3), end_date=datetime.now()
     )
 
     if not news_df.empty:
         print(f"\nCollected {len(news_df)} articles")
         print(f"Sources: {news_df['source'].unique()}")
-        print(f"\nSample articles:")
+        print("\nSample articles:")
         for idx, article in news_df.head(3).iterrows():
             print(f"\n- {article['title'][:80]}...")
             print(f"  Source: {article['source']}")
@@ -134,7 +134,7 @@ def example_sentiment_scoring():
 
     # Generate trading signals
     print("\n5. Trading Signals:")
-    signals = scorer.get_sentiment_signals(composite)
+    scorer.get_sentiment_signals(composite)
     print(signals)
 
 
@@ -148,7 +148,7 @@ def example_complete_pipeline():
     pipeline = SentimentDataPipeline()
 
     # Process symbols
-    symbols = ["AAPL", "MSFT", "GOOGL"]
+    ["AAPL", "MSFT", "GOOGL"]
 
     print(f"\nProcessing sentiment for {symbols}...")
     results = pipeline.process_symbols(symbols=symbols, news_lookback_days=3)
@@ -156,7 +156,7 @@ def example_complete_pipeline():
     # Check results
     if results:
         # Generate report
-        report = pipeline.generate_sentiment_report(results, output_file="sentiment_report.txt")
+        pipeline.generate_sentiment_report(results, output_file="sentiment_report.txt")
         print("\nGenerated Report:")
         print(report)
 
@@ -191,7 +191,7 @@ def example_live_monitoring():
                 )
 
         if "signals" in results:
-            signals = results["signals"]
+            results["signals"]
             strong_signals = signals[signals["signal"].str.contains("STRONG")]
             if not strong_signals.empty:
                 print("\n  Strong Signals:")
@@ -202,7 +202,7 @@ def example_live_monitoring():
     print("\nStarting live monitoring (demo - will run once)...")
 
     # For demo, just process once
-    symbols = ["AAPL", "MSFT"]
+    ["AAPL", "MSFT"]
     results = pipeline.process_symbols(symbols, news_lookback_days=1)
     on_sentiment_update(results)
 
@@ -229,7 +229,7 @@ def example_ml_features():
     pipeline = SentimentDataPipeline()
 
     # Create sentiment features
-    symbols = ["AAPL", "MSFT"]
+    ["AAPL", "MSFT"]
     enhanced_data = pipeline.create_sentiment_features(
         market_data, symbols=symbols, lookback_days=3
     )
@@ -242,7 +242,7 @@ def example_ml_features():
         print(f"  - {col}")
 
     if sentiment_cols:
-        print(f"\nSample data with sentiment features:")
+        print("\nSample data with sentiment features:")
         print(enhanced_data[sentiment_cols].tail())
 
 

@@ -103,7 +103,7 @@ class MainController:
 
             # 2. Initialize data pipeline
             self.data_pipeline = DataPipeline(
-                symbols=self.config["symbols"], data_client=self.data_client
+                self.config["symbols"], data_client=self.data_client
             )
 
             # 3. Initialize LSTM predictor
@@ -430,7 +430,7 @@ class MainController:
         if not self.backtester:
             return
 
-        report = self.backtester.get_performance_summary()
+        self.backtester.get_performance_summary()
         report["symbol"] = symbol
         report["config"] = self.config
 
@@ -474,7 +474,7 @@ class MainController:
         """Generate final performance report"""
         runtime = datetime.now() - self.performance_metrics["start_time"]
 
-        report = {
+        {
             "runtime": str(runtime),
             "total_trades": self.performance_metrics["total_trades"],
             "successful_trades": self.performance_metrics["successful_trades"],

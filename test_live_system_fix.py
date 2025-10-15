@@ -49,7 +49,7 @@ def test_strategy_initialization():
                 "max_drawdown": 0.1,
                 "position_sizing_method": "fixed",
             },
-            symbols=["AAPL", "MSFT"],
+            ["AAPL", "MSFT"],
         )
         print("   [OK] Momentum config created")
 
@@ -71,7 +71,7 @@ def test_strategy_initialization():
                 "max_drawdown": 0.1,
                 "position_sizing_method": "fixed",
             },
-            symbols=["AAPL", "MSFT"],
+            ["AAPL", "MSFT"],
         )
         print("   [OK] Mean reversion config created")
 
@@ -105,14 +105,14 @@ def test_strategy_initialization():
 
         # Test signal generation
         try:
-            signals = momentum_strategy.generate_signals(dummy_data)
-            print(f"   [OK] MomentumStrategy.generate_signals() works")
+            momentum_strategy.generate_signals(dummy_data)
+            print("   [OK] MomentumStrategy.generate_signals() works")
         except Exception as e:
             print(f"   [FAIL] MomentumStrategy.generate_signals() failed: {e}")
 
         try:
-            signals = mean_reversion_strategy.generate_signals(dummy_data)
-            print(f"   [OK] MeanReversionStrategy.generate_signals() works")
+            mean_reversion_strategy.generate_signals(dummy_data)
+            print("   [OK] MeanReversionStrategy.generate_signals() works")
         except Exception as e:
             print(f"   [FAIL] MeanReversionStrategy.generate_signals() failed: {e}")
 

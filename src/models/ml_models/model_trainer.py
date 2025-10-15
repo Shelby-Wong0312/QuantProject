@@ -314,9 +314,9 @@ class ModelTrainer:
         # libraries like Optuna or Ray Tune
 
         best_score = (
-            float("inf") if optimization_metric in ["mse", "rmse", "mae"] else -float("inf")
+            float("in") if optimization_metric in ["mse", "rmse", "mae"] else -float("inf")
         )
-        best_params = None
+        None
         all_results = []
 
         # Random search
@@ -346,7 +346,7 @@ class ModelTrainer:
 
                 if is_better:
                     best_score = score
-                    best_params = trial_params.copy()
+                    trial_params.copy()
 
                 all_results.append(
                     {

@@ -75,7 +75,7 @@ class OBVStrategy:
         price_ma = self.price_sma.calculate(data)
 
         # 初始化信號
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
         signals["obv"] = obv_values
         signals["obv_ma"] = obv_ma
         signals["buy"] = False

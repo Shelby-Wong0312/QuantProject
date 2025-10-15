@@ -97,7 +97,7 @@ def test_sub_connection():
 
         # 嘗試接收數據
         try:
-            data = sub_socket.recv_json()
+            sub_socket.recv_json()
             print(f"   <- Received data: {data}")
             print("   [SUCCESS] PUB-SUB connection successful!")
             return True

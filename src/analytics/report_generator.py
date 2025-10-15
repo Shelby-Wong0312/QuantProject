@@ -451,7 +451,7 @@ class ReportGenerator:
         if not metrics:
             return "<p>No data available for summary.</p>"
 
-        summary = f"""
+        summary = """
         <p><strong>Portfolio Performance Overview:</strong></p>
         <ul>
             <li>Total return of <strong>{metrics.get('Total Return', 'N/A')}</strong> with a final equity of <strong>{metrics.get('Final Equity', 'N/A')}</strong></li>
@@ -476,7 +476,7 @@ class ReportGenerator:
         if trades_df.empty:
             return "<p>No trade data available for risk analysis.</p>"
 
-        risk_html = f"""
+        risk_html = """
         <h4>Risk Assessment</h4>
         <p>The portfolio demonstrates the following risk characteristics:</p>
         
@@ -597,7 +597,7 @@ class ReportGenerator:
         metrics_cards = ""
         for i, (key, value) in enumerate(metrics.items()):
             if i < 8:  # Show first 8 metrics
-                metrics_cards += f"""
+                metrics_cards += """
                 <div class="metric-card">
                     <div class="metric-value">{value}</div>
                     <div class="metric-label">{key}</div>

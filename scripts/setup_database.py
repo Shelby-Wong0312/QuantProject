@@ -262,7 +262,7 @@ class DatabaseSetup:
 
                 # 創建tick數據分區
                 cursor.execute(
-                    f"""
+                    """
                     CREATE TABLE IF NOT EXISTS {tick_partition} 
                     PARTITION OF tick_data
                     FOR VALUES FROM ('{start_date.strftime('%Y-%m-%d')}') 
@@ -272,7 +272,7 @@ class DatabaseSetup:
 
                 # 創建OHLC數據分區
                 cursor.execute(
-                    f"""
+                    """
                     CREATE TABLE IF NOT EXISTS {ohlc_partition} 
                     PARTITION OF ohlc_data
                     FOR VALUES FROM ('{start_date.strftime('%Y-%m-%d')}') 
@@ -334,7 +334,7 @@ class DatabaseSetup:
             cursor.execute("SELECT COUNT(*) FROM stocks WHERE is_tradable = TRUE")
             count = cursor.fetchone()[0]
 
-            logger.info(f"[OK] Database connection successful")
+            logger.info("[OK] Database connection successful")
             logger.info(f"[STATS] Found {count} tradable stocks in database")
 
             cursor.close()

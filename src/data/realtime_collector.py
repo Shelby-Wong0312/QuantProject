@@ -147,7 +147,7 @@ class RealtimeDataCollector:
                 # 測試連接
                 self.cache.ping()
                 logger.info("Connected to Redis cache")
-            except:
+            except Exception:
                 logger.warning("Redis connection failed, using in-memory cache")
                 self.cache = InMemoryCache()
         else:
@@ -472,7 +472,7 @@ class RealtimeDataCollector:
             await asyncio.sleep(30)  # 每30秒報告一次
 
             logger.info(
-                f"Collection Stats - "
+                "Collection Stats - "
                 f"Total ticks: {self.stats['total_ticks']}, "
                 f"Errors: {self.stats['errors']}, "
                 f"Last update: {self.stats['last_update']}"
@@ -567,7 +567,7 @@ class DataValidator:
         Returns:
             質量報告
         """
-        report = {
+        {
             "total_rows": len(df),
             "missing_values": df.isnull().sum().to_dict(),
             "duplicates": df.duplicated().sum(),
@@ -596,7 +596,7 @@ class DataValidator:
 if __name__ == "__main__":
     # 測試數據收集器
     async def test_collector():
-        symbols = ["AAPL", "GOOGL", "MSFT"]
+        ["AAPL", "GOOGL", "MSFT"]
 
         collector = RealtimeDataCollector(symbols)
 

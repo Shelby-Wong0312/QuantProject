@@ -599,7 +599,7 @@ ZeroMQ 提供高效能的訊息傳遞功能，適合即時交易應用。
                 self.log(f"執行 {step_name} 時發生錯誤: {str(e)}", "error")
 
         # 3. 生成報告
-        report = self.generate_summary_report()
+        self.generate_summary_report()
         self.save_report(report)
 
         # 4. 顯示摘要
@@ -630,7 +630,7 @@ ZeroMQ 提供高效能的訊息傳遞功能，適合即時交易應用。
         print(f"⚠️  警告數量: {report['summary']['warnings_count']}")
 
         if report["created_folders"]:
-            print(f"\n主要建立的資料夾:")
+            print("\n主要建立的資料夾:")
             for folder in report["created_folders"][:5]:  # 顯示前5個
                 relative_path = os.path.relpath(folder, self.mt4_path)
                 print(f"  • {relative_path}")
@@ -639,26 +639,26 @@ ZeroMQ 提供高效能的訊息傳遞功能，適合即時交易應用。
                 print(f"  ... 以及其他 {len(report['created_folders']) - 5} 個資料夾")
 
         if report["summary"]["errors_count"] > 0:
-            print(f"\n需要注意的錯誤:")
+            print("\n需要注意的錯誤:")
             for error in report["errors"][:3]:
                 print(f"  • {error}")
 
-        print(f"\n📄 詳細報告: mt4_folder_preparation_report.json")
+        print("\n📄 詳細報告: mt4_folder_preparation_report.json")
 
         # 下一步建議
         if report["summary"]["overall_status"] == "SUCCESS":
-            print(f"\n🎉 資料夾準備完成！")
-            print(f"   下一步建議：")
-            print(f"   1. 執行 check_mt4_env.py 驗證環境")
-            print(f"   2. 安裝必要的 Python 套件")
-            print(f"   3. 測試橋接通訊功能")
+            print("\n🎉 資料夾準備完成！")
+            print("   下一步建議：")
+            print("   1. 執行 check_mt4_env.py 驗證環境")
+            print("   2. 安裝必要的 Python 套件")
+            print("   3. 測試橋接通訊功能")
 
 
 def main():
     """主函數"""
     parser = argparse.ArgumentParser(description="MT4 資料夾準備腳本")
     parser.add_argument("--mt4-path", type=str, help="指定 MT4 安裝路徑")
-    parser.add_argument("--force", "-f", action="store_true", help="強制重新建立已存在的目錄和檔案")
+    parser.add_argument("--force", "-", action="store_true", help="強制重新建立已存在的目錄和檔案")
     parser.add_argument("--verbose", "-v", action="store_true", help="顯示詳細資訊")
 
     args = parser.parse_args()

@@ -36,12 +36,12 @@ def load_test_data(symbol="AAPL", days=100):
         # 嘗試載入歷史數據
         data_path = f"data/stocks/{symbol}_daily.csv"
         if os.path.exists(data_path):
-            data = pd.read_csv(data_path)
+            pd.read_csv(data_path)
             data["date"] = pd.to_datetime(data["date"])
             data.set_index("date", inplace=True)
 
             # 取最近 N 天數據
-            data = data.tail(days)
+            data.tail(days)
             logger.info(f"Loaded {len(data)} days of data for {symbol}")
             return data
         else:
@@ -66,7 +66,7 @@ def generate_simulated_data(days=100):
     prices = base_price * (1 + returns).cumprod()
 
     # 生成 OHLCV 數據
-    data = pd.DataFrame(
+    pd.DataFrame(
         {
             "open": prices * (1 + np.random.uniform(-0.01, 0.01, days)),
             "high": prices * (1 + np.random.uniform(0, 0.02, days)),
@@ -107,7 +107,7 @@ def test_individual_strategies(data):
 
         try:
             # 計算信號
-            signals = strategy.calculate_signals(data)
+            strategy.calculate_signals(data)
 
             if len(signals) > 0:
                 # 統計信號
@@ -129,13 +129,13 @@ def test_individual_strategies(data):
                 # 顯示最近信號
                 recent_buys = signals[signals["buy"]].tail(3)
                 if len(recent_buys) > 0:
-                    print(f"  Recent buy signals:")
+                    print("  Recent buy signals:")
                     for idx, row in recent_buys.iterrows():
                         print(
                             f"    {idx.strftime('%Y-%m-%d')}: strength={row['signal_strength']:.3f}"
                         )
             else:
-                print(f"  No signals generated")
+                print("  No signals generated")
                 results[strategy.name] = {
                     "buy_signals": 0,
                     "sell_signals": 0,
@@ -204,16 +204,16 @@ def test_signal_aggregator(data):
                 print(f"  Unanimous buy signals: {agreement.get('unanimous_buy', 0)}")
                 print(f"  Unanimous sell signals: {agreement.get('unanimous_sell', 0)}")
             else:
-                print(f"  No consensus signals generated")
+                print("  No consensus signals generated")
 
         except Exception as e:
             print(f"  Error: {e}")
 
     # 獲取聚合器報告
-    report = aggregator.get_aggregator_report()
-    print(f"\n--- Aggregator Report ---")
+    aggregator.get_aggregator_report()
+    print("\n--- Aggregator Report ---")
     print(f"Total strategies: {report['total_strategies']}")
-    print(f"Strategy weights:")
+    print("Strategy weights:")
     for name, weight in report["strategy_weights"].items():
         print(f"  {name}: {weight:.2f}")
 
@@ -255,7 +255,7 @@ def test_multi_strategy_manager(data):
     consensus_signal = manager.get_consensus_signal(all_results, method="weighted_voting")
 
     if consensus_signal:
-        print(f"Consensus Signal:")
+        print("Consensus Signal:")
         print(f"  Action: {consensus_signal['action']}")
         print(f"  Confidence: {consensus_signal['confidence']:.3f}")
         print(f"  Agreeing strategies: {consensus_signal.get('agreeing_strategies', [])}")
@@ -266,7 +266,7 @@ def test_multi_strategy_manager(data):
 
         position = manager.calculate_position_size(consensus_signal, portfolio_value, current_price)
 
-        print(f"\nPosition Sizing:")
+        print("\nPosition Sizing:")
         print(f"  Shares: {position['shares']}")
         print(f"  Allocation: ${position['allocation']:.2f}")
         print(f"  Allocation %: {position['allocation_pct']:.2f}%")
@@ -275,7 +275,7 @@ def test_multi_strategy_manager(data):
 
     # 獲取策略報告
     reports = manager.get_strategy_reports()
-    print(f"\n--- Strategy Reports ---")
+    print("\n--- Strategy Reports ---")
     for name, report in reports.items():
         if report:
             print(f"\n{name}:")
@@ -384,7 +384,7 @@ def test_backtest_simulation(data):
     final_capital = capital
     total_return = (final_capital - initial_capital) / initial_capital * 100
 
-    print(f"\n--- Backtest Results ---")
+    print("\n--- Backtest Results ---")
     print(f"Final capital: ${final_capital:,.0f}")
     print(f"Total return: {total_return:.2f}%")
     print(f"Total trades: {len(trades)}")
@@ -401,7 +401,7 @@ def test_backtest_simulation(data):
             print(f"Win rate: {win_rate:.1f}%")
 
         # 顯示最近交易
-        print(f"\n--- Recent Trades ---")
+        print("\n--- Recent Trades ---")
         for trade in trades[-5:]:
             date_str = (
                 trade["date"].strftime("%Y-%m-%d")
@@ -454,7 +454,7 @@ def main():
 
     # 載入測試數據
     print("\nLoading test data...")
-    data = load_test_data("AAPL", days=100)
+    load_test_data("AAPL", days=100)
     print(f"Data shape: {data.shape}")
     print(f"Date range: {data.index[0]} to {data.index[-1]}")
 

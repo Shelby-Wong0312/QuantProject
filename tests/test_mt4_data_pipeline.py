@@ -358,7 +358,7 @@ def run_integration_test():
 
         # 獲取統計
         stats = pipeline.get_stats()
-        print(f"\n統計信息:")
+        print("\n統計信息:")
         print(f"  總Tick數: {stats['total_ticks']}")
         print(f"  有效Tick數: {stats['valid_ticks']}")
         print(f"  無效Tick數: {stats['invalid_ticks']}")
@@ -367,13 +367,13 @@ def run_integration_test():
         # 獲取最新數據
         latest = pipeline.get_latest_data("EURUSD")
         if latest:
-            print(f"\n最新數據:")
+            print("\n最新數據:")
             print(f"  Bid: {latest.bid}, Ask: {latest.ask}")
 
         # 獲取歷史數據
         df = pipeline.get_dataframe("EURUSD", TimeFrame.M5, 10)
         if not df.empty:
-            print(f"\n歷史數據（最近10條）:")
+            print("\n歷史數據（最近10條）:")
             print(df.tail(5))
 
         # 停止

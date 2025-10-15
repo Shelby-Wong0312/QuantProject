@@ -142,7 +142,7 @@ def update_gitignore():
             if pattern not in existing:
                 f.write(f"\n{pattern}")
 
-    print(f"[OK] Updated .gitignore")
+    print("[OK] Updated .gitignore")
 
 
 def main():

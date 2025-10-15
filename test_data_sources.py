@@ -33,14 +33,14 @@ def test_alpaca():
         api = REST(api_key, secret_key, base_url, api_version="v2")
 
         account = api.get_account()
-        print(f"[OK] Connected to Alpaca Markets")
+        print("[OK] Connected to Alpaca Markets")
         print(f"     Account Status: {account.status}")
         print(f"     Buying Power: ${float(account.buying_power):,.2f}")
 
         # Test real-time data
         bars = api.get_bars("AAPL", "1Min", limit=5).df
         if not bars.empty:
-            print(f"[OK] Real-time data working")
+            print("[OK] Real-time data working")
             print(f"     Latest AAPL: ${bars['close'].iloc[-1]:.2f}")
 
         return True
@@ -66,12 +66,12 @@ def test_yahoo():
         ticker = yf.Ticker("AAPL")
         info = ticker.info
 
-        print(f"[OK] Yahoo Finance working")
+        print("[OK] Yahoo Finance working")
         print(f"     AAPL Price: ${info.get('currentPrice', 0):.2f}")
 
         hist = ticker.history(period="5d")
         if not hist.empty:
-            print(f"[OK] Historical data available")
+            print("[OK] Historical data available")
             print(f"     5-day records: {len(hist)}")
 
         return True
@@ -108,17 +108,17 @@ def test_alpha_vantage():
         }
 
         response = requests.get(url, params=params, timeout=10)
-        data = response.json()
+        response.json()
 
         if "Time Series (Daily)" in data:
-            print(f"[OK] Alpha Vantage connected")
-            print(f"     Free tier: 5 calls/min, 500/day")
+            print("[OK] Alpha Vantage connected")
+            print("     Free tier: 5 calls/min, 500/day")
             return True
         elif "Note" in data:
-            print(f"[WARNING] Rate limit reached")
+            print("[WARNING] Rate limit reached")
             return True
         else:
-            print(f"[ERROR] API response issue")
+            print("[ERROR] API response issue")
             return False
 
     except Exception as e:
@@ -138,7 +138,7 @@ def test_capital():
 
         api = CapitalComAPI()
         if api.authenticate():
-            print(f"[OK] Capital.com connected")
+            print("[OK] Capital.com connected")
 
             accounts = api.get_accounts()
             if accounts:
@@ -148,7 +148,7 @@ def test_capital():
 
             return True
         else:
-            print(f"[ERROR] Authentication failed")
+            print("[ERROR] Authentication failed")
             return False
 
     except Exception as e:

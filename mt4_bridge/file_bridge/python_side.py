@@ -57,9 +57,9 @@ class FileBridge:
                                 response = json.load(f)
                             self.response_queue.put(response)
                             os.remove(filepath)  # 刪除已讀取的檔案
-                        except:
+                        except Exception:
                             pass
-            except:
+            except Exception:
                 pass
             time.sleep(0.1)
 

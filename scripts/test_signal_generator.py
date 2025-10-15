@@ -46,7 +46,7 @@ def test_signal_generation():
     latency = (time.time() - start_time) * 1000
 
     print(f"✓ Signal generated in {latency:.2f}ms")
-    print(f"\nSignal Details:")
+    print("\nSignal Details:")
     print(f"  Symbol: {signal.symbol}")
     print(f"  Action: {signal.action}")
     print(f"  Strength: {signal.strength:.2f}/100")
@@ -58,9 +58,9 @@ def test_signal_generation():
 
     # 檢查延遲要求
     if latency < 100:
-        print(f"\n✓ Meets latency requirement (<100ms)")
+        print("\n✓ Meets latency requirement (<100ms)")
     else:
-        print(f"\n✗ Exceeds latency requirement (>100ms)")
+        print("\n✗ Exceeds latency requirement (>100ms)")
 
     return signal
 
@@ -72,15 +72,15 @@ def test_multi_stock_signals():
     print("=" * 50)
 
     generator = SignalGenerator()
-    symbols = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
+    ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
 
-    signals = []
+    []
     start_time = time.time()
 
     for symbol in symbols:
         # 創建隨機數據
         dates = pd.date_range(start="2024-01-01", periods=200, freq="5min")
-        data = pd.DataFrame(
+        pd.DataFrame(
             {
                 "open": np.random.randn(200).cumsum() + 100,
                 "high": np.random.randn(200).cumsum() + 101,
@@ -102,7 +102,7 @@ def test_multi_stock_signals():
 
     # 顯示信號分佈
     actions = [s.action for s in signals]
-    print(f"\nSignal Distribution:")
+    print("\nSignal Distribution:")
     for action in set(actions):
         count = actions.count(action)
         print(f"  {action}: {count} ({count/len(actions)*100:.1f}%)")
@@ -133,7 +133,7 @@ def test_signal_scoring():
         noise = np.random.normal(0, params["volatility"], 200).cumsum()
         prices = 100 + trend + noise
 
-        data = pd.DataFrame(
+        pd.DataFrame(
             {
                 "open": prices + np.random.normal(0, 0.1, 200),
                 "high": prices + abs(np.random.normal(0, 0.2, 200)),
@@ -163,7 +163,7 @@ def test_signal_history():
     # 生成多個信號
     for i in range(10):
         dates = pd.date_range(start="2024-01-01", periods=200, freq="5min")
-        data = pd.DataFrame(
+        pd.DataFrame(
             {
                 "open": np.random.randn(200).cumsum() + 100,
                 "high": np.random.randn(200).cumsum() + 101,
@@ -184,13 +184,13 @@ def test_signal_history():
     # 評估性能
     performance = generator.evaluate_performance()
 
-    print(f"\nPerformance Metrics:")
+    print("\nPerformance Metrics:")
     print(f"  Total Signals: {performance.get('total_signals', 0)}")
     print(f"  Average Confidence: {performance.get('avg_confidence', 0):.2%}")
     print(f"  Average Strength: {performance.get('avg_strength', 0):.2f}")
 
     if "action_distribution" in performance:
-        print(f"\nAction Distribution:")
+        print("\nAction Distribution:")
         for action, count in performance["action_distribution"].items():
             print(f"  {action}: {count}")
 
@@ -223,7 +223,7 @@ def test_with_real_data():
             print(f"  Predicted Return: {signal.predicted_return:.2%}")
 
             # 顯示信號來源貢獻
-            print(f"\nSignal Sources:")
+            print("\nSignal Sources:")
             for source, data in signal.sources.items():
                 if data:
                     print(
@@ -249,7 +249,7 @@ def run_performance_test():
 
     for size in data_sizes:
         dates = pd.date_range(start="2024-01-01", periods=size, freq="5min")
-        data = pd.DataFrame(
+        pd.DataFrame(
             {
                 "open": np.random.randn(size).cumsum() + 100,
                 "high": np.random.randn(size).cumsum() + 101,
@@ -297,7 +297,7 @@ def main():
 
     # 2. 多股票處理
     try:
-        signals = test_multi_stock_signals()
+        test_multi_stock_signals()
         results["multi_stock"] = True
     except Exception as e:
         print(f"✗ Multi-stock test failed: {e}")

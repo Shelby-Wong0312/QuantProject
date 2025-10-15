@@ -137,7 +137,7 @@ class MultiStrategyManager:
                 for future in as_completed(future_to_strategy):
                     strategy_name = future_to_strategy[future]
                     try:
-                        signals = future.result(timeout=30)
+                        future.result(timeout=30)
                         all_signals[strategy_name] = signals
                     except Exception as e:
                         logger.error(f"Error executing strategy {strategy_name}: {e}")
@@ -146,7 +146,7 @@ class MultiStrategyManager:
             # 序列執行策略
             for strategy_name in self.active_strategies:
                 try:
-                    signals = self._execute_single_strategy(strategy_name, market_data)
+                    self._execute_single_strategy(strategy_name, market_data)
                     all_signals[strategy_name] = signals
                 except Exception as e:
                     logger.error(f"Error executing strategy {strategy_name}: {e}")
@@ -184,7 +184,7 @@ class MultiStrategyManager:
             策略信號
         """
         strategy = self.strategies[strategy_name]
-        signals = strategy.calculate_signals(market_data)
+        strategy.calculate_signals(market_data)
 
         # 記錄信號歷史
         for _, signal in signals.iterrows():

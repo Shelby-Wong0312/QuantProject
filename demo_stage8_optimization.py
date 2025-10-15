@@ -48,7 +48,7 @@ class OptimizationFrameworkDemo:
         # Generate 3 years of daily data
         dates = pd.date_range(start="2021-01-01", end="2023-12-31", freq="D")
 
-        symbols = ["AAPL", "GOOGL", "MSFT", "TSLA", "NVDA", "AMZN"]
+        ["AAPL", "GOOGL", "MSFT", "TSLA", "NVDA", "AMZN"]
 
         for symbol in symbols:
             # Generate realistic price series with different characteristics
@@ -282,13 +282,13 @@ class OptimizationFrameworkDemo:
 
         # Sharpe ratio ranking
         sharpe_ranking = selector.rank_strategies_by_sharpe()
-        print(f"    Top 3 by Sharpe Ratio:")
+        print("    Top 3 by Sharpe Ratio:")
         for i, (name, score) in enumerate(sharpe_ranking[:3], 1):
             print(f"      {i}. {name}: {score:.3f}")
 
         # Composite score ranking
         composite_ranking = selector.rank_strategies_by_composite_score()
-        print(f"    Top 3 by Composite Score:")
+        print("    Top 3 by Composite Score:")
         for i, (name, score) in enumerate(composite_ranking[:3], 1):
             print(f"      {i}. {name}: {score:.3f}")
 
@@ -307,7 +307,7 @@ class OptimizationFrameworkDemo:
             ("Sharpe Ratio", "sharpe_ratio", "risk_parity"),
         ]
 
-        print(f"\n  Strategy Selection Results:")
+        print("\n  Strategy Selection Results:")
 
         for method_name, selection_method, weighting_method in methods:
             if selection_method == "diversification":
@@ -380,7 +380,7 @@ class OptimizationFrameworkDemo:
         mc_results = analyzer.monte_carlo_simulation(
             strategy=DemoStrategy(),
             optimal_params=optimal_params,
-            data={k: v.head(200) for k, v in demo_data.items()},
+            {k: v.head(200) for k, v in demo_data.items()},
             n_simulations=50,  # Reduced for demo
         )
 
@@ -416,7 +416,7 @@ class OptimizationFrameworkDemo:
         """Create comprehensive optimization report"""
         print("\n5. Creating Comprehensive Optimization Report...")
 
-        report = f"""
+        """
 ================================================================================
                     STAGE 8 OPTIMIZATION FRAMEWORK REPORT                    
                            Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}                           
@@ -546,8 +546,8 @@ STAGE 8 OPTIMIZATION FRAMEWORK: IMPLEMENTATION COMPLETE
             print("+ Multi-objective Optimization & Risk Management")
             print("+ Comprehensive Performance Monitoring & Reporting")
 
-            print(f"\nImplementation Status: COMPLETE")
-            print(f"All optimization modules are production-ready!")
+            print("\nImplementation Status: COMPLETE")
+            print("All optimization modules are production-ready!")
 
         except Exception as e:
             logger.error(f"Error in demo: {e}")

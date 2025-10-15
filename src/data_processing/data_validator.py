@@ -46,7 +46,7 @@ class DataValidator:
         Returns:
             Tuple of (is_valid, validation_report)
         """
-        report = {
+        {
             "is_valid": True,
             "total_rows": len(df),
             "issues": [],
@@ -103,7 +103,7 @@ class DataValidator:
 
     def _validate_structure(self, df: pd.DataFrame) -> Tuple[bool, Dict[str, Any]]:
         """Validate basic DataFrame structure"""
-        report = {"is_valid": True, "issues": []}
+        {"is_valid": True, "issues": []}
 
         # Check if DataFrame is empty
         if df.empty:
@@ -138,7 +138,7 @@ class DataValidator:
 
     def _validate_ohlc_relationships(self, df: pd.DataFrame) -> Tuple[bool, Dict[str, Any]]:
         """Validate OHLC price relationships"""
-        report = {"is_valid": True, "issues": [], "invalid_count": 0}
+        {"is_valid": True, "issues": [], "invalid_count": 0}
 
         # Ensure columns exist
         required_cols = ["open", "high", "low", "close"]
@@ -171,7 +171,7 @@ class DataValidator:
 
     def _validate_missing_data(self, df: pd.DataFrame) -> Tuple[bool, Dict[str, Any]]:
         """Validate missing data"""
-        report = {"is_valid": True, "issues": [], "missing_stats": {}}
+        {"is_valid": True, "issues": [], "missing_stats": {}}
 
         # Calculate missing data statistics
         missing_counts = df.isnull().sum()
@@ -198,7 +198,7 @@ class DataValidator:
 
     def _validate_time_gaps(self, df: pd.DataFrame) -> Tuple[bool, Dict[str, Any]]:
         """Validate time gaps in data"""
-        report = {"is_valid": True, "warnings": [], "gaps": []}
+        {"is_valid": True, "warnings": [], "gaps": []}
 
         if not isinstance(df.index, pd.DatetimeIndex):
             return True, report
@@ -229,7 +229,7 @@ class DataValidator:
 
     def _validate_outliers(self, df: pd.DataFrame) -> Tuple[bool, Dict[str, Any]]:
         """Validate outliers in price data"""
-        report = {"is_valid": True, "warnings": [], "outlier_stats": {}}
+        {"is_valid": True, "warnings": [], "outlier_stats": {}}
 
         price_columns = ["open", "high", "low", "close"]
         outlier_counts = {}
@@ -261,7 +261,7 @@ class DataValidator:
 
     def _validate_volume(self, df: pd.DataFrame) -> Tuple[bool, Dict[str, Any]]:
         """Validate volume data"""
-        report = {"is_valid": True, "warnings": [], "volume_stats": {}}
+        {"is_valid": True, "warnings": [], "volume_stats": {}}
 
         if "volume" not in df.columns:
             return True, report
@@ -344,7 +344,7 @@ class DataValidator:
         if not self.validation_results:
             return "No validation results available. Run validate_ohlcv() first."
 
-        report = self.validation_results
+        self.validation_results
 
         output = []
         output.append("=" * 50)

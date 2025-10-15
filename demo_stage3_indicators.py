@@ -32,7 +32,7 @@ def create_demo_data():
     # 生成模擬股價數據
     price = 100 + np.cumsum(np.random.randn(100) * 0.02)
 
-    data = pd.DataFrame(
+    pd.DataFrame(
         {
             "open": price + np.random.randn(100) * 0.01,
             "high": price + np.abs(np.random.randn(100) * 0.02),
@@ -54,7 +54,7 @@ def demo_single_indicators():
     """演示單個指標計算"""
     print("=== Single Indicator Calculation Demo ===")
 
-    data = create_demo_data()
+    create_demo_data()
     print(
         f"Test data: {len(data)} days, price range ${data['close'].min():.2f} - ${data['close'].max():.2f}"
     )
@@ -127,13 +127,13 @@ def demo_signal_generation():
     """演示信號生成"""
     print("\n=== Signal Generation Demo ===")
 
-    data = create_demo_data()
+    create_demo_data()
 
     # 初始化信號生成器
     signal_generator = IndicatorSignalGenerator()
 
     # 生成信號
-    signals = signal_generator.generate_signals(data, "DEMO")
+    signal_generator.generate_signals(data, "DEMO")
 
     print(f"Generated {len(signals)} trading signals")
 
@@ -175,7 +175,7 @@ def demo_performance_stats():
     # 獲取性能統計
     stats = calculator.get_performance_stats()
 
-    print(f"Performance Statistics:")
+    print("Performance Statistics:")
     print(f"  Total calculations: {stats['total_calculations']}")
     print(f"  Cache hits: {stats['cache_hits']}")
     print(f"  Cache hit rate: {stats['cache_hit_rate']*100:.1f}%")
@@ -208,14 +208,14 @@ def main():
         print("Technical Indicators Library is ready for production use.")
 
         # 顯示系統摘要
-        print(f"\nSystem Summary:")
-        print(f"- 20+ technical indicators implemented")
-        print(f"- Multi-timeframe support (1m, 5m, 15m, 1h, 1d)")
-        print(f"- Vectorized calculations with pandas/numpy")
-        print(f"- Multi-processing parallel computation")
-        print(f"- Intelligent caching system")
-        print(f"- Advanced signal generation with filtering")
-        print(f"- Production-ready performance")
+        print("\nSystem Summary:")
+        print("- 20+ technical indicators implemented")
+        print("- Multi-timeframe support (1m, 5m, 15m, 1h, 1d)")
+        print("- Vectorized calculations with pandas/numpy")
+        print("- Multi-processing parallel computation")
+        print("- Intelligent caching system")
+        print("- Advanced signal generation with filtering")
+        print("- Production-ready performance")
 
     except Exception as e:
         print(f"\nERROR: Demo failed with exception: {e}")

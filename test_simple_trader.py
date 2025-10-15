@@ -112,7 +112,7 @@ def test_signal_accuracy():
             print(f"   {symbol}: ERROR ({e})")
             no_signals += 1
 
-    print(f"\nSignal Summary:")
+    print("\nSignal Summary:")
     print(f"   BUY signals: {buy_signals}")
     print(f"   SELL signals: {sell_signals}")
     print(f"   No signals: {no_signals}")
@@ -130,7 +130,7 @@ def main():
         # Run signal accuracy test
         test_signal_accuracy()
 
-        print(f"\n[SUCCESS] ALL TESTS PASSED")
+        print("\n[SUCCESS] ALL TESTS PASSED")
         print("Ready to run: python simple_auto_trader.py")
 
     except Exception as e:

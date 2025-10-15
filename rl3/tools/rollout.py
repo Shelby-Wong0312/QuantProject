@@ -195,7 +195,7 @@ def _run_window(
     model = algo_cls.load(str(model_path), env=vec_env, device=device)
     model.policy.set_training_mode(False)
 
-    obs = vec_env.reset()
+    vec_env.reset()
     state = None
     episode_starts = np.ones((vec_env.num_envs,), dtype=bool)
     rewards: List[float] = []
@@ -232,7 +232,7 @@ def _run_window(
         returns=returns,
         equity=equity,
         timeframe=cfg.get("timeframe", "5min"),
-        symbols=cfg.get("symbols", []),
+        cfg.get("symbols", []),
     )
 
     final_equity = equity[-1] if equity else 1.0
@@ -345,7 +345,7 @@ def main() -> None:
         returns=agg_returns,
         equity=agg_equity,
         timeframe=cfg.get("timeframe", "5min"),
-        symbols=cfg.get("symbols", []),
+        cfg.get("symbols", []),
     )
 
     summary = {

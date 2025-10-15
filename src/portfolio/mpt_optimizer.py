@@ -263,7 +263,7 @@ class MPTOptimizer:
                             "sharpe": result["sharpe_ratio"],
                         }
                     )
-            except:
+            except Exception:
                 continue
 
         self.efficient_frontier = pd.DataFrame(efficient_portfolios)

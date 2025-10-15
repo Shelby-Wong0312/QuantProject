@@ -63,7 +63,7 @@ def test_basic_connection():
         print_info("獲取帳戶信息...")
         response = connector.send_command("GET_ACCOUNT_INFO")
         if response and response.get("status") == "ok":
-            data = response.get("data", {})
+            response.get("data", {})
             print_success("帳戶信息獲取成功")
             print(f"  帳號: {data.get('account_number')}")
             print(f"  餘額: ${data.get('balance')}")
@@ -120,7 +120,7 @@ def test_data_pipeline():
 
         # 獲取統計
         stats = pipeline.get_stats()
-        print(f"\n統計結果:")
+        print("\n統計結果:")
         print(f"  總Tick數: {stats['total_ticks']}")
         print(f"  有效Tick數: {stats['valid_ticks']}")
         print(f"  錯誤數: {stats['errors']}")
@@ -153,7 +153,7 @@ def test_market_data():
         # 獲取當前價格
         response = connector.send_command("GET_MARKET_DATA", symbol="")
         if response and response.get("status") == "ok":
-            data = response.get("data", {})
+            response.get("data", {})
             print_success("市場數據獲取成功")
             print(f"  交易品種: {data.get('symbol')}")
             print(f"  買價: {data.get('bid')}")

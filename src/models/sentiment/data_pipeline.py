@@ -91,7 +91,7 @@ class SentimentDataPipeline:
         # Step 1: Collect news
         logger.info("Step 1: Collecting news articles")
         news_df = self.news_collector.collect_news_sync(
-            symbols=symbols, start_date=start_date, end_date=end_date, use_cache=self.cache_results
+            symbols, start_date=start_date, end_date=end_date, use_cache=self.cache_results
         )
 
         if news_df.empty:
@@ -132,7 +132,7 @@ class SentimentDataPipeline:
 
         # Step 4: Generate signals
         logger.info("Step 4: Generating trading signals")
-        signals = self.scorer.get_sentiment_signals(composite_scores)
+        self.scorer.get_sentiment_signals(composite_scores)
         results["signals"] = signals
 
         # Step 5: Calculate market sentiment
@@ -287,7 +287,7 @@ class SentimentDataPipeline:
         # News summary
         if "raw_news" in results:
             news_df = results["raw_news"]
-            report_lines.append(f"\nNEWS SUMMARY:")
+            report_lines.append("\nNEWS SUMMARY:")
             report_lines.append(f"Total articles: {len(news_df)}")
             report_lines.append(
                 f"Date range: {news_df['published_date'].min()} to {news_df['published_date'].max()}"
@@ -297,7 +297,7 @@ class SentimentDataPipeline:
         # Sentiment scores
         if "composite_scores" in results:
             scores_df = results["composite_scores"]
-            report_lines.append(f"\nSENTIMENT SCORES:")
+            report_lines.append("\nSENTIMENT SCORES:")
 
             for _, row in scores_df.iterrows():
                 report_lines.append(f"\n{row['symbol']}:")
@@ -312,7 +312,7 @@ class SentimentDataPipeline:
         # Trading signals
         if "signals" in results:
             signals_df = results["signals"]
-            report_lines.append(f"\nTRADING SIGNALS:")
+            report_lines.append("\nTRADING SIGNALS:")
 
             for _, signal in signals_df.iterrows():
                 report_lines.append(
@@ -324,7 +324,7 @@ class SentimentDataPipeline:
         # Market sentiment
         if "market_sentiment" in results:
             market = results["market_sentiment"]
-            report_lines.append(f"\nMARKET SENTIMENT:")
+            report_lines.append("\nMARKET SENTIMENT:")
             report_lines.append(f"  Overall Score: {market['market_score']:.3f}")
             report_lines.append(f"  Volatility: {market['market_volatility']:.3f}")
             report_lines.append(f"  Positive Breadth: {market['positive_breadth']:.2%}")
@@ -372,7 +372,7 @@ class SentimentDataPipeline:
             DataFrame with historical sentiment
         """
         # Find relevant files
-        pattern = f"composite_scores_*.csv"
+        pattern = "composite_scores_*.csv"
         files = list(self.output_dir.glob(pattern))
 
         if not files:

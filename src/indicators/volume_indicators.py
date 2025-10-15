@@ -42,7 +42,7 @@ class OBV(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate OBV divergence signals"""
         obv = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
 
         signals["obv"] = obv
         signals["obv_sma"] = obv.rolling(window=20).mean()
@@ -112,7 +112,7 @@ class VolumeSMA(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate volume anomaly signals"""
         vol_data = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
 
         signals["volume"] = data["volume"]
         signals["volume_sma"] = vol_data["volume_sma"]
@@ -190,7 +190,7 @@ class MFI(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate MFI overbought/oversold signals"""
         mfi = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
 
         signals["mfi"] = mfi
 
@@ -252,7 +252,7 @@ class ADLine(BaseIndicator):
     def get_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         """Generate A/D Line trend and divergence signals"""
         ad_line = self.calculate(data)
-        signals = pd.DataFrame(index=data.index)
+        pd.DataFrame(index=data.index)
 
         signals["ad_line"] = ad_line
         signals["ad_line_sma"] = ad_line.rolling(window=20).mean()

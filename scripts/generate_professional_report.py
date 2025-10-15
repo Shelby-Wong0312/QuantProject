@@ -39,7 +39,7 @@ class ProfessionalReportGenerator:
         benchmark = perf_data["benchmark_metrics"]
 
         # Generate HTML
-        html_content = f"""<!DOCTYPE html>
+        html_content = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -83,7 +83,7 @@ class ProfessionalReportGenerator:
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23fffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
             background-size: cover;
         }}
         
@@ -1298,7 +1298,7 @@ class ProfessionalReportGenerator:
         with open(report_path, "w", encoding="utf-8") as f:
             f.write(html_content)
 
-        print(f"\nProfessional Investment Report Generated!")
+        print("\nProfessional Investment Report Generated!")
         print(f"Location: {report_path}")
 
         return report_path
@@ -1310,7 +1310,7 @@ class ProfessionalReportGenerator:
             return_val = stock.get("total_return", 0)
             return_class = "positive" if return_val > 0 else "negative"
             symbol = stock.get("symbol", "N/A")
-            html += f"""
+            html += """
                 <div class="stock-item">
                     <span class="stock-symbol">{symbol}</span>
                     <span class="stock-return {return_class}">
@@ -1326,7 +1326,7 @@ class ProfessionalReportGenerator:
         for stock in stocks[:5]:
             symbol = stock.get("symbol", "N/A")
             volume = stock.get("avg_volume", 0)
-            html += f"""
+            html += """
                 <div class="stock-item">
                     <span class="stock-symbol">{symbol}</span>
                     <span style="color: #6c757d">
@@ -1372,7 +1372,7 @@ def main():
 
         webbrowser.open(f"file:///{os.path.abspath(report_path)}")
         print("\n[SUCCESS] Report opened in browser")
-    except:
+    except Exception:
         print(f"\n[SUCCESS] Report saved to: {report_path}")
 
 

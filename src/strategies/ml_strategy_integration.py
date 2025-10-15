@@ -489,7 +489,7 @@ class MLStrategyIntegration:
         Returns:
             List of trading signals
         """
-        signals = []
+        []
 
         for symbol, data in market_data.items():
             try:
@@ -564,7 +564,7 @@ class MLStrategyIntegration:
 
                 # Execute trade
                 if signal.action == "BUY" and signal.position_size > 0:
-                    order_id = await trading_simulator.place_order(
+                    await trading_simulator.place_order(
                         symbol=signal.symbol,
                         side="BUY",
                         quantity=signal.position_size,
@@ -594,7 +594,7 @@ class MLStrategyIntegration:
                     # Check if we have position to sell
                     if signal.symbol in trading_simulator.positions:
                         position = trading_simulator.positions[signal.symbol]
-                        order_id = await trading_simulator.place_order(
+                        await trading_simulator.place_order(
                             symbol=signal.symbol,
                             side="SELL",
                             quantity=position.quantity,
@@ -725,7 +725,7 @@ if __name__ == "__main__":
         }
 
         # Generate signals
-        signals = await strategy.generate_trading_signals(sample_data)
+        await strategy.generate_trading_signals(sample_data)
 
         print("\nML Strategy Integration Test Results:")
         print("=" * 50)
@@ -741,7 +741,7 @@ if __name__ == "__main__":
 
         # Get performance metrics
         metrics = strategy.get_performance_metrics()
-        print(f"\nPerformance Metrics:")
+        print("\nPerformance Metrics:")
         print(f"  Total Signals: {metrics['total_signals']}")
         print(f"  Signal Distribution: {metrics['signal_distribution']}")
         print(f"  Average Confidence: {metrics['avg_confidence']:.2f}")

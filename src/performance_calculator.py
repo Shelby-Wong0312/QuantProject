@@ -33,7 +33,7 @@ class PerformanceCalculator:
                 prices = 100 * (1 + 0.10 / 252) ** np.arange(len(dates))  # 10% annual return
                 spy = pd.DataFrame({"Close": prices}, index=dates)
             return spy["Close"]
-        except:
+        except Exception:
             # Create synthetic S&P 500 data with 10% annual return
             dates = pd.date_range(start=start_date, end=end_date, freq="B")
             prices = 100 * (1 + 0.10 / 252) ** np.arange(len(dates))
@@ -44,7 +44,7 @@ class PerformanceCalculator:
         conn = sqlite3.connect(self.db_path)
 
         # Get stock data
-        query = f"""
+        query = """
             SELECT date, close_price, volume
             FROM daily_data
             WHERE symbol = '{symbol}'

@@ -261,7 +261,7 @@ class MT4Connector:
                 if self.state == ConnectionState.CONNECTED and self.sub_socket:
                     # 非阻塞接收數據
                     try:
-                        data = self.sub_socket.recv_json(zmq.NOBLOCK)
+                        self.sub_socket.recv_json(zmq.NOBLOCK)
                         self._process_received_data(data)
                     except zmq.Again:
                         # 沒有數據，繼續

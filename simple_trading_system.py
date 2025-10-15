@@ -103,10 +103,10 @@ class SimpleTradingSystem:
         """Get current price"""
         try:
             ticker = yf.Ticker(symbol)
-            data = ticker.history(period="1d")
+            ticker.history(period="1d")
             if not data.empty:
                 return float(data["Close"].iloc[-1])
-        except:
+        except Exception:
             pass
         return None
 
@@ -144,7 +144,7 @@ class SimpleTradingSystem:
 
             return "HOLD"
 
-        except:
+        except Exception:
             return "HOLD"
 
     def execute_trade(self, symbol, action, price):
@@ -264,7 +264,7 @@ class SimpleTradingSystem:
                     self.display_status()
 
                 # Wait before next scan
-                print(f"[WAIT] Next scan in 60 seconds...")
+                print("[WAIT] Next scan in 60 seconds...")
                 time.sleep(60)
 
             except KeyboardInterrupt:

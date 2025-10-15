@@ -279,7 +279,7 @@ class EarlyStoppingCallback(BaseCallback):
         episode_scores = []
 
         for _ in range(self.n_eval_episodes):
-            obs = self.eval_env.reset()
+            self.eval_env.reset()
             done = False
 
             while not done:

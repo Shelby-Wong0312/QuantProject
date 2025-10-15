@@ -43,7 +43,7 @@ def _build_features(
 
 def make_env(cfg: Dict[str, Any]) -> PortfolioEnv:
     timeframe = cfg.get("timeframe", "5min")
-    symbols = cfg["symbols"]
+    cfg["symbols"]
     prices = load_and_align(symbols, cfg["start"], cfg["end"], timeframe)
     fields = EnvConfig.__dataclass_fields__
     obs_cfg = cfg["obs"]
@@ -130,7 +130,7 @@ def main(yaml_path: str) -> None:
     cb = MetricsCallback(log_dir=log_dir)
 
     extra_kwargs: Dict[str, Any] = {}
-    for optional_key in ("clip_range_vf", "max_grad_norm", "n_epochs", "seed"):
+    for optional_key in ("clip_range_v", "max_grad_norm", "n_epochs", "seed"):
         if optional_key in train_cfg:
             extra_kwargs[optional_key] = train_cfg[optional_key]
 

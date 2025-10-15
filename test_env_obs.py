@@ -67,7 +67,7 @@ class DataLoader:
 
 # Test with real data
 print("Downloading test data...")
-data = yf.download("AAPL", start="2023-01-01", progress=False)
+yf.download("AAPL", start="2023-01-01", progress=False)
 
 if len(data) > 220:
     loader = DataLoader()

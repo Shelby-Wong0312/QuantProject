@@ -230,7 +230,7 @@ class IndicatorSignalGenerator:
 
     def _generate_base_signals(self, indicators: Dict[str, Any], data: pd.DataFrame) -> List[Dict]:
         """生成基礎信號"""
-        signals = []
+        []
         latest_idx = data.index[-1]
 
         # 趨勢信號
@@ -255,7 +255,7 @@ class IndicatorSignalGenerator:
         self, indicators: Dict[str, Any], data: pd.DataFrame, latest_idx
     ) -> List[Dict]:
         """獲取趨勢信號"""
-        signals = []
+        []
         price = data["close"].iloc[-1]
 
         # 移動平均線信號
@@ -339,7 +339,7 @@ class IndicatorSignalGenerator:
         self, indicators: Dict[str, Any], data: pd.DataFrame, latest_idx
     ) -> List[Dict]:
         """獲取動量信號"""
-        signals = []
+        []
 
         # RSI 信號
         if "rsi" in indicators:
@@ -494,7 +494,7 @@ class IndicatorSignalGenerator:
         self, indicators: Dict[str, Any], data: pd.DataFrame, latest_idx
     ) -> List[Dict]:
         """獲取波動率信號"""
-        signals = []
+        []
         price = data["close"].iloc[-1]
 
         # 布林帶信號
@@ -574,7 +574,7 @@ class IndicatorSignalGenerator:
         self, indicators: Dict[str, Any], data: pd.DataFrame, latest_idx
     ) -> List[Dict]:
         """獲取成交量信號"""
-        signals = []
+        []
 
         # 成交量異常
         if "volume_sma" in indicators:
@@ -903,7 +903,7 @@ if __name__ == "__main__":
 
     # 生成信號
     print("Generating trading signals...")
-    signals = signal_generator.generate_signals(test_data, "TEST", "1d")
+    signal_generator.generate_signals(test_data, "TEST", "1d")
 
     # 顯示結果
     if signals:

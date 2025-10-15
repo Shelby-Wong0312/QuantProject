@@ -47,7 +47,7 @@ async def test_ml_integration():
     }
 
     # Generate signals
-    signals = await strategy.generate_trading_signals(test_data)
+    await strategy.generate_trading_signals(test_data)
     print(f"   Generated {len(signals)} signals successfully")
 
     # Step 2: Run Backtest
@@ -56,7 +56,7 @@ async def test_ml_integration():
         initial_capital=100000,
         start_date="2020-01-01",
         end_date="2024-12-31",
-        symbols=["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"],
+        ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"],
         rebalance_frequency="monthly",
         use_walk_forward=False,  # Faster for testing
     )
@@ -68,7 +68,7 @@ async def test_ml_integration():
     result = await backtester.backtest_strategy(historical_data)
 
     # Generate backtest report
-    report = backtester.generate_report(result)
+    backtester.generate_report(result)
     print("   Backtest report generated successfully")
 
     # Step 3: Run Hyperparameter Tuning
@@ -85,7 +85,7 @@ async def test_ml_integration():
     small_data = {symbol: data for symbol, data in list(historical_data.items())[:3]}
 
     print("   Optimizing parameters (this may take a few minutes)...")
-    best_params = await tuner.optimize_ml_parameters(small_data)
+    await tuner.optimize_ml_parameters(small_data)
 
     # Generate optimization report
     opt_report = tuner.generate_optimization_report()
@@ -105,7 +105,7 @@ async def test_ml_integration():
     print("  - reports/optimal_parameters.yaml")
     print("  - reports/optimal_parameters.json")
 
-    print(f"\nKey Results:")
+    print("\nKey Results:")
     print(f"  Total Return: {result.total_return:.2%}")
     print(f"  Annual Return: {result.annual_return:.2%}")
     print(f"  Sharpe Ratio: {result.sharpe_ratio:.2f}")

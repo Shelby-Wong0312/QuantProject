@@ -130,7 +130,7 @@ class XGBoostPredictor:
         exp2 = df["close"].ewm(span=26, adjust=False).mean()
         features["macd"] = exp1 - exp2
         features["macd_signal"] = features["macd"].ewm(span=9, adjust=False).mean()
-        features["macd_diff"] = features["macd"] - features["macd_signal"]
+        features["macd_dif"] = features["macd"] - features["macd_signal"]
 
         # Bollinger Bands
         sma = df["close"].rolling(20).mean()
@@ -306,7 +306,7 @@ class XGBoostPredictor:
 
         grid_search.fit(X, y)
 
-        best_params = self.params.copy()
+        self.params.copy()
         best_params.update(grid_search.best_params_)
 
         logger.info(f"Best parameters found: {grid_search.best_params_}")
@@ -607,7 +607,7 @@ def train_on_all_stocks(
         predictor.save_model(str(output_path / "xgboost_all_stocks.pkl"))
 
         # 保存性能報告
-        report = {
+        {
             "training_metrics": metrics,
             "num_stocks": len(csv_files),
             "total_samples": len(X_all),
@@ -654,7 +654,7 @@ if __name__ == "__main__":
     print("\nTraining XGBoost model...")
     metrics = predictor.train(X, y)
 
-    print(f"\nTraining Results:")
+    print("\nTraining Results:")
     print(f"  R² Score: {metrics['r2_score']:.4f}")
     print(f"  RMSE: {metrics['rmse']:.4f}")
     print(f"  MAE: {metrics['mae']:.4f}")
@@ -662,7 +662,7 @@ if __name__ == "__main__":
 
     # 特徵重要性
     importance = predictor.get_feature_importance()
-    print(f"\nTop 10 Important Features:")
+    print("\nTop 10 Important Features:")
     for idx, row in importance.head(10).iterrows():
         print(f"  {row['feature']}: {row['importance']:.4f}")
 
@@ -670,7 +670,7 @@ if __name__ == "__main__":
     print("\nRunning backtest...")
     backtest_results = predictor.backtest(test_df)
 
-    print(f"\nBacktest Results:")
+    print("\nBacktest Results:")
     print(f"  Total Return: {backtest_results['total_return']:.2%}")
     print(f"  Sharpe Ratio: {backtest_results['sharpe_ratio']:.2f}")
     print(f"  Direction Accuracy: {backtest_results['direction_accuracy']:.2%}")

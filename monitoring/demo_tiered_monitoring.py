@@ -76,7 +76,7 @@ def demo_basic_usage():
 
     # 8. 最終統計
     final_status = monitor.get_monitoring_status()
-    print(f"\n8. 最終統計:")
+    print("\n8. 最終統計:")
     print(f"   總掃描次數: {final_status['performance_stats']['total_scans']}")
     print(f"   總信號數量: {final_status['performance_stats']['total_signals']}")
     print(f"   層級調整: {final_status['performance_stats']['tier_adjustments']}")
@@ -105,7 +105,7 @@ def demo_signal_scanning():
         print(f"\n掃描 {symbol}:")
 
         # 全面掃描
-        signals = scanner.scan_symbol_comprehensive(symbol)
+        scanner.scan_symbol_comprehensive(symbol)
 
         if signals:
             for signal in signals:
@@ -120,7 +120,7 @@ def demo_signal_scanning():
 
             all_signals.extend(signals)
         else:
-            print(f"  ✗ 無信號檢測到")
+            print("  ✗ 無信號檢測到")
 
     print(f"\n總共檢測到 {len(all_signals)} 個信號")
 
@@ -225,7 +225,7 @@ def demo_performance_monitoring():
     final_stats = final_status["performance_stats"]
     uptime = final_status["uptime_seconds"]
 
-    print(f"\n最終性能報告:")
+    print("\n最終性能報告:")
     print(f"  運行時間: {uptime:.1f} 秒")
     print(f"  總掃描次數: {final_stats['total_scans']}")
     print(f"  總信號數量: {final_stats['total_signals']}")

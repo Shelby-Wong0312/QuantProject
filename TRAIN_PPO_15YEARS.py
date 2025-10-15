@@ -159,9 +159,9 @@ class SmartDataLoader:
                 file_age = datetime.now() - datetime.fromtimestamp(os.path.getmtime(cache_file))
                 if file_age.days < 7:
                     with open(cache_file, "rb") as f:
-                        data = pickle.load(f)
+                        pickle.load(f)
                     return data
-            except:
+            except Exception:
                 pass
         return None
 
@@ -171,14 +171,14 @@ class SmartDataLoader:
         try:
             with open(cache_file, "wb") as f:
                 pickle.dump(data, f)
-        except:
+        except Exception:
             pass
 
     def download_stock_data(self, tickers: List[str]):
         """智能下載股票數據（使用緩存）"""
         print(f"[DATA] Processing {len(tickers)} stocks...")
         print(f"[DATA] Date range: {self.start_date} to {datetime.now().date()} (15 YEARS!)")
-        print(f"[CACHE] Checking cache for existing data...")
+        print("[CACHE] Checking cache for existing data...")
 
         cached_count = 0
         download_needed = []
@@ -211,7 +211,7 @@ class SmartDataLoader:
                 for ticker in batch:
                     try:
                         # 下載15年數據
-                        data = yf.download(
+                        yf.download(
                             ticker,
                             start=self.start_date,
                             end=datetime.now().strftime("%Y-%m-%d"),
@@ -379,7 +379,7 @@ class TradingEnvironment:
             data_loader = SmartDataLoader()
             features = data_loader.prepare_features(window_data)
             return features
-        except:
+        except Exception:
             return np.zeros(self.config.obs_dim)
 
     def step(self, action):
@@ -424,7 +424,7 @@ class TradingEnvironment:
 
             return self._get_observation(), reward, done
 
-        except:
+        except Exception:
             return np.zeros(self.config.obs_dim), 0, True
 
 
@@ -443,7 +443,7 @@ class PPOTrainer:
         print(f"\n[TRAINING] Starting PPO training for {n_iterations} iterations")
         print(f"[TRAINING] Device: {self.config.device}")
         print(f"[TRAINING] Stocks in environment: {len(env.symbols)}")
-        print(f"[TRAINING] Using 15 YEARS of historical data!")
+        print("[TRAINING] Using 15 YEARS of historical data!")
 
         for iteration in range(n_iterations):
             # 收集經驗
@@ -453,7 +453,7 @@ class PPOTrainer:
             batch_values = []
             batch_log_probs = []
 
-            obs = env.reset()
+            env.reset()
 
             for _ in range(self.config.n_steps):
                 obs_tensor = torch.FloatTensor(obs).to(self.config.device)
@@ -472,7 +472,7 @@ class PPOTrainer:
                 batch_rewards.append(reward)
 
                 if done:
-                    obs = env.reset()
+                    env.reset()
 
             # 計算優勢
             advantages = self._compute_advantages(batch_rewards, batch_values)
@@ -602,7 +602,7 @@ def main():
 
     # 4. 開始訓練
     print(f"\n[TRAINING] Starting training with {len(stock_data)} stocks")
-    print(f"[TRAINING] Each stock has up to 15 YEARS of data!")
+    print("[TRAINING] Each stock has up to 15 YEARS of data!")
     trainer.train(env, n_iterations=500)
 
     # 5. 保存最終模型
@@ -616,10 +616,10 @@ def main():
     }
 
     torch.save(final_checkpoint, "ppo_15years_final.pt")
-    print(f"\n[COMPLETE] Final model saved: ppo_15years_final.pt")
+    print("\n[COMPLETE] Final model saved: ppo_15years_final.pt")
 
     # 6. 生成報告
-    report = {
+    {
         "training_date": datetime.now().isoformat(),
         "stocks_count": len(stock_data),
         "total_iterations": 500,
@@ -642,7 +642,7 @@ def main():
     print("\n" + "=" * 80)
     print("TRAINING COMPLETE!")
     print(f"Stocks used: {len(stock_data)}")
-    print(f"Data range: 15 YEARS (2010-2025)")
+    print("Data range: 15 YEARS (2010-2025)")
     print(f"Final reward: {report['final_reward']:.6f}")
     print("=" * 80)
 

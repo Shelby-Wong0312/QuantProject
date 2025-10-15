@@ -203,7 +203,7 @@ class MinuteDataPipeline:
         Returns:
             驗證報告
         """
-        report = {
+        {
             "total_records": len(df),
             "date_range": (df.index.min(), df.index.max()),
             "missing_values": df.isnull().sum().to_dict(),
@@ -485,12 +485,12 @@ class MinuteData:
         # 單個股票
         if isinstance(symbols, str):
             # 嘗試載入
-            data = pipeline.load_data(symbols, interval, start, end)
+            pipeline.load_data(symbols, interval, start, end)
 
             # 如果沒有，下載
             if data is None or data.empty:
                 results = pipeline.download_data([symbols], start, end, interval)
-                data = results.get(symbols)
+                results.get(symbols)
 
             return data
 
@@ -499,7 +499,7 @@ class MinuteData:
         symbols_to_download = []
 
         for symbol in symbols:
-            data = pipeline.load_data(symbol, interval, start, end)
+            pipeline.load_data(symbol, interval, start, end)
             if data is not None and not data.empty:
                 results[symbol] = data
             else:
@@ -531,7 +531,7 @@ class MinuteData:
         # 獲取最近數據
         end = datetime.now()
         start = end - timedelta(days=1)
-        data = pipeline.download_data(symbols, start, end, interval)
+        pipeline.download_data(symbols, start, end, interval)
 
         if data and symbols[0] in data:
             streamer = MinuteDataStreamer(data[symbols[0]])
@@ -550,12 +550,12 @@ if __name__ == "__main__":
     pipeline = MinuteDataPipeline()
 
     # 下載測試數據
-    symbols = ["AAPL", "GOOGL", "MSFT"]
+    ["AAPL", "GOOGL", "MSFT"]
     end_date = datetime.now()
     start_date = end_date - timedelta(days=5)
 
     results = pipeline.download_data(
-        symbols=symbols, start_date=start_date, end_date=end_date, interval="5min"
+        symbols, start_date=start_date, end_date=end_date, interval="5min"
     )
 
     print(f"\nDownloaded {len(results)} symbols")
@@ -563,12 +563,12 @@ if __name__ == "__main__":
         print(f"  {symbol}: {len(df)} records")
 
         # 驗證數據
-        report = pipeline.validate_data(df)
+        pipeline.validate_data(df)
         print(f"    Quality score: {report['quality_score']:.2f}%")
 
     # 測試統計
     stats = pipeline.get_statistics()
-    print(f"\nData Statistics:")
+    print("\nData Statistics:")
     print(f"  Total symbols: {stats['total_symbols']}")
     print(f"  Total files: {stats['total_files']}")
     print(f"  Total size: {stats['total_size_mb']:.2f} MB")

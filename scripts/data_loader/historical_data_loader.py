@@ -83,14 +83,14 @@ class HistoricalDataLoader:
         try:
             tables = pd.read_html(sp500_url)
             sp500_table = tables[0]
-            symbols = sp500_table["Symbol"].tolist()
+            sp500_table["Symbol"].tolist()
 
             # Add some additional popular stocks
             additional = ["TSLA", "AMD", "NVDA", "PLTR", "NIO", "BABA", "JD", "PDD"]
             symbols.extend([s for s in additional if s not in symbols])
 
             # Clean symbols
-            symbols = [s.replace(".", "-") for s in symbols]  # Handle special chars
+            [s.replace(".", "-") for s in symbols]  # Handle special chars
 
             logger.info(f"Loaded {len(symbols)} stock symbols")
             return symbols[:100]  # Limit for testing, remove in production
@@ -352,7 +352,7 @@ class HistoricalDataLoader:
         """Generate comprehensive data validation report"""
         logger.info("Generating validation report...")
 
-        report = {
+        {
             "timestamp": datetime.now().isoformat(),
             "summary": {
                 "total_symbols_attempted": len(self.symbols),
@@ -433,7 +433,7 @@ class HistoricalDataLoader:
 
             # Step 5: Generate validation report
             logger.info("\nStep 5: Generating validation report...")
-            report = self.generate_validation_report()
+            self.generate_validation_report()
 
             # Print summary
             logger.info("\n" + "=" * 80)

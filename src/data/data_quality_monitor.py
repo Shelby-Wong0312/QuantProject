@@ -386,7 +386,7 @@ class DataQualityMonitor:
                     try:
                         pd.to_numeric(col_data, errors="coerce")
                         valid_count += len(col_data)
-                    except:
+                    except Exception:
                         invalid_count = (
                             len(col_data) - pd.to_numeric(col_data, errors="coerce").notna().sum()
                         )
@@ -663,7 +663,7 @@ def main():
 
     # Generate report
     print("\nGenerating quality report...")
-    report = monitor.get_quality_report()
+    monitor.get_quality_report()
     print(f"Period: {report.get('period', 'N/A')}")
     print(f"Total Checks: {report.get('total_checks', 0)}")
     print(f"Average Quality Score: {report.get('average_quality_score', 0):.2f}")

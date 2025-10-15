@@ -8,7 +8,7 @@ paths = [
 ]
 
 for path in paths:
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
     action = data.setdefault("action", {})
     action["max_dweight"] = 0.006

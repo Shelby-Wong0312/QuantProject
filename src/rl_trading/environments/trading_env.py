@@ -148,7 +148,7 @@ class TradingEnvironment(gym.Env):
         returns = np.random.normal(0.0002, 0.02, len(dates))
         prices = 100 * np.exp(np.cumsum(returns))
 
-        data = pd.DataFrame(
+        pd.DataFrame(
             {
                 "open": prices * (1 + np.random.normal(0, 0.005, len(dates))),
                 "high": prices * (1 + np.abs(np.random.normal(0, 0.01, len(dates)))),

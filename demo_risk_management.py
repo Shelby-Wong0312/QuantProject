@@ -150,7 +150,7 @@ def demo_roi_monitor():
 
     # Get performance summary
     summary = roi_monitor.get_performance_summary(90)
-    print(f"Performance Summary (90 days):")
+    print("Performance Summary (90 days):")
     print(f"  Average ROI: {summary['average_roi']:.2f}%")
     print(f"  Current ROI: {summary['current_roi']:.2f}%")
     print(f"  Meets Annual Target: {summary['meets_annual_target']*100:.1f}% of time")
@@ -160,14 +160,14 @@ def demo_roi_monitor():
     # Show alerts
     alerts = roi_monitor.get_alerts()
     if alerts:
-        print(f"\nActive Alerts:")
+        print("\nActive Alerts:")
         for i, alert in enumerate(alerts):
             print(f"  {i+1}. {alert['type']}: {alert['message']}")
 
     # Zero cost validation
     total_returns = 12.5  # 1250%
     validation = roi_monitor.zero_cost_validation(total_returns, 0.0)
-    print(f"\nZero Cost Validation:")
+    print("\nZero Cost Validation:")
     print(f"  Is Zero Cost: {validation['is_zero_cost']}")
     print(f"  Meets 1000% Target: {validation['meets_1000_percent']}")
     print(f"  Sustainable: {validation['sustainable']}")

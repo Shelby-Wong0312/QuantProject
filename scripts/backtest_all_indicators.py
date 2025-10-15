@@ -231,7 +231,7 @@ def test_all_indicators_backtest():
         print(f"\nTesting {symbol}...")
 
         # Get stock data (2 years for faster testing)
-        query = f"""
+        query = """
             SELECT date, open_price as open, high_price as high, 
                    low_price as low, close_price as close, volume
             FROM daily_data
@@ -254,7 +254,7 @@ def test_all_indicators_backtest():
             for indicator_name, indicator in indicators_to_test:
                 try:
                     # Generate signals
-                    signals = indicator.get_signals(df)
+                    indicator.get_signals(df)
 
                     # Run backtest
                     results = backtester.run_backtest(df, signals)

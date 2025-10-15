@@ -17,7 +17,7 @@ def get_installed_version(package_name):
             for line in result.stdout.split("\n"):
                 if line.startswith("Version:"):
                     return line.split(":")[1].strip()
-    except:
+    except Exception:
         pass
     return None
 
@@ -93,7 +93,7 @@ loguru==0.7.2
     with open(req_path, "w", encoding="utf-8") as f:
         f.write(requirements)
 
-    print(f"[OK] Fixed requirements.txt with pinned versions")
+    print("[OK] Fixed requirements.txt with pinned versions")
 
     # Create requirements-dev.txt for development dependencies
     requirements_dev = """# requirements-dev.txt
@@ -129,7 +129,7 @@ ipdb==0.13.13
     with open(req_dev_path, "w", encoding="utf-8") as f:
         f.write(requirements_dev)
 
-    print(f"[OK] Created requirements-dev.txt")
+    print("[OK] Created requirements-dev.txt")
 
     # Create requirements-minimal.txt for minimal installation
     requirements_minimal = """# requirements-minimal.txt
@@ -148,7 +148,7 @@ loguru==0.7.2
     with open(req_minimal_path, "w", encoding="utf-8") as f:
         f.write(requirements_minimal)
 
-    print(f"[OK] Created requirements-minimal.txt")
+    print("[OK] Created requirements-minimal.txt")
 
     return True
 

@@ -108,10 +108,10 @@ def sell_all_oil_positions():
             success = api.close_position(pos_id)
 
             if success:
-                print(f"  [SUCCESS] Position closed")
+                print("  [SUCCESS] Position closed")
                 closed_count += 1
             else:
-                print(f"  [FAILED] Could not close position")
+                print("  [FAILED] Could not close position")
                 failed_count += 1
 
                 # Try alternative: place opposite order
@@ -138,7 +138,7 @@ def sell_all_oil_positions():
                     print(f"  [SUCCESS] Opposite order placed: {result}")
                     closed_count += 1
                 else:
-                    print(f"  [FAILED] Could not place opposite order")
+                    print("  [FAILED] Could not place opposite order")
 
         except Exception as e:
             print(f"  [ERROR] Error processing position: {e}")
@@ -163,7 +163,7 @@ def sell_all_oil_positions():
     else:
         print("\nAll positions closed")
 
-    print(f"\n[RESULTS]")
+    print("\n[RESULTS]")
     print(f"Successfully closed: {closed_count} positions")
     print(f"Failed: {failed_count} positions")
 

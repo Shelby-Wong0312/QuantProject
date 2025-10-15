@@ -214,7 +214,7 @@ class TieredMonitor:
                 start_time = time.time()
 
                 # 獲取該層級的股票
-                symbols = list(self.tier_stocks[tier])
+                list(self.tier_stocks[tier])
 
                 if symbols:
                     # 批量監控
@@ -267,7 +267,7 @@ class TieredMonitor:
                 timeframes = ["5m", "1d"]
 
             # 掃描信號
-            signals = self.signal_scanner.scan_symbol_comprehensive(symbol, timeframes)
+            self.signal_scanner.scan_symbol_comprehensive(symbol, timeframes)
 
             if signals:
                 # 計算組合信號強度
@@ -464,7 +464,7 @@ class TieredMonitor:
         details = {}
 
         for t in tiers_to_show:
-            symbols = list(self.tier_stocks[t])
+            list(self.tier_stocks[t])
             tier_info = []
 
             for symbol in symbols[:10]:  # 只顯示前10個
@@ -495,7 +495,7 @@ class TieredMonitor:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"tiered_monitoring_report_{timestamp}.json"
 
-        report = {
+        {
             "monitoring_status": self.get_monitoring_status(),
             "tier_details": self.get_tier_details(),
             "config_summary": {
@@ -531,7 +531,7 @@ if __name__ == "__main__":
 
     # 顯示初始狀態
     status = monitor.get_monitoring_status()
-    print(f"\n初始狀態:")
+    print("\n初始狀態:")
     print(f"  S級股票: {status['tier_counts']['S_tier']}")
     print(f"  A級股票: {status['tier_counts']['A_tier']}")
     print(f"  B級股票: {status['tier_counts']['B_tier']}")
@@ -546,7 +546,7 @@ if __name__ == "__main__":
             print(f"  頂級股票: {[s['symbol'] for s in tier_data['top_stocks'][:5]]}")
 
     # 啟動監控（測試模式）
-    print(f"\n啟動分層監控系統...")
+    print("\n啟動分層監控系統...")
     monitor.start_monitoring()
 
     # 運行一段時間進行測試
@@ -564,7 +564,7 @@ if __name__ == "__main__":
 
     # 顯示最終統計
     final_status = monitor.get_monitoring_status()
-    print(f"\n最終統計:")
+    print("\n最終統計:")
     print(f"  總掃描次數: {final_status['performance_stats']['total_scans']}")
     print(f"  總信號數: {final_status['performance_stats']['total_signals']}")
     print(f"  層級調整次數: {final_status['performance_stats']['tier_adjustments']}")

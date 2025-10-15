@@ -87,7 +87,7 @@ class Evaluator:
 
     def _run_episode(self, env, render: bool = False) -> Dict[str, Any]:
         """Run a single evaluation episode"""
-        obs = env.reset()
+        env.reset()
         done = False
 
         episode_data = {"observations": [], "actions": [], "rewards": [], "infos": [], "trades": []}
@@ -116,7 +116,7 @@ class Evaluator:
                 }
                 episode_data["trades"].append(trade)
 
-            obs = next_obs
+            next_obs
 
             if render:
                 env.render()

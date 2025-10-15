@@ -49,7 +49,7 @@ async def run_paper_trading():
     ]
 
     for symbol, side, quantity in trades:
-        order_id = await simulator.place_order(
+        await simulator.place_order(
             symbol=symbol, side=side, quantity=quantity, order_type="MARKET"
         )
         if order_id:
@@ -84,7 +84,7 @@ async def run_paper_trading():
         pnl = portfolio_value - simulator.account.initial_balance
         pnl_pct = pnl / simulator.account.initial_balance
 
-        print(f"\nPortfolio Update:")
+        print("\nPortfolio Update:")
         print(f"  Value: ${portfolio_value:,.2f}")
         print(f"  P&L: ${pnl:+,.2f} ({pnl_pct:+.2%})")
 
@@ -99,7 +99,7 @@ async def run_paper_trading():
     ]
 
     for symbol, side, quantity in sell_trades:
-        order_id = await simulator.place_order(
+        await simulator.place_order(
             symbol=symbol, side=side, quantity=quantity, order_type="MARKET"
         )
         if order_id:
@@ -112,18 +112,18 @@ async def run_paper_trading():
 
     metrics = simulator.get_performance_metrics()
 
-    print(f"\nPORTFOLIO METRICS:")
+    print("\nPORTFOLIO METRICS:")
     print(f"  Total Return: {metrics['total_return']:.2%}")
     print(f"  Portfolio Value: ${metrics['portfolio_value']:,.2f}")
     print(f"  Cash Balance: ${metrics['cash_balance']:,.2f}")
     print(f"  Positions Count: {metrics['positions_count']}")
 
-    print(f"\nP&L SUMMARY:")
+    print("\nP&L SUMMARY:")
     print(f"  Total P&L: ${metrics['total_pnl']:,.2f}")
     print(f"  Realized P&L: ${metrics['realized_pnl']:,.2f}")
     print(f"  Unrealized P&L: ${metrics['unrealized_pnl']:,.2f}")
 
-    print(f"\nTRADING STATISTICS:")
+    print("\nTRADING STATISTICS:")
     print(f"  Total Trades: {metrics['total_trades']}")
     print(f"  Win Rate: {metrics['win_rate']:.2%}")
     print(f"  Commission Paid: ${metrics['total_commission']:,.2f}")
@@ -131,7 +131,7 @@ async def run_paper_trading():
     print(f"  Max Drawdown: {metrics.get('max_drawdown', 0):.2%}")
 
     if metrics["positions_count"] > 0:
-        print(f"\nCURRENT POSITIONS:")
+        print("\nCURRENT POSITIONS:")
         for symbol, position in simulator.positions.items():
             print(f"  {symbol}:")
             print(f"    Quantity: {position.quantity:.0f} shares")
@@ -142,7 +142,7 @@ async def run_paper_trading():
 
     # 保存狀態
     simulator.save_state("reports/paper_trading_demo.json")
-    print(f"\n>>> State saved to reports/paper_trading_demo.json")
+    print("\n>>> State saved to reports/paper_trading_demo.json")
 
     print("\n" + "=" * 60)
     print("PAPER TRADING DEMO COMPLETE!")

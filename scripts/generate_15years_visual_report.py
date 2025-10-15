@@ -145,7 +145,7 @@ class Visual15YearsReport:
             yaxis_title="投資組合價值 ($)",
             height=500,
             hovermode="x unified",
-            yaxis=dict(tickformat="$,.0f", rangemode="tozero"),
+            yaxis=dict(tickformat="$,.0", rangemode="tozero"),
         )
 
         return fig
@@ -267,7 +267,7 @@ class Visual15YearsReport:
         matrix_normalized = (matrix_df - matrix_df.min()) / (matrix_df.max() - matrix_df.min())
 
         fig = go.Figure(
-            data=go.Heatmap(
+            go.Heatmap(
                 z=matrix_normalized.T,
                 x=stock_labels,
                 y=["總報酬", "年化報酬", "交易次數"],
@@ -296,7 +296,7 @@ class Visual15YearsReport:
 
         # Get historical data for winner
         conn = sqlite3.connect(self.db_path)
-        query = f"""
+        query = """
             SELECT date, close_price as close, high_price as high, 
                    low_price as low, open_price as open, volume
             FROM daily_data
@@ -315,7 +315,7 @@ class Visual15YearsReport:
         # Calculate CCI
         cci = CCI(period=20)
         cci_values = cci.calculate(df)
-        signals = cci.get_signals(df)
+        cci.get_signals(df)
 
         # Simulate portfolio value
         initial_capital = 100000
@@ -466,7 +466,7 @@ class Visual15YearsReport:
         best_stock = self.results_df.iloc[0]
 
         # Create HTML
-        html_content = f"""
+        html_content = """
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -773,7 +773,7 @@ class Visual15YearsReport:
         </div>
         
         <!-- Winner Detail Chart -->
-        {f'''<div class="chart-container">
+        {'''<div class="chart-container">
             <div class="chart-title">🏆 冠軍股票詳細分析 - {best_stock['symbol']}</div>
             <div id="winnerChart"></div>
         </div>''' if winner_detail else ''}
@@ -823,7 +823,7 @@ class Visual15YearsReport:
         # Add top 30 stocks to table
         for i, row in enumerate(self.results_df.head(30).itertuples(), 1):
             return_class = "positive" if row.total_return > 100 else ""
-            html_content += f"""
+            html_content += """
                     <tr>
                         <td><strong>{i}</strong></td>
                         <td><strong>{row.symbol}</strong></td>
@@ -857,13 +857,13 @@ class Visual15YearsReport:
 
         # Add Plotly charts
         if winner_detail:
-            html_content += f"""
+            html_content += """
         // Winner Detail Chart
         var winnerChart = {winner_detail.to_json()};
         Plotly.newPlot('winnerChart', winnerChart.data, winnerChart.layout);
 """
 
-        html_content += f"""
+        html_content += """
         // Top Performers Chart
         var topPerformersChart = {top_performers.to_json()};
         Plotly.newPlot('topPerformersChart', topPerformersChart.data, topPerformersChart.layout);
@@ -912,7 +912,7 @@ if __name__ == "__main__":
     print("\n" + "=" * 80)
     print("REPORT GENERATED SUCCESSFULLY!")
     print("=" * 80)
-    print(f"\nOpen the report in your browser:")
+    print("\nOpen the report in your browser:")
     print(f"   {report_path}")
 
     # Auto-open in browser

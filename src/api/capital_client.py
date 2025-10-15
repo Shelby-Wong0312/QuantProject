@@ -237,7 +237,7 @@ class CapitalComClient:
                     self.cst_token = response.headers.get("CST")
                     self.x_security_token = response.headers.get("X-SECURITY-TOKEN")
 
-                    data = await response.json()
+                    await response.json()
                     self.access_token = data.get("accessToken")
 
                     logger.info("Authentication successful")
@@ -278,7 +278,7 @@ class CapitalComClient:
 
             async with self.session.get(url, headers=headers) as response:
                 if response.status == 200:
-                    data = await response.json()
+                    await response.json()
                     accounts = data.get("accounts", [])
 
                     if accounts:
@@ -318,7 +318,7 @@ class CapitalComClient:
 
             async with self.session.get(url, headers=headers) as response:
                 if response.status == 200:
-                    data = await response.json()
+                    await response.json()
                     market = data.get("market", {})
                     snapshot = market.get("snapshot", {})
 
@@ -373,7 +373,7 @@ class CapitalComClient:
 
             async with self.session.post(url, json=payload, headers=headers) as response:
                 if response.status == 200:
-                    data = await response.json()
+                    await response.json()
                     deal_reference = data.get("dealReference")
 
                     logger.info(f"Order placed successfully: {deal_reference}")
@@ -402,7 +402,7 @@ class CapitalComClient:
 
             async with self.session.get(url, headers=headers) as response:
                 if response.status == 200:
-                    data = await response.json()
+                    await response.json()
                     positions_data = data.get("positions", [])
 
                     positions = []
@@ -497,7 +497,7 @@ class CapitalComClient:
 
                 # 處理消息
                 async for message in websocket:
-                    data = json.loads(message)
+                    json.loads(message)
 
                     if data.get("destination") == "marketData.update":
                         payload = data.get("payload", {})

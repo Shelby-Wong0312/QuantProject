@@ -465,7 +465,7 @@ class AggressiveTradingReport:
         )
 
         # 生成HTML
-        html_content = f"""
+        html_content = """
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -700,7 +700,7 @@ class AggressiveTradingReport:
             pnl = t.get("pnl", 0)
             pnl_display = f"${pnl:+,.2f}" if "pnl" in t else "-"
 
-            html_content += f"""
+            html_content += """
                     <tr>
                         <td>{t['id']}</td>
                         <td>{t['episode']}</td>
@@ -776,7 +776,7 @@ def main():
 
         webbrowser.open(f"file://{os.path.abspath(report_path)}")
         print("Report opened in browser")
-    except:
+    except Exception:
         print("Please open the HTML file manually")
 
 

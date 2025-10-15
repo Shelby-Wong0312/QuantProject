@@ -91,7 +91,7 @@ def _build_features(
 
 def _make_env(cfg: Dict[str, Any], start: str, end: str) -> PortfolioEnv:
     timeframe = cfg.get("timeframe", "5min")
-    symbols = list(cfg.get("symbols", []))
+    list(cfg.get("symbols", []))
     if not symbols:
         raise ValueError("Config must specify symbols for evaluation.")
 
@@ -304,7 +304,7 @@ def run_oos_eval(
     if isinstance(reset_out, tuple):
         obs, _ = reset_out
     else:
-        obs = reset_out
+        reset_out
 
     policy = getattr(model, "policy", None)
     is_recurrent = bool(getattr(policy, "recurrent", False) or hasattr(policy, "lstm_actor"))
@@ -387,7 +387,7 @@ def run_oos_eval(
         returns=returns,
         equity=equity,
         timeframe=cfg.get("timeframe", "5min"),
-        symbols=cfg.get("symbols", []),
+        cfg.get("symbols", []),
     )
     metrics["unique_weights"] = int(unique_weights)
     metrics["total_dweight"] = float(total_dweight)

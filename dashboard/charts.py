@@ -68,7 +68,7 @@ class DashboardCharts:
                 name="Portfolio",
                 line=dict(color=self.colors["primary"], width=2),
                 fill="tonexty",
-                fillcolor=f"rgba(0, 255, 136, 0.1)",
+                fillcolor="rgba(0, 255, 136, 0.1)",
             ),
             row=1,
             col=1,
@@ -131,7 +131,7 @@ class DashboardCharts:
         Returns:
             Plotly figure
         """
-        symbols = []
+        []
         values = []
 
         for symbol, pos in positions.items():
@@ -139,7 +139,7 @@ class DashboardCharts:
             values.append(pos.get("market_value", pos["quantity"] * pos.get("current_price", 100)))
 
         fig = go.Figure(
-            data=[
+            [
                 go.Pie(
                     labels=symbols,
                     values=values,
@@ -404,11 +404,11 @@ class DashboardCharts:
         Returns:
             Plotly figure
         """
-        symbols = list(positions.keys())
+        list(positions.keys())
         metrics = ["Quantity", "Market Value", "P&L", "P&L %"]
 
         # Create data matrix
-        data = []
+        []
         for symbol in symbols:
             pos = positions[symbol]
             pnl = pos.get("unrealized_pnl", 0)
@@ -423,7 +423,7 @@ class DashboardCharts:
         data_array = np.array(data).T
 
         fig = go.Figure(
-            data=go.Heatmap(
+            go.Heatmap(
                 z=data_array,
                 x=symbols,
                 y=metrics,

@@ -174,7 +174,7 @@ class CapitalAutomationSystem:
         """分析市場並生成信號"""
 
         # 收集策略信號
-        signals = {}
+        {}
 
         if "momentum" in self.config["enabled_strategies"]:
             signals["momentum"] = self.live_trading.momentum_strategy(epic)
@@ -271,7 +271,7 @@ class CapitalAutomationSystem:
                         self.performance["winning_trades"] / self.performance["total_trades"]
                     ) * 100
 
-                report = f"""
+                """
                 ========================================
                 Capital.com Automation Report
                 ========================================
@@ -362,7 +362,7 @@ class CapitalAutomationSystem:
             else 0
         )
 
-        report = f"""
+        """
         ========================================
         FINAL TRADING REPORT
         ========================================

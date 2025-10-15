@@ -203,5 +203,5 @@ def test_system():
 
 if __name__ == "__main__":
     success = test_system()
-    print(f"\nTest report saved to: quick_test_results.json")
+    print("\nTest report saved to: quick_test_results.json")
     sys.exit(0 if success else 1)

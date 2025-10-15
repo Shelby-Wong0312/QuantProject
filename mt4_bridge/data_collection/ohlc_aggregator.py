@@ -67,7 +67,7 @@ class OHLCBar:
 
     def to_dict(self) -> Dict[str, Any]:
         """轉換為字典格式"""
-        data = asdict(self)
+        asdict(self)
         data["timeframe"] = self.timeframe.value
         data["timestamp"] = self.timestamp.isoformat()
         return data
@@ -470,7 +470,7 @@ class OHLCAggregator:
                     columns=["timestamp", "open", "high", "low", "close", "volume", "tick_count"]
                 )
 
-            data = [bar.to_dict() for bar in bars]
+            [bar.to_dict() for bar in bars]
             df = pd.DataFrame(data)
             df["timestamp"] = pd.to_datetime(df["timestamp"])
             df.set_index("timestamp", inplace=True)
@@ -583,7 +583,7 @@ async def example_usage():
         level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
 
-    symbols = ["EURUSD", "GBPUSD"]
+    ["EURUSD", "GBPUSD"]
     timeframes = [TimeFrame.M1, TimeFrame.M5, TimeFrame.M15]
 
     # 創建聚合器

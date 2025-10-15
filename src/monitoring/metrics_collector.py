@@ -265,7 +265,7 @@ class HealthCheck:
             conn.execute("SELECT 1")
             conn.close()
             health["checks"]["database"] = "ok"
-        except:
+        except Exception:
             health["checks"]["database"] = "failed"
             health["status"] = "unhealthy"
 
@@ -277,7 +277,7 @@ class HealthCheck:
                 health["status"] = "degraded"
             else:
                 health["checks"]["disk"] = "ok"
-        except:
+        except Exception:
             health["checks"]["disk"] = "failed"
 
         try:
@@ -288,7 +288,7 @@ class HealthCheck:
                 health["status"] = "degraded"
             else:
                 health["checks"]["memory"] = "ok"
-        except:
+        except Exception:
             health["checks"]["memory"] = "failed"
 
         return health

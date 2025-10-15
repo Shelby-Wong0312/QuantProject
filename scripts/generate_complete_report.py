@@ -63,7 +63,7 @@ def generate_complete_report():
     """
     )
     nulls = cursor.fetchone()
-    print(f"Null Values:")
+    print("Null Values:")
     print(f"  Open Price: {nulls[0]}")
     print(f"  High Price: {nulls[1]}")
     print(f"  Low Price: {nulls[2]}")

@@ -115,7 +115,7 @@ class DWXDataCollector:
             if hasattr(self.dwx, "_AccountInfo") and self.dwx._AccountInfo:
                 self.account_info = self.dwx._AccountInfo
                 self.stats["connected"] = True
-                logger.info(f"✓ 成功連接到MT4")
+                logger.info("✓ 成功連接到MT4")
                 logger.info(f"  帳戶: {self.account_info.get('_account_number', 'N/A')}")
                 logger.info(f"  餘額: ${self.account_info.get('_account_balance', 0):.2f}")
                 return True
@@ -151,7 +151,7 @@ class DWXDataCollector:
     def subscribe(self, symbols: List[str]):
         """訂閱交易品種"""
         if isinstance(symbols, str):
-            symbols = [symbols]
+            [symbols]
 
         for symbol in symbols:
             try:
@@ -172,7 +172,7 @@ class DWXDataCollector:
     def unsubscribe(self, symbols: List[str]):
         """取消訂閱"""
         if isinstance(symbols, str):
-            symbols = [symbols]
+            [symbols]
 
         for symbol in symbols:
             try:
@@ -407,7 +407,7 @@ def test_dwx_connection():
 
         # 顯示統計
         stats = collector.get_stats()
-        print(f"\nStatistics:")
+        print("\nStatistics:")
         print(f"  Ticks: {stats['tick_count']}")
         print(f"  Errors: {stats['errors']}")
 

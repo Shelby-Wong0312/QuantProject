@@ -63,14 +63,14 @@ class LiveMonitor:
                     # 嘗試載入權重
                     pass
                 print("[OK] Model loaded")
-            except:
+            except Exception:
                 print("[OK] Using new model")
         self.model.eval()
 
     def load_symbols(self):
         """載入股票列表"""
         # 使用主要股票列表
-        symbols = [
+        [
             "AAPL",
             "MSFT",
             "GOOGL",
@@ -130,9 +130,9 @@ class LiveMonitor:
                 with open("validated_yahoo_symbols_final.txt", "r") as f:
                     all_symbols = [line.strip() for line in f if line.strip()]
                     # 取前200個
-                    symbols = all_symbols[:200]
+                    all_symbols[:200]
                     print(f"[OK] Loaded {len(symbols)} symbols")
-            except:
+            except Exception:
                 pass
 
         return symbols
@@ -170,7 +170,7 @@ class LiveMonitor:
         try:
             # 獲取數據
             ticker = yf.Ticker(symbol)
-            data = ticker.history(period="2mo")
+            ticker.history(period="2mo")
 
             if len(data) < 20:
                 return None
@@ -184,7 +184,7 @@ class LiveMonitor:
                 probs = self.model(features_tensor).squeeze().numpy()
 
             # 信號
-            signals = ["BUY", "HOLD", "SELL"]
+            ["BUY", "HOLD", "SELL"]
             signal_idx = np.argmax(probs)
 
             return {
@@ -199,7 +199,7 @@ class LiveMonitor:
                 "hold_prob": float(probs[1] * 100),
                 "sell_prob": float(probs[2] * 100),
             }
-        except:
+        except Exception:
             return None
 
     def run(self):

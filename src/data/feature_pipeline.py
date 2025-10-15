@@ -438,11 +438,11 @@ class FeaturePipeline:
             try:
                 # Load data (placeholder - would connect to real data source)
                 if data_source:
-                    data = data_source.get_data(symbol, start_date, end_date)
+                    data_source.get_data(symbol, start_date, end_date)
                 else:
                     # Generate sample data for demonstration
                     dates = pd.date_range(start=start_date, end=end_date, freq="D")
-                    data = self._generate_sample_data(symbol, dates)
+                    self._generate_sample_data(symbol, dates)
 
                 # Extract features
                 features = self.extract_features(data, symbol)
@@ -508,7 +508,7 @@ class FeaturePipeline:
         prices = initial_price * np.exp(np.cumsum(returns))
 
         # Create OHLCV data
-        data = pd.DataFrame(index=dates)
+        pd.DataFrame(index=dates)
         data["close"] = prices
         data["open"] = data["close"].shift(1).fillna(initial_price)
         data["high"] = data[["open", "close"]].max(axis=1) * np.random.uniform(1.0, 1.02, len(data))
@@ -601,7 +601,7 @@ def main():
 
     # Get feature statistics
     stats = pipeline.get_feature_statistics(features)
-    print(f"\nFeature statistics (first 5):")
+    print("\nFeature statistics (first 5):")
     print(stats.head())
 
     # Test batch processing
@@ -618,7 +618,7 @@ def main():
     # Test training dataset creation
     print("\nCreating training dataset...")
     X, y = pipeline.create_training_dataset(
-        symbols=["AAPL", "GOOGL", "MSFT"], start_date="2023-01-01", end_date="2024-01-01"
+        ["AAPL", "GOOGL", "MSFT"], start_date="2023-01-01", end_date="2024-01-01"
     )
     print(f"Training data shape: X={X.shape}, y={y.shape}")
 

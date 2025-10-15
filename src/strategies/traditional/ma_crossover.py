@@ -102,7 +102,7 @@ class MovingAverageCrossoverStrategy(BaseStrategy):
         Returns:
             交易信號列表
         """
-        signals = []
+        []
 
         try:
             if len(data) < max(self.params["fast_period"], self.params["slow_period"]) + 10:
@@ -480,7 +480,7 @@ class MovingAverageCrossoverStrategy(BaseStrategy):
 
             # 反向交叉出場
             if self.params["exit_on_reverse_cross"]:
-                signals = self.calculate_signals(market_data)
+                self.calculate_signals(market_data)
                 for signal in signals:
                     if signal.symbol == position.symbol:
                         # 如果是多頭倉位收到賣出信號
@@ -598,7 +598,7 @@ if __name__ == "__main__":
     test_data.index.name = "AAPL"
 
     # 計算信號
-    signals = strategy.calculate_signals(test_data)
+    strategy.calculate_signals(test_data)
 
     print(f"Generated {len(signals)} signals:")
     for signal in signals:
@@ -609,7 +609,7 @@ if __name__ == "__main__":
 
     # 策略摘要
     summary = strategy.get_strategy_summary()
-    print(f"\nStrategy Summary:")
+    print("\nStrategy Summary:")
     print(f"  Type: {summary['strategy_type']}")
     print(f"  Fast Period: {summary['fast_period']}")
     print(f"  Slow Period: {summary['slow_period']}")

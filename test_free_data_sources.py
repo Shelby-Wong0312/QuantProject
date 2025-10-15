@@ -37,7 +37,7 @@ def test_alpaca_connection():
 
         # Test account access
         account = api.get_account()
-        print(f"✅ Connected to Alpaca Markets")
+        print("✅ Connected to Alpaca Markets")
         print(f"   Account Status: {account.status}")
         print(f"   Buying Power: ${float(account.buying_power):,.2f}")
         print(f"   Cash: ${float(account.cash):,.2f}")
@@ -45,7 +45,7 @@ def test_alpaca_connection():
         # Test market data
         bars = api.get_bars("AAPL", "1Min", limit=5).df
         if not bars.empty:
-            print(f"✅ Real-time data working")
+            print("✅ Real-time data working")
             print(f"   Latest AAPL price: ${bars['close'].iloc[-1]:.2f}")
 
         return True
@@ -72,7 +72,7 @@ def test_yahoo_finance():
         ticker = yf.Ticker("AAPL")
         info = ticker.info
 
-        print(f"✅ Yahoo Finance working")
+        print("✅ Yahoo Finance working")
         print(f"   Company: {info.get('longName', 'Apple Inc.')}")
         print(f"   Current Price: ${info.get('currentPrice', 0):.2f}")
         print(f"   Market Cap: ${info.get('marketCap', 0):,.0f}")
@@ -80,16 +80,16 @@ def test_yahoo_finance():
         # Test historical data
         hist = ticker.history(period="5d")
         if not hist.empty:
-            print(f"✅ Historical data available")
+            print("✅ Historical data available")
             print(f"   5-day data points: {len(hist)}")
             print(f"   Latest close: ${hist['Close'].iloc[-1]:.2f}")
 
         # Test bulk download
-        symbols = ["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA"]
-        data = yf.download(symbols, period="1d", interval="1m", progress=False)
+        ["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA"]
+        yf.download(symbols, period="1d", interval="1m", progress=False)
 
         if not data.empty:
-            print(f"✅ Bulk download working")
+            print("✅ Bulk download working")
             print(f"   Downloaded {len(symbols)} stocks")
 
         return True
@@ -118,7 +118,7 @@ def test_alpha_vantage():
             return False
 
         # Test technical indicator (RSI)
-        url = f"https://www.alphavantage.co/query"
+        url = "https://www.alphavantage.co/query"
         params = {
             "function": "RSI",
             "symbol": "AAPL",
@@ -129,10 +129,10 @@ def test_alpha_vantage():
         }
 
         response = requests.get(url, params=params)
-        data = response.json()
+        response.json()
 
         if "Technical Analysis: RSI" in data:
-            print(f"✅ Alpha Vantage connected")
+            print("✅ Alpha Vantage connected")
             rsi_data = data["Technical Analysis: RSI"]
             latest_date = list(rsi_data.keys())[0]
             latest_rsi = rsi_data[latest_date]["RSI"]
@@ -140,13 +140,13 @@ def test_alpha_vantage():
             print(f"   Date: {latest_date}")
 
             # Show API limits
-            print(f"⚠️ Rate limits:")
-            print(f"   - 5 calls per minute")
-            print(f"   - 500 calls per day")
+            print("⚠️ Rate limits:")
+            print("   - 5 calls per minute")
+            print("   - 500 calls per day")
 
             return True
         elif "Note" in data:
-            print(f"⚠️ API rate limit reached")
+            print("⚠️ API rate limit reached")
             print(f"   {data['Note']}")
             return True  # API works but rate limited
         else:
@@ -171,7 +171,7 @@ def test_capital_com():
 
         api = CapitalComAPI()
         if api.authenticate():
-            print(f"✅ Capital.com connected")
+            print("✅ Capital.com connected")
 
             # Get account info
             accounts = api.get_accounts()
@@ -183,7 +183,7 @@ def test_capital_com():
 
             return True
         else:
-            print(f"❌ Capital.com authentication failed")
+            print("❌ Capital.com authentication failed")
             return False
 
     except Exception as e:

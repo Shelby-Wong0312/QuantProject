@@ -48,14 +48,14 @@ class DetailedAnalysis:
         """
 
         stocks_df = pd.read_sql_query(query, conn)
-        symbols = stocks_df["symbol"].tolist()
+        stocks_df["symbol"].tolist()
 
         results = []
 
         for symbol in symbols:
             try:
                 # Get stock data
-                query = f"""
+                query = """
                     SELECT date, open_price as open, high_price as high, 
                            low_price as low, close_price as close, volume
                     FROM daily_data
@@ -72,7 +72,7 @@ class DetailedAnalysis:
                 df = df.sort_index()
 
                 # Generate signals
-                signals = indicator.get_signals(df)
+                indicator.get_signals(df)
 
                 # Simple backtest
                 portfolio_value = self.initial_capital
@@ -148,7 +148,7 @@ class DetailedAnalysis:
             if len(best_stocks) > 0:
                 all_results[indicator_code] = best_stocks.to_dict("records")
 
-                print(f"Top 10 Stocks:")
+                print("Top 10 Stocks:")
                 print(f"{'Rank':<5} {'Symbol':<10} {'Return':<12} {'Trades':<8}")
                 print("-" * 35)
 
@@ -259,7 +259,7 @@ def visualize_top_indicator():
     # Calculate CCI
     cci_indicator = CCI(period=20)
     cci_values = cci_indicator.calculate(df)
-    signals = cci_indicator.get_signals(df)
+    cci_indicator.get_signals(df)
 
     # Create plot
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 10), sharex=True)

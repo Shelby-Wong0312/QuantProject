@@ -363,7 +363,7 @@ class MT4EnvironmentChecker:
 
     def generate_report(self) -> Dict:
         """生成檢查報告"""
-        report = {
+        {
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             "system": self.system,
             "mt4_path": getattr(self, "mt4_path", None),
@@ -419,7 +419,7 @@ class MT4EnvironmentChecker:
             bridge_ok = self.check_bridge_requirements()
 
         # 生成並儲存報告
-        report = self.generate_report()
+        self.generate_report()
         self.save_report(report)
 
         # 顯示摘要
@@ -451,14 +451,14 @@ class MT4EnvironmentChecker:
             for warning in report["warnings"][:3]:  # 顯示前3個警告
                 print(f"  • {warning}")
 
-        print(f"\n詳細報告已儲存至: mt4_env_check_report.json")
+        print("\n詳細報告已儲存至: mt4_env_check_report.json")
 
 
 def main():
     """主函數"""
     parser = argparse.ArgumentParser(description="MT4 環境檢查腳本")
     parser.add_argument("--verbose", "-v", action="store_true", help="顯示詳細資訊")
-    parser.add_argument("--fix-directories", "-f", action="store_true", help="自動修復缺失的目錄")
+    parser.add_argument("--fix-directories", "-", action="store_true", help="自動修復缺失的目錄")
 
     args = parser.parse_args()
 

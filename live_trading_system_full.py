@@ -89,22 +89,22 @@ class FullMarketTradingSystem:
 
     def load_all_symbols(self) -> List[str]:
         """載入所有可交易股票"""
-        symbols = []
+        []
         try:
             conn = sqlite3.connect("data/quant_trading.db")
             cursor = conn.cursor()
             cursor.execute("SELECT DISTINCT symbol FROM stocks ORDER BY symbol")
-            symbols = [row[0] for row in cursor.fetchall()]
+            [row[0] for row in cursor.fetchall()]
             conn.close()
             # Remove problematic symbols
             problem_symbols = ["JNPR", "N", "V", "K"]  # Known issues
-            symbols = [s for s in symbols if s not in problem_symbols]
+            [s for s in symbols if s not in problem_symbols]
 
             logger.info(f"Loaded {len(symbols)} symbols from database")
         except Exception as e:
             logger.error(f"Error loading symbols: {e}")
             # Fallback to default list
-            symbols = [
+            [
                 "AAPL",
                 "MSFT",
                 "GOOGL",
@@ -130,7 +130,7 @@ class FullMarketTradingSystem:
         if not self.api.authenticate():
             print("[WARN] Capital.com API not connected - using YFinance backup")
         else:
-            print(f"[OK] Connected to Capital.com")
+            print("[OK] Connected to Capital.com")
 
         # 2. Initialize Risk Manager
         print("[INIT] Setting up Risk Manager...")
@@ -298,7 +298,7 @@ class FullMarketTradingSystem:
     async def scan_market(self):
         """定期市場掃描"""
         self.scanned_stocks = 0
-        signals = {}
+        {}
 
         # Priority 1: Check existing positions
         for symbol in self.active_positions.keys():
@@ -520,14 +520,14 @@ class FullMarketTradingSystem:
         print("=" * 80)
 
         # Portfolio summary
-        print(f"\n📊 PORTFOLIO SUMMARY")
+        print("\n📊 PORTFOLIO SUMMARY")
         print(f"Active Positions: {len(self.active_positions)}/{self.max_positions}")
         print(f"Today's P&L: ${self.daily_pnl:+,.2f}")
         print(f"Total P&L: ${self.total_pnl:+,.2f}")
 
         # Positions
         if self.active_positions:
-            print(f"\n📈 OPEN POSITIONS:")
+            print("\n📈 OPEN POSITIONS:")
             for symbol, position in list(self.active_positions.items())[:10]:  # Show top 10
                 try:
                     ticker = yf.Ticker(symbol)
@@ -539,7 +539,7 @@ class FullMarketTradingSystem:
                     print(
                         f"  {symbol:6} {position['quantity']:4} shares | Entry: ${position['entry_price']:.2f} | Current: ${current_price:.2f} | P&L: ${pnl:+.2f} ({pnl_pct:+.1f}%)"
                     )
-                except:
+                except Exception:
                     pass
 
         # Statistics
@@ -547,7 +547,7 @@ class FullMarketTradingSystem:
             (self.profitable_trades / self.total_trades * 100) if self.total_trades > 0 else 0
         )
 
-        print(f"\n📊 STATISTICS:")
+        print("\n📊 STATISTICS:")
         print(f"Stocks Monitored: {len(self.all_symbols)}")
         print(f"Stocks Scanned (last cycle): {self.scanned_stocks}")
         print(f"Signals Generated: {self.signals_generated}")
@@ -596,7 +596,7 @@ class FullMarketTradingSystem:
     async def run(self):
         """主交易循環"""
         self.running = True
-        logger.info(f"Starting automated trading - monitoring top 40 stocks (WebSocket limit)...")
+        logger.info("Starting automated trading - monitoring top 40 stocks (WebSocket limit)...")
 
         scan_counter = 0
 
@@ -612,12 +612,12 @@ class FullMarketTradingSystem:
 
                 # Full market scan every 12 cycles (12 minutes)
                 if scan_counter % 12 == 0:
-                    print(f"\n[SCAN] Performing full market scan...")
+                    print("\n[SCAN] Performing full market scan...")
                     await self.initial_market_scan()
 
                 # Regular scan
                 print(f"\n[SCAN] Scanning market... (Cycle {scan_counter})")
-                signals = await self.scan_market()
+                await self.scan_market()
 
                 # Execute trades
                 for symbol, signal in signals.items():

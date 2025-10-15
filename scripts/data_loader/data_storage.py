@@ -160,7 +160,7 @@ class DataStorage:
                     "SELECT create_hypertable('market_data_ts', 'time', if_not_exists => TRUE)"
                 )
                 logger.info("TimescaleDB hypertable created")
-            except:
+            except Exception:
                 logger.info("TimescaleDB not available, using standard PostgreSQL")
 
             self.postgres_conn.commit()
@@ -245,7 +245,7 @@ class DataStorage:
 
             # Use COPY for fastest insertion
             columns = data.columns.tolist()
-            query = f"""
+            query = """
                 INSERT INTO market_data_ts ({','.join(columns)})
                 VALUES %s
                 ON CONFLICT (time, symbol) DO UPDATE
@@ -294,7 +294,7 @@ class DataStorage:
                     file_path, engine="pyarrow", compression="snappy", index=False
                 )
 
-        logger.info(f"Stored data to Parquet files")
+        logger.info("Stored data to Parquet files")
 
     def _update_cache(self, data: pd.DataFrame):
         """Update Redis cache with latest data"""
@@ -349,7 +349,7 @@ class DataStorage:
 
         # Try Parquet files (fastest for large queries)
         if self.config.use_parquet:
-            data = self._get_from_parquet(symbol, start_date, end_date)
+            self._get_from_parquet(symbol, start_date, end_date)
             if not data.empty:
                 return data
 

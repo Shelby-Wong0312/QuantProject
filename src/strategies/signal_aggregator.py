@@ -86,7 +86,7 @@ class SignalAggregator:
                 for future in as_completed(future_to_strategy):
                     strategy = future_to_strategy[future]
                     try:
-                        signals = future.result(timeout=30)
+                        future.result(timeout=30)
                         all_signals[strategy.name] = signals
                     except Exception as e:
                         logger.error(f"Strategy {strategy.name} failed: {e}")
@@ -95,7 +95,7 @@ class SignalAggregator:
             # 串行執行
             for strategy in self.strategies:
                 try:
-                    signals = strategy.calculate_signals(market_data)
+                    strategy.calculate_signals(market_data)
                     all_signals[strategy.name] = signals
                 except Exception as e:
                     logger.error(f"Strategy {strategy.name} failed: {e}")

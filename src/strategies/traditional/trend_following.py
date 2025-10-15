@@ -75,7 +75,7 @@ class TrendFollowingStrategy(BaseStrategy):
         Returns:
             交易信號列表
         """
-        signals = []
+        []
 
         if len(data) < max(self.ma_trend, self.trend_strength_period) + 10:
             return signals
@@ -258,7 +258,7 @@ class TrendFollowingStrategy(BaseStrategy):
 
             return max(0.1, min(1.0, strength))
 
-        except:
+        except Exception:
             return 0.5
 
     def _calculate_trend_signal_strength(
@@ -466,7 +466,7 @@ def create_trend_following_strategy(
         weight=1.0,
         risk_limit=0.03,  # 較高風險承受
         max_positions=4,  # 集中持倉
-        symbols=symbols or [],
+        symbols or [],
         parameters={
             "ma_short": 10,
             "ma_medium": 20,

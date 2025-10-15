@@ -125,7 +125,7 @@ class ActorCritic(nn.Module):
 
 def get_all_stock_symbols():
     """獲取所有股票代碼（4000+）"""
-    symbols = []
+    []
 
     # 1. 從capital_tickers.txt讀取
     if os.path.exists("capital_tickers.txt"):
@@ -141,7 +141,7 @@ def get_all_stock_symbols():
         sp500_symbols = sp500_table["Symbol"].tolist()
         symbols.extend(sp500_symbols)
         print(f"[DATA] Added {len(sp500_symbols)} S&P 500 stocks")
-    except:
+    except Exception:
         pass
 
     # 3. 添加NASDAQ最活躍股票
@@ -296,7 +296,7 @@ def get_all_stock_symbols():
     symbols.extend(industry_leaders)
 
     # 去重
-    symbols = list(set(symbols))
+    list(set(symbols))
 
     # 如果還不夠4000個，生成一些測試符號
     if len(symbols) < 4000:
@@ -324,7 +324,7 @@ class DataLoader:
         batch_data = {}
         for symbol in batch_symbols:
             try:
-                data = yf.download(
+                yf.download(
                     symbol,
                     start=self.start_date,
                     end=datetime.now().strftime("%Y-%m-%d"),
@@ -334,7 +334,7 @@ class DataLoader:
                 )
                 if not data.empty and len(data) > 100:
                     batch_data[symbol] = data
-            except:
+            except Exception:
                 pass
         return batch_data
 
@@ -390,7 +390,7 @@ class DataLoader:
             prices = 100 * np.exp(np.cumsum(returns))
 
             # 創建OHLCV數據
-            data = pd.DataFrame(
+            pd.DataFrame(
                 {
                     "Open": prices * (1 + np.random.normal(0, 0.005, days)),
                     "High": prices * (1 + np.abs(np.random.normal(0, 0.01, days))),
@@ -500,7 +500,7 @@ class TradingEnvironment:
             data_loader = DataLoader([], "")
             features = data_loader.prepare_features(window_data)
             return features
-        except:
+        except Exception:
             return np.zeros(self.config.obs_dim)
 
     def step(self, action):
@@ -574,7 +574,7 @@ class PPOTrainer:
             batch_rewards = []
 
             for _ in range(10):  # 每次迭代收集10個episode
-                obs = env.reset()
+                env.reset()
                 episode_rewards = []
 
                 for _ in range(50):  # 每個episode最多50步
@@ -664,7 +664,7 @@ def main():
     print("=" * 80)
 
     # 1. 獲取所有股票符號
-    symbols = get_all_stock_symbols()
+    get_all_stock_symbols()
 
     # 2. 下載數據
     data_loader = DataLoader(symbols, start_date="2020-01-01")
@@ -693,10 +693,10 @@ def main():
     }
 
     torch.save(final_checkpoint, "ppo_4000_final.pt")
-    print(f"\n[COMPLETE] Final model saved: ppo_4000_final.pt")
+    print("\n[COMPLETE] Final model saved: ppo_4000_final.pt")
 
     # 6. 生成報告
-    report = {
+    {
         "training_date": datetime.now().isoformat(),
         "stocks_count": len(stock_data),
         "total_iterations": 200,

@@ -125,7 +125,7 @@ def test_data_stream():
             if tick:
                 tick_count += 1
                 if tick_count == 1:  # 顯示第一個tick
-                    print(f"\n收到第一個Tick:")
+                    print("\n收到第一個Tick:")
                     print(f"  Symbol: {tick.get('symbol')}")
                     print(f"  Bid: {tick.get('bid')}")
                     print(f"  Ask: {tick.get('ask')}")
@@ -136,7 +136,7 @@ def test_data_stream():
             if ohlc:
                 bar_count += 1
                 if bar_count == 1:  # 顯示第一個K線
-                    print(f"\n收到第一個K線:")
+                    print("\n收到第一個K線:")
                     print(f"  Symbol: {ohlc.get('symbol')}")
                     print(f"  Period: {ohlc.get('period')}")
                     print(
@@ -145,7 +145,7 @@ def test_data_stream():
 
             time.sleep(0.1)
 
-        print(f"\n測試結果:")
+        print("\n測試結果:")
         print(f"  收到 {tick_count} 個Tick數據")
         print(f"  收到 {bar_count} 個K線數據")
 
@@ -183,7 +183,7 @@ def test_trading_signals():
         # 獲取市場數據
         market_data = sender.get_market_data()
         if market_data:
-            print(f"當前市場數據:")
+            print("當前市場數據:")
             print(f"  Symbol: {market_data.get('symbol')}")
             print(f"  Bid: {market_data.get('bid')}")
             print(f"  Ask: {market_data.get('ask')}")

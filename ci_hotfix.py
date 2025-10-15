@@ -90,7 +90,7 @@ if cap.exists():
         cap,
         [
             (
-                'logger.info("" +  Authentication successful!")',
+                'logger.info(" Authentication successful!")',
                 '        logger.info(" Authentication successful!")',
             ),
             ("logger.info( Identifier:", '        logger.info("Identifier: %s", api.identifier)'),

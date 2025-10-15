@@ -181,7 +181,7 @@ class IntegrationTester:
         try:
             # 創建 Tick 收集器
             collector = TickCollector(
-                symbols=["EURUSD", "GBPUSD"], mt4_bridge=self.mock_bridge, cache_size=100
+                ["EURUSD", "GBPUSD"], mt4_bridge=self.mock_bridge, cache_size=100
             )
 
             # 測試手動添加 Tick
@@ -234,7 +234,7 @@ class IntegrationTester:
         try:
             # 創建 OHLC 聚合器
             aggregator = OHLCAggregator(
-                symbols=["EURUSD"],
+                ["EURUSD"],
                 timeframes=[TimeFrame.M1, TimeFrame.M5],
                 enable_indicators=False,  # 暫時關閉指標以簡化測試
             )
@@ -371,7 +371,7 @@ class IntegrationTester:
 
             # 創建 MT4 數據饋送器
             data_feed = MT4DataFeed(
-                symbols=["EURUSD"],
+                ["EURUSD"],
                 event_queue=event_loop,
                 mt4_bridge=self.mock_bridge,
                 timeframes=[TimeFrame.M1],
@@ -398,7 +398,7 @@ class IntegrationTester:
 
             try:
                 await asyncio.gather(feed_task, event_task, return_exceptions=True)
-            except:
+            except Exception:
                 pass
 
             # 檢查統計信息
@@ -429,7 +429,7 @@ class IntegrationTester:
         import pandas as pd
 
         dates = [datetime.now(timezone.utc) - timedelta(minutes=i) for i in range(50, 0, -1)]
-        data = []
+        []
 
         for i, date in enumerate(dates):
             data.append(

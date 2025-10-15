@@ -106,7 +106,7 @@ class StockGraphConstructor:
             NetworkX圖對象
         """
         self.graph = nx.Graph()
-        symbols = list(price_data.keys())
+        list(price_data.keys())
 
         # 1. 創建節點
         logger.info(f"Creating nodes for {len(symbols)} stocks")
@@ -185,7 +185,7 @@ class StockGraphConstructor:
 
     def _add_price_correlation_edges(self, price_data: Dict[str, pd.DataFrame]):
         """添加價格相關性邊"""
-        symbols = list(price_data.keys())
+        list(price_data.keys())
 
         for i in range(len(symbols)):
             for j in range(i + 1, len(symbols)):
@@ -217,7 +217,7 @@ class StockGraphConstructor:
 
     def _add_volume_correlation_edges(self, price_data: Dict[str, pd.DataFrame]):
         """添加成交量相關性邊"""
-        symbols = list(price_data.keys())
+        list(price_data.keys())
 
         for i in range(len(symbols)):
             for j in range(i + 1, len(symbols)):
@@ -320,7 +320,7 @@ class StockGraphConstructor:
 
     def _add_volatility_similarity_edges(self, price_data: Dict[str, pd.DataFrame]):
         """添加波動率相似性邊"""
-        symbols = list(price_data.keys())
+        list(price_data.keys())
         volatilities = {}
 
         # 計算每個股票的波動率

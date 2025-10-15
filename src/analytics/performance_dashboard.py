@@ -263,7 +263,7 @@ class PerformanceDashboard:
         corr_df = pd.DataFrame(returns_data).corr()
 
         fig = go.Figure(
-            data=go.Heatmap(
+            go.Heatmap(
                 z=corr_df.values,
                 x=corr_df.columns,
                 y=corr_df.columns,

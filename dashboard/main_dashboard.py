@@ -70,7 +70,7 @@ class DashboardDataConnector:
         state_file = self.reports_path / "paper_trading_state.json"
         if state_file.exists():
             with open(state_file, "r") as f:
-                data = json.load(f)
+                json.load(f)
                 return data
 
         # Return mock data if no real data
@@ -136,7 +136,7 @@ class DashboardDataConnector:
         report_file = self.reports_path / "stress_test_report.json"
         if report_file.exists():
             with open(report_file, "r") as f:
-                data = json.load(f)
+                json.load(f)
                 return data
 
         # Return mock data
@@ -153,7 +153,7 @@ class DashboardDataConnector:
         """Load recent trades"""
         # Generate sample trades
         trades = []
-        symbols = ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN"]
+        ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN"]
 
         for i in range(limit):
             trade_time = datetime.now() - timedelta(hours=i * 2)
@@ -213,7 +213,7 @@ def create_portfolio_chart(df):
 
 def create_positions_pie(positions):
     """Create positions distribution pie chart"""
-    symbols = list(positions.keys())
+    list(positions.keys())
     values = [pos["quantity"] * pos["current_price"] for pos in positions.values()]
 
     fig = px.pie(
@@ -281,10 +281,10 @@ def create_pnl_histogram(trades_df):
 
 def create_heatmap(positions):
     """Create positions heatmap"""
-    symbols = list(positions.keys())
+    list(positions.keys())
     metrics = ["Quantity", "Avg Price", "Current Price", "P&L"]
 
-    data = []
+    []
     for symbol in symbols:
         pos = positions[symbol]
         pnl = (pos["current_price"] - pos["avg_price"]) * pos["quantity"]
@@ -502,7 +502,7 @@ def main():
             st.info("Email alerts configuration coming soon!")
 
     with col3:
-        st.write(f"Dashboard Version: 1.0.0")
+        st.write("Dashboard Version: 1.0.0")
 
     # Auto-refresh logic
     if auto_refresh:

@@ -34,7 +34,7 @@ class CapitalComStockFetcher:
             )
 
             if response.status_code == 200:
-                data = response.json()
+                response.json()
                 markets = data.get("markets", [])
                 print(f"[SUCCESS] Found {len(markets)} total markets")
                 return markets

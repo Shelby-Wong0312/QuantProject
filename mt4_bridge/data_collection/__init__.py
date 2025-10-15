@@ -24,7 +24,7 @@ MT4 數據收集系統
 
     # 創建 MT4 數據饋送器
     data_feed = MT4DataFeed(
-        symbols=["EURUSD", "GBPUSD"],
+        ["EURUSD", "GBPUSD"],
         event_queue=event_loop,
         timeframes=[TimeFrame.M1, TimeFrame.M5, TimeFrame.M15],
         enable_tick_collection=True,
@@ -131,7 +131,7 @@ def create_mt4_data_collection_system(symbols, event_queue, config=None):
 
     # 創建數據饋送器
     data_feed = MT4DataFeed(
-        symbols=symbols,
+        symbols,
         event_queue=event_queue,
         timeframes=ohlc_config.get(
             "default_timeframes", DEFAULT_CONFIG["ohlc_aggregation"]["default_timeframes"]

@@ -47,8 +47,8 @@ def prepare_training_data(symbol="AAPL", days=30):
         end_date = datetime.now()
         start_date = end_date - timedelta(days=days)
 
-        data = MinuteData.get(
-            symbols=symbol,
+        MinuteData.get(
+            symbol,
             start=start_date.strftime("%Y-%m-%d"),
             end=end_date.strftime("%Y-%m-%d"),
             interval="5min",
@@ -443,7 +443,7 @@ def main():
         print("\n" + "=" * 60)
         print("TRAINING COMPLETE!")
         print("=" * 60)
-        print(f"\nFinal Performance:")
+        print("\nFinal Performance:")
         print(f"  Training best reward: {trainer.best_reward:.4f}")
         print(f"  Backtest total return: {backtest_results['total_return']:.2%}")
         print(f"  Backtest Sharpe ratio: {backtest_results['sharpe_ratio']:.2f}")

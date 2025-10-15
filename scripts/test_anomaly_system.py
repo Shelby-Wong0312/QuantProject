@@ -46,7 +46,7 @@ class AnomalySystemTester:
     def generate_test_market_data(self, n_days: int = 200, inject_anomalies: bool = True) -> Dict:
         """Generate test market data with optional anomalies"""
 
-        symbols = ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN"]
+        ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN"]
         market_data = {}
 
         for symbol in symbols:
@@ -57,7 +57,7 @@ class AnomalySystemTester:
             returns = np.random.normal(0.001, 0.02, n_days)
             prices = base_price * (1 + returns).cumprod()
 
-            data = pd.DataFrame(
+            pd.DataFrame(
                 {
                     "date": dates,
                     "open": prices * np.random.uniform(0.98, 1.0, n_days),
@@ -119,7 +119,7 @@ class AnomalySystemTester:
         print("[OK] Threshold update successful")
 
         # Generate report
-        report = self.detector.get_anomaly_report()
+        self.detector.get_anomaly_report()
         assert "total_anomalies" in report
         assert "by_type" in report
         assert "by_severity" in report
@@ -325,7 +325,7 @@ class AnomalySystemTester:
         }
 
         print(f"\n[STAT] Integration Test: {'PASSED' if workflow_complete else 'FAILED'}")
-        print(f"[STAT] System Response Chain:")
+        print("[STAT] System Response Chain:")
         print(f"   1. Anomalies -> {len(anomalies)} detected")
         print(f"   2. Circuit Breaker -> {triggered.name if triggered else 'Not triggered'}")
         print(f"   3. Trading Status -> {'PAUSED' if self.breaker.is_paused else 'ACTIVE'}")
@@ -365,7 +365,7 @@ class AnomalySystemTester:
         print(f"Tests Passed: {passed_tests}/{total_tests}")
 
         # Save detailed report
-        report = {
+        {
             "timestamp": datetime.now().isoformat(),
             "summary": {
                 "total_tests": total_tests,

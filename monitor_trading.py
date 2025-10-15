@@ -46,12 +46,12 @@ def monitor():
                     f"  {timestamp[:16]} | {action:4} {qty:3} {symbol:5} @ ${price:.2f} {pnl_str}"
                 )
         conn.close()
-    except:
+    except Exception:
         print("[INFO] No trade database yet")
 
     # Check market prices
     print("\nCurrent Prices:")
-    symbols = ["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA"]
+    ["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA"]
     for symbol in symbols:
         price = api.get_market_price(symbol)
         if price:

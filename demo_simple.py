@@ -41,13 +41,13 @@ def demo_enhanced_system():
     quotes = client.get_batch_quotes(test_symbols, show_progress=True)
     duration = time.time() - start_time
 
-    print(f"\nBatch quote results:")
+    print("\nBatch quote results:")
     print(f"   Successfully retrieved: {len(quotes)}/{len(test_symbols)} stocks")
     print(f"   Processing time: {duration:.2f} seconds")
     print(f"   Average speed: {len(quotes)/duration:.1f} stocks/sec")
 
     # Show quote details
-    print(f"\nReal-time quotes:")
+    print("\nReal-time quotes:")
     for symbol, data in list(quotes.items())[:3]:
         print(f"   {symbol}: ${data['price']:.2f} (Volume: {data['volume']:,})")
 
@@ -62,7 +62,7 @@ def demo_enhanced_system():
     print(f"Trading session: {overview.get('session_type')}")
 
     if "indices" in overview:
-        print(f"\nMajor indices:")
+        print("\nMajor indices:")
         for index, data in overview["indices"].items():
             if data:
                 print(f"   {index}: ${data.get('price', 0):.2f}")
@@ -85,7 +85,7 @@ def demo_enhanced_system():
     cached_time = time.time() - start_time
 
     speedup = first_time / cached_time if cached_time > 0 else float("inf")
-    print(f"\nCache performance:")
+    print("\nCache performance:")
     print(f"   First request: {first_time:.2f} seconds")
     print(f"   Cached request: {cached_time:.2f} seconds")
     print(f"   Speedup factor: {speedup:.1f}x")
@@ -103,7 +103,7 @@ def demo_enhanced_system():
     large_quotes = client.get_batch_quotes(large_symbols, show_progress=True)
     large_duration = time.time() - start_time
 
-    print(f"\nLarge scale processing results:")
+    print("\nLarge scale processing results:")
     print(f"   Processed stocks: {len(large_symbols)}")
     print(f"   Successfully retrieved: {len(large_quotes)}")
     print(f"   Processing time: {large_duration:.2f} seconds")
@@ -119,10 +119,10 @@ def demo_enhanced_system():
     print(f"Alpha Vantage API: {'Configured' if client.alpha_vantage_key else 'Not configured'}")
     print(f"Batch processing: {client.batch_size} stocks/batch")
     print(f"Concurrent threads: {client.max_workers} threads")
-    print(f"Support scale: 4000+ stocks")
+    print("Support scale: 4000+ stocks")
 
-    print(f"\nDemo completed! System is ready for large-scale stock monitoring")
-    print(f"Data has been saved to local database for reuse")
+    print("\nDemo completed! System is ready for large-scale stock monitoring")
+    print("Data has been saved to local database for reuse")
 
 
 if __name__ == "__main__":

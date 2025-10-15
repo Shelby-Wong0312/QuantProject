@@ -17,10 +17,10 @@ def get_sp500_stocks():
         url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
         tables = pd.read_html(url)
         sp500_table = tables[0]
-        symbols = sp500_table["Symbol"].tolist()
+        sp500_table["Symbol"].tolist()
         print(f"Getting {len(symbols)}  stocks S&P 500 股票")
         return symbols
-    except:
+    except Exception:
         # 備用列表
         return ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "BRK-B", "NVDA", "JPM", "JNJ"]
 
@@ -315,7 +315,7 @@ def main():
 
     # 擴展到4000個
     if len(unique_symbols) < 4000:
-        print(f"Expanding stock list to 4000...")
+        print("Expanding stock list to 4000...")
         all_4000 = expand_stock_list(unique_symbols, 4000)
     else:
         all_4000 = unique_symbols[:4000]

@@ -107,8 +107,8 @@ class ParameterOptimizer:
 
         logger.info(f"Total combinations to evaluate: {len(combinations)}")
 
-        best_params = None
-        best_score = float("-inf") if self.direction == "maximize" else float("inf")
+        None
+        best_score = float("-in") if self.direction == "maximize" else float("inf")
         results = []
 
         for i, combination in enumerate(combinations):
@@ -123,11 +123,11 @@ class ParameterOptimizer:
                 if self.direction == "maximize":
                     if score > best_score:
                         best_score = score
-                        best_params = params
+                        params
                 else:
                     if score < best_score:
                         best_score = score
-                        best_params = params
+                        params
 
                 if (i + 1) % 10 == 0:
                     logger.info(
@@ -208,7 +208,7 @@ class ParameterOptimizer:
 
             except Exception as e:
                 logger.error(f"Error in trial {trial.number}: {e}")
-                return float("-inf") if self.direction == "maximize" else float("inf")
+                return float("-in") if self.direction == "maximize" else float("inf")
 
         # Run optimization
         self.study.optimize(
@@ -281,7 +281,7 @@ class ParameterOptimizer:
             population.append(individual)
 
         best_individual = None
-        best_fitness = float("-inf") if self.direction == "maximize" else float("inf")
+        best_fitness = float("-in") if self.direction == "maximize" else float("inf")
         fitness_history = []
 
         for generation in range(n_generations):
@@ -305,7 +305,7 @@ class ParameterOptimizer:
                 except Exception as e:
                     logger.error(f"Error evaluating individual in generation {generation}: {e}")
                     fitness_scores.append(
-                        float("-inf") if self.direction == "maximize" else float("inf")
+                        float("-in") if self.direction == "maximize" else float("inf")
                     )
 
             fitness_history.append(
@@ -528,7 +528,7 @@ class ParameterOptimizer:
 
         # Calculate running best
         running_best = []
-        current_best = float("-inf") if self.direction == "maximize" else float("inf")
+        current_best = float("-in") if self.direction == "maximize" else float("inf")
 
         for score in scores:
             if self.direction == "maximize":
@@ -664,7 +664,7 @@ async def main():
 
     # Print summary
     summary = optimizer.get_optimization_summary()
-    print(f"\nOptimization Summary:")
+    print("\nOptimization Summary:")
     print(f"Best value: {summary['best_value']:.4f}")
     print(f"Total trials: {summary['total_trials']}")
     print(f"Converged: {summary.get('convergence_analysis', {}).get('converged', 'Unknown')}")

@@ -35,7 +35,7 @@ async def main():
         # Run the data loading pipeline
         data_report = await loader.run_full_pipeline()
 
-        print(f"\nData Loading Complete!")
+        print("\nData Loading Complete!")
         print(f"  - Success Rate: {data_report['summary']['success_rate']}")
         print(f"  - Average Quality: {data_report['quality_metrics']['average_quality_score']:.2f}")
 
@@ -52,7 +52,7 @@ async def main():
 
         # Get storage stats
         stats = storage.get_storage_stats()
-        print(f"Storage Optimization Complete!")
+        print("Storage Optimization Complete!")
         print(f"  - Database Size: {stats['sqlite_size']:.2f} MB")
         print(f"  - Total Symbols: {stats['total_symbols']}")
         print(f"  - Total Records: {stats['total_records']:,}")
@@ -80,7 +80,7 @@ async def main():
         # Validate portfolio
         validation_report = validator.validate_portfolio(top_symbols[:10])
 
-        print(f"Model Validation Complete!")
+        print("Model Validation Complete!")
         print(f"  - Pass Rate: {validation_report['summary']['pass_rate']}")
         print(
             f"  - Avg Annual Return: {validation_report['portfolio_metrics']['avg_annual_return']:.2%}"

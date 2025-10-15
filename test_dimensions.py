@@ -3,7 +3,7 @@ import torch.nn as nn
 import numpy as np
 
 # Test dimensions
-obs = np.random.randn(220)  # 220 features
+np.random.randn(220)  # 220 features
 print(f"Original obs shape: {obs.shape}")
 
 obs_tensor = torch.FloatTensor(obs)

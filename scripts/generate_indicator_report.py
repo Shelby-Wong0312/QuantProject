@@ -84,7 +84,7 @@ def generate_html_report():
             ema50 = f"${row['ema_50']:.2f}" if pd.notna(row["ema_50"]) else "N/A"
             ema200 = f"${row['ema_200']:.2f}" if pd.notna(row["ema_200"]) else "N/A"
             rows.append(
-                f"""
+                """
                 <tr>
                     <td style="font-weight: bold;">{row['symbol']}</td>
                     <td>{row['date']}</td>
@@ -106,7 +106,7 @@ def generate_html_report():
             sma50 = f"${row['sma_50']:.2f}" if pd.notna(row["sma_50"]) else "N/A"
             sma200 = f"${row['sma_200']:.2f}" if pd.notna(row["sma_200"]) else "N/A"
             rows.append(
-                f"""
+                """
                 <tr>
                     <td style="font-weight: bold;">{row['symbol']}</td>
                     <td>${row['close_price']:.2f}</td>
@@ -123,7 +123,7 @@ def generate_html_report():
     def section_golden(df: pd.DataFrame) -> str:
         if df.empty:
             return ""
-        return f"""
+        return """
         <div class="section">
             <h2 class="section-title">✨ Recent Golden Cross Signals (Bullish)</h2>
             <div class="table-container">
@@ -165,7 +165,7 @@ def generate_html_report():
     bearish_pct = int(bearish_count / total_trend * 100) if total_trend else 0
 
     # -------- 主 HTML（只有一層 f-string，CSS 全部用 {{ }} 逃脫） --------
-    html_content = f"""<!DOCTYPE html>
+    html_content = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -454,7 +454,7 @@ def main():
 
     report_path = generate_html_report()
 
-    print(f"\nReport generated successfully!")
+    print("\nReport generated successfully!")
     print(f"Location: {report_path}")
 
     # Try to open in browser

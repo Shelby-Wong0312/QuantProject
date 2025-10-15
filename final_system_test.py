@@ -124,7 +124,7 @@ class SystemTestSuite:
             ticker = yf.Ticker("AAPL")
             hist = ticker.history(period="1d")
             if not hist.empty:
-                tests.append(("歷史數據獲取", True, f"成功獲取 AAPL 數據"))
+                tests.append(("歷史數據獲取", True, "成功獲取 AAPL 數據"))
             else:
                 tests.append(("歷史數據獲取", False, "無法獲取數據"))
         except Exception as e:
@@ -233,7 +233,7 @@ class SystemTestSuite:
 
         # 測試信號生成
         try:
-            signals = pd.Series(np.where(prices > sma20, 1, -1), index=dates)
+            pd.Series(np.where(prices > sma20, 1, -1), index=dates)
             tests.append(("信號生成", True, f"生成 {len(signals)} 個信號"))
         except Exception as e:
             tests.append(("信號生成", False, str(e)))
@@ -274,7 +274,7 @@ class SystemTestSuite:
             import time
 
             start = time.time()
-            data = pd.DataFrame(np.random.randn(10000, 10))
+            pd.DataFrame(np.random.randn(10000, 10))
             data.mean()
             elapsed = time.time() - start
 
@@ -385,7 +385,7 @@ class SystemTestSuite:
         with open("test_results_final.json", "w", encoding="utf-8") as f:
             json.dump(self.test_results, f, indent=2, ensure_ascii=False)
 
-        print(f"\n💾 詳細報告已保存至: test_results_final.json")
+        print("\n💾 詳細報告已保存至: test_results_final.json")
 
         # 判定結果
         if pass_rate >= 90:

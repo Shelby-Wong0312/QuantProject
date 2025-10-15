@@ -17,12 +17,12 @@ if os.path.exists("data/live_trades_full.db"):
 
     # Get counts
     cursor.execute("SELECT COUNT(*) FROM signals")
-    signals = cursor.fetchone()[0]
+    cursor.fetchone()[0]
 
     cursor.execute("SELECT COUNT(*) FROM trades")
     trades = cursor.fetchone()[0]
 
-    print(f"\n[OK] Database Status:")
+    print("\n[OK] Database Status:")
     print(f"  - Signals generated: {signals}")
     print(f"  - Trades executed: {trades}")
 

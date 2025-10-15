@@ -167,7 +167,7 @@ class MarketAnomalyDetector:
             try:
                 iso_score = self.isolation_forest.decision_function(features_scaled)[0]
                 iso_anomaly = self.isolation_forest.predict(features_scaled)[0] == -1
-            except:
+            except Exception:
                 # Fit the model with the current data if not fitted
                 self.isolation_forest.fit(features_scaled)
                 iso_score = self.isolation_forest.decision_function(features_scaled)[0]
@@ -462,8 +462,8 @@ if __name__ == "__main__":
         print(f"Description: {anomaly.description}")
 
     # Generate report
-    report = detector.get_anomaly_report()
-    print(f"\nDetection Report:")
+    detector.get_anomaly_report()
+    print("\nDetection Report:")
     print(f"Total anomalies: {report['total_anomalies']}")
     print(f"By type: {report['by_type']}")
     print(f"By severity: {report['by_severity']}")

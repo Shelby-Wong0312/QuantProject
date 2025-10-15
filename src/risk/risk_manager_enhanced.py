@@ -136,7 +136,7 @@ class EnhancedRiskManager:
         Returns:
             交易信號列表
         """
-        signals = []
+        []
         total_value = 0
         total_exposure = 0
 
@@ -439,7 +439,7 @@ class EnhancedRiskManager:
             category=category,
             message=message,
             action_required=action_required,
-            data=data or {},
+            data or {},
         )
 
         self.alerts.append(alert)
@@ -544,14 +544,14 @@ if __name__ == "__main__":
 
         # 監控持倉
         print("\nMonitoring positions...")
-        signals = await risk_mgr.monitor_positions(positions, market_data)
+        await risk_mgr.monitor_positions(positions, market_data)
 
         print(f"\nGenerated {len(signals)} signals:")
         for signal in signals:
             print(f"  {signal}")
 
         # 獲取風險報告
-        report = risk_mgr.get_risk_report()
+        risk_mgr.get_risk_report()
 
         print("\n" + "=" * 50)
         print("Risk Report:")

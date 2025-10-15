@@ -17,7 +17,7 @@ def get_priority_capital_stocks():
     all_stocks = []
     if os.path.exists("capital_real_stocks.json"):
         with open("capital_real_stocks.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
+            json.load(f)
             all_stocks = data
 
     # 優先處理的股票（這些是最常交易的）
@@ -97,7 +97,7 @@ def validate_yahoo(symbol):
         ticker = yf.Ticker(symbol)
         hist = ticker.history(period="5d")
         return not hist.empty
-    except:
+    except Exception:
         return False
 
 

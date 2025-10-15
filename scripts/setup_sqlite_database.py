@@ -324,7 +324,7 @@ class SQLiteSetup:
             cursor.execute("SELECT COUNT(*) FROM daily_data")
             daily_count = cursor.fetchone()[0]
 
-            logger.info(f"[OK] Database connection successful")
+            logger.info("[OK] Database connection successful")
             logger.info(f"[STATS] Tradable stocks: {tradable_count}")
             logger.info(f"[STATS] OHLC records: {ohlc_count}")
             logger.info(f"[STATS] Daily records: {daily_count}")

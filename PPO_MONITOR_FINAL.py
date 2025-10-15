@@ -53,7 +53,7 @@ class PPOMonitor:
             try:
                 checkpoint = torch.load(model_path, map_location="cpu", weights_only=False)
                 print("[MODEL] PPO model loaded successfully")
-            except:
+            except Exception:
                 print("[MODEL] Using fresh PPO model")
         else:
             print("[MODEL] No saved model found, using fresh model")
@@ -160,7 +160,7 @@ class PPOMonitor:
         ]
 
         # 去重
-        symbols = list(dict.fromkeys(core_symbols))
+        list(dict.fromkeys(core_symbols))
         print(f"[SYMBOLS] Monitoring {len(symbols)} stocks")
         return symbols
 
@@ -228,7 +228,7 @@ class PPOMonitor:
         try:
             # 下載數據
             ticker = yf.Ticker(symbol)
-            data = ticker.history(period="3mo")
+            ticker.history(period="3mo")
 
             if len(data) < 20:
                 return None

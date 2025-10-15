@@ -64,8 +64,8 @@ class CapitalComAPITester:
             )
 
             if response.status_code == 200:
-                data = response.json()
-                print(f"✅ 成功獲取市場數據")
+                response.json()
+                print("✅ 成功獲取市場數據")
                 results["tests"]["public_data"] = True
             elif response.status_code == 401:
                 print("⚠️ 需要認證才能訪問市場數據")
@@ -100,7 +100,7 @@ class CapitalComAPITester:
                 print("\n[測試 5] 測試獲取即時價格...")
                 price_data = self.get_market_price("AAPL")
                 if price_data:
-                    print(f"✅ 成功獲取 AAPL 價格")
+                    print("✅ 成功獲取 AAPL 價格")
                     results["tests"]["market_price"] = True
                 else:
                     print("❌ 無法獲取市場價格")

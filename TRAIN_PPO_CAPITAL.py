@@ -159,7 +159,7 @@ class CapitalStockDataLoader:
         for batch in tqdm(batches, desc="Downloading batches"):
             for ticker in batch:
                 try:
-                    data = yf.download(
+                    yf.download(
                         ticker,
                         start=self.start_date,
                         end=datetime.now().strftime("%Y-%m-%d"),
@@ -206,7 +206,7 @@ class CapitalStockDataLoader:
             returns = np.random.normal(0.0005, 0.02, days)
             prices = 100 * np.exp(np.cumsum(returns))
 
-            data = pd.DataFrame(
+            pd.DataFrame(
                 {
                     "Open": prices * (1 + np.random.normal(0, 0.005, days)),
                     "High": prices * (1 + np.abs(np.random.normal(0, 0.01, days))),
@@ -327,7 +327,7 @@ class TradingEnvironment:
             data_loader = CapitalStockDataLoader()
             features = data_loader.prepare_features(window_data)
             return features
-        except:
+        except Exception:
             return np.zeros(self.config.obs_dim)
 
     def step(self, action):
@@ -372,7 +372,7 @@ class TradingEnvironment:
 
             return self._get_observation(), reward, done
 
-        except:
+        except Exception:
             return np.zeros(self.config.obs_dim), 0, True
 
 
@@ -400,7 +400,7 @@ class PPOTrainer:
             batch_values = []
             batch_log_probs = []
 
-            obs = env.reset()
+            env.reset()
 
             for _ in range(self.config.n_steps):
                 obs_tensor = torch.FloatTensor(obs).to(self.config.device)
@@ -419,7 +419,7 @@ class PPOTrainer:
                 batch_rewards.append(reward)
 
                 if done:
-                    obs = env.reset()
+                    env.reset()
 
             # 計算優勢
             advantages = self._compute_advantages(batch_rewards, batch_values)
@@ -561,10 +561,10 @@ def main():
     }
 
     torch.save(final_checkpoint, "ppo_capital_final.pt")
-    print(f"\n[COMPLETE] Final model saved: ppo_capital_final.pt")
+    print("\n[COMPLETE] Final model saved: ppo_capital_final.pt")
 
     # 6. 生成報告
-    report = {
+    {
         "training_date": datetime.now().isoformat(),
         "stocks_count": len(stock_data),
         "total_iterations": 300,

@@ -52,7 +52,7 @@ class TradingViewBenchmark:
         prices = np.array(prices)
 
         # 生成 OHLC 數據
-        data = pd.DataFrame(
+        pd.DataFrame(
             {
                 "open": prices + np.random.normal(0, 0.5, 100),
                 "high": prices + np.abs(np.random.normal(1, 0.8, 100)),
@@ -468,7 +468,7 @@ class IndicatorAccuracyTest(unittest.TestCase):
         from src.indicators.signal_generator import IndicatorSignalGenerator
 
         signal_generator = IndicatorSignalGenerator()
-        signals = signal_generator.generate_signals(self.test_data, "TEST")
+        signal_generator.generate_signals(self.test_data, "TEST")
 
         # 檢查信號生成
         self.assertIsInstance(signals, list, "Signals should be a list")
