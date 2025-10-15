@@ -27,7 +27,7 @@ if env_file_path:
     # verbose=True will print detailed loading process
     load_dotenv(dotenv_path=env_file_path, verbose=True)
 else:
-    logger.warning( .env file not found in project directory!")
+    logger.warning(".env file not found in project directory!")
 
 print("--- .env file loading completed ---")
 
@@ -46,7 +46,7 @@ else:
 
 # Check if API credentials are loaded
 if not CAPITAL_API_KEY or not CAPITAL_API_PASSWORD:
-    logger.error( API credentials not found!")
+    logger.error("API credentials not found!")
     print("Please create a .env file with:")
     print("  CAPITAL_API_KEY=your_api_key")
     print("  CAPITAL_API_PASSWORD=your_password")

@@ -545,7 +545,7 @@ _global_config = None
 
 def get_config() -> MT4BridgeConfig:
     """獲取全局配置實例"""
-    global _global_config
+    # global _global_config  # removed by ci-hotfix
     if _global_config is None:
         _global_config = MT4BridgeConfig()
     return _global_config
@@ -553,7 +553,7 @@ def get_config() -> MT4BridgeConfig:
 
 def reload_config() -> bool:
     """重新載入配置"""
-    global _global_config
+    # global _global_config  # removed by ci-hotfix
     if _global_config is not None:
         return _global_config.load_config()
     return False
@@ -561,7 +561,7 @@ def reload_config() -> bool:
 
 def save_config() -> bool:
     """保存當前配置"""
-    global _global_config
+    # global _global_config  # removed by ci-hotfix
     if _global_config is not None:
         return _global_config.save_config()
     return False

@@ -1,1 +1,3 @@
-﻿from .router import fetch_bars\n\n__all__ = ['fetch_bars']\n
+from .router import fetch_bars
+
+__all__ = ["fetch_bars"]

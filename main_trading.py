@@ -302,7 +302,7 @@ class TradingConsole:
 
 def signal_handler(signum, frame):
     """處理系統信號"""
-    global trading_system
+    # global trading_system  # removed by ci-hotfix
     print("\n⚠️ Received interrupt signal. Shutting down...")
     if trading_system:
         asyncio.create_task(trading_system.shutdown())
@@ -350,8 +350,7 @@ async def main():
         }
 
         config = SystemConfig(mode=mode_map[args.mode], strategy_type=strategy_map[args.strategy])
-
-        global trading_system
+        # global trading_system  # removed by ci-hotfix
         trading_system = IntegratedTradingSystem(config)
         await trading_system.run()
     else:
