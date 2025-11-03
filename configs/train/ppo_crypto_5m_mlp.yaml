@@ -1,0 +1,44 @@
+timeframe: 5min
+start: '2025-08-01'
+end: '2025-09-25'
+symbols:
+- BTC-USD
+- ETH-USD
+obs:
+  window: 64
+  features:
+  - logret
+  - rsi
+  - macd
+  - atr
+  - vol_ewma
+  - range_pct
+  - trend_persist
+  - breakout_flags
+action:
+  max_weight: 0.3
+  max_dweight: 0.05
+risk:
+  gross_leverage_cap: 1.2
+  dd_hard: 0.15
+costs:
+  commission_bps: 10
+  slippage_alpha: 0.05
+  slippage_beta: 0.1
+train:
+  policy: MlpPolicy
+  policy_kwargs:
+    net_arch:
+    - 256
+    - 256
+  total_timesteps: 1000000
+  n_steps: 4096
+  batch_size: 512
+  lr: 0.0003
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.005
+  vf_coef: 0.5
+log:
+  dir: runs/rl3/crypto_baseline

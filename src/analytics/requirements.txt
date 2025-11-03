@@ -1,0 +1,19 @@
+# QuantTrading Analytics Module Requirements
+
+# Core Dependencies
+streamlit>=1.28.0          # Web dashboard framework
+plotly>=5.15.0            # Interactive visualizations
+pandas>=2.0.0             # Data manipulation and analysis
+numpy>=1.24.0             # Numerical computations
+scipy>=1.10.0             # Statistical analysis
+
+# Optional Dependencies (for enhanced features)
+# weasyprint>=60.0         # PDF report generation (uncomment if needed)
+# seaborn>=0.12.0          # Additional statistical plots (uncomment if needed)
+
+# Database (included in Python standard library)
+# sqlite3                  # Database connectivity
+
+# Additional utility packages
+pytz>=2023.3              # Timezone handling
+python-dateutil>=2.8.2    # Date parsing utilities

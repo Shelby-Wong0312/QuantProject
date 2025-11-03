@@ -1,0 +1,23 @@
+router:
+  equities:
+    primary: alpha_vantage
+  fx:
+    primary: alpha_vantage
+  crypto:
+    primary: yahoo
+sources:
+  alpha_vantage:
+    api_key_env: ALPHA_VANTAGE_API_KEY
+    max_retries: 3
+  yahoo:
+    max_retries: 3
+cache:
+  parquet_dir: cache/parquet
+  enable: true
+align:
+  timezone: UTC
+  interval: 60m
+  forward_fill: false
+  dedup: true
+guards:
+  min_length: 200

@@ -1,0 +1,42 @@
+﻿timeframe: "60m"
+start: "2020-01-01"
+end:   "2025-09-25"
+symbols: ["SPY", "QQQ", "BTC-USD", "ETH-USD"]
+
+obs:
+  window: 64
+  features:
+    - "logret"
+    - "rsi"
+    - "atr"
+
+action:
+  max_weight: 0.30
+  max_dweight: 0.02
+  dweight_threshold: 0.01
+
+risk:
+  gross_leverage_cap: 1.2
+  dd_hard: 0.15
+
+costs:
+  commission_bps: 6
+  slippage_alpha: 0.10
+  slippage_beta: 0.20
+
+train:
+  policy: "MlpPolicy"
+  policy_kwargs:
+    net_arch: [256, 256]
+  total_timesteps: 600000
+  n_steps: 1024
+  batch_size: 1024
+  lr: 1.0e-4
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.001
+  vf_coef: 0.5
+
+log:
+  dir: "runs/rl3/baseline_60m"

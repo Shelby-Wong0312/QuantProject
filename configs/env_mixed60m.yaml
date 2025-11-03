@@ -1,0 +1,16 @@
+calendar: equity
+symbols:
+  - MSFT
+features:
+  - close
+interval: 60m
+env:
+  dweight_threshold: 0.025
+  max_dweight: 0.006
+  lambda_turnover: 0.003
+  trading_cost_bps: 10
+  reward_clip:
+    min: -0.01
+    max: 0.01
+  dd_hard: 0.10
+  seed: 42

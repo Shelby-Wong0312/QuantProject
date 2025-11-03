@@ -1,0 +1,3 @@
+@echo off
+echo Starting Capital.com Automation System...
+python capital_automation_system.py

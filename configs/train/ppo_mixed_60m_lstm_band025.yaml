@@ -1,0 +1,49 @@
+timeframe: 60m
+start: '2025-08-01'
+end: '2025-09-25'
+symbols:
+- SPY
+- QQQ
+- BTC-USD
+- ETH-USD
+obs:
+  window: 64
+  features:
+  - logret
+  - vol_ewma
+  - rsi
+  - atr
+action:
+  max_weight: 0.3
+  max_dweight: 0.006
+  dweight_threshold: 0.025
+risk:
+  gross_leverage_cap: 1.2
+  dd_hard: 0.2
+reward:
+  lambda_turnover: 0.003
+costs:
+  commission_bps: 6
+  slippage_alpha: 0.05
+  slippage_beta: 0.1
+train:
+  policy: MlpLstmPolicy
+  policy_kwargs:
+    net_arch:
+    - 256
+    - 256
+    lstm_hidden_size: 128
+    n_lstm_layers: 1
+    shared_lstm: true
+    enable_critic_lstm: false
+  total_timesteps: 800000
+  n_steps: 4096
+  batch_size: 1024
+  lr: 0.0003
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.001
+  vf_coef: 0.5
+log:
+  dir: runs/rl3/mixed_60m_lstm
