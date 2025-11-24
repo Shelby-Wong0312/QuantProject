@@ -35,6 +35,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize, VecCheck
 
 from rl3.callbacks.metrics_callback import MetricsCallback
 from rl3.env.portfolio_env import EnvConfig, PortfolioEnv
+from rl3.env.data_roots import ensure_data_roots
 from rl3.features.registry import registry
 from src.quantproject.data_pipeline.loaders.bars import load_and_align
 
@@ -46,9 +47,24 @@ def _build_features(
 
 
 def make_env(cfg: Dict[str, Any]) -> PortfolioEnv:
+    ensure_data_roots(cfg)
     timeframe = cfg.get("timeframe", "5min")
     cfg["symbols"]
-    prices = load_and_align(symbols, cfg["start"], cfg["end"], timeframe)
+    # === inserted: fetch symbols/timeframe from cfg ===
+    symbols = (
+        cfg.get('symbols')
+        or cfg.get('env', {}).get('symbols')
+        or cfg.get('dataset', {}).get('symbols')
+    )
+    timeframe = (
+        cfg.get('timeframe')
+        or cfg.get('dataset', {}).get('freq')
+        or '5m'
+    )
+    if not symbols:
+        raise ValueError('symbols not found in cfg (checked cfg.symbols / env.symbols / dataset.symbols)')
+    # === end inserted ===
+    prices = load_and_align((cfg.get("symbols") or cfg.get("env", {}).get("symbols") or cfg.get("dataset", {}).get("symbols")), cfg["start"], cfg["end"], (cfg.get("timeframe") or cfg.get("dataset", {}).get("freq") or "5m"))
     fields = EnvConfig.__dataclass_fields__
     obs_cfg = cfg["obs"]
     window = int(obs_cfg.get("window", fields["window"].default))

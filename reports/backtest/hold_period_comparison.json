@@ -1,0 +1,62 @@
+{
+  "minhold3_2021_2022": {
+    "min_hold_bars": 3,
+    "period": "2021-2022",
+    "start_date": "2021-01-01",
+    "end_date": "2022-12-31",
+    "total_stocks": 4215,
+    "avg_return": 0.012778905465152812,
+    "median_return": 0.0006130897349055158,
+    "max_drawdown": -0.0005498593716440796,
+    "win_rate": 0.5113185984876115,
+    "sharpe_ratio": 0.07296736095695941,
+    "sortino_ratio": 122788819939.02365,
+    "total_trades": 41127,
+    "winning_trades": 21029
+  },
+  "minhold3_2023_2025": {
+    "min_hold_bars": 3,
+    "period": "2023-2025",
+    "start_date": "2023-01-01",
+    "end_date": "2025-08-08",
+    "total_stocks": 4215,
+    "avg_return": 0.022827404316356673,
+    "median_return": 0.007355048812598834,
+    "max_drawdown": -0.0008908509788053348,
+    "win_rate": 0.5153105424496868,
+    "sharpe_ratio": 0.10701425367437101,
+    "sortino_ratio": 0.10806279491143489,
+    "total_trades": 60024,
+    "winning_trades": 30931
+  },
+  "minhold7_2021_2022": {
+    "min_hold_bars": 7,
+    "period": "2021-2022",
+    "start_date": "2021-01-01",
+    "end_date": "2022-12-31",
+    "total_stocks": 4215,
+    "avg_return": 0.025101808275459082,
+    "median_return": 0.009953123043419764,
+    "max_drawdown": -0.0005649657230892312,
+    "win_rate": 0.5211872146118721,
+    "sharpe_ratio": 0.1483522320685677,
+    "sortino_ratio": 0.18269301175244304,
+    "total_trades": 32850,
+    "winning_trades": 17121
+  },
+  "minhold7_2023_2025": {
+    "min_hold_bars": 7,
+    "period": "2023-2025",
+    "start_date": "2023-01-01",
+    "end_date": "2025-08-08",
+    "total_stocks": 4215,
+    "avg_return": 0.043103801660470065,
+    "median_return": 0.023852897974544904,
+    "max_drawdown": -0.00041332818125858217,
+    "win_rate": 0.5273732106127028,
+    "sharpe_ratio": 0.1788361032752553,
+    "sortino_ratio": 0.17234237192246954,
+    "total_trades": 48131,
+    "winning_trades": 25383
+  }
+}

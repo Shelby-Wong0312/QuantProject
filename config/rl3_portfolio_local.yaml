@@ -1,0 +1,81 @@
+# RL3 Portfolio Training with Local Parquet Data
+# Date: 2025-11-19
+# Purpose: Train portfolio management agent using local historical data
+
+# Symbols to trade (10 stocks for quick validation)
+symbols:
+  - AAPL
+  - MSFT
+  - GOOGL
+  - AMZN
+  - META
+  - NVDA
+  - TSLA
+  - JPM
+  - BAC
+  - WMT
+
+# Data parameters
+start: "2015-01-01"
+end: "2022-12-31"
+timeframe: "1d"  # Daily data from local parquet
+data_root: "scripts/download/historical_data/daily"  # Local parquet directory
+
+# Observation configuration
+obs:
+  window: 60  # 60-day lookback window
+  features:
+    - close
+    - logret
+    - rsi
+    - macd
+    - atr
+    - vol_ewma
+    - range_pct
+
+# Action configuration
+action:
+  max_weight: 0.3        # Max 30% per stock
+  max_dweight: 0.1       # Max 10% weight change per step
+  dweight_threshold: 0.01  # Minimum meaningful weight change
+
+# Transaction costs
+costs:
+  commission_bps: 10      # 10 bps commission
+  slippage_alpha: 0.0001  # Linear slippage
+  slippage_beta: 0.0      # No quadratic slippage for now
+  participation_cap: 0.1  # Max 10% of volume
+
+# Reward configuration
+reward:
+  cost_bps: 10            # Penalize costs
+  lambda_turnover: 0.0    # No turnover penalty for now
+  clip: 3.0               # Clip rewards to [-3, 3]
+
+# Risk configuration
+risk:
+  gross_leverage_cap: 1.0  # No leverage (long-only)
+  dd_hard: 0.3             # Hard stop at 30% drawdown
+
+# Training configuration
+train:
+  policy: "MlpPolicy"
+  policy_kwargs:
+    net_arch: [256, 256]
+  learning_rate: 0.0003
+  n_steps: 2048
+  batch_size: 64
+  n_epochs: 10
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.01
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+  total_timesteps: 100000  # Short training for validation
+
+# Logging
+log:
+  dir: "runs/rl3/portfolio_local"
+  tensorboard: true
+  save_freq: 10000

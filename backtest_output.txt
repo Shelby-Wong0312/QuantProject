@@ -1,0 +1,142 @@
+
+================================================================================
+PPO LOCAL MODEL - OOS BACKTEST (2023-2025)
+================================================================================
+Model: models/ppo_local/ppo_model_20251119_115916.pt
+Period: 2023-01-01 to 2025-08-08
+Stocks: 100
+================================================================================
+
+[1/5] Loading model...
+[OK] Model loaded from models/ppo_local/ppo_model_20251119_115916.pt
+[OK] Device: cpu
+
+[2/5] Loading stock data from parquet files...
+[OK] Found 4215 stocks, selected 100
+[OK] Successfully loaded 100 stocks with sufficient data
+
+[3/5] Running backtest on 100 stocks...
+  AAL: Return=3.65%, Trades=2
+  AAME: Return=-53.81%, Trades=2
+  AAMI: Return=-19.04%, Trades=6
+  AAOI: Return=22.94%, Trades=2
+  AAON: Return=0.31%, Trades=12
+  AAPG: Return=40.54%, Trades=2
+  AAPL: Return=20.95%, Trades=6
+  AAP: Return=-25.19%, Trades=2
+  AARD: Return=125.88%, Trades=2
+  AAT: Return=94.27%, Trades=4
+  AAUC: Return=29.62%, Trades=2
+  AA: Return=-28.79%, Trades=10
+  ABEO: Return=-6.15%, Trades=4
+  ABG: Return=53.50%, Trades=4
+  ABLLW: Return=83.08%, Trades=4
+  ABL: Return=20.72%, Trades=4
+  ABNB: Return=-4.25%, Trades=6
+  ABSI: Return=-22.58%, Trades=4
+  ABT: Return=32.79%, Trades=2
+  ABVEW: Return=-25.50%, Trades=8
+  ABVE: Return=38.01%, Trades=4
+  ACAD: Return=71.07%, Trades=2
+  ACA: Return=34.71%, Trades=2
+  ACB: Return=-2.58%, Trades=4
+  ACCO: Return=37.45%, Trades=2
+  ACDC: Return=43.41%, Trades=2
+  ACEL: Return=-10.49%, Trades=4
+  ACET: Return=-52.60%, Trades=2
+  ACGLN: Return=193.82%, Trades=2
+  ACGLO: Return=105.51%, Trades=2
+  ACGL: Return=15.40%, Trades=2
+  ACIC: Return=-1.29%, Trades=2
+  ACIW: Return=41.91%, Trades=4
+  ACLX: Return=72.32%, Trades=6
+  ACM: Return=66.69%, Trades=2
+  ACNT: Return=-9.87%, Trades=4
+  ACN: Return=48.15%, Trades=2
+  ACOG: Return=14.29%, Trades=2
+  ACONW: Return=71.92%, Trades=6
+  ACON: Return=50.79%, Trades=4
+  ACRE: Return=104.75%, Trades=2
+  ACRS: Return=5.23%, Trades=2
+  ACRV: Return=51.61%, Trades=4
+  ACR: Return=99.14%, Trades=2
+  ACTU: Return=13.25%, Trades=2
+  ACT: Return=-23.88%, Trades=2
+  ACVA: Return=-21.73%, Trades=2
+  ACXP: Return=-3.24%, Trades=4
+  AC: Return=9.99%, Trades=4
+  ADAP: Return=17.07%, Trades=2
+  ADBE: Return=-3.07%, Trades=2
+  ADC: Return=-23.60%, Trades=6
+  ADEA: Return=6.03%, Trades=2
+  ADGM: Return=-36.06%, Trades=8
+  ADIL: Return=117.39%, Trades=4
+  ADI: Return=100.81%, Trades=2
+  ADMA: Return=10.26%, Trades=2
+  ADM: Return=10.10%, Trades=2
+  ADNT: Return=39.58%, Trades=2
+  ADN: Return=18.41%, Trades=2
+  ADSEW: Return=-20.59%, Trades=2
+  ADSE: Return=-8.99%, Trades=4
+  ADSK: Return=92.36%, Trades=4
+  ADTX: Return=110.84%, Trades=2
+  ADT: Return=28.08%, Trades=4
+  ADUR: Return=20.26%, Trades=2
+  ADVB: Return=16.02%, Trades=2
+  ADVM: Return=-36.34%, Trades=4
+  ADVWW: Return=204.80%, Trades=2
+  ADXN: Return=-5.09%, Trades=6
+  ADX: Return=85.93%, Trades=2
+  AEFC: Return=27.56%, Trades=2
+  AEG: Return=13.53%, Trades=4
+  AEHR: Return=0.90%, Trades=14
+  AEI: Return=-8.15%, Trades=4
+  AEMD: Return=104.12%, Trades=2
+  AENTW: Return=27.18%, Trades=2
+  AENT: Return=184.06%, Trades=2
+  AEO: Return=36.92%, Trades=2
+  AER: Return=29.47%, Trades=8
+  AESI: Return=113.05%, Trades=4
+  AES: Return=94.27%, Trades=2
+  AEVAW: Return=5.59%, Trades=8
+  AEVA: Return=12.05%, Trades=6
+  AEYE: Return=-27.87%, Trades=6
+  AFBI: Return=7.79%, Trades=2
+  AFB: Return=66.17%, Trades=2
+  AFCG: Return=76.44%, Trades=4
+  AFGB: Return=-6.16%, Trades=4
+  AFGC: Return=64.28%, Trades=2
+  AFGD: Return=-34.48%, Trades=8
+  AFGE: Return=-2.32%, Trades=4
+  AFG: Return=-51.50%, Trades=4
+  AFJK: Return=24.65%, Trades=2
+  AFL: Return=4.08%, Trades=4
+  AFRIW: Return=-11.79%, Trades=4
+  AFRI: Return=4.29%, Trades=6
+  AFRM: Return=22.40%, Trades=2
+  AGCO: Return=100.01%, Trades=2
+  AGD: Return=9.61%, Trades=2
+
+[OK] Completed 100 backtests
+
+[4/5] Computing metrics...
+
+================================================================================
+BACKTEST RESULTS
+================================================================================
+Total Stocks: 100
+Average Return: 30.37%
+Max Drawdown: -1.11%
+Win Rate: 62.01%
+Total Trades: 179
+Winning Trades: 111
+Sharpe Ratio: 5.50
+================================================================================
+
+[5/5] Saving results...
+[OK] Report saved to: reports/backtest\local_ppo_oos_2023_2025.md
+[OK] Metrics saved to: reports/backtest\local_ppo_oos_2023_2025_metrics.json
+
+================================================================================
+[SUCCESS] BACKTEST COMPLETE!
+================================================================================

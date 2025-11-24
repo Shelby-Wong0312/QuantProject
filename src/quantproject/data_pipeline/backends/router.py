@@ -7,6 +7,7 @@ import pandas as pd
 from .alpha_vantage import AlphaVantageBackend
 from .binance import BinanceBackend
 from .yfinance import YFinanceBackend
+from .parquet_local import ParquetLocalBackend
 
 
 _COLS = ["open", "high", "low", "close", "volume"]
@@ -43,27 +44,51 @@ class DataRouter:
     def __init__(
         self,
         *,
+        parquet: ParquetLocalBackend | None = None,
         yahoo: YFinanceBackend | None = None,
         alphavantage: AlphaVantageBackend | None = None,
         binance: BinanceBackend | None = None,
+        use_local_first: bool = True,
     ) -> None:
+        self.use_local_first = use_local_first
+        try:
+            self.parquet = parquet or ParquetLocalBackend()
+        except Exception:
+            self.parquet = None
         self.yahoo = yahoo or YFinanceBackend()
         self.alpha = alphavantage or AlphaVantageBackend()
         self.binance = binance or BinanceBackend()
 
     def _providers_for(self, symbol: str, timeframe: str) -> list:
+        """Determine provider priority for given symbol and timeframe."""
+        providers = []
+
+        # Priority 1: Local parquet for daily data
+        minutes = _minutes_from_timeframe(timeframe)
+        is_daily = (minutes is None or minutes >= 1440)
+        if self.use_local_first and self.parquet is not None and is_daily:
+            providers.append(self.parquet)
+
+        # Priority 2: Crypto-specific providers
         symbol_up = symbol.upper()
         if symbol_up in _CRYPTO_SYMBOLS:
-            return [self.binance, self.yahoo]
+            providers.extend([self.binance, self.yahoo])
+            return providers
 
+        # Priority 3: AlphaVantage for intraday (if API key available)
         has_alpha = bool(getattr(self.alpha, "api_key", None))
-        minutes = _minutes_from_timeframe(timeframe)
         if has_alpha and (minutes is None or minutes >= 60):
-            return [self.alpha, self.yahoo]
+            if self.alpha not in providers:
+                providers.append(self.alpha)
 
-        providers = [self.yahoo]
-        if self.alpha not in providers:
-            providers.append(self.alpha)
+        # Priority 4: Yahoo Finance as fallback
+        if self.yahoo not in providers:
+            providers.append(self.yahoo)
+
+        # Priority 5: Add parquet as final fallback if not already included
+        if self.parquet is not None and self.parquet not in providers:
+            providers.append(self.parquet)
+
         return providers
 
     def get_bars(

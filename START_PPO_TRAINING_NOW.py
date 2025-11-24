@@ -309,7 +309,7 @@ def quick_download():
     print("=" * 80)
 
     # Remove duplicates
-    list(set(MAJOR_STOCKS))
+    symbols = list(set(MAJOR_STOCKS))
     print(f"Downloading {len(symbols)} major stocks...")
 
     # Create data directory
@@ -333,7 +333,7 @@ def quick_download():
             print(
                 f"\nDownloading batch {i//batch_size + 1}/{(len(symbols)-1)//batch_size + 1}: {batch_str}"
             )
-            yf.download(
+            data = yf.download(
                 batch_str,
                 start=start_date,
                 end=end_date,

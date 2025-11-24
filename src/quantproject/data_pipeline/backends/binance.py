@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Iterable, Optional, Dict, List
 
+import os
 import time
 from pathlib import Path
-from typing import Dict
 
 import pandas as pd
 import requests
@@ -37,12 +37,15 @@ class BinanceBackend(IDataBackend):
         cache_dir: str | Path = "./data/cache/parquet",
         *,
         request_timeout: float = 15.0,
+        local_root: str | Path | None = None,
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.session = requests.Session()
         self.timeout = float(request_timeout)
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
+        env_local = os.environ.get("RL3_BINANCE_ROOT") or os.environ.get("RL3_DATA_ROOT")
+        self.local_root = Path(local_root).expanduser().resolve() if local_root else (Path(env_local).expanduser().resolve() if env_local else None)
 
     @staticmethod
     def _map_symbol(symbol: str) -> str:
@@ -62,9 +65,114 @@ class BinanceBackend(IDataBackend):
         safe_symbol = symbol.replace("/", "_").replace(" ", "_")
         return self.cache_dir / f"BINANCE_{safe_symbol}_{interval_tag}.parquet"
 
+    @staticmethod
+    def _parquet_tag(timeframe: str) -> str:
+        token = timeframe.lower()
+        if token in {"1min", "1m"}:
+            return "1m"
+        if token in {"5min", "5m"}:
+            return "5m"
+        if token in {"60m", "1h"}:
+            return "1h"
+        if token in {"1d", "day", "daily"}:
+            return "1d"
+        return token
+
+    def _local_symbol_candidates(self, symbol: str) -> List[str]:
+        tokens = {
+            symbol,
+            symbol.replace("-", ""),
+            symbol.replace("-", "").replace("/", ""),
+            symbol.replace("-", "").upper(),
+            symbol.replace("-", "").upper().replace("/", ""),
+        }
+        mapped = self._map_symbol(symbol)
+        tokens.add(mapped)
+        tokens.add(mapped.replace("USDT", "USD"))
+        tokens.add(mapped.replace("USDT", ""))
+        return [t for t in {tok.upper() for tok in tokens if tok}]
+
+    def _load_local(self, symbol: str, timeframe: str, start: str, end: str) -> Optional[pd.DataFrame]:
+        if self.local_root is None:
+            return None
+
+        tag = self._parquet_tag(timeframe)
+        start_ts = pd.Timestamp(start, tz="UTC")
+        end_ts = pd.Timestamp(end, tz="UTC")
+        margin = pd.Timedelta(hours=6)
+        t0 = start_ts - margin
+        t1 = end_ts + margin
+        ts_candidates = [
+            "ts_utc",
+            "timestamp",
+            "time",
+            "ts",
+            "datetime",
+            "open_time",
+            "opentime",
+            "kline_open_time",
+            "openTime",
+        ]
+
+        for candidate in self._local_symbol_candidates(symbol):
+            path = self.local_root / candidate / f"{tag}.parquet"
+            if not path.exists():
+                continue
+            try:
+                df = pd.read_parquet(path)
+            except Exception:
+                continue
+            cols_lower = {c.lower(): c for c in df.columns}
+            ts_col = None
+            for name in ts_candidates:
+                if name in df.columns:
+                    ts_col = name
+                    break
+                lower = name.lower()
+                if lower in cols_lower:
+                    ts_col = cols_lower[lower]
+                    break
+            if ts_col is None:
+                if df.index.name:
+                    ts_col = df.index.name
+                    df = df.reset_index()
+                else:
+                    continue
+            ts = pd.to_datetime(df[ts_col], utc=True, errors="coerce")
+            df = df.assign(__ts=ts).dropna(subset=["__ts"])
+            df = df.sort_values("__ts")
+            df = df.loc[(df["__ts"] >= t0) & (df["__ts"] <= t1)]
+            if df.empty:
+                continue
+
+            rename_map = {}
+            for col in ("open", "high", "low", "close", "volume"):
+                if col in df.columns:
+                    rename_map[col] = col
+                    continue
+                lower = col.lower()
+                if lower in cols_lower:
+                    rename_map[cols_lower[lower]] = col
+                else:
+                    alt = [c for c in df.columns if c.lower() == lower]
+                    if alt:
+                        rename_map[alt[0]] = col
+            frame = df.rename(columns=rename_map)
+            missing = [col for col in _OHLCV if col not in frame.columns]
+            if missing:
+                continue
+            frame = frame.set_index("__ts")
+            frame = frame[_OHLCV].astype(float)
+            return frame
+        return None
+
     def get_bars(
         self, symbol: str, start: str, end: str, timeframe: str = "5min"
     ) -> pd.DataFrame:
+        local = self._load_local(symbol, timeframe, start, end)
+        if local is not None and not local.empty:
+            return local
+
         mapped_symbol = self._map_symbol(symbol)
         interval, step_ms = self._interval(timeframe)
 

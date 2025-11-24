@@ -1,0 +1,109 @@
+
+================================================================================
+RL3 PPO TRAINING WITH MINIMUM HOLDING PERIOD
+Objective: Fix bear market alpha + reduce overtrading
+================================================================================
+
+[CONFIG] Training configuration:
+  - Max stocks: 200
+  - Date range: 2018-01-01 to 2025-08-08
+  - Min holding period: 5 days (HARD CONSTRAINT)
+  - Transaction cost: 0.1%
+  - Features: 220 dimensions
+  - Actions: 4 (hold/buy/sell/close)
+  - Device: cpu
+
+================================================================================
+RL3 PPO TRAINING WITH MINIMUM HOLDING PERIOD CONSTRAINT
+================================================================================
+KEY IMPROVEMENTS:
+  - Minimum holding period: 5 days (HARD CONSTRAINT)
+  - Transaction cost: 0.1% (baseline)
+  - Training period: 2018-01-01 to 2025-08-08
+  - Target: Fix bear market alpha and reduce overtrading
+================================================================================
+
+[DATA] Loading local parquet files from scripts/download/historical_data/daily
+[DATA] Date range: 2018-01-01 to 2025-08-08
+[DATA] Found 4215 parquet files
+[DATA] Selected 200 files for training
+Loading data:   0%|          | 0/200 [00:00<?, ?it/s]Loading data:   0%|          | 1/200 [00:00<02:30,  1.32it/s]Loading data:   8%|7         | 15/200 [00:00<00:07, 23.19it/s]Loading data:  14%|#4        | 28/200 [00:00<00:04, 42.45it/s]Loading data:  19%|#9        | 38/200 [00:01<00:03, 53.25it/s]Loading data:  24%|##4       | 48/200 [00:01<00:02, 63.39it/s]Loading data:  29%|##9       | 58/200 [00:01<00:02, 70.07it/s]Loading data:  34%|###4      | 68/200 [00:01<00:01, 76.74it/s]Loading data:  39%|###9      | 78/200 [00:01<00:01, 78.76it/s]Loading data:  44%|####4     | 88/200 [00:01<00:01, 83.42it/s]Loading data:  49%|####9     | 98/200 [00:01<00:01, 87.09it/s]Loading data:  55%|#####4    | 109/200 [00:01<00:00, 91.34it/s]Loading data:  60%|#####9    | 119/200 [00:02<00:01, 76.22it/s]Loading data:  66%|######5   | 131/200 [00:02<00:00, 86.12it/s]Loading data:  72%|#######2  | 145/200 [00:02<00:00, 98.13it/s]Loading data:  80%|#######9  | 159/200 [00:02<00:00, 108.02it/s]Loading data:  87%|########7 | 174/200 [00:02<00:00, 117.47it/s]Loading data:  94%|#########4| 189/200 [00:02<00:00, 124.64it/s]Loading data: 100%|##########| 200/200 [00:02<00:00, 76.41it/s] 
+
+[DATA] Successfully loaded: 200/200 files
+
+[MODEL] Created ActorCritic model with 290309 parameters
+[MODEL] Device: cpu
+Training stocks:   0%|          | 0/200 [00:00<?, ?it/s]2025-11-20 02:09:57,573 - INFO - [AAL_daily] Reward: -0.6000, Trades: 87
+Training stocks:   0%|          | 1/200 [00:02<08:19,  2.51s/it]2025-11-20 02:09:59,817 - INFO - [AAME_daily] Reward: 0.4744, Trades: 89
+Training stocks:   1%|1         | 2/200 [00:04<07:45,  2.35s/it]2025-11-20 02:10:02,408 - INFO - [AAMI_daily] Reward: 0.2412, Trades: 89
+Training stocks:   2%|1         | 3/200 [00:07<08:04,  2.46s/it]2025-11-20 02:10:04,550 - INFO - [AAOI_daily] Reward: 0.0484, Trades: 83
+Training stocks:   2%|2         | 4/200 [00:09<07:37,  2.33s/it]2025-11-20 02:10:06,822 - INFO - [AAON_daily] Reward: -0.4267, Trades: 92
+Training stocks:   2%|2         | 5/200 [00:11<07:30,  2.31s/it]2025-11-20 02:10:09,867 - INFO - [AAPG_daily] Reward: -0.0987, Trades: 88
+Training stocks:   3%|3         | 6/200 [00:14<08:16,  2.56s/it]2025-11-20 02:10:12,981 - INFO - [AAPL_daily] Reward: 0.5970, Trades: 93
+Training stocks:   4%|3         | 7/200 [00:17<08:49,  2.74s/it]2025-11-20 02:10:15,423 - INFO - [AAP_daily] Reward: 0.2683, Trades: 92
+Training stocks:   4%|4         | 8/200 [00:20<08:28,  2.65s/it]2025-11-20 02:10:17,676 - INFO - [AARD_daily] Reward: -0.1996, Trades: 91
+Training stocks:   4%|4         | 9/200 [00:22<08:01,  2.52s/it]2025-11-20 02:10:19,881 - INFO - [AAT_daily] Reward: 0.1582, Trades: 95
+Training stocks:   5%|5         | 10/200 [00:24<07:40,  2.43s/it]2025-11-20 02:10:22,014 - INFO - [AAUC_daily] Reward: 0.0115, Trades: 89
+Training stocks:   6%|5         | 11/200 [00:26<07:21,  2.34s/it]2025-11-20 02:10:24,377 - INFO - [AA_daily] Reward: -0.3358, Trades: 92
+Training stocks:   6%|6         | 12/200 [00:29<07:20,  2.34s/it]2025-11-20 02:10:26,720 - INFO - [ABEO_daily] Reward: 0.1281, Trades: 104
+Training stocks:   6%|6         | 13/200 [00:31<07:18,  2.34s/it]2025-11-20 02:10:28,967 - INFO - [ABG_daily] Reward: 0.2213, Trades: 95
+Training stocks:   7%|7         | 14/200 [00:33<07:10,  2.31s/it]2025-11-20 02:10:31,359 - INFO - [ABLLW_daily] Reward: 0.1730, Trades: 88
+Training stocks:   8%|7         | 15/200 [00:36<07:12,  2.34s/it]2025-11-20 02:10:33,608 - INFO - [ABL_daily] Reward: -0.1302, Trades: 102
+Training stocks:   8%|8         | 16/200 [00:38<07:05,  2.31s/it]2025-11-20 02:10:37,094 - INFO - [ABNB_daily] Reward: 0.3613, Trades: 95
+Training stocks:   8%|8         | 17/200 [00:42<08:07,  2.66s/it]2025-11-20 02:10:39,760 - INFO - [ABSI_daily] Reward: 0.2861, Trades: 94
+Training stocks:   9%|9         | 18/200 [00:44<08:05,  2.66s/it]2025-11-20 02:10:42,334 - INFO - [ABT_daily] Reward: 0.0806, Trades: 94
+Training stocks:  10%|9         | 19/200 [00:47<07:57,  2.64s/it]2025-11-20 02:10:44,688 - INFO - [ABVEW_daily] Reward: 0.8626, Trades: 93
+Training stocks:  10%|#         | 20/200 [00:49<07:39,  2.55s/it]2025-11-20 02:10:47,467 - INFO - [ABVE_daily] Reward: 0.3554, Trades: 89
+Training stocks:  10%|#         | 21/200 [00:52<07:49,  2.62s/it]2025-11-20 02:10:50,064 - INFO - [ACAD_daily] Reward: 0.0653, Trades: 95
+Training stocks:  11%|#1        | 22/200 [00:54<07:45,  2.61s/it]2025-11-20 02:10:52,535 - INFO - [ACA_daily] Reward: 0.5267, Trades: 94
+Training stocks:  12%|#1        | 23/200 [00:57<07:34,  2.57s/it]2025-11-20 02:10:55,220 - INFO - [ACB_daily] Reward: 0.3751, Trades: 97
+Training stocks:  12%|#2        | 24/200 [01:00<07:38,  2.61s/it]2025-11-20 02:10:57,709 - INFO - [ACCO_daily] Reward: -0.1815, Trades: 86
+Training stocks:  12%|#2        | 25/200 [01:02<07:29,  2.57s/it]2025-11-20 02:11:00,054 - INFO - [ACDC_daily] Reward: -0.5883, Trades: 91
+Training stocks:  13%|#3        | 26/200 [01:04<07:15,  2.50s/it]2025-11-20 02:11:02,456 - INFO - [ACEL_daily] Reward: 0.9330, Trades: 93
+Training stocks:  14%|#3        | 27/200 [01:07<07:07,  2.47s/it]2025-11-20 02:11:04,855 - INFO - [ACET_daily] Reward: -0.4146, Trades: 90
+Training stocks:  14%|#4        | 28/200 [01:09<07:01,  2.45s/it]2025-11-20 02:11:07,601 - INFO - [ACGLN_daily] Reward: -0.1680, Trades: 95
+Training stocks:  14%|#4        | 29/200 [01:12<07:14,  2.54s/it]2025-11-20 02:11:10,317 - INFO - [ACGLO_daily] Reward: -0.1746, Trades: 83
+Training stocks:  15%|#5        | 30/200 [01:15<07:20,  2.59s/it]2025-11-20 02:11:12,779 - INFO - [ACGL_daily] Reward: 0.1867, Trades: 89
+Training stocks:  16%|#5        | 31/200 [01:17<07:11,  2.55s/it]2025-11-20 02:11:14,870 - INFO - [ACIC_daily] Reward: 0.3328, Trades: 95
+Training stocks:  16%|#6        | 32/200 [01:19<06:45,  2.41s/it]2025-11-20 02:11:17,165 - INFO - [ACIW_daily] Reward: -0.0517, Trades: 84
+Training stocks:  16%|#6        | 33/200 [01:22<06:37,  2.38s/it]2025-11-20 02:11:19,861 - INFO - [ACLX_daily] Reward: 0.3991, Trades: 90
+Training stocks:  17%|#7        | 34/200 [01:24<06:50,  2.47s/it]2025-11-20 02:11:22,046 - INFO - [ACM_daily] Reward: -1.0092, Trades: 96
+Training stocks:  18%|#7        | 35/200 [01:26<06:33,  2.39s/it]2025-11-20 02:11:25,021 - INFO - [ACNT_daily] Reward: 0.2550, Trades: 94
+Training stocks:  18%|#8        | 36/200 [01:29<07:00,  2.56s/it]2025-11-20 02:11:27,416 - INFO - [ACN_daily] Reward: -0.1274, Trades: 87
+Training stocks:  18%|#8        | 37/200 [01:32<06:49,  2.51s/it]2025-11-20 02:11:29,915 - INFO - [ACOG_daily] Reward: 0.0772, Trades: 80
+Training stocks:  19%|#9        | 38/200 [01:34<06:46,  2.51s/it]2025-11-20 02:11:32,493 - INFO - [ACONW_daily] Reward: 0.2223, Trades: 85
+Training stocks:  20%|#9        | 39/200 [01:37<06:47,  2.53s/it]2025-11-20 02:11:34,764 - INFO - [ACON_daily] Reward: 0.3818, Trades: 89
+Training stocks:  20%|##        | 40/200 [01:39<06:32,  2.45s/it]2025-11-20 02:11:36,985 - INFO - [ACRE_daily] Reward: -0.0657, Trades: 93
+Training stocks:  20%|##        | 41/200 [01:41<06:18,  2.38s/it]2025-11-20 02:11:39,168 - INFO - [ACRS_daily] Reward: 0.2903, Trades: 95
+Training stocks:  21%|##1       | 42/200 [01:44<06:06,  2.32s/it]2025-11-20 02:11:41,245 - INFO - [ACRV_daily] Reward: 0.1986, Trades: 99
+Training stocks:  22%|##1       | 43/200 [01:46<05:53,  2.25s/it]2025-11-20 02:11:43,369 - INFO - [ACR_daily] Reward: 0.0319, Trades: 92
+Training stocks:  22%|##2       | 44/200 [01:48<05:45,  2.21s/it]2025-11-20 02:11:45,923 - INFO - [ACTU_daily] Reward: -0.0381, Trades: 96
+Training stocks:  22%|##2       | 45/200 [01:50<05:58,  2.31s/it]2025-11-20 02:11:48,506 - INFO - [ACT_daily] Reward: 0.5128, Trades: 92
+Training stocks:  23%|##3       | 46/200 [01:53<06:08,  2.39s/it]2025-11-20 02:11:50,888 - INFO - [ACVA_daily] Reward: 0.6117, Trades: 97
+Training stocks:  24%|##3       | 47/200 [01:55<06:05,  2.39s/it]2025-11-20 02:11:53,310 - INFO - [ACXP_daily] Reward: -0.0166, Trades: 90
+Training stocks:  24%|##4       | 48/200 [01:58<06:04,  2.40s/it]2025-11-20 02:11:55,659 - INFO - [AC_daily] Reward: -0.1199, Trades: 100
+Training stocks:  24%|##4       | 49/200 [02:00<06:00,  2.38s/it]2025-11-20 02:11:57,700 - INFO - [ADAP_daily] Reward: 0.1347, Trades: 86
+Training stocks:  25%|##5       | 50/200 [02:02<05:42,  2.28s/it]2025-11-20 02:11:59,911 - INFO - [ADBE_daily] Reward: 0.5239, Trades: 93
+Training stocks:  26%|##5       | 51/200 [02:04<05:36,  2.26s/it]2025-11-20 02:12:02,091 - INFO - [ADC_daily] Reward: 0.2543, Trades: 93
+Training stocks:  26%|##6       | 52/200 [02:07<05:30,  2.24s/it]2025-11-20 02:12:04,606 - INFO - [ADEA_daily] Reward: 0.0964, Trades: 88
+Training stocks:  26%|##6       | 53/200 [02:09<05:41,  2.32s/it]2025-11-20 02:12:06,728 - INFO - [ADGM_daily] Reward: 0.0993, Trades: 90
+Training stocks:  27%|##7       | 54/200 [02:11<05:30,  2.26s/it]2025-11-20 02:12:08,766 - INFO - [ADIL_daily] Reward: 0.2795, Trades: 97
+Training stocks:  28%|##7       | 55/200 [02:13<05:18,  2.19s/it]2025-11-20 02:12:11,049 - INFO - [ADI_daily] Reward: 0.1531, Trades: 102
+Training stocks:  28%|##8       | 56/200 [02:15<05:19,  2.22s/it]2025-11-20 02:12:13,340 - INFO - [ADMA_daily] Reward: -0.2054, Trades: 96
+Training stocks:  28%|##8       | 57/200 [02:18<05:20,  2.24s/it]2025-11-20 02:12:15,598 - INFO - [ADM_daily] Reward: 0.4980, Trades: 96
+Training stocks:  29%|##9       | 58/200 [02:20<05:19,  2.25s/it]2025-11-20 02:12:17,826 - INFO - [ADNT_daily] Reward: -0.3672, Trades: 82
+Training stocks:  30%|##9       | 59/200 [02:22<05:15,  2.24s/it]2025-11-20 02:12:20,032 - INFO - [ADN_daily] Reward: -0.8737, Trades: 89
+Training stocks:  30%|###       | 60/200 [02:24<05:12,  2.23s/it]2025-11-20 02:12:22,429 - INFO - [ADSEW_daily] Reward: 0.3928, Trades: 95
+Training stocks:  30%|###       | 61/200 [02:27<05:16,  2.28s/it]2025-11-20 02:12:24,787 - INFO - [ADSE_daily] Reward: 0.1948, Trades: 91
+Training stocks:  31%|###1      | 62/200 [02:29<05:17,  2.30s/it]2025-11-20 02:12:27,351 - INFO - [ADSK_daily] Reward: 0.2100, Trades: 100
+Training stocks:  32%|###1      | 63/200 [02:32<05:26,  2.38s/it]2025-11-20 02:12:29,693 - INFO - [ADTX_daily] Reward: 0.4729, Trades: 78
+Training stocks:  32%|###2      | 64/200 [02:34<05:22,  2.37s/it]2025-11-20 02:12:32,172 - INFO - [ADT_daily] Reward: -0.1404, Trades: 80
+Training stocks:  32%|###2      | 65/200 [02:37<05:24,  2.40s/it]2025-11-20 02:12:34,575 - INFO - [ADUR_daily] Reward: -0.3817, Trades: 92
+Training stocks:  33%|###3      | 66/200 [02:39<05:21,  2.40s/it]2025-11-20 02:12:36,865 - INFO - [ADVB_daily] Reward: -0.0708, Trades: 90
+Training stocks:  34%|###3      | 67/200 [02:41<05:15,  2.37s/it]2025-11-20 02:12:39,281 - INFO - [ADVM_daily] Reward: 0.3314, Trades: 97
+Training stocks:  34%|###4      | 68/200 [02:44<05:14,  2.38s/it]2025-11-20 02:12:42,199 - INFO - [ADVWW_daily] Reward: 0.2208, Trades: 78
+Training stocks:  34%|###4      | 69/200 [02:47<05:33,  2.54s/it]2025-11-20 02:12:44,671 - INFO - [ADXN_daily] Reward: 0.2014, Trades: 86
+Training stocks:  35%|###5      | 70/200 [02:49<05:27,  2.52s/it]2025-11-20 02:12:48,341 - INFO - [ADX_daily] Reward: -0.0146, Trades: 97
+Training stocks:  36%|###5      | 71/200 [02:53<06:09,  2.87s/it]2025-11-20 02:12:51,637 - INFO - [AEFC_daily] Reward: -0.0876, Trades: 92
+Training stocks:  36%|###6      | 72/200 [02:56<06:23,  3.00s/it]2025-11-20 02:12:54,301 - INFO - [AEG_daily] Reward: 0.1096, Trades: 92
+Training stocks:  36%|###6      | 73/200 [02:59<06:07,  2.90s/it]

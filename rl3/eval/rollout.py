@@ -7,6 +7,7 @@ import json
 import random
 import sys, pathlib
 from pathlib import Path
+import os
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
@@ -33,9 +34,14 @@ except Exception:
 
 from stable_baselines3.common.vec_env import DummyVecEnv, VecCheckNan, VecNormalize
 
+try:
+    from rl3.eval.vecenv_compat import _CompatExposeSingleSpace
+except ImportError:  # pragma: no cover
+    from quant_project_RL.rl3.eval.vecenv_compat import _CompatExposeSingleSpace  # type: ignore
+
 from rl3.eval.metrics import compute
 from rl3.env.portfolio_env import EnvConfig, PortfolioEnv
-
+from rl3.env.data_roots import ensure_data_roots
 
 def _timeframe_minutes(timeframe: Optional[str]) -> Optional[int]:
     if timeframe is None:
@@ -120,6 +126,7 @@ def _make_env(
     end: str,
     data_router: Any | None = None,
 ) -> PortfolioEnv:
+    ensure_data_roots(cfg)
     timeframe = cfg.get("timeframe", "5min")
     symbols = list(cfg.get("symbols", []))
     if not symbols:
@@ -373,6 +380,28 @@ def run_oos_eval(
 
     env_factory = lambda: _make_env(cfg, start, end, data_router)
     base_env = DummyVecEnv([env_factory])
+    # === OOS progress hook ===
+    try:
+        _oos_progress_counter = {'n': 0}
+        _oos_report_every = 1000  # ? 1000 steps ?????????
+    
+        _oos_orig_step = env.step
+    
+        def _oos_step_with_progress(action, _orig=_oos_orig_step, _env=env, _cnt=_oos_progress_counter, _every=_oos_report_every):
+            _cnt['n'] += 1
+            if _cnt['n'] % _every == 0:
+                total = getattr(_env, 'max_steps', None) or getattr(_env, 'n_steps', None)
+                if total:
+                    pct = 100.0 * _cnt['n'] / float(total)
+                    print('[OOS] steps {}/{} ({:.1f}%)'.format(_cnt['n'], total, pct), flush=True)
+                else:
+                    print('[OOS] steps {}'.format(_cnt['n']), flush=True)
+            return _orig(action)
+    
+        env.step = _oos_step_with_progress
+    except Exception as _e:
+        print('[OOS] progress hook install failed: {}'.format(_e), flush=True)
+    # =========================
     if seed is not None:
         try:
             base_env.seed(seed)
@@ -392,6 +421,7 @@ def run_oos_eval(
         env = base_env
 
     env = VecCheckNan(env, raise_exception=True)
+    env = _CompatExposeSingleSpace(env)
 
     model = None
     if not random_policy:

@@ -1,0 +1,152 @@
+{
+  "generated": "2025-11-20 22:24:40",
+  "total_stocks": 4215,
+  "periods": {
+    "2021_2022": {
+      "description": "Bear Market Period",
+      "start_date": "2021-01-01",
+      "end_date": "2022-12-31",
+      "ppo": {
+        "avg_return": 0.37264242102240996,
+        "median_return": -0.4815237386415393,
+        "sharpe_ratio": 2.169373804605679,
+        "sortino_ratio": 3.5840159290869362,
+        "max_drawdown": -0.09392247622016918,
+        "win_rate": 50.53096436274006,
+        "total_trades": 48685,
+        "winning_trades": 24601,
+        "trades_per_stock": 11.550415183867141,
+        "trades_per_year": 5.775207591933571
+      },
+      "buy_hold": {
+        "avg_return": 41.65,
+        "median_return": 28.04,
+        "sharpe_ratio": 0.541,
+        "sortino_ratio": 0.945,
+        "max_drawdown": -35.69
+      },
+      "alpha": {
+        "return_alpha": -41.277357578977586,
+        "sharpe_alpha": 1.6283738046056793,
+        "sortino_alpha": 2.6390159290869364,
+        "drawdown_improvement": -35.596077523779826
+      }
+    },
+    "2023_2025": {
+      "description": "Bull/Recovery Period",
+      "start_date": "2023-01-01",
+      "end_date": "2025-08-08",
+      "ppo": {
+        "avg_return": 0.9313240372720546,
+        "median_return": -0.4373899079731637,
+        "sharpe_ratio": 3.3232089975277486,
+        "sortino_ratio": 6.174205692706882,
+        "max_drawdown": -0.09393208921798077,
+        "win_rate": 51.0336939023357,
+        "total_trades": 70814,
+        "winning_trades": 36139,
+        "trades_per_stock": 16.80047449584816,
+        "trades_per_year": 6.4617209599416
+      },
+      "buy_hold": {
+        "avg_return": 62.129999999999995,
+        "median_return": 42.730000000000004,
+        "sharpe_ratio": 0.564,
+        "sortino_ratio": 0.982,
+        "max_drawdown": -38.54
+      },
+      "alpha": {
+        "return_alpha": -61.19867596272795,
+        "sharpe_alpha": 2.7592089975277485,
+        "sortino_alpha": 5.192205692706882,
+        "drawdown_improvement": -38.44606791078202
+      }
+    }
+  },
+  "transaction_cost_sensitivity": {
+    "current_cost": 0.1,
+    "scenarios": [
+      {
+        "cost_pct": 0.0,
+        "period_2021_2022": {
+          "estimated_return": 1.5276839394091242,
+          "impact": 1.1550415183867142,
+          "alpha_vs_buyhold": -40.122316060590876
+        },
+        "period_2023_2025": {
+          "estimated_return": 2.2236682292603747,
+          "impact": 1.29234419198832,
+          "alpha_vs_buyhold": -59.90633177073962
+        }
+      },
+      {
+        "cost_pct": 0.05,
+        "period_2021_2022": {
+          "estimated_return": 0.9501631802157671,
+          "impact": 0.5775207591933571,
+          "alpha_vs_buyhold": -40.69983681978423
+        },
+        "period_2023_2025": {
+          "estimated_return": 1.5774961332662145,
+          "impact": 0.64617209599416,
+          "alpha_vs_buyhold": -60.55250386673378
+        }
+      },
+      {
+        "cost_pct": 0.1,
+        "period_2021_2022": {
+          "estimated_return": 0.37264242102240996,
+          "impact": -0.0,
+          "alpha_vs_buyhold": -41.277357578977586
+        },
+        "period_2023_2025": {
+          "estimated_return": 0.9313240372720546,
+          "impact": -0.0,
+          "alpha_vs_buyhold": -61.19867596272794
+        }
+      },
+      {
+        "cost_pct": 0.2,
+        "period_2021_2022": {
+          "estimated_return": -0.7823990973643042,
+          "impact": -1.1550415183867142,
+          "alpha_vs_buyhold": -42.4323990973643
+        },
+        "period_2023_2025": {
+          "estimated_return": -0.3610201547162655,
+          "impact": -1.29234419198832,
+          "alpha_vs_buyhold": -62.49102015471626
+        }
+      },
+      {
+        "cost_pct": 0.5,
+        "period_2021_2022": {
+          "estimated_return": -4.247523652524447,
+          "impact": -4.620166073546857,
+          "alpha_vs_buyhold": -45.89752365252445
+        },
+        "period_2023_2025": {
+          "estimated_return": -4.2380527306812255,
+          "impact": -5.16937676795328,
+          "alpha_vs_buyhold": -66.36805273068123
+        }
+      }
+    ]
+  },
+  "cross_period_analysis": {
+    "ppo_performance_change": {
+      "avg_return_change": 0.5586816162496446,
+      "sharpe_change": 1.1538351929220694,
+      "win_rate_change": 0.5027295395956366,
+      "trades_change": 22129
+    },
+    "buy_hold_performance_change": {
+      "avg_return_change": 20.479999999999997,
+      "sharpe_change": 0.02299999999999991
+    },
+    "alpha_change": {
+      "return_alpha_change": -19.921318383750357,
+      "sharpe_alpha_change": 1.1308351929220692
+    }
+  }
+}
